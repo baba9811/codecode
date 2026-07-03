@@ -1,10 +1,15 @@
 from pathlib import Path
+import time
 
 import pytest
-from textual.widgets import Button, Input, Markdown, Static
+from textual.widgets import Button, Input, Log, Markdown, Static
 
 from codecode.app import CodeCodeApp
 from codecode.core import AppState, save_state
+
+
+def output_text(app: CodeCodeApp) -> str:
+    return "\n".join(str(line) for line in app.query_one("#output", Log).lines)
 
 
 @pytest.mark.asyncio
@@ -87,14 +92,13 @@ async def test_slash_commands_run_actions(tmp_path: Path):
         await pilot.pause()
         await pilot.press("h", "e", "l", "p", "enter")
         await pilot.pause()
-        output = app.query_one("#output", Static)
-        assert "Commands" in str(output.content)
+        assert "Commands" in output_text(app)
 
         await pilot.press("/")
         await pilot.pause()
         await pilot.press("r", "u", "n", "enter")
         await pilot.pause()
-        assert "case 1:" in str(output.content)
+        assert "case 1:" in output_text(app)
 
         await pilot.press("/")
         await pilot.pause()
@@ -120,9 +124,8 @@ async def test_list_and_open_commands_show_and_load_problems(tmp_path: Path):
         await pilot.pause()
         await pilot.press("l", "i", "s", "t", "enter")
         await pilot.pause()
-        output = app.query_one("#output", Static)
-        assert "001-running-sum" in str(output.content)
-        assert "002-count-vowels" in str(output.content)
+        assert "001-running-sum" in output_text(app)
+        assert "002-count-vowels" in output_text(app)
 
         await pilot.press("/")
         await pilot.pause()
@@ -152,13 +155,33 @@ async def test_codex_command_prints_response_without_changing_next_settings(
         await pilot.press("/")
         await pilot.pause()
         await pilot.press("c", "o", "d", "e", "x", " ", "h", "e", "l", "l", "o", "enter")
-        await pilot.pause()
-        output = app.query_one("#output", Static)
+        await pilot.pause(0.1)
+        assert "Codex says: hello" in output_text(app)
 
-    assert "Codex says: hello" in str(output.content)
     assert captured == {"problem": "001-running-sum", "language": "python", "prompt": "hello"}
     assert app.state.settings.next_source == "bank"
     assert app.state.settings.codex_next_command == ""
+
+
+@pytest.mark.asyncio
+async def test_codex_command_shows_loading_in_scrollable_output(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    def slow_codex(*args):
+        time.sleep(0.5)
+        return "later"
+
+    monkeypatch.setattr("codecode.app.run_codex_prompt", slow_codex)
+    app = CodeCodeApp(root=tmp_path)
+
+    async with app.run_test(size=(100, 35)) as pilot:
+        await pilot.pause()
+        await pilot.press("/")
+        await pilot.pause()
+        await pilot.press("c", "o", "d", "e", "x", " ", "h", "i", "enter")
+        await pilot.pause()
+        output = app.query_one("#output", Log)
+        assert output.can_focus
+        assert output.loading
+        assert "Thinking..." in output_text(app)
 
 
 @pytest.mark.asyncio

@@ -8,7 +8,7 @@ from textual import events
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal
-from textual.widgets import Input, Markdown, Static
+from textual.widgets import Input, Log, Markdown, Static
 
 from codecode.core import (
     LANGUAGES,
@@ -127,7 +127,7 @@ class CodeCodeApp(App[None]):
     def compose(self) -> ComposeResult:
         with Horizontal(id="body"):
             yield Markdown(id="problem")
-            yield Static(id="output")
+            yield Log(id="output")
         yield Static(id="status")
         yield Input(placeholder="/help, /run, /edit, /next, /prev, /list, /open 2, /codex hint", id="command")
 
@@ -143,7 +143,14 @@ class CodeCodeApp(App[None]):
         )
         self.query_one("#problem", Markdown).update(render_problem(self.problem, self.state.settings.ui_language))
         if output is not None:
-            self.query_one("#output", Static).update(output)
+            self.write_output(output)
+
+    def write_output(self, output: str, loading: bool = False) -> None:
+        log = self.query_one("#output", Log)
+        log.loading = False
+        log.clear()
+        log.write(output)
+        log.loading = loading
 
     def on_key(self, event: events.Key) -> None:
         command = self.query_one("#command", Input)
@@ -258,9 +265,23 @@ class CodeCodeApp(App[None]):
             save_state(self.root, self.state)
             self.refresh_view("Codex next command saved.")
         elif command == "codex" and arg:
-            self.refresh_view(run_codex_prompt(self.root, self.problem, self.state.settings, arg))
+            self.start_codex_prompt(arg)
         else:
             self.refresh_view(f"Unknown command: {value}")
+
+    def start_codex_prompt(self, prompt: str) -> None:
+        self.write_output("Thinking...", loading=True)
+        self.run_worker(lambda: self.ask_codex(prompt), thread=True, exclusive=True, exit_on_error=False)
+
+    def ask_codex(self, prompt: str) -> None:
+        try:
+            output = run_codex_prompt(self.root, self.problem, self.state.settings, prompt)
+        except Exception as error:
+            output = f"Codex prompt failed\n{error}"
+        self.call_from_thread(self.finish_codex_prompt, output)
+
+    def finish_codex_prompt(self, output: str) -> None:
+        self.write_output(output)
 
     def set_language(self, language: str) -> None:
         self.state.settings.language = language

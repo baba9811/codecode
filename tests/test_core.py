@@ -186,3 +186,27 @@ def test_run_codex_prompt_includes_problem_and_submission_context(tmp_path: Path
     assert "give me a hint" in prompt
     assert "누적 합" in prompt
     assert "print('work in progress')" in prompt
+
+
+def test_run_codex_prompt_returns_only_last_message_file(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    bank = load_bank()
+    problem = bank[0]
+    settings = Settings(language="python")
+
+    def fake_run(command, cwd, text, capture_output, timeout):
+        output_path = Path(command[command.index("-o") + 1])
+        output_path.write_text("final hint only\n")
+        return subprocess.CompletedProcess(
+            command,
+            0,
+            stdout="final hint only\n",
+            stderr="workdir: /tmp\nsandbox: read-only\nuser\nfull prompt echo\n",
+        )
+
+    monkeypatch.setattr("codecode.core.subprocess.run", fake_run)
+
+    output = run_codex_prompt(tmp_path, problem, settings, "hint")
+
+    assert output == "final hint only"
+    assert "workdir:" not in output
+    assert "full prompt echo" not in output

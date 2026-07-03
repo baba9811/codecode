@@ -8,6 +8,7 @@ import shlex
 import shutil
 import subprocess
 import sys
+import tempfile
 
 
 LANGUAGES = ("python", "ts", "java", "rust")
@@ -252,12 +253,25 @@ def run_codex_prompt(root: Path, problem: Problem, settings: Settings, prompt: s
         f"Current {settings.language} submission ({solution.relative_to(root)}):\n"
         f"```{normalize_language(settings.language)}\n{code}\n```"
     )
-    command = ["codex", "exec", "--cd", str(root), "--sandbox", "read-only", full_prompt]
-    result = subprocess.run(command, cwd=root, text=True, capture_output=True, timeout=600)
+    with tempfile.TemporaryDirectory() as directory:
+        output_path = Path(directory) / "last-message.txt"
+        command = [
+            "codex",
+            "exec",
+            "--cd",
+            str(root),
+            "--sandbox",
+            "read-only",
+            "-o",
+            str(output_path),
+            full_prompt,
+        ]
+        result = subprocess.run(command, cwd=root, text=True, capture_output=True, timeout=600)
+        last_message = output_path.read_text().strip() if output_path.exists() else ""
     output = "\n".join(part for part in [result.stdout.strip(), result.stderr.strip()] if part)
     if result.returncode != 0:
         return f"Codex prompt failed ({result.returncode})\n{output}"
-    return output or "Codex returned no output."
+    return last_message or output or "Codex returned no output."
 
 
 def run_codex_next(root: Path, state: AppState) -> str:
