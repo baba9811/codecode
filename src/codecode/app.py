@@ -6,7 +6,7 @@ import subprocess
 
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical
-from textual.widgets import Button, Footer, Header, Input, Static
+from textual.widgets import Button, Footer, Input, Markdown, Static
 
 from codecode.core import (
     LANGUAGES,
@@ -42,15 +42,62 @@ u undo
 
 class CodeCodeApp(App[None]):
     CSS = """
-    Screen { layout: vertical; }
-    #status { height: 3; padding: 0 1; }
-    #body { height: 1fr; }
-    #problem { width: 55%; padding: 1; border: solid $primary; overflow-y: auto; }
-    #right { width: 45%; }
-    #output { height: 1fr; padding: 1; border: solid $secondary; overflow-y: auto; }
-    #buttons { height: 3; }
-    Button { margin: 0 1 0 0; }
-    #command { height: 3; }
+    Screen {
+        layout: vertical;
+        background: #111318;
+        color: #eef1f6;
+    }
+    #status {
+        height: 3;
+        padding: 1 2;
+        background: #161a22;
+        color: #70e1c8;
+        text-style: bold;
+    }
+    #body {
+        height: 1fr;
+        padding: 1 2 0 2;
+    }
+    #problem {
+        width: 58%;
+        padding: 1 2;
+        border: round #3a4154;
+        background: #191d25;
+        color: #f3f5f7;
+        overflow-y: auto;
+    }
+    #right {
+        width: 42%;
+        margin-left: 1;
+    }
+    #buttons {
+        height: 6;
+    }
+    .button-row {
+        height: 3;
+    }
+    Button {
+        min-width: 7;
+        margin: 0 1 0 0;
+        text-style: bold;
+    }
+    #output {
+        height: 1fr;
+        padding: 1 2;
+        border: round #3a4154;
+        background: #151922;
+        color: #d9dee8;
+        overflow-y: auto;
+    }
+    #command {
+        height: 3;
+        margin: 0 2 1 2;
+        border: round #2f3544;
+        background: #0d1016;
+    }
+    Footer {
+        background: #111318;
+    }
     """
     BINDINGS = [
         ("e", "edit", "Edit"),
@@ -71,33 +118,34 @@ class CodeCodeApp(App[None]):
         self.problem = problem_by_id(self.bank, self.state.current_problem)
 
     def compose(self) -> ComposeResult:
-        yield Header(show_clock=True)
         yield Static(id="status")
         with Horizontal(id="body"):
-            yield Static(id="problem")
+            yield Markdown(id="problem")
             with Vertical(id="right"):
-                with Horizontal(id="buttons"):
-                    yield Button("Edit", id="edit")
-                    yield Button("Run", id="run", variant="success")
-                    yield Button("Next", id="next")
-                    yield Button("Give up", id="giveup", variant="error")
-                    yield Button("Lang", id="lang")
-                    yield Button("UI", id="ui")
-                    yield Button("Source", id="source")
+                with Vertical(id="buttons"):
+                    with Horizontal(classes="button-row"):
+                        yield Button("Edit", id="edit")
+                        yield Button("Run", id="run", variant="success")
+                        yield Button("Next", id="next")
+                    with Horizontal(classes="button-row"):
+                        yield Button("Give", id="giveup", variant="error")
+                        yield Button("Lang", id="lang")
+                        yield Button("UI", id="ui")
+                        yield Button("Src", id="source")
                 yield Static(id="output")
         yield Input(placeholder="/vim, /lang rust, /ui en, /source codex, /codex <command>", id="command")
         yield Footer()
 
     def on_mount(self) -> None:
-        self.refresh_view("Ready. Press e to edit, r to run, /vim for Vim help.")
+        self.refresh_view("Ready\n\nPress e to edit, r to run, /vim for Vim help.")
 
     def refresh_view(self, output: str | None = None) -> None:
         self.query_one("#status", Static).update(
-            f"{self.problem.id} | {self.problem.difficulty} | "
-            f"lang={self.state.settings.language} | ui={self.state.settings.ui_language} | "
-            f"next={self.state.settings.next_source}"
+            f"CODECODE  {self.problem.id}  {self.problem.difficulty.upper()}  "
+            f"{self.state.settings.language}  {self.state.settings.ui_language}  "
+            f"next:{self.state.settings.next_source}"
         )
-        self.query_one("#problem", Static).update(render_problem(self.problem, self.state.settings.ui_language))
+        self.query_one("#problem", Markdown).update(render_problem(self.problem, self.state.settings.ui_language))
         if output is not None:
             self.query_one("#output", Static).update(output)
 

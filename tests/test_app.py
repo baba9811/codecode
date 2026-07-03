@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pytest
-from textual.widgets import Static
+from textual.widgets import Markdown, Static
 
 from codecode.app import CodeCodeApp
 
@@ -12,9 +12,13 @@ async def test_app_renders_current_problem(tmp_path: Path):
 
     async with app.run_test(size=(100, 35)) as pilot:
         await pilot.pause()
-        problem = app.query_one("#problem", Static)
+        problem = app.query_one("#problem", Markdown)
+        status = app.query_one("#status", Static)
 
-    assert "누적 합" in str(problem.content)
+    assert problem is not None
+    assert app.problem.title["ko"] == "누적 합"
+    assert "CODECODE" in str(status.content)
+    assert "python" in str(status.content)
 
 
 @pytest.mark.asyncio
@@ -24,6 +28,7 @@ async def test_next_button_loads_next_problem(tmp_path: Path):
     async with app.run_test(size=(100, 35)) as pilot:
         await pilot.click("#next")
         await pilot.pause()
-        problem = app.query_one("#problem", Static)
+        problem = app.query_one("#problem", Markdown)
 
-    assert "모음 세기" in str(problem.content)
+    assert problem is not None
+    assert app.problem.title["ko"] == "모음 세기"
