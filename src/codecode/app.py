@@ -7,6 +7,7 @@ import subprocess
 from textual import events
 from textual.app import App, ComposeResult
 from textual.binding import Binding
+from textual.timer import Timer
 from textual.containers import Horizontal
 from textual.widgets import Input, Markdown, Static
 
@@ -71,44 +72,50 @@ class CodeCodeApp(App[None]):
     CSS = """
     Screen {
         layout: vertical;
-        background: #0f1117;
-        color: #edf2f7;
+        background: #090d12;
+        color: #e5eef8;
     }
     #body {
         height: 1fr;
-        padding: 1 2;
+        padding: 1 1 0 1;
     }
     #problem {
         width: 58%;
         padding: 1 2;
-        border: round #3e4658;
-        background: #151a22;
+        border: tall #2f6f82;
+        background: #0f1720;
         color: #f8fafc;
         overflow-y: auto;
+        scrollbar-color: #4fd1c5;
+        scrollbar-background: #17202b;
     }
     #output {
         width: 42%;
         margin-left: 1;
         padding: 1 2;
-        border: round #3e4658;
-        background: #121821;
+        border: tall #31536b;
+        background: #0d141c;
         color: #dbe4f0;
         overflow-y: auto;
+        scrollbar-color: #f6c177;
+        scrollbar-background: #17202b;
     }
     #status {
         height: 1;
-        padding: 0 2;
-        background: #202637;
-        color: #7dd3fc;
+        padding: 0 1;
+        background: #152033;
+        color: #c8d3f5;
         text-style: bold;
     }
     #command {
         height: 3;
-        margin: 0 2 1 2;
-        border: round #4b5568;
-        background: #0d1016;
+        margin: 0 1 1 1;
+        border: tall #3b82f6;
+        background: #0b1017;
+        color: #f8fafc;
     }
     """
+    BUSY_FRAMES = ("", ".", "..", "...")
     BINDINGS = [
         Binding("e", "edit", "Edit"),
         Binding("r", "run", "Run"),
@@ -124,9 +131,13 @@ class CodeCodeApp(App[None]):
     def __init__(self, root: Path | None = None) -> None:
         super().__init__()
         self.root = root or Path.cwd()
-        self.bank = load_bank()
+        self.bank = load_bank(self.root)
         self.state = load_state(self.root, self.bank)
         self.problem = problem_by_id(self.bank, self.state.current_problem)
+        self.busy_label = ""
+        self.busy_body = ""
+        self.busy_frame = 0
+        self.busy_timer: Timer | None = None
 
     def compose(self) -> ComposeResult:
         with Horizontal(id="body"):
@@ -138,12 +149,12 @@ class CodeCodeApp(App[None]):
         yield Input(placeholder="/help, /run, /edit, /next, /prev, /list, /open 2, /codex hint", id="command")
 
     def on_mount(self) -> None:
-        self.refresh_view("Ready\n\nPress /help for commands.")
+        self.refresh_view("CODECODE\n\n`/help`")
         self.call_after_refresh(self.set_focus, None)
 
     def refresh_view(self, output: str | None = None) -> None:
         self.query_one("#status", Static).update(
-            f" CODECODE | {self.problem.id} | {self.problem.difficulty} | "
+            f" CODECODE | {self.problem.id} | {self.problem.difficulty} | {self.busy_status()} | "
             f"status:{self.problem_status()} | code:{self.submission_status()[0]} | "
             f"lang:{self.state.settings.language} | ui:{self.state.settings.ui_language} | "
             f"next:{self.state.settings.next_source} | /help "
@@ -152,11 +163,41 @@ class CodeCodeApp(App[None]):
         if output is not None:
             self.write_output(output)
 
-    def write_output(self, output: str, loading: bool = False) -> None:
+    def write_output(self, output: str) -> None:
         markdown = self.query_one("#output", Markdown)
         markdown.loading = False
         markdown.update(output)
-        markdown.loading = loading
+
+    def busy_status(self) -> str:
+        if not self.busy_label:
+            return "idle"
+        return f"busy:{self.busy_label}{self.BUSY_FRAMES[self.busy_frame]}"
+
+    def start_busy(self, label: str, body: str) -> None:
+        self.busy_label = label
+        self.busy_body = body
+        self.busy_frame = 0
+        self.update_busy()
+        if self.busy_timer is None:
+            self.busy_timer = self.set_interval(0.2, self.update_busy, pause=True)
+        self.busy_timer.resume()
+
+    def stop_busy(self) -> None:
+        if self.busy_timer is not None:
+            self.busy_timer.pause()
+        self.busy_label = ""
+        self.busy_body = ""
+        self.busy_frame = 0
+
+    def update_busy(self) -> None:
+        self.busy_frame = (self.busy_frame + 1) % len(self.BUSY_FRAMES)
+        self.query_one("#status", Static).update(
+            f" CODECODE | {self.problem.id} | {self.problem.difficulty} | {self.busy_status()} | "
+            f"status:{self.problem_status()} | code:{self.submission_status()[0]} | "
+            f"lang:{self.state.settings.language} | ui:{self.state.settings.ui_language} | "
+            f"next:{self.state.settings.next_source} | /help "
+        )
+        self.write_output(f"{self.busy_body}{self.BUSY_FRAMES[self.busy_frame]}")
 
     def on_key(self, event: events.Key) -> None:
         command = self.query_one("#command", Input)
@@ -193,7 +234,7 @@ class CodeCodeApp(App[None]):
         self.refresh_view(f"Loaded {self.problem.id}")
 
     def start_next_problem(self, old_problem: str, force: bool) -> None:
-        self.write_output("Loading next problem...", loading=True)
+        self.start_busy("next", "Generating next problem")
         self.run_worker(lambda: self.ask_next_problem(old_problem, force), thread=True, exclusive=True, exit_on_error=False)
 
     def ask_next_problem(self, old_problem: str, force: bool) -> None:
@@ -204,8 +245,9 @@ class CodeCodeApp(App[None]):
         self.call_from_thread(self.finish_next_problem, output, old_problem, force)
 
     def finish_next_problem(self, output: str, old_problem: str, force: bool) -> None:
+        self.stop_busy()
         if self.state.settings.next_source == "codex" or force:
-            self.bank = load_bank()
+            self.bank = load_bank(self.root)
             self.state = load_state(self.root, self.bank)
         self.problem = problem_by_id(self.bank, self.state.current_problem)
         if self.state.current_problem == old_problem:
@@ -302,7 +344,7 @@ class CodeCodeApp(App[None]):
             self.refresh_view(f"Unknown command: {value}")
 
     def start_codex_prompt(self, prompt: str) -> None:
-        self.write_output("Thinking...", loading=True)
+        self.start_busy("codex", "Codex is thinking")
         self.run_worker(lambda: self.ask_codex(prompt), thread=True, exclusive=True, exit_on_error=False)
 
     def ask_codex(self, prompt: str) -> None:
@@ -313,7 +355,8 @@ class CodeCodeApp(App[None]):
         self.call_from_thread(self.finish_codex_prompt, output)
 
     def finish_codex_prompt(self, output: str) -> None:
-        self.write_output(output)
+        self.stop_busy()
+        self.refresh_view(output)
 
     def set_language(self, language: str) -> None:
         self.state.settings.language = language
@@ -400,7 +443,7 @@ def main() -> None:
     parser.add_argument("--smoke", action="store_true")
     args = parser.parse_args()
     if args.smoke:
-        bank = load_bank()
+        bank = load_bank(Path.cwd())
         state = load_state(Path.cwd(), bank)
         print(problem_by_id(bank, state.current_problem).title[state.settings.ui_language])
         return

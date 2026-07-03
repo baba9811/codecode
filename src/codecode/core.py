@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from importlib.resources import files
+from dataclasses import asdict, dataclass, field
 import json
 from pathlib import Path
 import shlex
@@ -14,6 +13,30 @@ import tempfile
 LANGUAGES = ("python", "ts", "java", "rust")
 UI_LANGUAGES = ("ko", "en")
 EXT = {"python": "py", "ts": "ts", "java": "java", "rust": "rs"}
+BANK_PATH = Path(".codecode") / "problem_bank.json"
+
+
+STARTER_PROBLEM = {
+    "id": "001-hello-world",
+    "slug": "hello-world",
+    "difficulty": "easy",
+    "topics": ["io"],
+    "title": {"ko": "Hello World", "en": "Hello World"},
+    "statement": {
+        "ko": "표준 출력으로 정확히 `Hello, World!`를 출력하세요.",
+        "en": "Print exactly `Hello, World!` to stdout.",
+    },
+    "input": {"ko": "입력은 없습니다.", "en": "No input."},
+    "output": {"ko": "`Hello, World!` 한 줄", "en": "One line: `Hello, World!`"},
+    "examples": [{"input": "", "output": "Hello, World!\n"}],
+    "cases": [{"input": "", "output": "Hello, World!\n"}],
+    "answers": {
+        "python": "print('Hello, World!')\n",
+        "ts": "console.log('Hello, World!');\n",
+        "java": "class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, World!\");\n    }\n}\n",
+        "rust": "fn main() {\n    println!(\"Hello, World!\");\n}\n",
+    },
+}
 
 
 @dataclass
@@ -57,9 +80,16 @@ class JudgeResult:
     output: str
 
 
-def load_bank() -> list[Problem]:
-    data = json.loads(files("codecode").joinpath("problem_bank.json").read_text())
+def load_bank(root: Path | None = None) -> list[Problem]:
+    path = root / BANK_PATH if root is not None else None
+    data = json.loads(path.read_text()) if path and path.exists() else [STARTER_PROBLEM]
     return [Problem(**item) for item in data]
+
+
+def save_bank(root: Path, bank: list[Problem]) -> None:
+    path = root / BANK_PATH
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps([asdict(problem) for problem in bank], ensure_ascii=False, indent=2) + "\n")
 
 
 def load_state(root: Path, bank: list[Problem]) -> AppState:
@@ -67,13 +97,18 @@ def load_state(root: Path, bank: list[Problem]) -> AppState:
     if not path.exists():
         return AppState(current_problem=bank[0].id, history=[{"id": bank[0].id, "status": "assigned"}])
     raw = json.loads(path.read_text())
-    return AppState(
+    state = AppState(
         current_problem=raw.get("current_problem", bank[0].id),
         settings=Settings(**raw.get("settings", {})),
         solved=raw.get("solved", []),
         history=raw.get("history", []),
         suggested_next_difficulty=raw.get("suggested_next_difficulty", "easy"),
     )
+    if state.current_problem not in {problem.id for problem in bank}:
+        state.current_problem = bank[0].id
+    if not state.history:
+        state.history.append({"id": state.current_problem, "status": "assigned"})
+    return state
 
 
 def save_state(root: Path, state: AppState) -> None:
@@ -290,9 +325,10 @@ def run_codex_next(root: Path, state: AppState, force: bool = False) -> str:
 
 def default_codex_next_command(root: Path) -> str:
     prompt = (
-        "Read AGENTS.md, problems/INDEX.md, src/codecode/problem_bank.json, and .codex/problem-state.json. "
+        "Read AGENTS.md, problems/INDEX.md if present, .codecode/problem_bank.json if present, and .codex/problem-state.json. "
+        "The app has a built-in starter problem 001-hello-world, so do not duplicate it. "
         "Create exactly one new non-duplicate coding practice problem. "
-        "Update problem_bank.json, the index, and state files. Do not include the answer in the problem statement."
+        "Update .codecode/problem_bank.json, the local problem files, the index, and state files. Do not include the answer in the problem statement."
     )
     return (
         "codex app-server daemon start >/dev/null 2>&1; "

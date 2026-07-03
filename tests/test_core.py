@@ -1,4 +1,5 @@
 import json
+from dataclasses import replace
 from pathlib import Path
 import subprocess
 import sys
@@ -7,6 +8,7 @@ import pytest
 
 from codecode.core import (
     AppState,
+    Problem,
     Settings,
     edit_command,
     ensure_edit_files,
@@ -20,39 +22,74 @@ from codecode.core import (
     record_pass,
     run_codex_next,
     run_codex_prompt,
+    save_bank,
     save_state,
 )
 
 
+def two_problem_bank(root: Path) -> list[Problem]:
+    first = load_bank(root)[0]
+    second = replace(
+        first,
+        id="002-echo",
+        slug="echo",
+        topics=["io", "string"],
+        title={"ko": "그대로 출력", "en": "Echo"},
+        statement={"ko": "입력을 그대로 출력하세요.", "en": "Print stdin unchanged."},
+        input={"ko": "문자열", "en": "A string"},
+        output={"ko": "입력과 같은 문자열", "en": "The same string"},
+        examples=[{"input": "code\n", "output": "code\n"}],
+        cases=[{"input": "code\n", "output": "code\n"}],
+        answers={
+            "python": "import sys\nprint(sys.stdin.read(), end='')\n",
+            "ts": "const fs = require('fs');\nprocess.stdout.write(fs.readFileSync(0, 'utf8'));\n",
+            "java": "class Solution { public static void main(String[] args) throws Exception { System.out.print(new String(System.in.readAllBytes())); } }\n",
+            "rust": "use std::io::{self, Read};\nfn main() { let mut s = String::new(); io::stdin().read_to_string(&mut s).unwrap(); print!(\"{}\", s); }\n",
+        },
+    )
+    bank = [first, second]
+    save_bank(root, bank)
+    return bank
+
+
 def test_load_state_uses_first_problem_when_state_file_is_missing(tmp_path: Path):
-    bank = load_bank()
+    bank = load_bank(tmp_path)
 
     state = load_state(tmp_path, bank)
 
-    assert state.current_problem == "001-running-sum"
+    assert state.current_problem == "001-hello-world"
     assert state.settings.language == "python"
     assert state.settings.ui_language == "ko"
 
 
+def test_save_bank_creates_local_custom_problem_bank(tmp_path: Path):
+    bank = two_problem_bank(tmp_path)
+
+    loaded = load_bank(tmp_path)
+
+    assert (tmp_path / ".codecode" / "problem_bank.json").exists()
+    assert [problem.id for problem in loaded] == [problem.id for problem in bank]
+
+
 def test_ensure_submission_creates_language_template(tmp_path: Path):
-    bank = load_bank()
-    state = AppState(current_problem="001-running-sum", settings=Settings(language="rust"))
+    bank = load_bank(tmp_path)
+    state = AppState(current_problem="001-hello-world", settings=Settings(language="rust"))
 
     path = ensure_submission(tmp_path, bank[0], state.settings)
 
-    assert path == tmp_path / "submissions" / "001-running-sum" / "solution.rs"
+    assert path == tmp_path / "submissions" / "001-hello-world" / "solution.rs"
     assert "fn main()" in path.read_text()
 
 
 def test_ensure_edit_files_creates_problem_statement_and_vim_split_command(tmp_path: Path):
-    bank = load_bank()
-    state = AppState(current_problem="001-running-sum", settings=Settings(language="python"))
+    bank = load_bank(tmp_path)
+    state = AppState(current_problem="001-hello-world", settings=Settings(language="python"))
 
     statement, solution = ensure_edit_files(tmp_path, bank[0], state.settings)
 
-    assert statement == tmp_path / "submissions" / "001-running-sum" / "problem.md"
-    assert solution == tmp_path / "submissions" / "001-running-sum" / "solution.py"
-    assert "누적 합" in statement.read_text()
+    assert statement == tmp_path / "submissions" / "001-hello-world" / "problem.md"
+    assert solution == tmp_path / "submissions" / "001-hello-world" / "solution.py"
+    assert "Hello World" in statement.read_text()
     assert edit_command("vim", statement, solution) == [
         "vim",
         "-O",
@@ -64,19 +101,10 @@ def test_ensure_edit_files_creates_problem_statement_and_vim_split_command(tmp_p
 
 
 def test_judge_runs_python_solution_against_cases(tmp_path: Path):
-    bank = load_bank()
-    state = AppState(current_problem="001-running-sum", settings=Settings(language="python"))
+    bank = load_bank(tmp_path)
+    state = AppState(current_problem="001-hello-world", settings=Settings(language="python"))
     path = ensure_submission(tmp_path, bank[0], state.settings)
-    path.write_text(
-        "import sys\n"
-        "nums = list(map(int, sys.stdin.read().split()))\n"
-        "out = []\n"
-        "total = 0\n"
-        "for n in nums:\n"
-        "    total += n\n"
-        "    out.append(str(total))\n"
-        "print(' '.join(out))\n"
-    )
+    path.write_text("print('Hello, World!')\n")
 
     result = judge(tmp_path, bank[0], state.settings)
 
@@ -85,34 +113,34 @@ def test_judge_runs_python_solution_against_cases(tmp_path: Path):
 
 
 def test_give_up_marks_problem_and_returns_answer(tmp_path: Path):
-    bank = load_bank()
-    state = AppState(current_problem="001-running-sum")
+    bank = load_bank(tmp_path)
+    state = AppState(current_problem="001-hello-world")
 
     answer = give_up(tmp_path, bank[0], state)
     saved = json.loads((tmp_path / ".codex" / "problem-state.json").read_text())
 
-    assert "total" in answer
+    assert "Hello, World!" in answer
     assert saved["history"][0]["status"] == "gave_up"
 
 
 def test_next_problem_skips_history_and_saves_new_current(tmp_path: Path):
-    bank = load_bank()
+    bank = two_problem_bank(tmp_path)
     state = AppState(
-        current_problem="001-running-sum",
-        history=[{"id": "001-running-sum", "status": "solved"}],
+        current_problem="001-hello-world",
+        history=[{"id": "001-hello-world", "status": "solved"}],
     )
     save_state(tmp_path, state)
 
     problem = next_problem(tmp_path, bank, state)
     saved = load_state(tmp_path, bank)
 
-    assert problem.id == "002-count-vowels"
-    assert saved.current_problem == "002-count-vowels"
-    assert "002 | count-vowels" in (tmp_path / "problems" / "INDEX.md").read_text()
+    assert problem.id == "002-echo"
+    assert saved.current_problem == "002-echo"
+    assert "002 | echo" in (tmp_path / "problems" / "INDEX.md").read_text()
 
 
 def test_next_problem_returns_none_when_bank_is_exhausted(tmp_path: Path):
-    bank = load_bank()
+    bank = load_bank(tmp_path)
     state = AppState(
         current_problem=bank[-1].id,
         history=[{"id": problem.id, "status": "solved"} for problem in bank],
@@ -127,30 +155,30 @@ def test_next_problem_returns_none_when_bank_is_exhausted(tmp_path: Path):
 
 
 def test_previous_problem_uses_history_order(tmp_path: Path):
-    bank = load_bank()
+    bank = two_problem_bank(tmp_path)
     state = AppState(
-        current_problem="002-count-vowels",
+        current_problem="002-echo",
         history=[
-            {"id": "001-running-sum", "status": "solved"},
-            {"id": "002-count-vowels", "status": "assigned"},
+            {"id": "001-hello-world", "status": "solved"},
+            {"id": "002-echo", "status": "assigned"},
         ],
     )
 
     problem = previous_problem(tmp_path, bank, state)
     saved = load_state(tmp_path, bank)
 
-    assert problem.id == "001-running-sum"
-    assert saved.current_problem == "001-running-sum"
+    assert problem.id == "001-hello-world"
+    assert saved.current_problem == "001-hello-world"
 
 
 def test_record_pass_marks_solved_and_raises_suggested_difficulty_after_two_solves(tmp_path: Path):
-    bank = load_bank()
-    state = AppState(current_problem="001-running-sum", solved=["000-warmup"])
+    bank = load_bank(tmp_path)
+    state = AppState(current_problem="001-hello-world", solved=["000-warmup"])
 
     record_pass(tmp_path, bank[0], state)
     saved = load_state(tmp_path, bank)
 
-    assert "001-running-sum" in saved.solved
+    assert "001-hello-world" in saved.solved
     assert saved.history[0]["status"] == "solved"
     assert saved.suggested_next_difficulty == "medium"
 
@@ -161,7 +189,7 @@ def test_run_codex_next_executes_configured_command_in_repo_root(tmp_path: Path)
         "\"from pathlib import Path; Path('codex-made.txt').write_text('ok')\""
     )
     state = AppState(
-        current_problem="001-running-sum",
+        current_problem="001-hello-world",
         settings=Settings(next_source="codex", codex_next_command=command),
     )
 
@@ -177,7 +205,7 @@ def test_run_codex_next_can_be_forced_from_bank_mode(tmp_path: Path):
         "\"from pathlib import Path; Path('codex-forced.txt').write_text('ok')\""
     )
     state = AppState(
-        current_problem="001-running-sum",
+        current_problem="001-hello-world",
         settings=Settings(next_source="bank", codex_next_command=command),
     )
 
@@ -188,7 +216,7 @@ def test_run_codex_next_can_be_forced_from_bank_mode(tmp_path: Path):
 
 
 def test_run_codex_prompt_includes_problem_and_submission_context(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-    bank = load_bank()
+    bank = load_bank(tmp_path)
     problem = bank[0]
     settings = Settings(language="python")
     ensure_submission(tmp_path, problem, settings).write_text("print('work in progress')\n")
@@ -215,12 +243,12 @@ def test_run_codex_prompt_includes_problem_and_submission_context(tmp_path: Path
     ]
     prompt = captured["command"][-1]
     assert "give me a hint" in prompt
-    assert "누적 합" in prompt
+    assert "Hello World" in prompt
     assert "print('work in progress')" in prompt
 
 
 def test_run_codex_prompt_returns_only_last_message_file(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-    bank = load_bank()
+    bank = load_bank(tmp_path)
     problem = bank[0]
     settings = Settings(language="python")
 

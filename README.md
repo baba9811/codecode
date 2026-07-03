@@ -46,6 +46,19 @@ Commands:
 
 Submissions are written under `submissions/<problem-id>/`.
 
+## Problems
+
+The public repo does not track a generated problem bank. If no local bank exists, the app starts with one built-in `Hello World` problem.
+
+Your local/generated practice data is ignored by git:
+
+- `.codecode/problem_bank.json`
+- `.codex/problem-state.json`
+- `problems/`
+- `submissions/`
+
+Customize or generate problems by editing `.codecode/problem_bank.json`, or let `/next` create the next problem through Codex when the local bank is exhausted.
+
 ## Codex Next
 
 `/next` or `n` opens the next unseen local bank problem first. If the bank is exhausted, or if `/source codex` is enabled, it calls Codex to create one new problem. The default command starts the local app-server daemon and then runs `codex exec` from repo instructions.
@@ -64,10 +77,4 @@ If the Codex command fails or leaves the current problem unchanged, the app fall
 
 ```bash
 uv run pytest tests -q
-```
-
-Problem-specific legacy tests still run when explicitly targeted:
-
-```bash
-uv run pytest problems/001-running-sum -q
 ```
