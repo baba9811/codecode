@@ -2,6 +2,13 @@
   "current_problem": "001-running-sum",
   "next_number": 2,
   "suggested_next_difficulty": "easy",
+  "settings": {
+    "language": "python",
+    "ui_language": "ko",
+    "editor": "vim",
+    "next_source": "bank",
+    "codex_next_command": ""
+  },
   "solved": [],
   "history": [
     {
@@ -12,4 +19,3 @@
     }
   ]
 }
-
