@@ -188,6 +188,52 @@ async def test_list_and_open_commands_show_and_load_problems(tmp_path: Path):
 
 
 @pytest.mark.asyncio
+async def test_open_command_shows_problem_status_and_submission_state(tmp_path: Path):
+    state = AppState(
+        current_problem="002-count-vowels",
+        history=[
+            {"id": "001-running-sum", "status": "solved"},
+            {"id": "002-count-vowels", "status": "assigned"},
+        ],
+    )
+    save_state(tmp_path, state)
+    submission = tmp_path / "submissions" / "001-running-sum" / "solution.py"
+    submission.parent.mkdir(parents=True)
+    submission.write_text("print('done')\n")
+    app = CodeCodeApp(root=tmp_path)
+
+    async with app.run_test(size=(100, 35)) as pilot:
+        await pilot.pause()
+        await pilot.press("/")
+        await pilot.pause()
+        await pilot.press("o", "p", "e", "n", " ", "1", "enter")
+        await pilot.pause()
+        status = app.query_one("#status", Static)
+        assert "Status: solved" in output_text(app)
+        assert "Submission: written" in output_text(app)
+
+    assert app.problem.title["ko"] == "누적 합"
+    assert "status:solved" in str(status.content)
+    assert "code:written" in str(status.content)
+
+
+@pytest.mark.asyncio
+async def test_open_command_reports_missing_submission_without_creating_it(tmp_path: Path):
+    app = CodeCodeApp(root=tmp_path)
+
+    async with app.run_test(size=(100, 35)) as pilot:
+        await pilot.pause()
+        await pilot.press("/")
+        await pilot.pause()
+        await pilot.press("o", "p", "e", "n", " ", "2", "enter")
+        await pilot.pause()
+        assert "Status: assigned" in output_text(app)
+        assert "Submission: missing" in output_text(app)
+
+    assert not (tmp_path / "submissions" / "002-count-vowels" / "solution.py").exists()
+
+
+@pytest.mark.asyncio
 async def test_codex_command_prints_response_without_changing_next_settings(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):

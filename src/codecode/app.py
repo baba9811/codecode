@@ -11,6 +11,7 @@ from textual.containers import Horizontal
 from textual.widgets import Input, Markdown, Static
 
 from codecode.core import (
+    EXT,
     LANGUAGES,
     UI_LANGUAGES,
     edit_command,
@@ -26,9 +27,11 @@ from codecode.core import (
     previous_problem,
     record_pass,
     render_problem,
+    normalize_language,
     run_codex_next,
     run_codex_prompt,
     save_state,
+    template_for,
 )
 
 
@@ -140,6 +143,7 @@ class CodeCodeApp(App[None]):
     def refresh_view(self, output: str | None = None) -> None:
         self.query_one("#status", Static).update(
             f" CODECODE | {self.problem.id} | {self.problem.difficulty} | "
+            f"status:{self.problem_status()} | code:{self.submission_status()[0]} | "
             f"lang:{self.state.settings.language} | ui:{self.state.settings.ui_language} | "
             f"next:{self.state.settings.next_source} | /help "
         )
@@ -333,7 +337,41 @@ class CodeCodeApp(App[None]):
             self.state.history.append({"id": problem.id, "status": "assigned"})
         save_state(self.root, self.state)
         ensure_problem_files(self.root, problem)
-        self.refresh_view(f"Opened {problem.id}")
+        self.refresh_view(f"Opened {problem.id}\n\n{self.problem_summary(problem)}")
+
+    def problem_summary(self, problem=None) -> str:
+        problem = problem or self.problem
+        code_status, code_note = self.submission_status(problem)
+        return "\n".join(
+            [
+                f"Status: {self.problem_status(problem)}",
+                f"Submission: {code_status} {code_note}".rstrip(),
+                f"Difficulty: {problem.difficulty}",
+                f"Topics: {', '.join(problem.topics)}",
+            ]
+        )
+
+    def problem_status(self, problem=None) -> str:
+        problem = problem or self.problem
+        if problem.id in self.state.solved:
+            return "solved"
+        for item in reversed(self.state.history):
+            if item.get("id") == problem.id:
+                return item.get("status", "assigned")
+        return "not_started"
+
+    def submission_status(self, problem=None) -> tuple[str, str]:
+        problem = problem or self.problem
+        language = normalize_language(self.state.settings.language)
+        path = self.root / "submissions" / problem.id / f"solution.{EXT[language]}"
+        if not path.exists():
+            return "missing", f"({language})"
+        content = path.read_text()
+        if content == template_for(language):
+            return "template", f"({path.relative_to(self.root)})"
+        if not content.strip():
+            return "empty", f"({path.relative_to(self.root)})"
+        return "written", f"({path.relative_to(self.root)})"
 
     def find_problem(self, query: str):
         needle = query.strip().lower()
