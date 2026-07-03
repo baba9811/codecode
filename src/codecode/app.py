@@ -11,6 +11,8 @@ from textual.widgets import Button, Footer, Header, Input, Static
 from codecode.core import (
     LANGUAGES,
     UI_LANGUAGES,
+    edit_command,
+    ensure_edit_files,
     ensure_submission,
     give_up,
     judge,
@@ -117,10 +119,10 @@ class CodeCodeApp(App[None]):
         self.query_one("#command", Input).focus()
 
     def action_edit(self) -> None:
-        path = ensure_submission(self.root, self.problem, self.state.settings)
+        statement, solution = ensure_edit_files(self.root, self.problem, self.state.settings)
         with self.suspend():
-            subprocess.run([self.state.settings.editor, str(path)])
-        self.refresh_view(f"Edited {path}")
+            subprocess.run(edit_command(self.state.settings.editor, statement, solution))
+        self.refresh_view(f"Edited {solution}")
 
     def action_run(self) -> None:
         result = judge(self.root, self.problem, self.state.settings)

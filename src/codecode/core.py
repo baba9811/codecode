@@ -108,6 +108,20 @@ def ensure_submission(root: Path, problem: Problem, settings: Settings) -> Path:
     return path
 
 
+def ensure_edit_files(root: Path, problem: Problem, settings: Settings) -> tuple[Path, Path]:
+    solution = ensure_submission(root, problem, settings)
+    statement = solution.parent / "problem.md"
+    statement.write_text(render_problem(problem, settings.ui_language) + "\n")
+    return statement, solution
+
+
+def edit_command(editor: str, statement: Path, solution: Path) -> list[str]:
+    editor_name = Path(editor).name
+    if editor_name in {"vim", "nvim", "vi"}:
+        return [editor, "-O", str(statement), str(solution)]
+    return [editor, str(statement), str(solution)]
+
+
 def template_for(language: str) -> str:
     if language == "python":
         return "# Read from stdin and print to stdout.\nimport sys\n\n\n"

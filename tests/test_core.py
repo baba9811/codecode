@@ -5,6 +5,8 @@ import sys
 from codecode.core import (
     AppState,
     Settings,
+    edit_command,
+    ensure_edit_files,
     ensure_submission,
     give_up,
     judge,
@@ -35,6 +37,18 @@ def test_ensure_submission_creates_language_template(tmp_path: Path):
 
     assert path == tmp_path / "submissions" / "001-running-sum" / "solution.rs"
     assert "fn main()" in path.read_text()
+
+
+def test_ensure_edit_files_creates_problem_statement_and_vim_split_command(tmp_path: Path):
+    bank = load_bank()
+    state = AppState(current_problem="001-running-sum", settings=Settings(language="python"))
+
+    statement, solution = ensure_edit_files(tmp_path, bank[0], state.settings)
+
+    assert statement == tmp_path / "submissions" / "001-running-sum" / "problem.md"
+    assert solution == tmp_path / "submissions" / "001-running-sum" / "solution.py"
+    assert "누적 합" in statement.read_text()
+    assert edit_command("vim", statement, solution) == ["vim", "-O", str(statement), str(solution)]
 
 
 def test_judge_runs_python_solution_against_cases(tmp_path: Path):

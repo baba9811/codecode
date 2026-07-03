@@ -10,7 +10,7 @@ uv run codecode
 
 Keys:
 
-- `e`: open the current submission in `vim`
+- `e`: open the problem and current submission in a `vim` split
 - `r`: run hidden-style stdin/stdout cases
 - `n`: load the next problem
 - `g`: give up and show the answer
