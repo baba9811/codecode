@@ -12,6 +12,7 @@ import tempfile
 
 LANGUAGES = ("python", "ts", "java", "rust")
 UI_LANGUAGES = ("ko", "en")
+THEMES = ("dark", "light")
 EXT = {"python": "py", "ts": "ts", "java": "java", "rust": "rs"}
 BANK_PATH = Path(".codecode") / "problem_bank.json"
 
@@ -43,6 +44,7 @@ STARTER_PROBLEM = {
 class Settings:
     language: str = "python"
     ui_language: str = "ko"
+    theme: str = "dark"
     editor: str = "vim"
     next_source: str = "bank"
     codex_next_command: str = ""
@@ -106,6 +108,8 @@ def load_state(root: Path, bank: list[Problem]) -> AppState:
     )
     if state.current_problem not in {problem.id for problem in bank}:
         state.current_problem = bank[0].id
+    if state.settings.theme not in THEMES:
+        state.settings.theme = "dark"
     if not state.history:
         state.history.append({"id": state.current_problem, "status": "assigned"})
     return state
@@ -388,13 +392,25 @@ def normalize_language(language: str) -> str:
 
 def render_problem(problem: Problem, ui_language: str) -> str:
     lang = ui_language if ui_language in UI_LANGUAGES else "ko"
-    examples = "\n".join(f"> input\n{ex['input']}> output\n{ex['output']}" for ex in problem.examples)
+    examples = "\n\n".join(
+        f"### Example {index}\n\n"
+        f"Input\n\n{fenced_text(ex['input'])}\n\n"
+        f"Output\n\n{fenced_text(ex['output'])}"
+        for index, ex in enumerate(problem.examples, 1)
+    )
+    number = problem.id.split("-", 1)[0]
     return (
-        f"# {problem.title[lang]}\n\n"
+        f"# {number}. {problem.title[lang]}\n\n"
         f"Difficulty: {problem.difficulty}\n"
         f"Topics: {', '.join(problem.topics)}\n\n"
         f"{problem.statement[lang]}\n\n"
-        f"Input: {problem.input[lang]}\n"
-        f"Output: {problem.output[lang]}\n\n"
+        f"## Input\n\n{problem.input[lang]}\n\n"
+        f"## Output\n\n{problem.output[lang]}\n\n"
+        f"## Examples\n\n"
         f"{examples}"
     )
+
+
+def fenced_text(value: str) -> str:
+    body = value if value.endswith("\n") else value + "\n"
+    return f"```text\n{body}```"

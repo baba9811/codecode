@@ -14,6 +14,7 @@ from textual.widgets import Input, Markdown, Static
 from codecode.core import (
     EXT,
     LANGUAGES,
+    THEMES,
     UI_LANGUAGES,
     edit_command,
     ensure_edit_files,
@@ -43,11 +44,12 @@ HELP = """Commands
 /edit                 open problem + solution in Vim
 /next                 next problem
 /prev                 previous problem
-/list                 show problem list
+/list                 choose from problem list
 /open 2               open a problem by number, id, or slug
 /giveup               show answer
 /lang python|ts|java|rust
 /ui ko|en
+/theme dark|light
 /source bank|codex   choose next-problem source
 /next-command <cmd>   set custom Codex next command
 /codex <question>     ask Codex about current problem + code
@@ -77,10 +79,11 @@ class CodeCodeApp(App[None]):
     }
     #body {
         height: 1fr;
-        padding: 1 1 0 1;
+        padding: 1 1 1 1;
     }
     #problem {
         width: 58%;
+        height: 100%;
         padding: 1 2;
         border: tall #2f6f82;
         background: #0f1720;
@@ -91,6 +94,7 @@ class CodeCodeApp(App[None]):
     }
     #output {
         width: 42%;
+        height: 100%;
         margin-left: 1;
         padding: 1 2;
         border: tall #31536b;
@@ -102,6 +106,7 @@ class CodeCodeApp(App[None]):
     }
     #status {
         height: 1;
+        margin: 0 1;
         padding: 0 1;
         background: #152033;
         color: #c8d3f5;
@@ -109,10 +114,37 @@ class CodeCodeApp(App[None]):
     }
     #command {
         height: 3;
-        margin: 0 1 1 1;
+        margin: 1 1 1 1;
         border: tall #3b82f6;
         background: #0b1017;
         color: #f8fafc;
+    }
+    Screen.theme-light {
+        background: #f4f7fb;
+        color: #111827;
+    }
+    Screen.theme-light #problem {
+        border: tall #0f766e;
+        background: #ffffff;
+        color: #111827;
+        scrollbar-color: #0f766e;
+        scrollbar-background: #dbe4ef;
+    }
+    Screen.theme-light #output {
+        border: tall #2563eb;
+        background: #f8fafc;
+        color: #1f2937;
+        scrollbar-color: #2563eb;
+        scrollbar-background: #dbe4ef;
+    }
+    Screen.theme-light #status {
+        background: #dbeafe;
+        color: #1e3a8a;
+    }
+    Screen.theme-light #command {
+        border: tall #2563eb;
+        background: #ffffff;
+        color: #111827;
     }
     """
     BUSY_FRAMES = ("", ".", "..", "...")
@@ -138,6 +170,7 @@ class CodeCodeApp(App[None]):
         self.busy_body = ""
         self.busy_frame = 0
         self.busy_timer: Timer | None = None
+        self.list_cursor: int | None = None
 
     def compose(self) -> ComposeResult:
         with Horizontal(id="body"):
@@ -146,9 +179,10 @@ class CodeCodeApp(App[None]):
             output.can_focus = True
             yield output
         yield Static(id="status")
-        yield Input(placeholder="/help, /run, /edit, /next, /prev, /list, /open 2, /codex hint", id="command")
+        yield Input(placeholder="/help, /run, /edit, /next, /prev, /list, /theme, /codex hint", id="command")
 
     def on_mount(self) -> None:
+        self.apply_theme()
         self.refresh_view("CODECODE\n\n`/help`")
         self.call_after_refresh(self.set_focus, None)
 
@@ -157,7 +191,7 @@ class CodeCodeApp(App[None]):
             f" CODECODE | {self.problem.id} | {self.problem.difficulty} | {self.busy_status()} | "
             f"status:{self.problem_status()} | code:{self.submission_status()[0]} | "
             f"lang:{self.state.settings.language} | ui:{self.state.settings.ui_language} | "
-            f"next:{self.state.settings.next_source} | /help "
+            f"theme:{self.state.settings.theme} | next:{self.state.settings.next_source} | /help "
         )
         self.query_one("#problem", Markdown).update(render_problem(self.problem, self.state.settings.ui_language))
         if output is not None:
@@ -195,7 +229,7 @@ class CodeCodeApp(App[None]):
             f" CODECODE | {self.problem.id} | {self.problem.difficulty} | {self.busy_status()} | "
             f"status:{self.problem_status()} | code:{self.submission_status()[0]} | "
             f"lang:{self.state.settings.language} | ui:{self.state.settings.ui_language} | "
-            f"next:{self.state.settings.next_source} | /help "
+            f"theme:{self.state.settings.theme} | next:{self.state.settings.next_source} | /help "
         )
         self.write_output(f"{self.busy_body}{self.BUSY_FRAMES[self.busy_frame]}")
 
@@ -205,6 +239,21 @@ class CodeCodeApp(App[None]):
             command.value = ""
             command.blur()
             event.stop()
+            return
+        if self.list_cursor is not None and self.focused is not command:
+            if event.key in {"up", "k"}:
+                self.move_list_cursor(-1)
+                event.stop()
+            elif event.key in {"down", "j"}:
+                self.move_list_cursor(1)
+                event.stop()
+            elif event.key == "enter":
+                self.open_selected_problem()
+                event.stop()
+            elif event.key == "escape":
+                self.list_cursor = None
+                self.refresh_view("Closed list.")
+                event.stop()
 
     def action_focus_command(self) -> None:
         self.query_one("#command", Input).focus()
@@ -283,6 +332,10 @@ class CodeCodeApp(App[None]):
         save_state(self.root, self.state)
         self.refresh_view(f"UI language: {self.state.settings.ui_language}")
 
+    def action_toggle_theme(self) -> None:
+        current = THEMES.index(self.state.settings.theme)
+        self.set_theme(THEMES[(current + 1) % len(THEMES)])
+
     def action_toggle_next_source(self) -> None:
         self.state.settings.next_source = "codex" if self.state.settings.next_source == "bank" else "bank"
         save_state(self.root, self.state)
@@ -298,13 +351,17 @@ class CodeCodeApp(App[None]):
 
     def handle_command(self, value: str) -> None:
         if not value or value in {"help", "h", "?"}:
+            self.list_cursor = None
             self.refresh_view(HELP)
             return
         if value.startswith("vim"):
+            self.list_cursor = None
             self.refresh_view(VIM_HELP)
             return
         parts = value.split(maxsplit=1)
         command, arg = parts[0], parts[1] if len(parts) > 1 else ""
+        if command != "list":
+            self.list_cursor = None
         if command in {"run", "r"}:
             self.action_run()
         elif command in {"edit", "e"}:
@@ -316,7 +373,7 @@ class CodeCodeApp(App[None]):
         elif command in {"giveup", "give", "g"}:
             self.action_give_up()
         elif command == "list":
-            self.refresh_view(self.render_problem_list())
+            self.start_problem_list()
         elif command in {"open", "o"} and arg:
             self.open_problem(arg)
         elif command == "lang" and not arg:
@@ -327,6 +384,10 @@ class CodeCodeApp(App[None]):
             self.action_toggle_ui_language()
         elif command == "ui" and arg in UI_LANGUAGES:
             self.set_ui_language(arg)
+        elif command == "theme" and not arg:
+            self.action_toggle_theme()
+        elif command == "theme" and arg in THEMES:
+            self.set_theme(arg)
         elif command in {"source", "next-source"} and arg in ("bank", "codex"):
             self.state.settings.next_source = arg
             save_state(self.root, self.state)
@@ -369,19 +430,57 @@ class CodeCodeApp(App[None]):
         save_state(self.root, self.state)
         self.refresh_view(f"UI language: {language}")
 
+    def set_theme(self, theme: str) -> None:
+        self.state.settings.theme = theme
+        self.apply_theme()
+        save_state(self.root, self.state)
+        self.refresh_view(f"Theme: {theme}")
+
+    def apply_theme(self) -> None:
+        self.screen.set_class(self.state.settings.theme == "light", "theme-light")
+
     def render_problem_list(self) -> str:
         status_by_id = {item.get("id"): item.get("status", "-") for item in self.state.history}
-        lines = ["Problems", "", "  ID                 Difficulty  Status    Title"]
-        for problem in self.bank:
-            marker = ">" if problem.id == self.problem.id else " "
+        cursor = self.list_cursor if self.list_cursor is not None else self.current_problem_index()
+        lines = ["Problems", "", "    # ID                 Difficulty  Status      Code      Title"]
+        for index, problem in enumerate(self.bank):
+            marker = ">" if index == cursor else " "
+            current = "*" if problem.id == self.problem.id else " "
             title = problem.title[self.state.settings.ui_language]
+            code_status = self.submission_status(problem)[0]
             lines.append(
-                f"{marker} {problem.id:<18} {problem.difficulty:<10} {status_by_id.get(problem.id, '-'):<8} {title}"
+                f"{marker} {current} {index + 1:>2} {problem.id:<18} {problem.difficulty:<10} "
+                f"{status_by_id.get(problem.id, '-'):<10} {code_status:<9} {title}"
             )
-        lines.append("\nOpen with /open 2, /open 002-running-sum, or /open running-sum.")
+        lines.append("\nup/down or j/k select | enter open | esc close")
         return "\n".join(lines)
 
+    def start_problem_list(self) -> None:
+        self.list_cursor = self.current_problem_index()
+        self.refresh_view(self.render_problem_list())
+
+    def current_problem_index(self) -> int:
+        for index, problem in enumerate(self.bank):
+            if problem.id == self.problem.id:
+                return index
+        return 0
+
+    def move_list_cursor(self, delta: int) -> None:
+        if not self.bank:
+            return
+        cursor = self.list_cursor if self.list_cursor is not None else self.current_problem_index()
+        self.list_cursor = (cursor + delta) % len(self.bank)
+        self.write_output(self.render_problem_list())
+
+    def open_selected_problem(self) -> None:
+        if self.list_cursor is None:
+            return
+        problem = self.bank[self.list_cursor]
+        self.list_cursor = None
+        self.open_problem(problem.id)
+
     def open_problem(self, query: str) -> None:
+        self.list_cursor = None
         problem = self.find_problem(query)
         if problem is None:
             self.refresh_view(f"Problem not found: {query}")

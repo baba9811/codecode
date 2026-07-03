@@ -20,6 +20,7 @@ from codecode.core import (
     next_problem,
     previous_problem,
     record_pass,
+    render_problem,
     run_codex_next,
     run_codex_prompt,
     save_bank,
@@ -98,6 +99,17 @@ def test_ensure_edit_files_creates_problem_statement_and_vim_split_command(tmp_p
         "-c",
         "wincmd h | setlocal readonly nomodifiable | wincmd l",
     ]
+
+
+def test_render_problem_separates_input_output_blocks(tmp_path: Path):
+    problem = load_bank(tmp_path)[0]
+
+    rendered = render_problem(problem, "ko")
+
+    assert "## Input\n\n입력은 없습니다.\n\n## Output\n\n`Hello, World!` 한 줄" in rendered
+    assert "Input:" not in rendered
+    assert "Output:" not in rendered
+    assert "```text\n\n```\n" in rendered
 
 
 def test_judge_runs_python_solution_against_cases(tmp_path: Path):

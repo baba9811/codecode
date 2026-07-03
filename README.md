@@ -28,7 +28,7 @@ Commands:
 /edit
 /next
 /prev
-/list
+/list      # choose with up/down or j/k, open with Enter
 /open 2
 /giveup
 /lang python
@@ -37,6 +37,9 @@ Commands:
 /lang rust
 /ui ko
 /ui en
+/theme
+/theme light
+/theme dark
 /source bank
 /source codex
 /next-command <custom next-problem command>

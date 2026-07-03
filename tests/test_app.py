@@ -54,6 +54,26 @@ async def test_app_renders_current_problem(tmp_path: Path):
 
 
 @pytest.mark.asyncio
+async def test_main_panes_have_matching_height(tmp_path: Path):
+    app = CodeCodeApp(root=tmp_path)
+
+    async with app.run_test(size=(100, 35)) as pilot:
+        await pilot.pause()
+        problem = app.query_one("#problem", Markdown)
+        output = app.query_one("#output", Markdown)
+        status = app.query_one("#status", Static)
+        command = app.query_one("#command", Input)
+        problem_region = problem.region
+        output_region = output.region
+        status_region = status.region
+        command_region = command.region
+
+    assert problem_region.height == output_region.height
+    assert status_region.y > problem_region.y + problem_region.height
+    assert command_region.y > status_region.y + status_region.height
+
+
+@pytest.mark.asyncio
 async def test_next_key_loads_next_problem(tmp_path: Path):
     two_problem_bank(tmp_path)
     app = CodeCodeApp(root=tmp_path)
@@ -274,6 +294,40 @@ async def test_list_and_open_commands_show_and_load_problems(tmp_path: Path):
 
 
 @pytest.mark.asyncio
+async def test_list_command_selects_problem_with_arrows(tmp_path: Path):
+    two_problem_bank(tmp_path)
+    app = CodeCodeApp(root=tmp_path)
+
+    async with app.run_test(size=(100, 35)) as pilot:
+        await pilot.pause()
+        await pilot.press("/")
+        await pilot.pause()
+        await pilot.press("l", "i", "s", "t", "enter")
+        await pilot.pause()
+        assert "> *  1 001-hello-world" in output_text(app)
+
+        await pilot.press("down")
+        await pilot.pause()
+        assert ">    2 002-echo" in output_text(app)
+
+        await pilot.press("enter")
+        await pilot.pause()
+
+    assert app.problem.title["ko"] == "그대로 출력"
+
+
+@pytest.mark.asyncio
+async def test_problem_view_shows_problem_number(tmp_path: Path):
+    app = CodeCodeApp(root=tmp_path)
+
+    async with app.run_test(size=(100, 35)) as pilot:
+        await pilot.pause()
+        problem = app.query_one("#problem", Markdown)
+
+    assert "# 001. Hello World" in (problem.source or "")
+
+
+@pytest.mark.asyncio
 async def test_open_command_shows_problem_status_and_submission_state(tmp_path: Path):
     two_problem_bank(tmp_path)
     state = AppState(
@@ -397,3 +451,25 @@ async def test_tui_uses_statusline_instead_of_buttons(tmp_path: Path):
     assert "lang:python" in str(status.content)
     assert "ui:ko" in str(status.content)
     assert len(buttons) == 0
+
+
+@pytest.mark.asyncio
+async def test_theme_command_toggles_and_saves_theme(tmp_path: Path):
+    app = CodeCodeApp(root=tmp_path)
+
+    async with app.run_test(size=(100, 35)) as pilot:
+        await pilot.pause()
+        assert "theme:dark" in str(app.query_one("#status", Static).content)
+
+        await pilot.press("/")
+        await pilot.pause()
+        await pilot.press("t", "h", "e", "m", "e", "enter")
+        await pilot.pause()
+        status = app.query_one("#status", Static)
+        has_light_class = app.screen.has_class("theme-light")
+
+    saved = (tmp_path / ".codex" / "problem-state.json").read_text()
+    assert app.state.settings.theme == "light"
+    assert has_light_class
+    assert "theme:light" in str(status.content)
+    assert '"theme": "light"' in saved
