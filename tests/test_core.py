@@ -48,7 +48,14 @@ def test_ensure_edit_files_creates_problem_statement_and_vim_split_command(tmp_p
     assert statement == tmp_path / "submissions" / "001-running-sum" / "problem.md"
     assert solution == tmp_path / "submissions" / "001-running-sum" / "solution.py"
     assert "누적 합" in statement.read_text()
-    assert edit_command("vim", statement, solution) == ["vim", "-O", str(statement), str(solution)]
+    assert edit_command("vim", statement, solution) == [
+        "vim",
+        "-O",
+        str(statement),
+        str(solution),
+        "-c",
+        "wincmd h | setlocal readonly nomodifiable | wincmd l",
+    ]
 
 
 def test_judge_runs_python_solution_against_cases(tmp_path: Path):

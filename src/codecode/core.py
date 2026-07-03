@@ -118,7 +118,7 @@ def ensure_edit_files(root: Path, problem: Problem, settings: Settings) -> tuple
 def edit_command(editor: str, statement: Path, solution: Path) -> list[str]:
     editor_name = Path(editor).name
     if editor_name in {"vim", "nvim", "vi"}:
-        return [editor, "-O", str(statement), str(solution)]
+        return [editor, "-O", str(statement), str(solution), "-c", "wincmd h | setlocal readonly nomodifiable | wincmd l"]
     return [editor, str(statement), str(solution)]
 
 
