@@ -50,6 +50,7 @@ HELP = """Commands
 /source bank|codex   choose next-problem source
 /next-command <cmd>   set custom Codex next command
 /codex <question>     ask Codex about current problem + code
+/exit                 quit
 """
 
 
@@ -295,6 +296,8 @@ class CodeCodeApp(App[None]):
             self.refresh_view("Codex next command saved.")
         elif command == "codex" and arg:
             self.start_codex_prompt(arg)
+        elif command in {"exit", "quit", "q"}:
+            self.exit()
         else:
             self.refresh_view(f"Unknown command: {value}")
 

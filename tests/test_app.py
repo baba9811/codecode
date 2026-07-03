@@ -169,6 +169,26 @@ async def test_escape_exits_command_input(tmp_path: Path):
 
 
 @pytest.mark.asyncio
+async def test_exit_command_quits_app(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    app = CodeCodeApp(root=tmp_path)
+    called = {}
+
+    def fake_exit(*args, **kwargs):
+        called["exit"] = True
+
+    monkeypatch.setattr(app, "exit", fake_exit)
+
+    async with app.run_test(size=(100, 35)) as pilot:
+        await pilot.pause()
+        await pilot.press("/")
+        await pilot.pause()
+        await pilot.press("e", "x", "i", "t", "enter")
+        await pilot.pause()
+
+    assert called == {"exit": True}
+
+
+@pytest.mark.asyncio
 async def test_slash_commands_run_actions(tmp_path: Path):
     app = CodeCodeApp(root=tmp_path)
 

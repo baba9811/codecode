@@ -41,6 +41,7 @@ Commands:
 /source codex
 /next-command <custom next-problem command>
 /codex <question about the current problem/code>
+/exit
 ```
 
 Submissions are written under `submissions/<problem-id>/`.
