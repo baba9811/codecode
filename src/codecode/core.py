@@ -206,12 +206,14 @@ def give_up(root: Path, problem: Problem, state: AppState) -> str:
     return answer
 
 
-def next_problem(root: Path, bank: list[Problem], state: AppState) -> Problem:
+def next_problem(root: Path, bank: list[Problem], state: AppState) -> Problem | None:
     seen = {item.get("id") for item in state.history}
     preferred = state.suggested_next_difficulty
     problem = next((item for item in bank if item.id not in seen and item.difficulty == preferred), None)
     if problem is None:
-        problem = next((item for item in bank if item.id not in seen), bank[0])
+        problem = next((item for item in bank if item.id not in seen), None)
+    if problem is None:
+        return None
     state.current_problem = problem.id
     mark_history(state, problem.id, "assigned")
     save_state(root, state)
@@ -274,8 +276,8 @@ def run_codex_prompt(root: Path, problem: Problem, settings: Settings, prompt: s
     return last_message or output or "Codex returned no output."
 
 
-def run_codex_next(root: Path, state: AppState) -> str:
-    if state.settings.next_source != "codex":
+def run_codex_next(root: Path, state: AppState, force: bool = False) -> str:
+    if state.settings.next_source != "codex" and not force:
         return "Codex next is disabled; using local problem bank."
     command = state.settings.codex_next_command or default_codex_next_command(root)
     # ponytail: trusted local hook; replace with app-server JSON-RPC when we need streamed progress.

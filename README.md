@@ -47,7 +47,7 @@ Submissions are written under `submissions/<problem-id>/`.
 
 ## Codex Next
 
-`/source codex` makes `/next` or `n` call a Codex command first. The default command starts the local app-server daemon and then runs `codex exec` to create one new problem from repo instructions.
+`/next` or `n` opens the next unseen local bank problem first. If the bank is exhausted, or if `/source codex` is enabled, it calls Codex to create one new problem. The default command starts the local app-server daemon and then runs `codex exec` from repo instructions.
 
 Override it with:
 
@@ -55,7 +55,7 @@ Override it with:
 /next-command codex app-server daemon start; codex exec --cd . --sandbox workspace-write "create the next problem"
 ```
 
-If the Codex command fails or leaves the current problem unchanged, the app falls back to the local problem bank.
+If the Codex command fails or leaves the current problem unchanged, the app falls back to any unseen local bank problem.
 
 `/codex <question>` is separate from next-problem generation. It sends the current problem and current submission to Codex in read-only mode and prints the response in the output pane.
 

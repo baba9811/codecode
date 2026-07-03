@@ -5,7 +5,7 @@ import pytest
 from textual.widgets import Button, Input, Markdown, Static
 
 from codecode.app import CodeCodeApp
-from codecode.core import AppState, Settings, save_state
+from codecode.core import AppState, Settings, load_bank, save_state
 
 
 def output_text(app: CodeCodeApp) -> str:
@@ -48,7 +48,7 @@ async def test_codex_next_shows_loading_without_blocking(tmp_path: Path, monkeyp
         AppState(current_problem="001-running-sum", settings=Settings(next_source="codex")),
     )
 
-    def slow_next(*args):
+    def slow_next(*args, **kwargs):
         time.sleep(0.5)
         return "Codex command finished"
 
@@ -68,6 +68,40 @@ async def test_codex_next_shows_loading_without_blocking(tmp_path: Path, monkeyp
 
 
 @pytest.mark.asyncio
+async def test_bank_next_flows_to_codex_when_bank_is_exhausted(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    bank = load_bank()
+    save_state(
+        tmp_path,
+        AppState(
+            current_problem=bank[-1].id,
+            settings=Settings(next_source="bank"),
+            history=[{"id": problem.id, "status": "solved"} for problem in bank],
+        ),
+    )
+    captured = {}
+
+    def slow_next(root, state, force=False):
+        captured["force"] = force
+        time.sleep(0.5)
+        return "Codex command finished"
+
+    monkeypatch.setattr("codecode.app.run_codex_next", slow_next)
+    app = CodeCodeApp(root=tmp_path)
+
+    async with app.run_test(size=(100, 35)) as pilot:
+        await pilot.pause()
+        await pilot.press("/")
+        await pilot.pause()
+        await pilot.press("n", "e", "x", "t", "enter")
+        await pilot.pause()
+        output = app.query_one("#output", Markdown)
+
+        assert output.loading
+        assert "Loading next problem..." in output_text(app)
+        assert captured == {"force": True}
+
+
+@pytest.mark.asyncio
 async def test_codex_next_falls_back_to_bank_when_current_problem_does_not_change(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
@@ -79,7 +113,7 @@ async def test_codex_next_falls_back_to_bank_when_current_problem_does_not_chang
             history=[{"id": "001-running-sum", "status": "assigned"}],
         ),
     )
-    monkeypatch.setattr("codecode.app.run_codex_next", lambda *args: "Codex command finished")
+    monkeypatch.setattr("codecode.app.run_codex_next", lambda *args, **kwargs: "Codex command finished")
     app = CodeCodeApp(root=tmp_path)
 
     async with app.run_test(size=(100, 35)) as pilot:

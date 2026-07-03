@@ -182,28 +182,37 @@ class CodeCodeApp(App[None]):
     def action_next(self) -> None:
         old_problem = self.state.current_problem
         if self.state.settings.next_source == "codex":
-            self.start_next_problem(old_problem)
+            self.start_next_problem(old_problem, force=False)
             return
-        self.finish_next_problem("", old_problem)
+        problem = next_problem(self.root, self.bank, self.state)
+        if problem is None:
+            self.start_next_problem(old_problem, force=True)
+            return
+        self.problem = problem
+        self.refresh_view(f"Loaded {self.problem.id}")
 
-    def start_next_problem(self, old_problem: str) -> None:
+    def start_next_problem(self, old_problem: str, force: bool) -> None:
         self.write_output("Loading next problem...", loading=True)
-        self.run_worker(lambda: self.ask_next_problem(old_problem), thread=True, exclusive=True, exit_on_error=False)
+        self.run_worker(lambda: self.ask_next_problem(old_problem, force), thread=True, exclusive=True, exit_on_error=False)
 
-    def ask_next_problem(self, old_problem: str) -> None:
+    def ask_next_problem(self, old_problem: str, force: bool) -> None:
         try:
-            output = run_codex_next(self.root, self.state)
+            output = run_codex_next(self.root, self.state, force=force)
         except Exception as error:
             output = f"Codex next failed\n{error}"
-        self.call_from_thread(self.finish_next_problem, output, old_problem)
+        self.call_from_thread(self.finish_next_problem, output, old_problem, force)
 
-    def finish_next_problem(self, output: str, old_problem: str) -> None:
-        if self.state.settings.next_source == "codex":
+    def finish_next_problem(self, output: str, old_problem: str, force: bool) -> None:
+        if self.state.settings.next_source == "codex" or force:
             self.bank = load_bank()
             self.state = load_state(self.root, self.bank)
         self.problem = problem_by_id(self.bank, self.state.current_problem)
-        if self.state.settings.next_source != "codex" or self.state.current_problem == old_problem:
-            self.problem = next_problem(self.root, self.bank, self.state)
+        if self.state.current_problem == old_problem:
+            problem = next_problem(self.root, self.bank, self.state)
+            if problem is None:
+                self.refresh_view((output + "\n\n" if output else "") + "No next problem is available yet.")
+                return
+            self.problem = problem
         self.refresh_view(output or f"Loaded {self.problem.id}")
 
     def action_previous(self) -> None:

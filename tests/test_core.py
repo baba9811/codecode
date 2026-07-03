@@ -111,6 +111,21 @@ def test_next_problem_skips_history_and_saves_new_current(tmp_path: Path):
     assert "002 | count-vowels" in (tmp_path / "problems" / "INDEX.md").read_text()
 
 
+def test_next_problem_returns_none_when_bank_is_exhausted(tmp_path: Path):
+    bank = load_bank()
+    state = AppState(
+        current_problem=bank[-1].id,
+        history=[{"id": problem.id, "status": "solved"} for problem in bank],
+    )
+    save_state(tmp_path, state)
+
+    problem = next_problem(tmp_path, bank, state)
+    saved = load_state(tmp_path, bank)
+
+    assert problem is None
+    assert saved.current_problem == bank[-1].id
+
+
 def test_previous_problem_uses_history_order(tmp_path: Path):
     bank = load_bank()
     state = AppState(
@@ -154,6 +169,22 @@ def test_run_codex_next_executes_configured_command_in_repo_root(tmp_path: Path)
 
     assert "finished" in output
     assert (tmp_path / "codex-made.txt").read_text() == "ok"
+
+
+def test_run_codex_next_can_be_forced_from_bank_mode(tmp_path: Path):
+    command = (
+        f"{sys.executable} -c "
+        "\"from pathlib import Path; Path('codex-forced.txt').write_text('ok')\""
+    )
+    state = AppState(
+        current_problem="001-running-sum",
+        settings=Settings(next_source="bank", codex_next_command=command),
+    )
+
+    output = run_codex_next(tmp_path, state, force=True)
+
+    assert "finished" in output
+    assert (tmp_path / "codex-forced.txt").read_text() == "ok"
 
 
 def test_run_codex_prompt_includes_problem_and_submission_context(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
