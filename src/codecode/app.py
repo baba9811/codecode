@@ -8,7 +8,7 @@ from textual import events
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal
-from textual.widgets import Input, Log, Markdown, Static
+from textual.widgets import Input, Markdown, Static
 
 from codecode.core import (
     LANGUAGES,
@@ -127,7 +127,9 @@ class CodeCodeApp(App[None]):
     def compose(self) -> ComposeResult:
         with Horizontal(id="body"):
             yield Markdown(id="problem")
-            yield Log(id="output")
+            output = Markdown(id="output")
+            output.can_focus = True
+            yield output
         yield Static(id="status")
         yield Input(placeholder="/help, /run, /edit, /next, /prev, /list, /open 2, /codex hint", id="command")
 
@@ -146,11 +148,10 @@ class CodeCodeApp(App[None]):
             self.write_output(output)
 
     def write_output(self, output: str, loading: bool = False) -> None:
-        log = self.query_one("#output", Log)
-        log.loading = False
-        log.clear()
-        log.write(output)
-        log.loading = loading
+        markdown = self.query_one("#output", Markdown)
+        markdown.loading = False
+        markdown.update(output)
+        markdown.loading = loading
 
     def on_key(self, event: events.Key) -> None:
         command = self.query_one("#command", Input)

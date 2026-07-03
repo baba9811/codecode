@@ -2,14 +2,14 @@ from pathlib import Path
 import time
 
 import pytest
-from textual.widgets import Button, Input, Log, Markdown, Static
+from textual.widgets import Button, Input, Markdown, Static
 
 from codecode.app import CodeCodeApp
 from codecode.core import AppState, save_state
 
 
 def output_text(app: CodeCodeApp) -> str:
-    return "\n".join(str(line) for line in app.query_one("#output", Log).lines)
+    return app.query_one("#output", Markdown).source or ""
 
 
 @pytest.mark.asyncio
@@ -178,10 +178,24 @@ async def test_codex_command_shows_loading_in_scrollable_output(tmp_path: Path, 
         await pilot.pause()
         await pilot.press("c", "o", "d", "e", "x", " ", "h", "i", "enter")
         await pilot.pause()
-        output = app.query_one("#output", Log)
+        output = app.query_one("#output", Markdown)
         assert output.can_focus
         assert output.loading
         assert "Thinking..." in output_text(app)
+
+
+@pytest.mark.asyncio
+async def test_output_renders_markdown_for_codex_answers(tmp_path: Path):
+    app = CodeCodeApp(root=tmp_path)
+
+    async with app.run_test(size=(100, 35)) as pilot:
+        await pilot.pause()
+        app.write_output("Use `stdin`:\n\n```python\nseq = sys.stdin.read().split()\n```")
+        await pilot.pause()
+        output = app.query_one("#output", Markdown)
+
+    assert output.can_focus
+    assert "```python" in (output.source or "")
 
 
 @pytest.mark.asyncio
