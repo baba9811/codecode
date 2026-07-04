@@ -1,10 +1,6 @@
-.venv/
-.pytest_cache/
-__pycache__/
-*.py[cod]
+target/
 .codex/build/
 .codex/problem-state.json
 .codecode/
 problems/
-src/codecode/problem_bank.json
 submissions/

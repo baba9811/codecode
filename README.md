@@ -1,53 +1,63 @@
 # codecode
 
-Coding-test reps without leaving your terminal.
+![Rust](https://img.shields.io/badge/Rust-terminal%20app-000000?logo=rust&logoColor=white)
+![Ratatui](https://img.shields.io/badge/Ratatui-TUI-00B4D8)
+![Local first](https://img.shields.io/badge/local--first-practice-14B8A6)
+![Codex ready](https://img.shields.io/badge/Codex-ready-111827)
 
-`codecode` is a local Textual app for stdin/stdout practice. The problem stays on the left, your code lives on the right, and `/run` judges the current submission against local cases.
+![codecode terminal UI](assets/codecode-hero.png)
 
-No browser tab shuffle. No paste into a judge page. Just pick a problem, type, run, repeat.
+Coding-test reps, right in your terminal.
+
+`codecode` is a small Rust TUI for stdin/stdout practice: problem on the left, code on the right, judge loop in the same terminal.
+No browser tab shuffle, no paste dance, just solve and run.
+
+It also keeps Korean command input inside the TUI: the command bar composes common Hangul jamo input like `ㅇㅏㄴㄴㅕㅇ` into `안녕`.
+
+## Why It Exists
+
+- Fast local judging for Python, TypeScript, Java, and Rust
+- Gradual problem flow with local history
+- Codex-powered `/next <request>` when you want a custom problem
+- Korean statements and personal problem-generation notes
+- Small stack: Rust, Ratatui, Crossterm, and plain process execution
 
 ## Quick Start
 
 ```bash
 git clone https://github.com/baba9811/codecode.git
 cd codecode
-uv run codecode
+cargo run --
 ```
 
-The repo pins Python 3.13 with `.python-version`, so `uv` will use a compatible interpreter even if your global Python is older.
+Want a local binary?
+
+```bash
+cargo install --path .
+codecode
+```
 
 ## Daily Loop
 
 The code editor starts focused.
 
 ```text
-type code in the right pane
+write code
 Esc, then /run
-Esc, then /next
-Esc, then /codex hint
+Esc, then /next 문자열 쉬운 문제
 ```
 
 Submissions are saved as you type under `submissions/<problem-id>/solution.<ext>`.
 
-## Debug Prints
-
-`/run` shows raw stdout when a case fails, so quick `print(...)` checks are visible.
-
-If you want debug output without changing the judged answer, print to stderr:
-
-```python
-import sys
-
-print("debug", value, file=sys.stderr)
-```
-
 ## Commands
+
+Press `Esc`, then `/`, to focus the command bar.
 
 | Command | Action |
 | --- | --- |
 | `/run` | Judge the current submission |
-| `/edit` | Focus the inline code editor |
-| `/next` | Open the next problem, or ask Codex to create one |
+| `/next` | Open the next local problem, or ask Codex to create one |
+| `/next 문자열 쉬운 문제` | Ask Codex for a custom next problem |
 | `/prev` | Go back through problem history |
 | `/list` | Browse problems with `up/down` or `j/k`, open with `Enter` |
 | `/open 2` | Open by number, id, or slug |
@@ -59,44 +69,70 @@ print("debug", value, file=sys.stderr)
 | `/source codex` | Prefer Codex for next-problem generation |
 | `/exit` | Quit |
 
-The editor owns normal typing keys. Press `Esc`, then `/`, when you want the command bar.
+The editor owns normal typing keys.
+Press `Esc`, then `/`, when you want the command bar.
 
-## Problem Sources
+## Custom Problem Generation
 
-A fresh checkout starts with the built-in `001-hello-world` problem.
+`/next <request>` passes your request into the Codex problem generator. Examples:
 
-When `/next` runs out of local problems, `codecode` can ask Codex to generate one. Generated problem banks stay local by default:
+```text
+/next 문자열 뒤집기보다 조금 어려운 문제
+/next 해시맵 연습 easy
+/next 그래프는 아직 말고 정렬 문제
+```
+
+Codex reads [docs/problem-authoring-notes.md](docs/problem-authoring-notes.md) every time it creates a problem. Add personal preferences in `.codecode/problem_notes.md` when you want a standing note that stays local:
+
+```text
+Prefer Korean statements.
+I want more string and hashmap practice.
+Avoid DP until I ask for it.
+```
+
+Generated problem banks stay local:
 
 | Path | Purpose |
 | --- | --- |
 | `.codecode/problem_bank.json` | Local/custom/generated problem bank |
+| `.codecode/problem_notes.md` | Optional personal problem-generation notes |
 | `.codex/problem-state.json` | Current problem, history, settings |
 | `problems/` | Generated problem markdown/index files |
 | `submissions/` | Your answer files |
 
-Those paths are ignored by git, so the public repo stays clean while your practice history stays yours.
+Those paths are ignored by git, so your practice history stays yours.
 
-## Codex Hook
+## Debug Prints
 
-`/next` uses the local bank first. If there is no unseen problem left, or `/source codex` is enabled, the app runs the configured Codex next-problem command.
+`/run` shows raw stdout when a case fails. If you want debug output without changing the judged answer, print to stderr:
 
-Default behavior:
+```python
+import sys
 
-```text
-codex app-server daemon start
-codex exec --sandbox workspace-write "create exactly one new non-duplicate problem"
+print("debug", value, file=sys.stderr)
 ```
-
-`/codex <question>` is separate. It sends the current problem and current submission to Codex in read-only mode and prints the final response in the output pane.
-
-Security note: `/next-command <cmd>` is a trusted local hook. Only set it to commands you would run directly in your shell.
 
 ## Development
 
 ```bash
-uv sync
-uv run pytest tests -q
-uv run codecode --smoke
+cargo test
+cargo run -- --smoke
+cargo run --
 ```
 
-Small on purpose: Textual for the TUI, stdlib for judging/process work, and `uv` for setup.
+Small on purpose: Ratatui for drawing, Crossterm for terminal events, and direct compiler/runtime calls for judging.
+
+## Discovery Notes
+
+Recommended GitHub topics for this repo:
+`coding-practice`, `competitive-programming`, `algorithms`, `ratatui`, `tui`, `rust`, `codex`, `local-first`, `korean`.
+
+## References
+
+- Ratatui terminal UI library: https://ratatui.rs/
+- Crossterm terminal backend/events: https://github.com/crossterm-rs/crossterm
+- Codex CLI open-source repo: https://github.com/openai/codex
+- Kattis problem package format: https://www.kattis.com/problem-package-format/
+- ICPC judging guidelines: https://icpc.global/regionals/regional-contest-cookbook-judging-guidelines
+- GitHub README image guidance: https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes
+- GitHub repository topics: https://docs.github.com/articles/classifying-your-repository-with-topics
