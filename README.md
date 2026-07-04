@@ -3,7 +3,7 @@
 ![Rust](https://img.shields.io/badge/Rust-terminal%20app-000000?logo=rust&logoColor=white)
 ![Ratatui](https://img.shields.io/badge/Ratatui-TUI-00B4D8)
 ![Local first](https://img.shields.io/badge/local--first-practice-14B8A6)
-![Codex ready](https://img.shields.io/badge/Codex-ready-111827)
+![AI ready](https://img.shields.io/badge/AI-Codex%20%2B%20Claude-111827)
 
 ![codecode terminal UI](assets/codecode-terminal.svg)
 
@@ -16,7 +16,7 @@ No browser tab shuffle, no paste dance, just solve and run.
 
 - Fast local judging for Python, TypeScript, Java, and Rust
 - Gradual problem flow with local history
-- Codex-powered `/next <request>` when you want a custom problem
+- AI-powered `/next <request>` when you want a custom problem
 - Personal problem-generation notes
 - Small stack: Rust, Ratatui, Crossterm, and plain process execution
 
@@ -54,17 +54,21 @@ Press `Esc`, then `/`, to focus the command bar.
 | Command | Action |
 | --- | --- |
 | `/run` | Judge the current submission |
-| `/next` | Open the next local problem, or ask Codex to create one |
-| `/next easy string problem` | Ask Codex for a custom next problem |
+| `/next` | Open the next local problem, or ask AI to create one |
+| `/next easy string problem` | Ask AI for a custom next problem |
 | `/prev` | Go back through problem history |
 | `/list` | Browse problems with `up/down` or `j/k`, open with `Enter` |
 | `/open 2` | Open by number, id, or slug |
 | `/giveup` | Show the reference answer |
-| `/codex hint` | Ask Codex about the current problem and submission |
+| `/ai hint` | Ask the selected AI about the current problem and submission |
+| `/provider codex` | Set AI provider: `codex` or `claude` |
+| `/model sonnet` | Set the model for `/ai` and AI-backed `/next`; use `auto` for the CLI default |
+| `/note prefer hashmap practice` | Append a standing note for future problem generation |
+| `/notes` | Show your local next-problem notes |
 | `/lang python` | Set language: `python`, `ts`, `java`, `rust` |
 | `/ui ko` | Set UI language: `ko`, `en` |
 | `/theme` | Toggle dark/light theme |
-| `/source codex` | Prefer Codex for next-problem generation |
+| `/source ai` | Prefer AI for next-problem generation |
 | `/exit` | Quit |
 
 The editor owns normal typing keys.
@@ -72,7 +76,7 @@ Press `Esc`, then `/`, when you want the command bar.
 
 ## Custom Problem Generation
 
-`/next <request>` passes your request into the Codex problem generator. Examples:
+`/next <request>` passes your request into the selected AI problem generator. Examples:
 
 ```text
 /next a slightly harder string problem
@@ -80,13 +84,35 @@ Press `Esc`, then `/`, when you want the command bar.
 /next sorting problem, no graph yet
 ```
 
-Codex reads [docs/problem-authoring-notes.md](docs/problem-authoring-notes.md) every time it creates a problem. Add personal preferences in `.codecode/problem_notes.md` when you want a standing note that stays local:
+AI generation reads [docs/problem-authoring-notes.md](docs/problem-authoring-notes.md) every time it creates a problem. Add personal preferences from inside the TUI:
 
 ```text
-Prefer concise statements.
-I want more string and hashmap practice.
-Avoid DP until I ask for it.
+/note Prefer concise statements.
+/note I want more string and hashmap practice.
+/note Avoid DP until I ask for it.
 ```
+
+Those notes are stored in `.codecode/problem_notes.md`, so they stay local.
+
+## AI Providers
+
+Codex is the default:
+
+```text
+/provider codex
+/model auto
+```
+
+Claude Code is also supported:
+
+```text
+/provider claude
+/model sonnet
+/source ai
+```
+
+`/ai <prompt>` uses the current provider for coaching. AI-backed `/next` uses the same provider and model.
+If you want a custom daemon or wrapper script, set `/ai-next-command <shell command>`; codecode passes `CODECODE_NEXT_REQUEST`, `CODECODE_AI_PROVIDER`, and `CODECODE_AI_MODEL`.
 
 Generated problem banks stay local:
 
@@ -118,18 +144,28 @@ cargo run -- --smoke
 cargo run --
 ```
 
-Small on purpose: Ratatui for drawing, Crossterm for terminal events, and direct compiler/runtime calls for judging.
+The source is split by boring responsibility:
+
+| Path | Role |
+| --- | --- |
+| `src/core.rs` | Problem bank, state, rendering, judging |
+| `src/tui.rs` | Ratatui app, editor, command parser |
+| `src/ai.rs` | Codex/Claude command integration and notes |
+| `src/text.rs` | UTF-8 cursor math and Hangul composition |
+| `src/process.rs` | Process execution helpers |
+| `tests/` | Integration tests split by module |
 
 ## Discovery Notes
 
 Recommended GitHub topics for this repo:
-`coding-practice`, `competitive-programming`, `algorithms`, `ratatui`, `tui`, `rust`, `codex`, `local-first`.
+`coding-practice`, `competitive-programming`, `algorithms`, `ratatui`, `tui`, `rust`, `codex`, `claude-code`, `local-first`.
 
 ## References
 
 - Ratatui terminal UI library: https://ratatui.rs/
 - Crossterm terminal backend/events: https://github.com/crossterm-rs/crossterm
 - Codex CLI open-source repo: https://github.com/openai/codex
+- Claude Code CLI reference: https://docs.anthropic.com/en/docs/claude-code/cli-reference
 - Kattis problem package format: https://www.kattis.com/problem-package-format/
 - ICPC judging guidelines: https://icpc.global/regionals/regional-contest-cookbook-judging-guidelines
 - GitHub README image guidance: https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes

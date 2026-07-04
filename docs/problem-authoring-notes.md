@@ -1,6 +1,6 @@
 # Problem Authoring Notes
 
-Use this when Codex creates a new `/next` problem.
+Use this when AI creates a new `/next` problem.
 
 ## Shape
 

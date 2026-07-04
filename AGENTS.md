@@ -1,4 +1,4 @@
-# Codex Problem Session
+# Codecode Problem Session
 
 This repo is a Rust coding-practice workspace with a Ratatui terminal UI.
 
@@ -29,8 +29,11 @@ This repo is a Rust coding-practice workspace with a Ratatui terminal UI.
 ## TUI Next Source
 
 - Local bank mode uses `.codecode/problem_bank.json` when present; otherwise it uses the built-in `001-hello-world` starter.
-- Codex mode runs `settings.codex_next_command` from `.codex/problem-state.json`; when empty, the app uses a default `codex app-server daemon start; codex exec ...` command.
-- If Codex creates a problem, it must update `.codecode/problem_bank.json` and `.codex/problem-state.json`.
+- AI mode runs `settings.ai_next_command` from `.codex/problem-state.json`; when empty, the app uses the selected provider.
+- `settings.ai_provider` is `codex` or `claude`; `settings.ai_model` is passed to `/ai` and AI-backed `/next` unless it is `auto`.
+- Codex uses `codex app-server daemon start; codex exec ...`.
+- Claude Code uses `claude -p ...` with `acceptEdits` for AI-backed `/next`; custom daemon workflows can be wired through `settings.ai_next_command`.
+- If AI creates a problem, it must update `.codecode/problem_bank.json` and `.codex/problem-state.json`.
 - `.codecode/`, `.codex/problem-state.json`, `problems/`, and `submissions/` are local user data and are intentionally ignored by git.
 
 ## When Grading

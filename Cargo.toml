@@ -2,9 +2,9 @@
 name = "codecode"
 version = "0.1.0"
 edition = "2024"
-description = "Local-first coding-test practice in a Rust terminal UI."
+description = "Local-first coding-test practice in a Rust terminal UI with optional AI help."
 readme = "README.md"
-keywords = ["algorithms", "codex", "coding-practice", "competitive-programming", "tui"]
+keywords = ["algorithms", "ai", "coding-practice", "competitive-programming", "tui"]
 categories = ["command-line-utilities", "development-tools", "text-editors"]
 
 [dependencies]
