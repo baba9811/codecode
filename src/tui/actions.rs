@@ -1,0 +1,312 @@
+use super::*;
+
+impl PracticodeApp {
+    pub(super) fn action_edit(&mut self) -> Result<()> {
+        self.load_code_editor()?;
+        self.settings_cursor = None;
+        self.show_output = false;
+        self.focus = Focus::Code;
+        Ok(())
+    }
+
+    pub(super) fn action_run(&mut self) -> Result<()> {
+        self.save_code()?;
+        let result = judge(&self.root, &self.problem, &self.state.settings);
+        if result.passed {
+            record_pass(&self.root, &self.problem, &mut self.state)?;
+        }
+        let headline = format!(
+            "{} {}/{}",
+            if result.passed { "PASS" } else { "FAIL" },
+            result.passed_cases,
+            result.total_cases
+        );
+        let next_step = if result.passed {
+            ui_text(&self.state.settings.ui_language, "run_pass_next")
+        } else {
+            ui_text(&self.state.settings.ui_language, "run_fail_next")
+        };
+        self.write_text_output(&format!("{headline}\n{}\n\n{next_step}", result.output));
+        Ok(())
+    }
+
+    pub(super) fn action_next(&mut self, request: &str) -> Result<()> {
+        self.check_background_generation();
+        let request = request.trim();
+        let old_problem = self.state.current_problem.clone();
+        if let Some(problem) = next_problem(&self.root, &self.bank, &mut self.state)? {
+            self.generate_notice = None;
+            self.problem = problem;
+            self.load_code_editor()?;
+            self.settings_cursor = None;
+            self.show_output = false;
+            self.focus = Focus::Code;
+            return Ok(());
+        }
+        if self.generate_rx.is_some() {
+            self.write_text_output(
+                "A background generation is already running. Keep solving; /next will pick up the new problem when it finishes.",
+            );
+            return Ok(());
+        }
+        self.start_next_problem(old_problem, true, request.to_string());
+        Ok(())
+    }
+
+    pub(super) fn action_generate(&mut self, request: &str) {
+        self.check_background_generation();
+        if self.task_rx.is_some() || self.generate_rx.is_some() {
+            let message = "Generation is already running; skipped duplicate /generate.";
+            self.generate_notice = Some(message.to_string());
+            self.write_text_output(message);
+            return;
+        }
+        self.start_background_generation(request.trim().to_string());
+    }
+
+    pub(super) fn start_background_generation(&mut self, request: String) {
+        let root = self.root.clone();
+        let state = self.state.clone();
+        let (tx, rx) = mpsc::channel();
+        thread::spawn(move || {
+            let _ = tx.send(run_ai_generate(&root, &state, &request));
+        });
+        self.generate_bank_len = self.bank.len();
+        self.generate_started = Some(Instant::now());
+        self.generate_notice = Some("Generating in background.".to_string());
+        self.generate_rx = Some(rx);
+        self.settings_cursor = None;
+        self.show_output = false;
+        self.focus = Focus::Code;
+    }
+
+    pub(super) fn start_next_problem(
+        &mut self,
+        old_problem: String,
+        fallback_to_local: bool,
+        request: String,
+    ) {
+        if self.task_rx.is_some() {
+            self.write_text_output(ui_text(&self.state.settings.ui_language, "already_busy"));
+            return;
+        }
+        self.start_busy(
+            "next",
+            ui_text(&self.state.settings.ui_language, "generating_next"),
+        );
+        let root = self.root.clone();
+        let state = self.state.clone();
+        let (tx, rx) = mpsc::channel();
+        thread::spawn(move || {
+            let output = run_ai_next(&root, &state, true, &request);
+            let _ = tx.send(TaskResult::Next {
+                output,
+                old_problem,
+                fallback_to_local,
+            });
+        });
+        self.task_rx = Some(rx);
+    }
+
+    pub(super) fn finish_next_problem(
+        &mut self,
+        output: String,
+        old_problem: String,
+        fallback_to_local: bool,
+    ) -> Result<()> {
+        self.bank = load_bank(&self.root)?;
+        self.state = load_state(&self.root, &self.bank)?;
+        self.problem = problem_by_id(&self.bank, &self.state.current_problem)
+            .cloned()
+            .unwrap_or_else(|| self.bank[0].clone());
+        if self.state.current_problem == old_problem {
+            if fallback_to_local
+                && let Some(problem) = next_problem(&self.root, &self.bank, &mut self.state)?
+            {
+                self.problem = problem;
+            } else {
+                self.write_text_output(&format!(
+                    "{}{}No next problem is available yet.",
+                    if output.is_empty() { "" } else { &output },
+                    if output.is_empty() { "" } else { "\n\n" }
+                ));
+                return Ok(());
+            }
+        }
+        self.load_code_editor()?;
+        self.settings_cursor = None;
+        self.show_output = false;
+        self.focus = Focus::Code;
+        Ok(())
+    }
+
+    pub(super) fn action_previous(&mut self) -> Result<()> {
+        let old_problem = self.state.current_problem.clone();
+        self.problem = previous_problem(&self.root, &self.bank, &mut self.state)?;
+        if self.state.current_problem == old_problem {
+            self.write_text_output("Already at the first known problem.");
+        } else {
+            self.load_code_editor()?;
+            self.settings_cursor = None;
+            self.show_output = false;
+            self.focus = Focus::Code;
+        }
+        Ok(())
+    }
+
+    pub(super) fn action_give_up(&mut self) -> Result<()> {
+        let answer = give_up(&self.root, &self.problem, &mut self.state)?;
+        let language = normalize_language(&self.state.settings.language);
+        self.write_output(&format!(
+            "Answer for {language}:\n\n```{language}\n{}\n```",
+            answer.trim_end()
+        ));
+        Ok(())
+    }
+
+    pub(super) fn action_cycle_language(&mut self) -> Result<()> {
+        let current = LANGUAGES
+            .iter()
+            .position(|language| language == &self.state.settings.language)
+            .unwrap_or(0);
+        self.set_language(LANGUAGES[(current + 1) % LANGUAGES.len()])
+    }
+
+    pub(super) fn action_toggle_ui_language(&mut self) -> Result<()> {
+        let current = UI_LANGUAGES
+            .iter()
+            .position(|language| language == &self.state.settings.ui_language)
+            .unwrap_or(0);
+        self.set_ui_language(UI_LANGUAGES[(current + 1) % UI_LANGUAGES.len()])
+    }
+
+    pub(super) fn action_toggle_theme(&mut self) -> Result<()> {
+        let current = THEMES
+            .iter()
+            .position(|theme| theme == &self.state.settings.theme)
+            .unwrap_or(0);
+        self.set_theme(THEMES[(current + 1) % THEMES.len()])
+    }
+
+    pub(super) fn set_language(&mut self, language: &str) -> Result<()> {
+        self.state.settings.language = language.to_string();
+        save_state(&self.root, &self.state)?;
+        self.load_code_editor()?;
+        self.settings_cursor = None;
+        self.show_output = false;
+        self.focus = Focus::Code;
+        Ok(())
+    }
+
+    pub(super) fn set_ui_language(&mut self, language: &str) -> Result<()> {
+        self.state.settings.ui_language = normalize_ui_language(language);
+        save_state(&self.root, &self.state)?;
+        self.write_text_output(&format!("UI language: {}", self.state.settings.ui_language));
+        Ok(())
+    }
+
+    pub(super) fn set_theme(&mut self, theme: &str) -> Result<()> {
+        self.state.settings.theme = theme.to_string();
+        save_state(&self.root, &self.state)?;
+        self.write_text_output(&format!("Theme: {theme}"));
+        Ok(())
+    }
+
+    pub(super) fn set_difficulty(&mut self, difficulty: &str) -> Result<()> {
+        let difficulty = difficulty.trim().to_lowercase();
+        if !DIFFICULTIES.contains(&difficulty.as_str()) {
+            self.write_text_output("Difficulty: auto, easy, medium, or hard.");
+            return Ok(());
+        }
+        let normalized = normalize_difficulty(&difficulty);
+        self.state.settings.difficulty = normalized.clone();
+        if normalized != "auto" {
+            self.state.suggested_next_difficulty = normalized;
+        }
+        save_state(&self.root, &self.state)?;
+        self.show_profile();
+        Ok(())
+    }
+
+    pub(super) fn set_topics(&mut self, topics: &str, avoid: bool) -> Result<()> {
+        let topics = parse_topic_list(topics);
+        if avoid {
+            self.state.settings.avoid_topics = topics;
+        } else {
+            self.state.settings.topics = topics;
+        }
+        save_state(&self.root, &self.state)?;
+        self.show_profile();
+        Ok(())
+    }
+
+    pub(super) fn set_generate_languages(&mut self, value: &str, ui: bool) -> Result<()> {
+        if ui {
+            self.state.settings.generate_ui_languages = parse_ui_language_list(value);
+        } else {
+            self.state.settings.generate_languages = parse_language_list(value);
+        }
+        save_state(&self.root, &self.state)?;
+        self.show_profile();
+        Ok(())
+    }
+
+    pub(super) fn reset_profile(&mut self) -> Result<()> {
+        self.state.settings.difficulty = "auto".to_string();
+        self.state.settings.topics.clear();
+        self.state.settings.avoid_topics.clear();
+        self.state.settings.generate_languages.clear();
+        self.state.settings.generate_ui_languages.clear();
+        save_state(&self.root, &self.state)?;
+        self.show_profile();
+        Ok(())
+    }
+
+    pub(super) fn show_profile(&mut self) {
+        self.show_profile_with_intro("");
+    }
+
+    pub(super) fn show_profile_with_intro(&mut self, intro: &str) {
+        self.showing_model_status = false;
+        if self.settings_cursor.is_none() {
+            self.settings_cursor = Some(0);
+        }
+        let profile = self.profile_text();
+        self.output = if intro.trim().is_empty() {
+            profile
+        } else {
+            format!("{}\n\n{profile}", intro.trim_end())
+        };
+        self.output_is_markdown = false;
+        self.show_output = true;
+        self.focus = Focus::Output;
+    }
+
+    pub(super) fn profile_text(&self) -> String {
+        settings_panel::render(&self.state, self.settings_cursor)
+    }
+
+    pub(super) fn settings_row_count(&self) -> usize {
+        settings_panel::row_count()
+    }
+
+    pub(super) fn move_settings_cursor(&mut self, delta: isize) {
+        let len = self.settings_row_count() as isize;
+        let cursor = self.settings_cursor.unwrap_or(0) as isize;
+        self.settings_cursor = Some(((cursor + delta).rem_euclid(len)) as usize);
+        self.show_profile();
+    }
+
+    pub(super) fn change_selected_setting(&mut self) -> Result<()> {
+        let Some(row) = self.settings_cursor else {
+            return Ok(());
+        };
+        let change = settings_panel::apply_selected(&mut self.state, row);
+        if change.reload_editor {
+            self.load_code_editor()?;
+        }
+        save_state(&self.root, &self.state)?;
+        self.show_profile();
+        Ok(())
+    }
+}

@@ -4,9 +4,25 @@ Practicode is local-first: user data stays under `.practicode/`, `problems/`, an
 
 ## Source Layout
 
-- `src/core.rs` owns problem data, state loading/saving, judging, and file generation.
-- `src/core/profile.rs` owns user-profile defaults and normalization.
-- `src/tui.rs` owns the Ratatui app shell, event routing, and workflow orchestration.
+- `src/core.rs` is the public core facade. Keep new domain logic in nested `src/core/` modules.
+- `src/core/model.rs` owns persisted/user-facing data shapes and core constants.
+- `src/core/bank.rs` owns local problem-bank loading, saving, starter data, and bank validation.
+- `src/core/state.rs` owns state loading, saving, and settings normalization.
+- `src/core/language.rs` owns language/provider normalization, templates, and extension mapping.
+- `src/core/render.rs` owns plain/markdown problem rendering.
+- `src/core/judge.rs` owns submission file creation, runtime commands, compilation, and judging.
+- `src/core/progress.rs` owns give-up/next/previous/pass history transitions.
+- `src/core/problem_files.rs` owns generated problem README/index file writes.
+- `src/core/profile.rs` owns user-profile defaults and normalization helpers.
+- `src/tui.rs` owns the `PracticodeApp` state shell, construction, run loop, and test accessors. Keep new TUI behavior in nested `src/tui/` modules.
+- `src/tui/actions.rs` owns user actions such as run, next, generate, language/theme/profile changes.
+- `src/tui/command_handlers.rs` owns slash-command routing.
+- `src/tui/command_input.rs` owns command palette input, completion, and Hangul composition.
+- `src/tui/events.rs` owns keyboard/mouse event routing.
+- `src/tui/tasks.rs` owns background AI/update/model tasks and output writing helpers.
+- `src/tui/view.rs` owns Ratatui drawing, pane styling, mouse-capture toggles, and cursor placement.
+- `src/tui/problem_list.rs` owns problem-list rendering and navigation.
+- `src/tui/status.rs` owns status-line text, busy-game text, mode hints, and help text.
 - `src/tui/commands.rs` owns the command palette catalog.
 - `src/tui/editor.rs` owns the in-terminal code editor state.
 - `src/tui/problem_view.rs` owns problem-statement rendering.
@@ -17,7 +33,7 @@ Practicode is local-first: user data stays under `.practicode/`, `problems/`, an
 
 ## Extension Rules
 
-- Add domain logic under the owning module first; keep `tui.rs` as orchestration, not a catch-all.
+- Add domain logic under the owning nested module first; keep `core.rs` and `tui.rs` as facades/shells, not catch-alls.
 - Add user-visible commands in `src/tui/commands.rs`, then route behavior in `PracticodeApp::handle_command`.
 - Add persisted user profile settings to `Settings`, normalize them in `normalize_settings`, and cover old-state compatibility with tests.
 - Keep provider-specific behavior in `src/ai.rs`; TUI should ask for status or start tasks, not know provider internals.
