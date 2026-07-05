@@ -9,6 +9,14 @@ This repo is a Rust coding-practice workspace with a Ratatui terminal UI.
 - Run tests: `cargo test`.
 - Prefer stdlib. Add crates only when they remove real complexity.
 
+## Release
+
+- `main` runs CI only.
+- Releases are tag-based and publish to crates.io and npm through GitHub Actions.
+- Use `make release` for an interactive release. It shows the current version, prompts for the next version, commits the version bump, tags it, and pushes `main` plus the tag.
+- Or use `make release VERSION=0.1.1`.
+- Do not print or commit tokens. Local `.env` and `.npmrc` are ignored; GitHub Actions uses `NPM_TOKEN` and `CRATES_TOKEN` repository secrets.
+
 ## When User Says `/next` or `/next <request>`
 
 1. Read `docs/problem-authoring-notes.md` if present, `.practicode/problem_notes.md` if present, `problems/INDEX.md` if present, `.practicode/problem_bank.json` if present, and `.practicode/problem-state.json`.

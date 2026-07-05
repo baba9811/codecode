@@ -36,7 +36,7 @@ cargo install practicode
 practicode
 ```
 
-Prefer npm from GitHub?
+Prefer npm?
 
 ```bash
 npm install -g practicode
@@ -58,15 +58,6 @@ practicode
 ```
 
 The npm wrapper builds the Rust binary with Cargo, so Rust/Cargo is still required.
-
-## Release
-
-Publishing is tag-based. `main` runs CI only; tags publish to crates.io and npm.
-
-```bash
-scripts/release.sh 0.1.1
-git push origin main v0.1.1
-```
 
 ## Daily Loop
 

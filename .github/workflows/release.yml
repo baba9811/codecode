@@ -26,6 +26,12 @@ jobs:
           test "$version" = "$npm_version"
       - run: cargo test
       - run: npm pack --dry-run
+      - run: cargo publish --dry-run --token "$CRATES_TOKEN"
+        env:
+          CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
+      - run: npm publish --dry-run --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: cargo publish --token "$CRATES_TOKEN"
         env:
           CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
