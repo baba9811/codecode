@@ -29,14 +29,28 @@ cd practicode
 cargo run --
 ```
 
-Want a local binary?
+Want a binary from GitHub?
+
+```bash
+cargo install --git https://github.com/baba9811/practicode --locked
+practicode
+```
+
+Prefer npm from GitHub?
+
+```bash
+npm install -g github:baba9811/practicode
+practicode
+```
+
+Working from a local checkout?
 
 ```bash
 cargo install --path .
 practicode
 ```
 
-Prefer npm?
+Or with npm:
 
 ```bash
 npm install -g .
