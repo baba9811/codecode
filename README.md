@@ -29,10 +29,10 @@ cd practicode
 cargo run --
 ```
 
-Want a binary from GitHub?
+Want a local binary?
 
 ```bash
-cargo install --git https://github.com/baba9811/practicode --locked
+cargo install practicode
 practicode
 ```
 
