@@ -4,8 +4,8 @@ use crate::{
         AI_PROVIDERS, AppState, HistoryItem, LANGUAGES, PROBLEM_NOTES_PATH, Problem, THEMES,
         UI_LANGUAGES, ensure_problem_files, ensure_submission, ext_for, give_up, judge, load_bank,
         load_state, localized, next_problem, normalize_ai_provider, normalize_language,
-        normalize_next_source, previous_problem, problem_by_id, record_pass, render_problem,
-        save_state, template_for,
+        normalize_next_source, normalize_ui_language, previous_problem, problem_by_id, record_pass,
+        render_problem, save_state, template_for, ui_text,
     },
     text::{
         byte_index, char_len, compose_hangul_jamo, display_width, prefix, render_markdown_plain,
@@ -17,7 +17,7 @@ use ratatui::{
     DefaultTerminal, Frame,
     layout::{Constraint, Direction, Layout, Position, Rect},
     style::{Color, Modifier, Style},
-    widgets::{Block, Borders, Paragraph, Wrap},
+    widgets::{Block, Borders, Clear, Paragraph, Wrap},
 };
 use std::{
     collections::HashMap,
@@ -28,46 +28,220 @@ use std::{
     time::Duration,
 };
 
-pub const HELP: &str = r#"# Help
+#[derive(Clone, Copy)]
+struct CommandHint {
+    insert: &'static str,
+    display: &'static str,
+    desc_key: &'static str,
+    keep_open: bool,
+    help: bool,
+}
 
-## Daily loop
-
-1. Type code in the right pane.
-2. Press `Esc`, then `/run`.
-3. Use `/next` when it passes.
-
-## Commands
-
-- `/run` judge current submission
-- `/edit` focus the code editor
-- `/next [request]` next problem, optionally with a request
-- `/prev` previous problem
-- `/list` choose from problem list
-- `/open 2` open by number, id, or slug
-- `/giveup` show answer
-- `/ai hint` ask the selected AI about current problem + code
-- `/provider codex|claude`
-- `/model auto|sonnet|opus|...`
-- `/note prefer strings this week`
-- `/notes` show next-problem notes
-- `/lang python|ts|java|rust`
-- `/ui ko|en`
-- `/theme dark|light`
-- `/source bank|ai`
-- `/exit` quit
-
-## Keys
-
-- `Esc` leaves the editor or output pane
-- `/` opens the command bar when the editor is not focused
-- `?` opens this help when the editor is not focused
-- `up/down` or `j/k` move in `/list`
-
-## Debug prints
-
-- stdout prints are shown when a case fails
-- stderr prints are shown without affecting the expected stdout
-"#;
+const COMMAND_HINTS: &[CommandHint] = &[
+    CommandHint {
+        insert: "run",
+        display: "/run",
+        desc_key: "cmd_run",
+        keep_open: false,
+        help: true,
+    },
+    CommandHint {
+        insert: "edit",
+        display: "/edit",
+        desc_key: "cmd_edit",
+        keep_open: false,
+        help: true,
+    },
+    CommandHint {
+        insert: "next",
+        display: "/next",
+        desc_key: "cmd_next",
+        keep_open: false,
+        help: true,
+    },
+    CommandHint {
+        insert: "prev",
+        display: "/prev",
+        desc_key: "cmd_prev",
+        keep_open: false,
+        help: true,
+    },
+    CommandHint {
+        insert: "list",
+        display: "/list",
+        desc_key: "cmd_list",
+        keep_open: false,
+        help: true,
+    },
+    CommandHint {
+        insert: "open ",
+        display: "/open <id>",
+        desc_key: "cmd_open",
+        keep_open: true,
+        help: true,
+    },
+    CommandHint {
+        insert: "giveup",
+        display: "/giveup",
+        desc_key: "cmd_giveup",
+        keep_open: false,
+        help: true,
+    },
+    CommandHint {
+        insert: "ai ",
+        display: "/ai <prompt>",
+        desc_key: "cmd_ai",
+        keep_open: true,
+        help: true,
+    },
+    CommandHint {
+        insert: "provider codex",
+        display: "/provider codex",
+        desc_key: "cmd_provider",
+        keep_open: false,
+        help: true,
+    },
+    CommandHint {
+        insert: "provider claude",
+        display: "/provider claude",
+        desc_key: "cmd_provider",
+        keep_open: false,
+        help: false,
+    },
+    CommandHint {
+        insert: "model auto",
+        display: "/model auto",
+        desc_key: "cmd_model",
+        keep_open: false,
+        help: true,
+    },
+    CommandHint {
+        insert: "model ",
+        display: "/model <name>",
+        desc_key: "cmd_model",
+        keep_open: true,
+        help: false,
+    },
+    CommandHint {
+        insert: "note ",
+        display: "/note <text>",
+        desc_key: "cmd_note",
+        keep_open: true,
+        help: true,
+    },
+    CommandHint {
+        insert: "notes",
+        display: "/notes",
+        desc_key: "cmd_notes",
+        keep_open: false,
+        help: true,
+    },
+    CommandHint {
+        insert: "lang python",
+        display: "/lang python",
+        desc_key: "cmd_lang",
+        keep_open: false,
+        help: true,
+    },
+    CommandHint {
+        insert: "lang ts",
+        display: "/lang ts",
+        desc_key: "cmd_lang",
+        keep_open: false,
+        help: false,
+    },
+    CommandHint {
+        insert: "lang java",
+        display: "/lang java",
+        desc_key: "cmd_lang",
+        keep_open: false,
+        help: false,
+    },
+    CommandHint {
+        insert: "lang rust",
+        display: "/lang rust",
+        desc_key: "cmd_lang",
+        keep_open: false,
+        help: false,
+    },
+    CommandHint {
+        insert: "ui en",
+        display: "/ui en",
+        desc_key: "cmd_ui",
+        keep_open: false,
+        help: true,
+    },
+    CommandHint {
+        insert: "ui ko",
+        display: "/ui ko",
+        desc_key: "cmd_ui",
+        keep_open: false,
+        help: false,
+    },
+    CommandHint {
+        insert: "ui ja",
+        display: "/ui ja",
+        desc_key: "cmd_ui",
+        keep_open: false,
+        help: false,
+    },
+    CommandHint {
+        insert: "ui zh",
+        display: "/ui zh",
+        desc_key: "cmd_ui",
+        keep_open: false,
+        help: false,
+    },
+    CommandHint {
+        insert: "ui es",
+        display: "/ui es",
+        desc_key: "cmd_ui",
+        keep_open: false,
+        help: false,
+    },
+    CommandHint {
+        insert: "theme dark",
+        display: "/theme dark",
+        desc_key: "cmd_theme",
+        keep_open: false,
+        help: true,
+    },
+    CommandHint {
+        insert: "theme light",
+        display: "/theme light",
+        desc_key: "cmd_theme",
+        keep_open: false,
+        help: false,
+    },
+    CommandHint {
+        insert: "source bank",
+        display: "/source bank",
+        desc_key: "cmd_source",
+        keep_open: false,
+        help: true,
+    },
+    CommandHint {
+        insert: "source ai",
+        display: "/source ai",
+        desc_key: "cmd_source",
+        keep_open: false,
+        help: false,
+    },
+    CommandHint {
+        insert: "help",
+        display: "/help",
+        desc_key: "cmd_help",
+        keep_open: false,
+        help: true,
+    },
+    CommandHint {
+        insert: "exit",
+        display: "/exit",
+        desc_key: "cmd_exit",
+        keep_open: false,
+        help: true,
+    },
+];
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 enum Focus {
@@ -85,6 +259,7 @@ pub struct PracticodeApp {
     editor: TextEditor,
     command: String,
     command_cursor: usize,
+    command_palette_cursor: usize,
     output: String,
     output_is_markdown: bool,
     show_output: bool,
@@ -121,6 +296,7 @@ impl PracticodeApp {
             editor: TextEditor::default(),
             command: String::new(),
             command_cursor: 0,
+            command_palette_cursor: 0,
             output: String::new(),
             output_is_markdown: false,
             show_output: false,
@@ -174,6 +350,10 @@ impl PracticodeApp {
         self.command_cursor
     }
 
+    pub fn handle_key_for_test(&mut self, key: KeyEvent) -> Result<()> {
+        self.handle_key(key)
+    }
+
     pub fn busy_label(&self) -> &str {
         &self.busy_label
     }
@@ -201,7 +381,10 @@ impl PracticodeApp {
             &self.problem,
             &self.state.settings.ui_language,
         )))
-        .block(Self::block("Problem", self.state.settings.theme == "light"))
+        .block(Self::block(
+            ui_text(&self.state.settings.ui_language, "problem"),
+            self.state.settings.theme == "light",
+        ))
         .wrap(Wrap { trim: false });
         frame.render_widget(problem, body[0]);
 
@@ -214,7 +397,10 @@ impl PracticodeApp {
                 self.output.clone()
             };
             let output = Paragraph::new(text)
-                .block(Self::block("Output", self.state.settings.theme == "light"))
+                .block(Self::block(
+                    ui_text(&self.state.settings.ui_language, "output"),
+                    self.state.settings.theme == "light",
+                ))
                 .wrap(Wrap { trim: false });
             frame.render_widget(output, body[1]);
         } else {
@@ -244,13 +430,54 @@ impl PracticodeApp {
         let command_text = if self.focus == Focus::Command || !self.command.is_empty() {
             self.command.clone()
         } else {
-            "/run, /next easy string problem, /ai hint, /help".to_string()
+            ui_text(&self.state.settings.ui_language, "command_placeholder").to_string()
         };
         let command = Paragraph::new(command_text)
-            .block(Self::block("Command", self.state.settings.theme == "light"))
+            .block(Self::block(
+                ui_text(&self.state.settings.ui_language, "command"),
+                self.state.settings.theme == "light",
+            ))
             .wrap(Wrap { trim: false });
         frame.render_widget(command, vertical[2]);
+        self.draw_command_palette(frame, vertical[2]);
         self.set_terminal_cursor(frame, body[1], vertical[2]);
+    }
+
+    fn draw_command_palette(&self, frame: &mut Frame, command_area: Rect) {
+        let suggestions = self.command_suggestions();
+        if suggestions.is_empty() || command_area.y < 3 {
+            return;
+        }
+        let height = ((suggestions.len() + 3) as u16).min(10).min(command_area.y);
+        let area = Rect::new(
+            command_area.x,
+            command_area.y - height,
+            command_area.width,
+            height,
+        );
+        let selected = self.command_palette_cursor.min(suggestions.len() - 1);
+        let mut lines = suggestions
+            .iter()
+            .enumerate()
+            .take(height.saturating_sub(2) as usize)
+            .map(|(index, hint)| {
+                let marker = if index == selected { ">" } else { " " };
+                format!(
+                    "{marker} {:<16} {}",
+                    hint.display,
+                    ui_text(&self.state.settings.ui_language, hint.desc_key)
+                )
+            })
+            .collect::<Vec<_>>();
+        lines.push(ui_text(&self.state.settings.ui_language, "palette_hint").to_string());
+        frame.render_widget(Clear, area);
+        frame.render_widget(
+            Paragraph::new(lines.join("\n")).block(Self::block(
+                ui_text(&self.state.settings.ui_language, "commands"),
+                self.state.settings.theme == "light",
+            )),
+            area,
+        );
     }
 
     fn block(title: &str, light: bool) -> Block<'_> {
@@ -277,14 +504,18 @@ impl PracticodeApp {
             KeyCode::Esc => {
                 self.command.clear();
                 self.command_cursor = 0;
+                self.command_palette_cursor = 0;
                 self.focus = Focus::None;
             }
             KeyCode::Enter => {
-                let value = self.command.trim().to_string();
-                self.command.clear();
-                self.command_cursor = 0;
-                self.focus = Focus::None;
-                self.submit_command(&value)?;
+                if !self.accept_command_palette()? {
+                    let value = self.command.trim().to_string();
+                    self.command.clear();
+                    self.command_cursor = 0;
+                    self.command_palette_cursor = 0;
+                    self.focus = Focus::None;
+                    self.submit_command(&value)?;
+                }
             }
             KeyCode::Backspace => self.delete_command_before_cursor(),
             KeyCode::Delete => self.delete_command_at_cursor(),
@@ -292,11 +523,14 @@ impl PracticodeApp {
             KeyCode::Right => {
                 self.command_cursor = (self.command_cursor + 1).min(char_len(&self.command));
             }
+            KeyCode::Up => self.move_command_palette(-1),
+            KeyCode::Down => self.move_command_palette(1),
             KeyCode::Home => self.command_cursor = 0,
             KeyCode::End => self.command_cursor = char_len(&self.command),
             KeyCode::Char('?') if self.command.trim().is_empty() || self.command.trim() == "/" => {
                 self.command.clear();
                 self.command_cursor = 0;
+                self.command_palette_cursor = 0;
                 self.focus = Focus::None;
                 self.handle_command("help")?;
             }
@@ -389,6 +623,7 @@ impl PracticodeApp {
             self.command.push('/');
             self.command_cursor = 1;
         }
+        self.command_palette_cursor = 0;
         self.focus = Focus::Command;
     }
 
@@ -404,7 +639,7 @@ impl PracticodeApp {
     fn handle_command(&mut self, value: &str) -> Result<()> {
         if value.is_empty() || matches!(value, "help" | "h" | "?") {
             self.list_cursor = None;
-            self.write_output(HELP);
+            self.write_output(&self.help_text());
             return Ok(());
         }
         if value.starts_with("vim") {
@@ -428,7 +663,7 @@ impl PracticodeApp {
             "lang" if arg.is_empty() => self.action_cycle_language()?,
             "lang" if LANGUAGES.contains(&arg) => self.set_language(arg)?,
             "ui" if arg.is_empty() => self.action_toggle_ui_language()?,
-            "ui" if UI_LANGUAGES.contains(&arg) => self.set_ui_language(arg)?,
+            "ui" => self.set_ui_language(&normalize_ui_language(arg))?,
             "theme" if arg.is_empty() => self.action_toggle_theme()?,
             "theme" if THEMES.contains(&arg) => self.set_theme(arg)?,
             "source" | "next-source" if arg.is_empty() => {
@@ -640,9 +875,9 @@ impl PracticodeApp {
     }
 
     fn set_ui_language(&mut self, language: &str) -> Result<()> {
-        self.state.settings.ui_language = language.to_string();
+        self.state.settings.ui_language = normalize_ui_language(language);
         save_state(&self.root, &self.state)?;
-        self.write_text_output(&format!("UI language: {language}"));
+        self.write_text_output(&format!("UI language: {}", self.state.settings.ui_language));
         Ok(())
     }
 
@@ -742,6 +977,7 @@ impl PracticodeApp {
         let byte = byte_index(&self.command, self.command_cursor);
         self.command.insert(byte, char);
         self.command_cursor += 1;
+        self.command_palette_cursor = 0;
         self.normalize_command_input();
     }
 
@@ -753,6 +989,7 @@ impl PracticodeApp {
         let end = byte_index(&self.command, self.command_cursor);
         self.command.replace_range(start..end, "");
         self.command_cursor -= 1;
+        self.command_palette_cursor = 0;
         self.normalize_command_input();
     }
 
@@ -763,7 +1000,53 @@ impl PracticodeApp {
         let start = byte_index(&self.command, self.command_cursor);
         let end = byte_index(&self.command, self.command_cursor + 1);
         self.command.replace_range(start..end, "");
+        self.command_palette_cursor = 0;
         self.normalize_command_input();
+    }
+
+    fn command_suggestions(&self) -> Vec<&'static CommandHint> {
+        if self.focus != Focus::Command {
+            return Vec::new();
+        }
+        let Some(query) = self.command.trim_start().strip_prefix('/') else {
+            return Vec::new();
+        };
+        let query = query.to_lowercase();
+        COMMAND_HINTS
+            .iter()
+            .filter(|hint| hint.insert.starts_with(query.trim_start()))
+            .take(7)
+            .collect()
+    }
+
+    fn move_command_palette(&mut self, delta: isize) {
+        let len = self.command_suggestions().len();
+        if len == 0 {
+            return;
+        }
+        let cursor = self.command_palette_cursor as isize;
+        self.command_palette_cursor = ((cursor + delta).rem_euclid(len as isize)) as usize;
+    }
+
+    fn accept_command_palette(&mut self) -> Result<bool> {
+        let suggestions = self.command_suggestions();
+        if suggestions.is_empty() {
+            return Ok(false);
+        }
+        let hint = suggestions[self.command_palette_cursor.min(suggestions.len() - 1)];
+        if hint.keep_open {
+            self.command = format!("/{}", hint.insert);
+            self.command_cursor = char_len(&self.command);
+            self.command_palette_cursor = 0;
+            return Ok(true);
+        }
+        let value = hint.insert;
+        self.command.clear();
+        self.command_cursor = 0;
+        self.command_palette_cursor = 0;
+        self.focus = Focus::None;
+        self.submit_command(value)?;
+        Ok(true)
     }
 
     fn normalize_command_input(&mut self) {
@@ -984,13 +1267,33 @@ impl PracticodeApp {
     }
 
     fn mode_hint(&self) -> &'static str {
+        let lang = &self.state.settings.ui_language;
         match (self.focus, self.list_cursor.is_some(), self.show_output) {
-            (Focus::Command, _, _) => "Enter submit | Esc cancel",
-            (_, true, _) => "up/down move | Enter open | Esc close",
-            (_, _, true) => "Esc code | / command | ? help",
-            (Focus::Code, _, _) => "Esc then / command",
-            _ => "/ command | ? help",
+            (Focus::Command, _, _) => ui_text(lang, "hint_command"),
+            (_, true, _) => ui_text(lang, "hint_list"),
+            (_, _, true) => ui_text(lang, "hint_output"),
+            (Focus::Code, _, _) => ui_text(lang, "hint_code"),
+            _ => ui_text(lang, "hint_idle"),
         }
+    }
+
+    fn help_text(&self) -> String {
+        let lang = &self.state.settings.ui_language;
+        let commands = COMMAND_HINTS
+            .iter()
+            .filter(|hint| hint.help)
+            .map(|hint| format!("- `{}` {}", hint.display, ui_text(lang, hint.desc_key)))
+            .collect::<Vec<_>>()
+            .join("\n");
+        format!(
+            "# {}\n\n## {}\n\n1. Type code in the right pane.\n2. Press `Esc`, then choose `/run` from the command palette.\n3. Use `/next` when it passes.\n\n## {}\n\n{}\n\n## {}\n\n- `/` opens the command palette outside the editor.\n- `↑/↓` selects a command and `Enter` accepts it.\n- `Esc` cancels the command palette or leaves output.\n\n## {}\n\n- stdout is shown when a case fails.\n- stderr is shown without affecting the expected stdout.",
+            ui_text(lang, "help_title"),
+            ui_text(lang, "daily_loop"),
+            ui_text(lang, "commands"),
+            commands,
+            ui_text(lang, "keys"),
+            ui_text(lang, "debug_prints"),
+        )
     }
 }
 

@@ -11,59 +11,36 @@
 Personal coding practice, right in your terminal.
 
 `practicode` is a small Rust TUI for stdin/stdout practice: problem on the left, code on the right, judge loop in the same terminal.
-No browser tab shuffle, no paste dance, just solve and run.
 
-## Why It Exists
+## Start
 
-- Fast local judging for Python, TypeScript, Java, and Rust
-- Gradual problem flow with local history
-- AI-powered `/next <request>` when you want a custom problem
-- Personal problem-generation notes
-- Small stack: Rust, Ratatui, Crossterm, and plain process execution
+### Prerequisites
 
-## Quick Start
+- Node.js 18+ for npm installation.
+- Rust and Cargo. The npm package builds the Rust binary during install, and also on first run if needed.
+- A runtime for the language you practice in: Python, Node.js for TypeScript, JDK for Java, or Rust.
 
-```bash
-git clone https://github.com/baba9811/practicode.git
-cd practicode
-cargo run --
-```
-
-Want a local binary?
-
-```bash
-cargo install practicode
-practicode
-```
-
-Prefer npm?
+### npm
 
 ```bash
 npm install -g practicode
 practicode
 ```
 
-Working from a local checkout?
+### Cargo
 
 ```bash
-cargo install --path .
+cargo install practicode
 practicode
 ```
 
-Or with npm:
+### Local checkout
 
 ```bash
-npm install -g .
-practicode
-```
-
-The npm wrapper builds the Rust binary with Cargo, so Rust/Cargo is still required.
-
-## Update
-
-```bash
-cargo install --force practicode
-npm update -g practicode
+git clone https://github.com/baba9811/practicode.git
+cd practicode
+npm install
+npm start
 ```
 
 ## Daily Loop
@@ -72,15 +49,16 @@ The code editor starts focused.
 
 ```text
 write code
-Esc, then /run
-Esc, then /next easy string problem
+Esc, then /
+choose /run
+choose /next when it passes
 ```
+
+Typing `/` outside the editor opens the command palette. Use `up/down` to move, `Enter` to run or complete the selected command, and `Esc` to cancel.
 
 Submissions are saved as you type under `submissions/<problem-id>/solution.<ext>`.
 
 ## Commands
-
-Press `Esc`, then `/`, to focus the command bar.
 
 | Command | Action |
 | --- | --- |
@@ -93,21 +71,20 @@ Press `Esc`, then `/`, to focus the command bar.
 | `/giveup` | Show the reference answer |
 | `/ai hint` | Ask the selected AI about the current problem and submission |
 | `/provider codex` | Set AI provider: `codex` or `claude` |
-| `/model sonnet` | Set the model for `/ai` and AI-backed `/next`; use `auto` for the CLI default |
+| `/model auto` | Set the model for `/ai` and AI-backed `/next` |
 | `/note prefer hashmap practice` | Append a standing note for future problem generation |
 | `/notes` | Show your local next-problem notes |
-| `/lang python` | Set language: `python`, `ts`, `java`, `rust` |
-| `/ui ko` | Set UI language: `ko`, `en` |
-| `/theme` | Toggle dark/light theme |
+| `/lang python` | Set code language: `python`, `ts`, `java`, `rust` |
+| `/ui en` | Set UI language: `en`, `ko`, `ja`, `zh`, `es` |
+| `/theme dark` | Set theme: `dark` or `light` |
 | `/source ai` | Prefer AI for next-problem generation |
 | `/exit` | Quit |
 
-The editor owns normal typing keys.
-Press `Esc`, then `/`, when you want the command bar.
+The default UI language is English. Switch it any time with `/ui ko`, `/ui ja`, `/ui zh`, or `/ui es`.
 
-## Custom Problem Generation
+## AI Problems
 
-`/next <request>` passes your request into the selected AI problem generator. Examples:
+`/next <request>` passes your request into the selected AI problem generator.
 
 ```text
 /next a slightly harder string problem
@@ -115,19 +92,7 @@ Press `Esc`, then `/`, when you want the command bar.
 /next sorting problem, no graph yet
 ```
 
-AI generation reads [docs/problem-authoring-notes.md](docs/problem-authoring-notes.md) every time it creates a problem. Add personal preferences from inside the TUI:
-
-```text
-/note Prefer concise statements.
-/note I want more string and hashmap practice.
-/note Avoid DP until I ask for it.
-```
-
-Those notes are stored in `.practicode/problem_notes.md`, so they stay local.
-
-## AI Providers
-
-Codex is the default:
+Codex is the default provider:
 
 ```text
 /provider codex
@@ -142,10 +107,7 @@ Claude Code is also supported:
 /source ai
 ```
 
-`/ai <prompt>` uses the current provider for coaching. AI-backed `/next` uses the same provider and model.
-If you want a custom daemon or wrapper script, set `/ai-next-command <shell command>`; practicode passes `PRACTICODE_NEXT_REQUEST`, `PRACTICODE_AI_PROVIDER`, and `PRACTICODE_AI_MODEL`.
-
-Generated problem banks stay local:
+Generated problem banks and submissions stay local:
 
 | Path | Purpose |
 | --- | --- |
@@ -157,55 +119,21 @@ Generated problem banks stay local:
 
 Those paths are ignored by git, so your practice history stays yours.
 
+## Update
+
+```bash
+npm update -g practicode
+cargo install --force practicode
+```
+
 ## Safety
 
 `/run` executes your local submission as a normal process. practicode runs it from `.practicode/build/<problem-id>/run`, but this is not an OS sandbox. Only run code you trust.
 
+## Contributors
+
+Development, release, problem-authoring, and design references live in [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
+
 ## License
 
 practicode is MIT licensed. Third-party dependency license notes are in [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md).
-
-## Debug Prints
-
-`/run` shows raw stdout when a case fails. If you want debug output without changing the judged answer, print to stderr:
-
-```python
-import sys
-
-print("debug", value, file=sys.stderr)
-```
-
-## Development
-
-```bash
-cargo test
-cargo run -- --smoke
-cargo run --
-```
-
-The source is split by boring responsibility:
-
-| Path | Role |
-| --- | --- |
-| `src/core.rs` | Problem bank, state, rendering, judging |
-| `src/tui.rs` | Ratatui app, editor, command parser |
-| `src/ai.rs` | Codex/Claude command integration and notes |
-| `src/text.rs` | UTF-8 cursor math and Hangul composition |
-| `src/process.rs` | Process execution helpers |
-| `tests/` | Integration tests split by module |
-
-## Discovery Notes
-
-Recommended GitHub topics for this repo:
-`coding-practice`, `competitive-programming`, `algorithms`, `ratatui`, `tui`, `rust`, `codex`, `claude-code`, `local-first`.
-
-## References
-
-- Ratatui terminal UI library: https://ratatui.rs/
-- Crossterm terminal backend/events: https://github.com/crossterm-rs/crossterm
-- Codex CLI open-source repo: https://github.com/openai/codex
-- Claude Code CLI reference: https://docs.anthropic.com/en/docs/claude-code/cli-reference
-- Kattis problem package format: https://www.kattis.com/problem-package-format/
-- ICPC judging guidelines: https://icpc.global/regionals/regional-contest-cookbook-judging-guidelines
-- GitHub README image guidance: https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes
-- GitHub repository topics: https://docs.github.com/articles/classifying-your-repository-with-topics

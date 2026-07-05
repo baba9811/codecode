@@ -12,6 +12,7 @@
     "practicode": "bin/practicode.js"
   },
   "scripts": {
+    "start": "node bin/practicode.js",
     "build": "cargo build --release --locked",
     "postinstall": "node scripts/npm-postinstall.js",
     "smoke": "node bin/practicode.js --smoke"

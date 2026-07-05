@@ -18,7 +18,7 @@ fn load_state_uses_first_problem_when_state_file_is_missing() {
     let state = load_state(&root, &bank).unwrap();
     assert_eq!(state.current_problem, "001-hello-world");
     assert_eq!(state.settings.language, "python");
-    assert_eq!(state.settings.ui_language, "ko");
+    assert_eq!(state.settings.ui_language, "en");
     assert_eq!(state.settings.ai_provider, "codex");
     assert_eq!(state.settings.ai_model, "auto");
 }
@@ -120,10 +120,18 @@ fn render_problem_separates_input_output_blocks() {
     let root = tmp_root("render");
     let problem = load_bank(&root).unwrap().remove(0);
     let rendered = render_problem(&problem, "ko");
-    assert!(
-        rendered.contains("## Input\n\n입력은 없습니다.\n\n## Output\n\n`Hello, World!` 한 줄")
-    );
+    assert!(rendered.contains("## 입력\n\n입력은 없습니다.\n\n## 출력\n\n`Hello, World!` 한 줄"));
     assert!(rendered.contains("```text\n\n```"));
+}
+
+#[test]
+fn render_problem_defaults_to_english_and_supports_common_ui_languages() {
+    let root = tmp_root("render-i18n");
+    let problem = load_bank(&root).unwrap().remove(0);
+    assert!(render_problem(&problem, "xx").contains("## Input\n\nNo input."));
+    assert!(render_problem(&problem, "ja").contains("入力はありません。"));
+    assert!(render_problem(&problem, "zh-CN").contains("没有输入。"));
+    assert!(render_problem(&problem, "es").contains("No hay entrada."));
 }
 
 #[test]
@@ -132,8 +140,8 @@ fn render_markdown_plain_hides_problem_markdown_syntax() {
     let problem = load_bank(&root).unwrap().remove(0);
     let rendered = render_markdown_plain(&render_problem(&problem, "ko"));
     assert!(rendered.contains("001. Hello World"));
-    assert!(rendered.contains("Input"));
-    assert!(rendered.contains("Output"));
+    assert!(rendered.contains("입력"));
+    assert!(rendered.contains("출력"));
     assert!(rendered.contains("Hello, World!"));
     assert!(!rendered.contains("```"));
     assert!(!rendered.contains("##"));

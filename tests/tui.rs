@@ -1,6 +1,7 @@
 mod common;
 
 use common::{tmp_root, two_problem_bank};
+use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use practicode::tui::{PracticodeApp, TextEditor};
 
 #[test]
@@ -49,6 +50,17 @@ fn command_input_tracks_cursor_after_hangul_composition() {
     }
     assert_eq!(app.command_text(), "/안녕");
     assert_eq!(app.command_cursor(), 3);
+}
+
+#[test]
+fn slash_command_palette_completes_prompt_commands() {
+    let root = tmp_root("command-palette");
+    let mut app = PracticodeApp::new(root).unwrap();
+    app.focus_command_for_test();
+    app.insert_command_char_for_test('a');
+    app.handle_key_for_test(KeyEvent::new(KeyCode::Enter, KeyModifiers::NONE))
+        .unwrap();
+    assert_eq!(app.command_text(), "/ai ");
 }
 
 #[test]
