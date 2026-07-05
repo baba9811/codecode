@@ -17,6 +17,8 @@ jobs:
       - run: cargo fmt --check
       - run: cargo clippy --all-targets --all-features -- -D warnings
       - run: cargo test
+      - run: cargo install cargo-audit --locked
+      - run: cargo audit --deny warnings
       - run: cargo run -- --smoke
       - run: npm pack --dry-run
       - run: npm run smoke

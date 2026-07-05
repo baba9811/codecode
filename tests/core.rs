@@ -4,8 +4,8 @@ use common::{tmp_root, two_problem_bank};
 use practicode::{
     core::{
         AppState, HistoryItem, Settings, ensure_submission, judge, load_bank, load_state,
-        localized, next_problem, problem_by_id, record_pass, render_problem, render_problem_tui,
-        save_bank, save_state,
+        localized, next_problem, parse_language_list, parse_ui_language_list, problem_by_id,
+        record_pass, render_problem, render_problem_tui, save_bank, save_state,
     },
     process::which,
     text::render_markdown_plain,
@@ -62,6 +62,28 @@ fn load_bank_rejects_invalid_problem_shape() {
     .unwrap();
     let error = load_bank(&root).unwrap_err().to_string();
     assert!(error.contains("invalid problem id"));
+}
+
+#[test]
+fn load_bank_accepts_partial_answers_for_generation_profile() {
+    let root = tmp_root("partial-answers");
+    let mut problem = load_bank(&root).unwrap().remove(0);
+    problem.answers.retain(|language, _| language == "python");
+    save_bank(&root, &[problem]).unwrap();
+    let loaded = load_bank(&root).unwrap();
+    assert_eq!(loaded[0].answers.len(), 1);
+    assert!(loaded[0].answers.contains_key("python"));
+}
+
+#[test]
+fn generation_language_lists_accept_all_or_known_values_only() {
+    assert_eq!(
+        parse_language_list("python, rust, ruby"),
+        vec!["python", "rust"]
+    );
+    assert!(parse_language_list("all").is_empty());
+    assert_eq!(parse_ui_language_list("ko, en, xx"), vec!["ko", "en"]);
+    assert!(parse_ui_language_list("all").is_empty());
 }
 
 #[test]

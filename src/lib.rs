@@ -1,9 +1,5 @@
 use anyhow::{Context, Result};
-use crossterm::{
-    cursor::SetCursorStyle,
-    event::{DisableMouseCapture, EnableMouseCapture},
-    execute,
-};
+use crossterm::{cursor::SetCursorStyle, event::DisableMouseCapture, execute};
 use std::{env, io::stdout};
 
 pub mod ai;
@@ -59,7 +55,7 @@ pub fn run_cli() -> Result<()> {
 
     let mut app = tui::PracticodeApp::new(root)?;
     let mut terminal = ratatui::init();
-    let _ = execute!(stdout(), SetCursorStyle::SteadyBar, EnableMouseCapture);
+    let _ = execute!(stdout(), SetCursorStyle::SteadyBar);
     let result = app.run(&mut terminal);
     ratatui::restore();
     let _ = execute!(

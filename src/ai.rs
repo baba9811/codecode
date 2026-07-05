@@ -1,7 +1,7 @@
 use crate::{
     core::{
-        AppState, PROBLEM_NOTES_PATH, Problem, Settings, ensure_submission, normalize_ai_provider,
-        render_problem,
+        AppState, LANGUAGES, PROBLEM_NOTES_PATH, Problem, Settings, UI_LANGUAGES,
+        ensure_submission, normalize_ai_provider, render_problem,
     },
     process::{run_capture, sh_quote, shell_process, unique_temp_path, which},
 };
@@ -78,10 +78,49 @@ pub fn run_ai_next(root: &Path, state: &AppState, force: bool, request: &str) ->
     }
 }
 
+pub fn run_ai_generate(root: &Path, state: &AppState, request: &str) -> String {
+    let provider = normalize_ai_provider(&state.settings.ai_provider);
+    let command = if state.settings.next_ai_command().trim().is_empty() {
+        default_ai_generate_command(root, &state.settings, request)
+    } else {
+        state.settings.next_ai_command().to_string()
+    };
+    let mut process = shell_process(&command);
+    process
+        .current_dir(root)
+        .env("PRACTICODE_NEXT_REQUEST", request)
+        .env("PRACTICODE_GENERATE_BACKGROUND", "1")
+        .env("PRACTICODE_AI_PROVIDER", &provider)
+        .env("PRACTICODE_AI_MODEL", &state.settings.ai_model);
+    match run_capture(&mut process, "", Duration::from_secs(900)) {
+        Ok(run) if run.code == Some(0) => {
+            let output = output_text(&run.stdout, &run.stderr);
+            format!("{provider} background generation finished\n{output}")
+                .trim()
+                .to_string()
+        }
+        Ok(run) => {
+            let output = output_text(&run.stdout, &run.stderr);
+            format!(
+                "{provider} background generation failed ({})\n{output}",
+                run.code.unwrap_or(-1)
+            )
+        }
+        Err(error) => format!("{provider} background generation failed\n{error}"),
+    }
+}
+
 pub fn default_ai_next_command(root: &Path, settings: &Settings, request: &str) -> String {
     match normalize_ai_provider(&settings.ai_provider).as_str() {
         "claude" => default_claude_next_command(root, settings, request),
         _ => default_codex_next_command(root, settings, request),
+    }
+}
+
+pub fn default_ai_generate_command(root: &Path, settings: &Settings, request: &str) -> String {
+    match normalize_ai_provider(&settings.ai_provider).as_str() {
+        "claude" => default_claude_generate_command(root, settings, request),
+        _ => default_codex_generate_command(root, settings, request),
     }
 }
 
@@ -128,7 +167,7 @@ pub fn default_ai_next_prompt(request: &str) -> String {
 
 pub fn default_ai_next_prompt_with_settings(settings: &Settings, request: &str) -> String {
     format!(
-        "Read AGENTS.md, docs/problem-authoring-notes.md if present, .practicode/problem_notes.md if present, problems/INDEX.md if present, .practicode/problem_bank.json if present, and .practicode/problem-state.json. Create exactly one new non-duplicate coding practice problem. The built-in 001-hello-world already exists, so do not duplicate it. User request: {}. Practice profile: difficulty preference: {}; preferred topics: {}; avoid topics: {}; code language: {}; UI language: {}. Treat difficulty auto as gradual progression from state; otherwise prefer the requested difficulty unless the direct user request conflicts. Make the smallest valid edits: update .practicode/problem_bank.json, one problem directory, problems/INDEX.md, and .practicode/problem-state.json. Do not include the answer in the problem statement.",
+        "Read AGENTS.md, docs/problem-authoring-notes.md if present, .practicode/problem_notes.md if present, problems/INDEX.md if present, .practicode/problem_bank.json if present, and .practicode/problem-state.json. Create exactly one new non-duplicate coding practice problem. The built-in 001-hello-world already exists, so do not duplicate it. User request: {}. User profile: difficulty preference: {}; preferred topics: {}; avoid topics: {}; code language: {}; UI language: {}; generated answer languages: {}; generated UI languages: {}. Treat difficulty auto as gradual progression from state; otherwise prefer the requested difficulty unless the direct user request conflicts. Make the smallest valid edits: update .practicode/problem_bank.json, one problem directory, problems/INDEX.md, and .practicode/problem-state.json. Do not include the answer in the problem statement.",
         if request.is_empty() {
             "(none)"
         } else {
@@ -138,7 +177,27 @@ pub fn default_ai_next_prompt_with_settings(settings: &Settings, request: &str) 
         list_or_none(&settings.topics),
         list_or_none(&settings.avoid_topics),
         settings.language,
-        settings.ui_language
+        settings.ui_language,
+        list_or_all(&settings.generate_languages, LANGUAGES),
+        list_or_all(&settings.generate_ui_languages, UI_LANGUAGES)
+    )
+}
+
+pub fn default_ai_generate_prompt_with_settings(settings: &Settings, request: &str) -> String {
+    format!(
+        "Read AGENTS.md, docs/problem-authoring-notes.md if present, .practicode/problem_notes.md if present, problems/INDEX.md if present, .practicode/problem_bank.json if present, and .practicode/problem-state.json. Create exactly one new non-duplicate coding practice problem for later use. The built-in 001-hello-world already exists, so do not duplicate it. User request: {}. User profile: difficulty preference: {}; preferred topics: {}; avoid topics: {}; current code language: {}; current UI language: {}; generated answer languages: {}; generated UI languages: {}. Treat difficulty auto as gradual progression from state; otherwise prefer the requested difficulty unless the direct user request conflicts. Make the smallest valid edits: update .practicode/problem_bank.json, one problem directory, and problems/INDEX.md. Preserve .practicode/problem-state.json current_problem, history, solved, and settings; do not switch the current problem. Do not include the answer in the problem statement.",
+        if request.is_empty() {
+            "(none)"
+        } else {
+            request
+        },
+        settings.difficulty,
+        list_or_none(&settings.topics),
+        list_or_none(&settings.avoid_topics),
+        settings.language,
+        settings.ui_language,
+        list_or_all(&settings.generate_languages, LANGUAGES),
+        list_or_all(&settings.generate_ui_languages, UI_LANGUAGES)
     )
 }
 
@@ -319,6 +378,22 @@ fn default_codex_next_command(root: &Path, settings: &Settings, request: &str) -
     format!("{start}; {exec}")
 }
 
+fn default_codex_generate_command(root: &Path, settings: &Settings, request: &str) -> String {
+    let start = "if [ -x \"$HOME/.codex/packages/standalone/current/codex\" ]; then codex app-server daemon start >/dev/null 2>&1 || true; fi";
+    let mut exec = format!(
+        "codex exec --ephemeral --cd {} --sandbox workspace-write",
+        sh_quote(&root.display().to_string())
+    );
+    if let Some(model) = settings.model_arg() {
+        exec.push_str(&format!(" --model {}", sh_quote(model)));
+    }
+    exec.push(' ');
+    exec.push_str(&sh_quote(&default_ai_generate_prompt_with_settings(
+        settings, request,
+    )));
+    format!("{start}; {exec}")
+}
+
 fn codex_daemon_path() -> Option<PathBuf> {
     env::var_os("HOME").map(|home| {
         PathBuf::from(home)
@@ -343,6 +418,22 @@ fn default_claude_next_command(root: &Path, settings: &Settings, request: &str) 
     )
 }
 
+fn default_claude_generate_command(root: &Path, settings: &Settings, request: &str) -> String {
+    let mut claude = "claude --permission-mode acceptEdits".to_string();
+    if let Some(model) = settings.model_arg() {
+        claude.push_str(&format!(" --model {}", sh_quote(model)));
+    }
+    claude.push_str(" -p ");
+    claude.push_str(&sh_quote(&default_ai_generate_prompt_with_settings(
+        settings, request,
+    )));
+    format!(
+        "claude daemon status >/dev/null 2>&1 || true; cd {}; {}",
+        sh_quote(&root.display().to_string()),
+        claude
+    )
+}
+
 fn output_text(stdout: &str, stderr: &str) -> String {
     [stdout.trim(), stderr.trim()]
         .into_iter()
@@ -354,6 +445,14 @@ fn output_text(stdout: &str, stderr: &str) -> String {
 fn list_or_none(values: &[String]) -> String {
     if values.is_empty() {
         "(none)".to_string()
+    } else {
+        values.join(", ")
+    }
+}
+
+fn list_or_all(values: &[String], all: &[&str]) -> String {
+    if values.is_empty() {
+        all.join(", ")
     } else {
         values.join(", ")
     }

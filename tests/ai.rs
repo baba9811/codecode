@@ -3,8 +3,9 @@ mod common;
 use common::tmp_root;
 use practicode::{
     ai::{
-        append_problem_note, default_ai_next_command, default_ai_next_prompt,
-        default_ai_next_prompt_with_settings, provider_status, read_problem_notes, run_ai_next,
+        append_problem_note, default_ai_generate_prompt_with_settings, default_ai_next_command,
+        default_ai_next_prompt, default_ai_next_prompt_with_settings, provider_status,
+        read_problem_notes, run_ai_next,
     },
     core::{AppState, Settings},
 };
@@ -19,7 +20,7 @@ fn default_ai_next_prompt_reads_notes_and_includes_request() {
 }
 
 #[test]
-fn default_ai_next_prompt_includes_practice_profile() {
+fn default_ai_next_prompt_includes_user_profile() {
     let prompt = default_ai_next_prompt_with_settings(
         &Settings {
             language: "rust".to_string(),
@@ -31,11 +32,28 @@ fn default_ai_next_prompt_includes_practice_profile() {
         },
         "more parsing practice",
     );
+    assert!(prompt.contains("User profile"));
     assert!(prompt.contains("difficulty preference: medium"));
     assert!(prompt.contains("preferred topics: strings, hashmap"));
     assert!(prompt.contains("avoid topics: dp"));
     assert!(prompt.contains("code language: rust"));
     assert!(prompt.contains("UI language: ko"));
+}
+
+#[test]
+fn default_ai_prompts_include_generation_language_scope() {
+    let settings = Settings {
+        generate_languages: vec!["python".to_string(), "rust".to_string()],
+        generate_ui_languages: vec!["ko".to_string(), "en".to_string()],
+        ..Settings::default()
+    };
+    let prompt = default_ai_next_prompt_with_settings(&settings, "strings");
+    assert!(prompt.contains("generated answer languages: python, rust"));
+    assert!(prompt.contains("generated UI languages: ko, en"));
+
+    let background = default_ai_generate_prompt_with_settings(&settings, "strings");
+    assert!(background.contains("for later use"));
+    assert!(background.contains("Preserve .practicode/problem-state.json current_problem"));
 }
 
 #[test]

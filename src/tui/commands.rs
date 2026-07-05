@@ -121,6 +121,20 @@ pub(super) const COMMAND_HINTS: &[CommandHint] = &[
         help: true,
     },
     CommandHint {
+        insert: "generate-languages ",
+        display: "/generate-languages <list|all>",
+        desc_key: "cmd_generate_languages",
+        keep_open: true,
+        help: true,
+    },
+    CommandHint {
+        insert: "generate-ui ",
+        display: "/generate-ui <list|all>",
+        desc_key: "cmd_generate_ui",
+        keep_open: true,
+        help: true,
+    },
+    CommandHint {
         insert: "provider codex",
         display: "/provider codex",
         desc_key: "cmd_provider",

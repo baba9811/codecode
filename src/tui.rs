@@ -1,15 +1,15 @@
 use crate::{
     ai::{
         ModelCatalog, append_problem_note, available_models, provider_status, read_problem_notes,
-        run_ai_next, run_ai_prompt,
+        run_ai_generate, run_ai_next, run_ai_prompt,
     },
     core::{
         AI_PROVIDERS, AppState, DIFFICULTIES, HistoryItem, LANGUAGES, PROBLEM_NOTES_PATH, Problem,
-        THEMES, UI_LANGUAGES, ensure_problem_files, ensure_submission, ext_for, give_up, judge,
-        load_bank, load_state, localized, next_problem, normalize_ai_provider,
+        STATE_PATH, THEMES, UI_LANGUAGES, ensure_problem_files, ensure_submission, ext_for,
+        give_up, judge, load_bank, load_state, localized, next_problem, normalize_ai_provider,
         normalize_difficulty, normalize_language, normalize_next_source, normalize_ui_language,
-        parse_topic_list, previous_problem, problem_by_id, record_pass, save_state, template_for,
-        ui_text,
+        parse_language_list, parse_topic_list, parse_ui_language_list, previous_problem,
+        problem_by_id, record_pass, save_state, template_for, ui_text,
     },
     text::{
         byte_index, char_len, compose_hangul_jamo, display_width, prefix, render_markdown_plain,
@@ -18,9 +18,10 @@ use crate::{
 };
 use anyhow::Result;
 use crossterm::event::{
-    self, Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers, MouseButton, MouseEvent,
-    MouseEventKind,
+    self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEvent, KeyEventKind,
+    KeyModifiers, MouseButton, MouseEvent, MouseEventKind,
 };
+use crossterm::execute;
 use ratatui::{
     DefaultTerminal, Frame,
     layout::{Constraint, Direction, Layout, Position, Rect},
@@ -31,6 +32,7 @@ use ratatui::{
 use std::{
     collections::HashMap,
     fs,
+    io::stdout,
     path::PathBuf,
     sync::mpsc::{self, Receiver},
     thread,
@@ -38,7 +40,11 @@ use std::{
 };
 
 mod commands;
+mod editor;
+mod problem_view;
+mod settings_panel;
 use self::commands::COMMAND_HINTS;
+pub use self::editor::TextEditor;
 
 const UPDATE_CHECK_INTERVAL: Duration = Duration::from_secs(30 * 60);
 
@@ -73,10 +79,18 @@ pub struct PracticodeApp {
     show_output: bool,
     focus: Focus,
     list_cursor: Option<usize>,
+    settings_cursor: Option<usize>,
     busy_label: String,
     busy_body: String,
+    busy_started: Option<Instant>,
     busy_frame: usize,
+    busy_hits: usize,
+    busy_misses: usize,
     task_rx: Option<Receiver<TaskResult>>,
+    generate_rx: Option<Receiver<String>>,
+    generate_bank_len: usize,
+    generate_started: Option<Instant>,
+    generate_notice: Option<String>,
     update_rx: Option<Receiver<UpdateCheck>>,
     model_rx: Option<Receiver<ModelCatalog>>,
     available_models: Vec<String>,
@@ -88,6 +102,7 @@ pub struct PracticodeApp {
     code_area: Rect,
     output_area: Rect,
     command_area: Rect,
+    mouse_capture: bool,
     should_quit: bool,
 }
 
@@ -102,6 +117,7 @@ enum TaskResult {
 
 impl PracticodeApp {
     pub fn new(root: PathBuf) -> Result<Self> {
+        let first_run = !root.join(STATE_PATH).exists();
         let bank = load_bank(&root)?;
         let state = load_state(&root, &bank)?;
         let problem = problem_by_id(&bank, &state.current_problem)
@@ -122,10 +138,18 @@ impl PracticodeApp {
             show_output: false,
             focus: Focus::Code,
             list_cursor: None,
+            settings_cursor: None,
             busy_label: String::new(),
             busy_body: String::new(),
+            busy_started: None,
             busy_frame: 0,
+            busy_hits: 0,
+            busy_misses: 0,
             task_rx: None,
+            generate_rx: None,
+            generate_bank_len: 0,
+            generate_started: None,
+            generate_notice: None,
             update_rx: None,
             model_rx: None,
             available_models: Vec::new(),
@@ -137,9 +161,16 @@ impl PracticodeApp {
             code_area: Rect::default(),
             output_area: Rect::default(),
             command_area: Rect::default(),
+            mouse_capture: false,
             should_quit: false,
         };
         app.load_code_editor()?;
+        if first_run {
+            save_state(&app.root, &app.state)?;
+            app.show_profile_with_intro(
+                "Welcome to practicode\n\nUse the setup panel below first.",
+            );
+        }
         Ok(app)
     }
 
@@ -147,8 +178,10 @@ impl PracticodeApp {
         self.start_update_check();
         self.start_model_check();
         while !self.should_quit {
+            self.sync_mouse_capture();
             terminal.draw(|frame| self.draw(frame))?;
             self.check_task();
+            self.check_background_generation();
             self.check_update();
             self.maybe_start_periodic_update_check();
             self.start_model_check();
@@ -165,6 +198,7 @@ impl PracticodeApp {
             }
         }
         self.save_code().ok();
+        self.disable_mouse_capture();
         Ok(())
     }
 
@@ -206,8 +240,20 @@ impl PracticodeApp {
         &self.busy_label
     }
 
+    pub fn busy_attempts_for_test(&self) -> usize {
+        self.busy_hits + self.busy_misses
+    }
+
     pub fn has_task(&self) -> bool {
         self.task_rx.is_some()
+    }
+
+    pub fn has_background_generation_for_test(&self) -> bool {
+        self.generate_rx.is_some()
+    }
+
+    pub fn check_background_generation_for_test(&mut self) {
+        self.check_background_generation();
     }
 
     pub fn should_quit_for_test(&self) -> bool {
@@ -216,6 +262,10 @@ impl PracticodeApp {
 
     pub fn status_text_for_test(&self) -> String {
         self.status_text()
+    }
+
+    pub fn wants_mouse_capture_for_test(&self) -> bool {
+        self.wants_mouse_capture()
     }
 
     pub fn output_for_test(&self) -> &str {
@@ -263,21 +313,28 @@ impl PracticodeApp {
         self.output_area = body[1];
         self.command_area = vertical[2];
 
-        let problem = Paragraph::new(self.problem_text())
-            .block(Self::block(
-                ui_text(&self.state.settings.ui_language, "problem"),
-                self.state.settings.theme == "light",
-                false,
-            ))
-            .wrap(Wrap { trim: false });
+        let light = self.state.settings.theme == "light";
+        let problem = Paragraph::new(problem_view::render(
+            &self.problem,
+            &self.state.settings.ui_language,
+            light,
+        ))
+        .style(Self::pane_style(light))
+        .block(Self::block(
+            ui_text(&self.state.settings.ui_language, "problem"),
+            light,
+            false,
+        ))
+        .wrap(Wrap { trim: false });
         frame.render_widget(problem, body[0]);
 
         if self.show_output {
             let text = self.output_text();
             let output = Paragraph::new(text)
+                .style(Self::pane_style(light))
                 .block(Self::block(
                     ui_text(&self.state.settings.ui_language, "output"),
-                    self.state.settings.theme == "light",
+                    light,
                     self.focus != Focus::Command,
                 ))
                 .wrap(Wrap { trim: false });
@@ -287,26 +344,23 @@ impl PracticodeApp {
                 .editor
                 .visible_text(body[1].height.saturating_sub(2) as usize);
             let title = format!("solution.{}", ext_for(&self.state.settings.language));
-            let code = Paragraph::new(code).block(Self::block(
-                &title,
-                self.state.settings.theme == "light",
-                self.focus == Focus::Code,
-            ));
+            let code = Paragraph::new(code)
+                .style(Self::pane_style(light))
+                .block(Self::block(&title, light, self.focus == Focus::Code));
             frame.render_widget(code, body[1]);
         }
 
-        let status =
-            Paragraph::new(self.status_text()).style(if self.state.settings.theme == "light" {
-                Style::default()
-                    .fg(Color::Blue)
-                    .bg(Color::Rgb(219, 234, 254))
-                    .add_modifier(Modifier::BOLD)
-            } else {
-                Style::default()
-                    .fg(Color::Rgb(200, 211, 245))
-                    .bg(Color::Rgb(21, 32, 51))
-                    .add_modifier(Modifier::BOLD)
-            });
+        let status = Paragraph::new(self.status_text()).style(if light {
+            Style::default()
+                .fg(Color::Blue)
+                .bg(Color::Rgb(219, 234, 254))
+                .add_modifier(Modifier::BOLD)
+        } else {
+            Style::default()
+                .fg(Color::Rgb(200, 211, 245))
+                .bg(Color::Rgb(21, 32, 51))
+                .add_modifier(Modifier::BOLD)
+        });
         frame.render_widget(status, vertical[1]);
 
         let command_text = if self.focus == Focus::Command || !self.command.is_empty() {
@@ -315,15 +369,42 @@ impl PracticodeApp {
             ui_text(&self.state.settings.ui_language, "command_placeholder").to_string()
         };
         let command = Paragraph::new(command_text)
+            .style(Self::pane_style(light))
             .block(Self::block(
                 ui_text(&self.state.settings.ui_language, "command"),
-                self.state.settings.theme == "light",
+                light,
                 self.focus == Focus::Command,
             ))
             .wrap(Wrap { trim: false });
         frame.render_widget(command, vertical[2]);
         self.draw_command_palette(frame, vertical[2]);
         self.set_terminal_cursor(frame, body[1], vertical[2]);
+    }
+
+    fn wants_mouse_capture(&self) -> bool {
+        !self.show_output
+    }
+
+    fn sync_mouse_capture(&mut self) {
+        let want = self.wants_mouse_capture();
+        if want == self.mouse_capture {
+            return;
+        }
+        let result = if want {
+            execute!(stdout(), EnableMouseCapture)
+        } else {
+            execute!(stdout(), DisableMouseCapture)
+        };
+        if result.is_ok() {
+            self.mouse_capture = want;
+        }
+    }
+
+    fn disable_mouse_capture(&mut self) {
+        if self.mouse_capture {
+            let _ = execute!(stdout(), DisableMouseCapture);
+            self.mouse_capture = false;
+        }
     }
 
     fn output_text(&self) -> Text<'static> {
@@ -361,10 +442,40 @@ impl PracticodeApp {
                 .bg(Color::Rgb(31, 41, 55))
         };
         if !self.busy_label.is_empty() {
-            return Text::from(Line::from(Span::styled(
-                format!("{}{}", self.busy_body, self.busy_dots()),
+            let elapsed = self
+                .busy_started
+                .map(|started| started.elapsed().as_secs())
+                .unwrap_or_default();
+            let mut lines = vec![Line::from(Span::styled(
+                format!("{}{}  {}s", self.busy_body, self.busy_dots(), elapsed),
                 title_style,
-            )));
+            ))];
+            if self.busy_label == "next" {
+                lines.extend([
+                    Line::default(),
+                    Line::from(Span::styled(self.busy_game_track(), code_style)),
+                    Line::from(Span::styled(
+                        ui_text(&self.state.settings.ui_language, "busy_warmup").to_string(),
+                        body_style,
+                    )),
+                    Line::from(Span::styled(
+                        format!(
+                            "{}: {}    {}: {}",
+                            ui_text(&self.state.settings.ui_language, "hits"),
+                            self.busy_hits,
+                            ui_text(&self.state.settings.ui_language, "misses"),
+                            self.busy_misses
+                        ),
+                        label_style,
+                    )),
+                    Line::from(Span::styled(
+                        ui_text(&self.state.settings.ui_language, "busy_commands_paused")
+                            .to_string(),
+                        body_style,
+                    )),
+                ]);
+            }
+            return Text::from(lines);
         }
         let output = if self.output_is_markdown {
             render_markdown_plain(&self.output)
@@ -399,141 +510,6 @@ impl PracticodeApp {
         Text::from(lines)
     }
 
-    fn problem_text(&self) -> Text<'static> {
-        let lang = normalize_ui_language(&self.state.settings.ui_language);
-        let light = self.state.settings.theme == "light";
-        let title_style = if light {
-            Style::default()
-                .fg(Color::Blue)
-                .add_modifier(Modifier::BOLD)
-        } else {
-            Style::default()
-                .fg(Color::Yellow)
-                .add_modifier(Modifier::BOLD)
-        };
-        let section_style = if light {
-            Style::default()
-                .fg(Color::Magenta)
-                .add_modifier(Modifier::BOLD)
-        } else {
-            Style::default()
-                .fg(Color::Cyan)
-                .add_modifier(Modifier::BOLD)
-        };
-        let body_style = if light {
-            Style::default().fg(Color::Black)
-        } else {
-            Style::default().fg(Color::Rgb(229, 231, 235))
-        };
-        let meta_style = if light {
-            Style::default().fg(Color::Rgb(75, 85, 99))
-        } else {
-            Style::default().fg(Color::Rgb(156, 163, 175))
-        };
-        let code_style = if light {
-            Style::default()
-                .fg(Color::Black)
-                .bg(Color::Rgb(229, 231, 235))
-        } else {
-            Style::default()
-                .fg(Color::Rgb(243, 244, 246))
-                .bg(Color::Rgb(31, 41, 55))
-        };
-        let number = self
-            .problem
-            .id
-            .split_once('-')
-            .map(|(number, _)| number)
-            .unwrap_or(&self.problem.id);
-        let mut lines = vec![
-            Line::from(Span::styled(
-                format!("{number}. {}", localized(&self.problem.title, &lang)),
-                title_style,
-            )),
-            Line::from(Span::styled(
-                format!(
-                    "{}: {}    {}: {}",
-                    ui_text(&lang, "difficulty"),
-                    self.problem.difficulty,
-                    ui_text(&lang, "topics"),
-                    self.problem.topics.join(", ")
-                ),
-                meta_style,
-            )),
-        ];
-        lines.push(Line::default());
-        for line in localized(&self.problem.statement, &lang).trim_end().lines() {
-            lines.push(Line::from(Span::styled(line.to_string(), body_style)));
-        }
-        Self::push_problem_section(
-            &mut lines,
-            ui_text(&lang, "input"),
-            &localized(&self.problem.input, &lang),
-            section_style,
-            body_style,
-        );
-        Self::push_problem_section(
-            &mut lines,
-            ui_text(&lang, "output"),
-            &localized(&self.problem.output, &lang),
-            section_style,
-            body_style,
-        );
-        lines.push(Line::default());
-        lines.push(Line::from(Span::styled(
-            ui_text(&lang, "examples").to_string(),
-            section_style,
-        )));
-        for (index, case) in self.problem.examples.iter().enumerate() {
-            lines.push(Line::from(Span::styled(
-                format!("  {} {}", ui_text(&lang, "example"), index + 1),
-                meta_style.add_modifier(Modifier::BOLD),
-            )));
-            lines.push(Line::from(Span::styled(
-                format!("    {}", ui_text(&lang, "input")),
-                meta_style,
-            )));
-            Self::push_code_lines(&mut lines, &case.input, code_style);
-            lines.push(Line::from(Span::styled(
-                format!("    {}", ui_text(&lang, "output")),
-                meta_style,
-            )));
-            Self::push_code_lines(&mut lines, &case.output, code_style);
-        }
-        Text::from(lines)
-    }
-
-    fn push_problem_section(
-        lines: &mut Vec<Line<'static>>,
-        title: &str,
-        body: &str,
-        section_style: Style,
-        body_style: Style,
-    ) {
-        lines.push(Line::default());
-        lines.push(Line::from(Span::styled(title.to_string(), section_style)));
-        for line in body.trim_end().lines() {
-            lines.push(Line::from(Span::styled(format!("  {line}"), body_style)));
-        }
-    }
-
-    fn push_code_lines(lines: &mut Vec<Line<'static>>, body: &str, code_style: Style) {
-        let body = body.trim_end();
-        if body.is_empty() {
-            lines.push(Line::from(vec![
-                Span::raw("      "),
-                Span::styled("<empty>".to_string(), code_style),
-            ]));
-            return;
-        }
-        for line in body.lines() {
-            lines.push(Line::from(vec![
-                Span::raw("      "),
-                Span::styled(line.to_string(), code_style),
-            ]));
-        }
-    }
-
     fn draw_command_palette(&self, frame: &mut Frame, command_area: Rect) {
         let suggestions = self.command_suggestions();
         if suggestions.is_empty() || command_area.y < 3 {
@@ -565,12 +541,15 @@ impl PracticodeApp {
             .collect::<Vec<_>>();
         lines.push(ui_text(&self.state.settings.ui_language, "palette_hint").to_string());
         frame.render_widget(Clear, area);
+        let light = self.state.settings.theme == "light";
         frame.render_widget(
-            Paragraph::new(lines.join("\n")).block(Self::block(
-                ui_text(&self.state.settings.ui_language, "commands"),
-                self.state.settings.theme == "light",
-                true,
-            )),
+            Paragraph::new(lines.join("\n"))
+                .style(Self::pane_style(light))
+                .block(Self::block(
+                    ui_text(&self.state.settings.ui_language, "commands"),
+                    light,
+                    true,
+                )),
             area,
         );
     }
@@ -591,10 +570,36 @@ impl PracticodeApp {
         } else {
             Style::default().fg(Color::Cyan)
         };
+        let border = border.bg(Self::pane_bg(light));
         Block::default()
             .borders(Borders::ALL)
             .title(Self::pane_title(title, active))
+            .style(Self::pane_style(light))
             .border_style(border)
+    }
+
+    fn pane_style(light: bool) -> Style {
+        if light {
+            Style::default()
+                .fg(Color::Rgb(17, 24, 39))
+                .bg(Self::pane_bg(light))
+        } else {
+            Style::default()
+                .fg(Color::Rgb(229, 231, 235))
+                .bg(Self::pane_bg(light))
+        }
+    }
+
+    fn pane_bg(light: bool) -> Color {
+        if light {
+            Color::Rgb(248, 250, 252)
+        } else {
+            Color::Rgb(17, 24, 39)
+        }
+    }
+
+    pub fn pane_style_for_test(light: bool) -> Style {
+        Self::pane_style(light)
     }
 
     fn pane_title(title: &str, active: bool) -> String {
@@ -610,6 +615,9 @@ impl PracticodeApp {
             self.should_quit = true;
             return Ok(());
         }
+        if self.handle_busy_key(key) {
+            return Ok(());
+        }
         match self.focus {
             Focus::Command => self.handle_command_key(key),
             Focus::Code => self.handle_code_key(key),
@@ -618,13 +626,19 @@ impl PracticodeApp {
     }
 
     fn handle_mouse(&mut self, mouse: MouseEvent) -> Result<()> {
+        if self.task_rx.is_some() {
+            self.focus = Focus::Output;
+            return Ok(());
+        }
         if !matches!(mouse.kind, MouseEventKind::Down(MouseButton::Left)) {
             return Ok(());
         }
         let position = Position::new(mouse.column, mouse.row);
         if self.command_area.contains(position) {
             self.focus_command();
-        } else if self.code_area.contains(position) || self.output_area.contains(position) {
+        } else if self.show_output && self.output_area.contains(position) {
+            self.focus = Focus::Output;
+        } else if self.code_area.contains(position) {
             self.action_edit()?;
         }
         Ok(())
@@ -708,6 +722,20 @@ impl PracticodeApp {
     }
 
     fn handle_global_key(&mut self, key: KeyEvent) -> Result<()> {
+        if self.settings_cursor.is_some() {
+            match key.code {
+                KeyCode::Up | KeyCode::Char('k') => self.move_settings_cursor(-1),
+                KeyCode::Down | KeyCode::Char('j') => self.move_settings_cursor(1),
+                KeyCode::Char(' ') | KeyCode::Enter => self.change_selected_setting()?,
+                KeyCode::Esc => {
+                    self.settings_cursor = None;
+                    self.show_output = false;
+                    self.focus = Focus::Code;
+                }
+                _ => self.handle_global_shortcut(key)?,
+            }
+            return Ok(());
+        }
         if let Some(cursor) = self.list_cursor {
             match key.code {
                 KeyCode::Up | KeyCode::Char('k') => self.move_list_cursor(-1),
@@ -768,6 +796,21 @@ impl PracticodeApp {
     }
 
     fn handle_command(&mut self, value: &str) -> Result<()> {
+        if self.task_rx.is_some() {
+            let command = value
+                .trim()
+                .strip_prefix('/')
+                .unwrap_or(value.trim())
+                .split_whitespace()
+                .next()
+                .unwrap_or("");
+            if matches!(command, "exit" | "quit" | "q") {
+                self.should_quit = true;
+            } else {
+                self.focus = Focus::Output;
+            }
+            return Ok(());
+        }
         if value.is_empty() || matches!(value, "help" | "h" | "?") {
             self.list_cursor = None;
             self.write_output(&self.help_text());
@@ -806,6 +849,14 @@ impl PracticodeApp {
             "topics" | "topic" => self.set_topics(arg, false)?,
             "avoid" | "skip" if arg.is_empty() => self.show_profile(),
             "avoid" | "skip" => self.set_topics(arg, true)?,
+            "generate-languages" | "gen-languages" | "gen-lang" if arg.is_empty() => {
+                self.show_profile()
+            }
+            "generate-languages" | "gen-languages" | "gen-lang" => {
+                self.set_generate_languages(arg, false)?
+            }
+            "generate-ui" | "gen-ui" if arg.is_empty() => self.show_profile(),
+            "generate-ui" | "gen-ui" => self.set_generate_languages(arg, true)?,
             "source" | "next-source" if arg.is_empty() => {
                 self.write_text_output(&self.next_source_help());
             }
@@ -871,6 +922,7 @@ impl PracticodeApp {
 
     fn action_edit(&mut self) -> Result<()> {
         self.load_code_editor()?;
+        self.settings_cursor = None;
         self.show_output = false;
         self.focus = Focus::Code;
         Ok(())
@@ -898,13 +950,22 @@ impl PracticodeApp {
     }
 
     fn action_next(&mut self, request: &str) -> Result<()> {
+        self.check_background_generation();
         let request = request.trim();
         let old_problem = self.state.current_problem.clone();
         if let Some(problem) = next_problem(&self.root, &self.bank, &mut self.state)? {
+            self.generate_notice = None;
             self.problem = problem;
             self.load_code_editor()?;
+            self.settings_cursor = None;
             self.show_output = false;
             self.focus = Focus::Code;
+            return Ok(());
+        }
+        if self.generate_rx.is_some() {
+            self.write_text_output(
+                "A background generation is already running. Keep solving; /next will pick up the new problem when it finishes.",
+            );
             return Ok(());
         }
         self.start_next_problem(old_problem, true, request.to_string());
@@ -912,11 +973,30 @@ impl PracticodeApp {
     }
 
     fn action_generate(&mut self, request: &str) {
-        self.start_next_problem(
-            self.state.current_problem.clone(),
-            false,
-            request.trim().to_string(),
-        );
+        self.check_background_generation();
+        if self.task_rx.is_some() || self.generate_rx.is_some() {
+            let message = "Generation is already running; skipped duplicate /generate.";
+            self.generate_notice = Some(message.to_string());
+            self.write_text_output(message);
+            return;
+        }
+        self.start_background_generation(request.trim().to_string());
+    }
+
+    fn start_background_generation(&mut self, request: String) {
+        let root = self.root.clone();
+        let state = self.state.clone();
+        let (tx, rx) = mpsc::channel();
+        thread::spawn(move || {
+            let _ = tx.send(run_ai_generate(&root, &state, &request));
+        });
+        self.generate_bank_len = self.bank.len();
+        self.generate_started = Some(Instant::now());
+        self.generate_notice = Some("Generating in background.".to_string());
+        self.generate_rx = Some(rx);
+        self.settings_cursor = None;
+        self.show_output = false;
+        self.focus = Focus::Code;
     }
 
     fn start_next_problem(
@@ -973,6 +1053,7 @@ impl PracticodeApp {
             }
         }
         self.load_code_editor()?;
+        self.settings_cursor = None;
         self.show_output = false;
         self.focus = Focus::Code;
         Ok(())
@@ -985,6 +1066,7 @@ impl PracticodeApp {
             self.write_text_output("Already at the first known problem.");
         } else {
             self.load_code_editor()?;
+            self.settings_cursor = None;
             self.show_output = false;
             self.focus = Focus::Code;
         }
@@ -1029,6 +1111,7 @@ impl PracticodeApp {
         self.state.settings.language = language.to_string();
         save_state(&self.root, &self.state)?;
         self.load_code_editor()?;
+        self.settings_cursor = None;
         self.show_output = false;
         self.focus = Focus::Code;
         Ok(())
@@ -1076,38 +1159,74 @@ impl PracticodeApp {
         Ok(())
     }
 
+    fn set_generate_languages(&mut self, value: &str, ui: bool) -> Result<()> {
+        if ui {
+            self.state.settings.generate_ui_languages = parse_ui_language_list(value);
+        } else {
+            self.state.settings.generate_languages = parse_language_list(value);
+        }
+        save_state(&self.root, &self.state)?;
+        self.show_profile();
+        Ok(())
+    }
+
     fn reset_profile(&mut self) -> Result<()> {
         self.state.settings.difficulty = "auto".to_string();
         self.state.settings.topics.clear();
         self.state.settings.avoid_topics.clear();
+        self.state.settings.generate_languages.clear();
+        self.state.settings.generate_ui_languages.clear();
         save_state(&self.root, &self.state)?;
         self.show_profile();
         Ok(())
     }
 
     fn show_profile(&mut self) {
-        self.write_text_output(&self.profile_text());
+        self.show_profile_with_intro("");
+    }
+
+    fn show_profile_with_intro(&mut self, intro: &str) {
+        self.showing_model_status = false;
+        if self.settings_cursor.is_none() {
+            self.settings_cursor = Some(0);
+        }
+        let profile = self.profile_text();
+        self.output = if intro.trim().is_empty() {
+            profile
+        } else {
+            format!("{}\n\n{profile}", intro.trim_end())
+        };
+        self.output_is_markdown = false;
+        self.show_output = true;
+        self.focus = Focus::Output;
     }
 
     fn profile_text(&self) -> String {
-        let settings = &self.state.settings;
-        let topics = list_or_none(&settings.topics);
-        let avoid = list_or_none(&settings.avoid_topics);
-        format!(
-            "Practice profile\n\nUI language: {}\nCode language: {}\nTheme: {}\nDifficulty: {}\nPreferred topics: {}\nAvoid topics: {}\nAI provider: {}\nAI model: {}\n\nCommands\n/profile\n/difficulty auto|easy|medium|hard\n/topics arrays, strings\n/avoid dp, graph\n/language python|ts|java|rust\n/ui en|ko|ja|zh|es\n/theme dark|light",
-            settings.ui_language,
-            settings.language,
-            settings.theme,
-            settings.difficulty,
-            topics,
-            avoid,
-            settings.ai_provider,
-            if settings.ai_model == "auto" {
-                "auto (provider default)"
-            } else {
-                settings.ai_model.as_str()
-            }
-        )
+        settings_panel::render(&self.state, self.settings_cursor)
+    }
+
+    fn settings_row_count(&self) -> usize {
+        settings_panel::row_count()
+    }
+
+    fn move_settings_cursor(&mut self, delta: isize) {
+        let len = self.settings_row_count() as isize;
+        let cursor = self.settings_cursor.unwrap_or(0) as isize;
+        self.settings_cursor = Some(((cursor + delta).rem_euclid(len)) as usize);
+        self.show_profile();
+    }
+
+    fn change_selected_setting(&mut self) -> Result<()> {
+        let Some(row) = self.settings_cursor else {
+            return Ok(());
+        };
+        let change = settings_panel::apply_selected(&mut self.state, row);
+        if change.reload_editor {
+            self.load_code_editor()?;
+        }
+        save_state(&self.root, &self.state)?;
+        self.show_profile();
+        Ok(())
     }
 
     fn start_ai_prompt(&mut self, prompt: &str) -> Result<()> {
@@ -1149,6 +1268,35 @@ impl PracticodeApp {
                         self.write_text_output(&format!("Next failed\n{error}"));
                     }
                 }
+            }
+        }
+    }
+
+    fn check_background_generation(&mut self) {
+        let output = self.generate_rx.as_ref().and_then(|rx| rx.try_recv().ok());
+        let Some(output) = output else {
+            return;
+        };
+        self.generate_rx = None;
+        self.generate_started = None;
+        let old_len = self.generate_bank_len;
+        match load_bank(&self.root) {
+            Ok(bank) => {
+                let added = bank.len().saturating_sub(old_len);
+                self.bank = bank;
+                let _ = save_state(&self.root, &self.state);
+                self.generate_notice = Some(if added > 0 {
+                    format!("Generated {added} problem in background. Use /next.")
+                } else if output.contains("failed") {
+                    "Background generation failed. Use /generate to retry.".to_string()
+                } else {
+                    "Background generation finished. Use /problems to review.".to_string()
+                });
+            }
+            Err(error) => {
+                self.generate_notice = Some(format!(
+                    "Background generation finished, but bank reload failed: {error}"
+                ));
             }
         }
     }
@@ -1252,9 +1400,13 @@ impl PracticodeApp {
     }
 
     fn start_busy(&mut self, label: &str, body: &str) {
+        self.settings_cursor = None;
         self.busy_label = label.to_string();
         self.busy_body = body.to_string();
+        self.busy_started = Some(Instant::now());
         self.busy_frame = 0;
+        self.busy_hits = 0;
+        self.busy_misses = 0;
         self.show_output = true;
         self.focus = Focus::Output;
     }
@@ -1262,10 +1414,32 @@ impl PracticodeApp {
     fn stop_busy(&mut self) {
         self.busy_label.clear();
         self.busy_body.clear();
+        self.busy_started = None;
         self.busy_frame = 0;
     }
 
+    fn handle_busy_key(&mut self, key: KeyEvent) -> bool {
+        if self.task_rx.is_none() {
+            return false;
+        }
+        if key.code == KeyCode::Char('q') && key.modifiers.is_empty() {
+            self.should_quit = true;
+        } else if self.busy_label == "next"
+            && key.code == KeyCode::Char(' ')
+            && key.modifiers.is_empty()
+        {
+            if self.busy_game_on_target() {
+                self.busy_hits += 1;
+            } else {
+                self.busy_misses += 1;
+            }
+        }
+        self.focus = Focus::Output;
+        true
+    }
+
     fn write_output(&mut self, output: &str) {
+        self.settings_cursor = None;
         self.showing_model_status = false;
         self.output = output.to_string();
         self.output_is_markdown = true;
@@ -1274,6 +1448,7 @@ impl PracticodeApp {
     }
 
     fn write_text_output(&mut self, output: &str) {
+        self.settings_cursor = None;
         self.showing_model_status = false;
         self.output = output.trim_end().to_string();
         self.output_is_markdown = false;
@@ -1631,16 +1806,18 @@ impl PracticodeApp {
         } else {
             format!("{}{}", self.busy_body, self.busy_dots())
         };
-        let tail = self
-            .update_notice
-            .as_ref()
-            .map(|version| {
-                format!(
-                    "{}:{version} /update",
-                    ui_text(&self.state.settings.ui_language, "update")
-                )
-            })
-            .unwrap_or_else(|| self.mode_hint().to_string());
+        let tail = if let Some(version) = self.update_notice.as_ref() {
+            format!(
+                "{}:{version} /update",
+                ui_text(&self.state.settings.ui_language, "update")
+            )
+        } else if self.task_rx.is_some() {
+            self.mode_hint().to_string()
+        } else if let Some(status) = self.background_generation_status() {
+            status
+        } else {
+            self.mode_hint().to_string()
+        };
         format!(
             " PRACTICODE | {} | {} | {} | {} | code:{} | {} | {} ",
             self.problem.id,
@@ -1654,18 +1831,52 @@ impl PracticodeApp {
     }
 
     fn next_source_help(&self) -> String {
-        "Next behavior: /next opens unsolved local problems first and asks AI only when none remain. Use /generate <request> to create a problem immediately.".to_string()
+        "Next behavior: /next opens unsolved local problems first and asks AI only when none remain. Use /generate <request> to create a problem in the background.".to_string()
+    }
+
+    fn background_generation_status(&self) -> Option<String> {
+        if self.generate_rx.is_some() {
+            let elapsed = self
+                .generate_started
+                .map(|started| started.elapsed().as_secs())
+                .unwrap_or_default();
+            Some(format!("bg generate {elapsed}s"))
+        } else {
+            self.generate_notice.clone()
+        }
     }
 
     fn busy_dots(&self) -> String {
         ".".repeat((self.busy_frame / 8) % 4)
     }
 
+    fn busy_game_track(&self) -> String {
+        let width = 9;
+        let target = width / 2;
+        let position = (self.busy_frame / 2) % width;
+        let mut cells = vec!['-'; width];
+        cells[target] = '|';
+        cells[position] = if position == target { 'X' } else { '*' };
+        format!("[{}]", cells.into_iter().collect::<String>())
+    }
+
+    fn busy_game_on_target(&self) -> bool {
+        (self.busy_frame / 2) % 9 == 4
+    }
+
     fn mode_hint(&self) -> &'static str {
         let lang = &self.state.settings.ui_language;
+        if self.task_rx.is_some() {
+            return if self.busy_label == "next" {
+                ui_text(lang, "hint_busy_next")
+            } else {
+                ui_text(lang, "hint_busy")
+            };
+        }
         match (self.focus, self.list_cursor.is_some(), self.show_output) {
             (Focus::Command, _, _) => ui_text(lang, "hint_command"),
             (_, true, _) => ui_text(lang, "hint_list"),
+            (_, _, true) if self.settings_cursor.is_some() => ui_text(lang, "hint_settings"),
             (_, _, true) => ui_text(lang, "hint_output"),
             (Focus::Code, _, _) => ui_text(lang, "hint_code"),
             _ => ui_text(lang, "hint_idle"),
@@ -1689,191 +1900,5 @@ impl PracticodeApp {
             ui_text(lang, "keys"),
             ui_text(lang, "debug_prints"),
         )
-    }
-}
-
-fn list_or_none(values: &[String]) -> String {
-    if values.is_empty() {
-        "(none)".to_string()
-    } else {
-        values.join(", ")
-    }
-}
-
-#[derive(Clone, Debug)]
-pub struct TextEditor {
-    lines: Vec<String>,
-    row: usize,
-    col: usize,
-    scroll: usize,
-}
-
-impl Default for TextEditor {
-    fn default() -> Self {
-        Self {
-            lines: vec![String::new()],
-            row: 0,
-            col: 0,
-            scroll: 0,
-        }
-    }
-}
-
-impl TextEditor {
-    pub fn set_text(&mut self, text: &str) {
-        self.lines = text.split('\n').map(str::to_string).collect();
-        if text.ends_with('\n') {
-            self.lines.pop();
-            self.lines.push(String::new());
-        }
-        if self.lines.is_empty() {
-            self.lines.push(String::new());
-        }
-        self.row = 0;
-        self.col = 0;
-        self.scroll = 0;
-    }
-
-    pub fn text(&self) -> String {
-        self.lines.join("\n")
-    }
-
-    fn visible_text(&mut self, height: usize) -> String {
-        if self.row < self.scroll {
-            self.scroll = self.row;
-        } else if height > 0 && self.row >= self.scroll + height {
-            self.scroll = self.row + 1 - height;
-        }
-        let line_width = ((self.lines.len().max(1)).to_string().len()).max(3);
-        self.lines
-            .iter()
-            .enumerate()
-            .skip(self.scroll)
-            .take(height.max(1))
-            .map(|(index, line)| {
-                let cursor = if index == self.row { ">" } else { " " };
-                format!("{cursor}{:>width$} {line}", index + 1, width = line_width)
-            })
-            .collect::<Vec<_>>()
-            .join("\n")
-    }
-
-    fn cursor_position(&self, area: Rect) -> Option<Position> {
-        if self.row < self.scroll {
-            return None;
-        }
-        let visible_row = self.row - self.scroll;
-        let inner_height = area.height.saturating_sub(2) as usize;
-        if visible_row >= inner_height {
-            return None;
-        }
-        let line_width = ((self.lines.len().max(1)).to_string().len()).max(3);
-        let prefix_width = 1 + line_width + 1;
-        let line = self.lines.get(self.row)?;
-        let text_before_cursor = prefix(line, self.col);
-        let x = area
-            .x
-            .saturating_add(1)
-            .saturating_add((prefix_width + display_width(&text_before_cursor)) as u16)
-            .min(area.right().saturating_sub(2));
-        let y = area.y.saturating_add(1).saturating_add(visible_row as u16);
-        Some(Position::new(x, y))
-    }
-
-    pub fn insert_char(&mut self, char: char) {
-        self.ensure_cursor();
-        let byte = byte_index(&self.lines[self.row], self.col);
-        self.lines[self.row].insert(byte, char);
-        self.col += 1;
-        self.normalize_current_line();
-    }
-
-    pub fn insert_newline(&mut self) {
-        self.ensure_cursor();
-        let byte = byte_index(&self.lines[self.row], self.col);
-        let rest = self.lines[self.row].split_off(byte);
-        self.lines.insert(self.row + 1, rest);
-        self.row += 1;
-        self.col = 0;
-    }
-
-    pub fn backspace(&mut self) {
-        self.ensure_cursor();
-        if self.col > 0 {
-            let start = byte_index(&self.lines[self.row], self.col - 1);
-            let end = byte_index(&self.lines[self.row], self.col);
-            self.lines[self.row].replace_range(start..end, "");
-            self.col -= 1;
-            self.normalize_current_line();
-        } else if self.row > 0 {
-            let current = self.lines.remove(self.row);
-            self.row -= 1;
-            self.col = char_len(&self.lines[self.row]);
-            self.lines[self.row].push_str(&current);
-        }
-    }
-
-    fn delete(&mut self) {
-        self.ensure_cursor();
-        if self.col < char_len(&self.lines[self.row]) {
-            let start = byte_index(&self.lines[self.row], self.col);
-            let end = byte_index(&self.lines[self.row], self.col + 1);
-            self.lines[self.row].replace_range(start..end, "");
-            self.normalize_current_line();
-        } else if self.row + 1 < self.lines.len() {
-            let next = self.lines.remove(self.row + 1);
-            self.lines[self.row].push_str(&next);
-        }
-    }
-
-    fn move_left(&mut self) {
-        if self.col > 0 {
-            self.col -= 1;
-        } else if self.row > 0 {
-            self.row -= 1;
-            self.col = char_len(&self.lines[self.row]);
-        }
-    }
-
-    fn move_right(&mut self) {
-        if self.col < char_len(&self.lines[self.row]) {
-            self.col += 1;
-        } else if self.row + 1 < self.lines.len() {
-            self.row += 1;
-            self.col = 0;
-        }
-    }
-
-    fn move_up(&mut self) {
-        if self.row > 0 {
-            self.row -= 1;
-            self.col = self.col.min(char_len(&self.lines[self.row]));
-        }
-    }
-
-    fn move_down(&mut self) {
-        if self.row + 1 < self.lines.len() {
-            self.row += 1;
-            self.col = self.col.min(char_len(&self.lines[self.row]));
-        }
-    }
-
-    fn ensure_cursor(&mut self) {
-        if self.lines.is_empty() {
-            self.lines.push(String::new());
-        }
-        self.row = self.row.min(self.lines.len() - 1);
-        self.col = self.col.min(char_len(&self.lines[self.row]));
-    }
-
-    fn normalize_current_line(&mut self) {
-        let normalized = compose_hangul_jamo(&self.lines[self.row]);
-        if normalized == self.lines[self.row] {
-            self.col = self.col.min(char_len(&self.lines[self.row]));
-            return;
-        }
-        let old_prefix = prefix(&self.lines[self.row], self.col);
-        self.lines[self.row] = normalized;
-        self.col = char_len(&compose_hangul_jamo(&old_prefix)).min(char_len(&self.lines[self.row]));
     }
 }

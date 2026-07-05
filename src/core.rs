@@ -36,6 +36,10 @@ pub struct Settings {
     pub topics: Vec<String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub avoid_topics: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub generate_languages: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub generate_ui_languages: Vec<String>,
     #[serde(default = "default_editor")]
     pub editor: String,
     #[serde(default = "default_next_source")]
@@ -57,6 +61,8 @@ impl Default for Settings {
             difficulty: default_difficulty(),
             topics: Vec::new(),
             avoid_topics: Vec::new(),
+            generate_languages: Vec::new(),
+            generate_ui_languages: Vec::new(),
             editor: default_editor(),
             next_source: default_next_source(),
             ai_provider: default_ai_provider(),
@@ -291,12 +297,19 @@ fn validate_bank(bank: &[Problem], path: &Path) -> Result<()> {
                 problem.id
             );
         }
-        for language in LANGUAGES {
-            if !problem.answers.contains_key(*language) {
+        if problem.answers.is_empty() {
+            bail!(
+                "{} problem {} must contain at least one answer",
+                path.display(),
+                problem.id
+            );
+        }
+        for language in problem.answers.keys() {
+            if !LANGUAGES.contains(&language.as_str()) {
                 bail!(
-                    "{} problem {} missing {language} answer",
+                    "{} problem {} has unsupported answer language {language}",
                     path.display(),
-                    problem.id
+                    problem.id,
                 );
             }
         }
@@ -381,6 +394,8 @@ pub fn normalize_settings(settings: &mut Settings) {
     settings.difficulty = normalize_difficulty(&settings.difficulty);
     settings.topics = normalize_topic_list(&settings.topics);
     settings.avoid_topics = normalize_topic_list(&settings.avoid_topics);
+    settings.generate_languages = normalize_language_list(&settings.generate_languages);
+    settings.generate_ui_languages = normalize_ui_language_list(&settings.generate_ui_languages);
     settings.next_source = normalize_next_source(&settings.next_source);
     settings.ai_provider = normalize_ai_provider(&settings.ai_provider);
     if settings.ai_model.trim().is_empty() {
@@ -399,6 +414,50 @@ pub fn normalize_language(language: &str) -> String {
     } else {
         "python".to_string()
     }
+}
+
+pub fn parse_language_list(value: &str) -> Vec<String> {
+    let mut languages = Vec::new();
+    for language in value.split(',') {
+        let language = language.trim().to_lowercase();
+        if language == "all" {
+            return Vec::new();
+        }
+        if LANGUAGES.contains(&language.as_str()) && !languages.contains(&language) {
+            languages.push(language);
+        }
+    }
+    languages
+}
+
+pub fn normalize_language_list(languages: &[String]) -> Vec<String> {
+    parse_language_list(&languages.join(","))
+}
+
+pub fn parse_ui_language_list(value: &str) -> Vec<String> {
+    let mut languages = Vec::new();
+    for language in value.split(',') {
+        let lower = language.trim().to_lowercase();
+        if lower == "all" {
+            return Vec::new();
+        }
+        let language = lower
+            .split(['-', '_'])
+            .next()
+            .filter(|value| UI_LANGUAGES.contains(value))
+            .unwrap_or("");
+        if language == "all" {
+            return Vec::new();
+        }
+        if !language.is_empty() && !languages.iter().any(|value| value == language) {
+            languages.push(language.to_string());
+        }
+    }
+    languages
+}
+
+pub fn normalize_ui_language_list(languages: &[String]) -> Vec<String> {
+    parse_ui_language_list(&languages.join(","))
 }
 
 pub fn normalize_next_source(source: &str) -> String {
