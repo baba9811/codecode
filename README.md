@@ -161,6 +161,10 @@ Those paths are ignored by git, so your practice history stays yours.
 
 `/run` executes your local submission as a normal process. practicode runs it from `.practicode/build/<problem-id>/run`, but this is not an OS sandbox. Only run code you trust.
 
+## License
+
+practicode is MIT licensed. Third-party dependency license notes are in [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md).
+
 ## Debug Prints
 
 `/run` shows raw stdout when a case fails. If you want debug output without changing the judged answer, print to stderr:

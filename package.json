@@ -25,7 +25,8 @@
     "Cargo.lock",
     "Cargo.toml",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "THIRD_PARTY_LICENSES.md"
   ],
   "keywords": [
     "algorithms",
