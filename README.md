@@ -59,6 +59,13 @@ practicode
 
 The npm wrapper builds the Rust binary with Cargo, so Rust/Cargo is still required.
 
+## Update
+
+```bash
+cargo install --force practicode
+npm update -g practicode
+```
+
 ## Daily Loop
 
 The code editor starts focused.
