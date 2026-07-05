@@ -133,9 +133,11 @@ cargo install --force practicode
 
 `/run` executes your local submission as a normal process. practicode runs it from `.practicode/build/<problem-id>/run`, but this is not an OS sandbox. Only run code you trust.
 
-## Contributors
+## Contributing
 
-Development, release, problem-authoring, and design references live in [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
+External contributions use the fork and pull request flow in [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
+
+Maintainer-only review and release notes live in [docs/MAINTAINING.md](docs/MAINTAINING.md).
 
 ## License
 

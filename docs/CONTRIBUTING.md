@@ -1,14 +1,54 @@
 # Contributing
 
-This repo is a Rust coding-practice workspace with a Ratatui terminal UI.
+Thanks for helping improve practicode. This guide is for contributors opening issues or pull requests.
 
-## Prerequisites
+Maintainer-only review and release steps live in [MAINTAINING.md](MAINTAINING.md).
+
+## Before You Start
+
+- Search existing issues and pull requests first.
+- Small bug fixes, docs fixes, tests, and localization updates can go straight to a pull request.
+- For larger UI, AI-generation, storage, or packaging changes, open an issue first so the scope is clear.
+- Do not commit local practice data from `.practicode/`, `problems/`, or `submissions/`.
+- Do not include secrets, tokens, private prompts, or generated answer keys in docs or examples.
+
+## Fork And Pull Request Flow
+
+1. Fork `baba9811/practicode` on GitHub.
+2. Clone your fork and add the original repo as `upstream`.
+
+```bash
+git clone https://github.com/<your-user>/practicode.git
+cd practicode
+git remote add upstream https://github.com/baba9811/practicode.git
+```
+
+3. Create a focused branch from the latest `main`.
+
+```bash
+git fetch upstream
+git checkout -b fix-short-name upstream/main
+```
+
+4. Make one focused change.
+5. Run the smallest checks that cover your change.
+6. Push your branch and open a pull request into `baba9811/practicode:main`.
+
+```bash
+git push origin fix-short-name
+```
+
+When opening the pull request, include what changed, how you checked it, and screenshots for visible TUI changes.
+
+## Local Setup
+
+Prerequisites:
 
 - Rust stable with Cargo, rustfmt, and clippy.
 - Node.js 18+ for the npm wrapper and package checks.
 - Optional local runtimes for judging: Python, Node.js, JDK, and Rust.
 
-## Development
+Common commands:
 
 ```bash
 cargo run --
@@ -23,7 +63,7 @@ Full local check:
 make test
 ```
 
-The source is split by boring responsibility:
+## Project Map
 
 | Path | Role |
 | --- | --- |
@@ -34,6 +74,16 @@ The source is split by boring responsibility:
 | `src/text.rs` | UTF-8 cursor math and Hangul composition |
 | `src/process.rs` | Process execution helpers |
 | `tests/` | Integration tests split by module |
+
+## Change Guidelines
+
+- Keep pull requests small and reviewable.
+- Reuse existing helpers and patterns before adding new code.
+- Prefer the Rust standard library. Add crates only when they remove real complexity.
+- Put UI strings in [assets/i18n](../assets/i18n), not inline in Rust code.
+- Keep English localization complete first; other locales can be partial because the runtime falls back per key to English.
+- Keep the root [README](../README.md) focused on users.
+- Use relative links for repo-local docs and assets.
 
 ## Problem Authoring
 
@@ -49,32 +99,22 @@ Local generated data stays ignored by git:
 | `problems/` | Generated problem markdown/index files |
 | `submissions/` | Local answer files |
 
-## Release
+## Pull Request Checklist
 
-`main` runs CI only. Releases are tag-based and publish to crates.io and npm through GitHub Actions.
+- The change is focused and explained.
+- Relevant checks were run, or the PR says why they were not.
+- Visible TUI changes include a screenshot or short terminal description.
+- User-facing text is in `assets/i18n/*.json`.
+- Local generated data, secrets, tokens, and answer keys are not committed.
 
-```bash
-make release VERSION=0.1.1
-```
+## References
 
-The release script checks versions, runs tests, creates the version commit and tag, and pushes `main` plus the tag. Do not print or commit tokens; GitHub Actions uses repository secrets.
-
-## Documentation
-
-Keep the root [README](../README.md) focused on users. Put contributor workflow, implementation notes, release notes, and design references here or in nearby `docs/` files.
-
-Use relative links for repo-local docs and assets. The terminal screenshot is stored at [assets/practicode-terminal.svg](../assets/practicode-terminal.svg).
-
-## Localization
-
-UI strings live in [assets/i18n](../assets/i18n). Keep English complete first; other locales can be partial because the runtime falls back per key to English.
-
-## UX And Documentation References
-
+- GitHub contributing guide: https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-open-source
+- GitHub contributing guidelines: https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/setting-guidelines-for-repository-contributors
+- GitHub pull requests: https://docs.github.com/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests
+- Open Source Guides community notes: https://opensource.guide/building-community/
 - WAI-ARIA combobox keyboard interaction: https://www.w3.org/WAI/ARIA/apg/patterns/combobox/
 - Command Line Interface Guidelines: https://clig.dev/
-- GitHub README guidance: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes
-- GitHub relative links and images: https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#relative-links
 - Ratatui terminal UI library: https://ratatui.rs/
 - Crossterm terminal backend/events: https://github.com/crossterm-rs/crossterm
 - Kattis problem package format: https://www.kattis.com/problem-package-format/
