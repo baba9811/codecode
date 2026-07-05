@@ -4,11 +4,12 @@ use crate::{
         run_ai_next, run_ai_prompt,
     },
     core::{
-        AI_PROVIDERS, AppState, HistoryItem, LANGUAGES, PROBLEM_NOTES_PATH, Problem, THEMES,
-        UI_LANGUAGES, ensure_problem_files, ensure_submission, ext_for, give_up, judge, load_bank,
-        load_state, localized, next_problem, normalize_ai_provider, normalize_language,
-        normalize_next_source, normalize_ui_language, previous_problem, problem_by_id, record_pass,
-        save_state, template_for, ui_text,
+        AI_PROVIDERS, AppState, DIFFICULTIES, HistoryItem, LANGUAGES, PROBLEM_NOTES_PATH, Problem,
+        THEMES, UI_LANGUAGES, ensure_problem_files, ensure_submission, ext_for, give_up, judge,
+        load_bank, load_state, localized, next_problem, normalize_ai_provider,
+        normalize_difficulty, normalize_language, normalize_next_source, normalize_ui_language,
+        parse_topic_list, previous_problem, problem_by_id, record_pass, save_state, template_for,
+        ui_text,
     },
     text::{
         byte_index, char_len, compose_hangul_jamo, display_width, prefix, render_markdown_plain,
@@ -33,17 +34,13 @@ use std::{
     path::PathBuf,
     sync::mpsc::{self, Receiver},
     thread,
-    time::Duration,
+    time::{Duration, Instant},
 };
 
-#[derive(Clone, Copy)]
-struct CommandHint {
-    insert: &'static str,
-    display: &'static str,
-    desc_key: &'static str,
-    keep_open: bool,
-    help: bool,
-}
+mod commands;
+use self::commands::COMMAND_HINTS;
+
+const UPDATE_CHECK_INTERVAL: Duration = Duration::from_secs(30 * 60);
 
 #[derive(Clone)]
 struct CommandChoice {
@@ -52,205 +49,6 @@ struct CommandChoice {
     desc_key: &'static str,
     keep_open: bool,
 }
-
-const COMMAND_HINTS: &[CommandHint] = &[
-    CommandHint {
-        insert: "run",
-        display: "/run",
-        desc_key: "cmd_run",
-        keep_open: false,
-        help: true,
-    },
-    CommandHint {
-        insert: "code",
-        display: "/code",
-        desc_key: "cmd_code",
-        keep_open: false,
-        help: true,
-    },
-    CommandHint {
-        insert: "next",
-        display: "/next",
-        desc_key: "cmd_next",
-        keep_open: false,
-        help: true,
-    },
-    CommandHint {
-        insert: "prev",
-        display: "/prev",
-        desc_key: "cmd_prev",
-        keep_open: false,
-        help: true,
-    },
-    CommandHint {
-        insert: "list",
-        display: "/list",
-        desc_key: "cmd_list",
-        keep_open: false,
-        help: true,
-    },
-    CommandHint {
-        insert: "open ",
-        display: "/open <id>",
-        desc_key: "cmd_open",
-        keep_open: true,
-        help: true,
-    },
-    CommandHint {
-        insert: "giveup",
-        display: "/giveup",
-        desc_key: "cmd_giveup",
-        keep_open: false,
-        help: true,
-    },
-    CommandHint {
-        insert: "hint ",
-        display: "/hint <request>",
-        desc_key: "cmd_hint",
-        keep_open: true,
-        help: true,
-    },
-    CommandHint {
-        insert: "provider codex",
-        display: "/provider codex",
-        desc_key: "cmd_provider",
-        keep_open: false,
-        help: true,
-    },
-    CommandHint {
-        insert: "provider claude",
-        display: "/provider claude",
-        desc_key: "cmd_provider",
-        keep_open: false,
-        help: false,
-    },
-    CommandHint {
-        insert: "model auto",
-        display: "/model auto",
-        desc_key: "cmd_model_auto",
-        keep_open: false,
-        help: true,
-    },
-    CommandHint {
-        insert: "model ",
-        display: "/model <name>",
-        desc_key: "cmd_model_custom",
-        keep_open: true,
-        help: false,
-    },
-    CommandHint {
-        insert: "note ",
-        display: "/note <text>",
-        desc_key: "cmd_note",
-        keep_open: true,
-        help: true,
-    },
-    CommandHint {
-        insert: "notes",
-        display: "/notes",
-        desc_key: "cmd_notes",
-        keep_open: false,
-        help: true,
-    },
-    CommandHint {
-        insert: "lang python",
-        display: "/lang python",
-        desc_key: "cmd_lang",
-        keep_open: false,
-        help: true,
-    },
-    CommandHint {
-        insert: "lang ts",
-        display: "/lang ts",
-        desc_key: "cmd_lang",
-        keep_open: false,
-        help: false,
-    },
-    CommandHint {
-        insert: "lang java",
-        display: "/lang java",
-        desc_key: "cmd_lang",
-        keep_open: false,
-        help: false,
-    },
-    CommandHint {
-        insert: "lang rust",
-        display: "/lang rust",
-        desc_key: "cmd_lang",
-        keep_open: false,
-        help: false,
-    },
-    CommandHint {
-        insert: "ui en",
-        display: "/ui en",
-        desc_key: "cmd_ui",
-        keep_open: false,
-        help: true,
-    },
-    CommandHint {
-        insert: "ui ko",
-        display: "/ui ko",
-        desc_key: "cmd_ui",
-        keep_open: false,
-        help: false,
-    },
-    CommandHint {
-        insert: "ui ja",
-        display: "/ui ja",
-        desc_key: "cmd_ui",
-        keep_open: false,
-        help: false,
-    },
-    CommandHint {
-        insert: "ui zh",
-        display: "/ui zh",
-        desc_key: "cmd_ui",
-        keep_open: false,
-        help: false,
-    },
-    CommandHint {
-        insert: "ui es",
-        display: "/ui es",
-        desc_key: "cmd_ui",
-        keep_open: false,
-        help: false,
-    },
-    CommandHint {
-        insert: "theme dark",
-        display: "/theme dark",
-        desc_key: "cmd_theme",
-        keep_open: false,
-        help: true,
-    },
-    CommandHint {
-        insert: "theme light",
-        display: "/theme light",
-        desc_key: "cmd_theme",
-        keep_open: false,
-        help: false,
-    },
-    CommandHint {
-        insert: "update",
-        display: "/update",
-        desc_key: "cmd_update",
-        keep_open: false,
-        help: true,
-    },
-    CommandHint {
-        insert: "help",
-        display: "/help",
-        desc_key: "cmd_help",
-        keep_open: false,
-        help: true,
-    },
-    CommandHint {
-        insert: "exit",
-        display: "/exit",
-        desc_key: "cmd_exit",
-        keep_open: false,
-        help: true,
-    },
-];
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 enum Focus {
@@ -286,6 +84,7 @@ pub struct PracticodeApp {
     model_message: Option<String>,
     update_check: Option<UpdateCheck>,
     update_notice: Option<String>,
+    last_update_check: Option<Instant>,
     code_area: Rect,
     output_area: Rect,
     command_area: Rect,
@@ -334,6 +133,7 @@ impl PracticodeApp {
             model_message: None,
             update_check: None,
             update_notice: None,
+            last_update_check: None,
             code_area: Rect::default(),
             output_area: Rect::default(),
             command_area: Rect::default(),
@@ -350,6 +150,7 @@ impl PracticodeApp {
             terminal.draw(|frame| self.draw(frame))?;
             self.check_task();
             self.check_update();
+            self.maybe_start_periodic_update_check();
             self.start_model_check();
             self.check_models();
             if event::poll(Duration::from_millis(100))? {
@@ -360,7 +161,7 @@ impl PracticodeApp {
                 }
             }
             if !self.busy_label.is_empty() {
-                self.busy_frame = (self.busy_frame + 1) % 16;
+                self.busy_frame = (self.busy_frame + 1) % 32;
             }
         }
         self.save_code().ok();
@@ -971,23 +772,31 @@ impl PracticodeApp {
         }
         let (command, arg) = value.split_once(char::is_whitespace).unwrap_or((value, ""));
         let arg = arg.trim();
-        if command != "list" {
+        if !matches!(command, "list" | "problems") {
             self.list_cursor = None;
         }
         match command {
             "run" | "r" => self.action_run()?,
             "code" | "edit" | "e" => self.action_edit()?,
             "next" | "n" => self.action_next(arg)?,
-            "prev" | "previous" | "p" => self.action_previous()?,
-            "giveup" | "give" | "g" => self.action_give_up()?,
-            "list" => self.start_problem_list(),
+            "back" | "prev" | "previous" | "p" => self.action_previous()?,
+            "answer" | "giveup" | "give" | "g" => self.action_give_up()?,
+            "problems" | "list" => self.start_problem_list(),
             "open" | "o" if !arg.is_empty() => self.open_problem(arg)?,
-            "lang" if arg.is_empty() => self.action_cycle_language()?,
-            "lang" if LANGUAGES.contains(&arg) => self.set_language(arg)?,
+            "language" | "lang" if arg.is_empty() => self.action_cycle_language()?,
+            "language" | "lang" if LANGUAGES.contains(&arg) => self.set_language(arg)?,
             "ui" if arg.is_empty() => self.action_toggle_ui_language()?,
             "ui" => self.set_ui_language(&normalize_ui_language(arg))?,
             "theme" if arg.is_empty() => self.action_toggle_theme()?,
             "theme" if THEMES.contains(&arg) => self.set_theme(arg)?,
+            "profile" | "settings" if arg.is_empty() => self.show_profile(),
+            "profile" | "settings" if arg == "reset" => self.reset_profile()?,
+            "difficulty" | "level" if arg.is_empty() => self.show_profile(),
+            "difficulty" | "level" => self.set_difficulty(arg)?,
+            "topics" | "topic" if arg.is_empty() => self.show_profile(),
+            "topics" | "topic" => self.set_topics(arg, false)?,
+            "avoid" | "skip" if arg.is_empty() => self.show_profile(),
+            "avoid" | "skip" => self.set_topics(arg, true)?,
             "source" | "next-source" if arg.is_empty() => {
                 self.write_text_output(&self.next_source_help());
             }
@@ -1044,7 +853,7 @@ impl PracticodeApp {
             "hint" | "ask" | "ai" if !arg.is_empty() => self.start_ai_prompt(arg)?,
             "note" if !arg.is_empty() => self.append_note(arg)?,
             "note" | "notes" => self.show_notes()?,
-            "update" => self.show_update_notice(),
+            "update" => self.refresh_update_notice(),
             "exit" | "quit" | "q" => self.should_quit = true,
             _ => self.write_text_output(&format!("Unknown command: {value}\nTry /help.")),
         }
@@ -1225,6 +1034,68 @@ impl PracticodeApp {
         Ok(())
     }
 
+    fn set_difficulty(&mut self, difficulty: &str) -> Result<()> {
+        let difficulty = difficulty.trim().to_lowercase();
+        if !DIFFICULTIES.contains(&difficulty.as_str()) {
+            self.write_text_output("Difficulty: auto, easy, medium, or hard.");
+            return Ok(());
+        }
+        let normalized = normalize_difficulty(&difficulty);
+        self.state.settings.difficulty = normalized.clone();
+        if normalized != "auto" {
+            self.state.suggested_next_difficulty = normalized;
+        }
+        save_state(&self.root, &self.state)?;
+        self.show_profile();
+        Ok(())
+    }
+
+    fn set_topics(&mut self, topics: &str, avoid: bool) -> Result<()> {
+        let topics = parse_topic_list(topics);
+        if avoid {
+            self.state.settings.avoid_topics = topics;
+        } else {
+            self.state.settings.topics = topics;
+        }
+        save_state(&self.root, &self.state)?;
+        self.show_profile();
+        Ok(())
+    }
+
+    fn reset_profile(&mut self) -> Result<()> {
+        self.state.settings.difficulty = "auto".to_string();
+        self.state.settings.topics.clear();
+        self.state.settings.avoid_topics.clear();
+        save_state(&self.root, &self.state)?;
+        self.show_profile();
+        Ok(())
+    }
+
+    fn show_profile(&mut self) {
+        self.write_text_output(&self.profile_text());
+    }
+
+    fn profile_text(&self) -> String {
+        let settings = &self.state.settings;
+        let topics = list_or_none(&settings.topics);
+        let avoid = list_or_none(&settings.avoid_topics);
+        format!(
+            "Practice profile\n\nUI language: {}\nCode language: {}\nTheme: {}\nDifficulty: {}\nPreferred topics: {}\nAvoid topics: {}\nAI provider: {}\nAI model: {}\n\nCommands\n/profile\n/difficulty auto|easy|medium|hard\n/topics arrays, strings\n/avoid dp, graph\n/language python|ts|java|rust\n/ui en|ko|ja|zh|es\n/theme dark|light",
+            settings.ui_language,
+            settings.language,
+            settings.theme,
+            settings.difficulty,
+            topics,
+            avoid,
+            settings.ai_provider,
+            if settings.ai_model == "auto" {
+                "auto (provider default)"
+            } else {
+                settings.ai_model.as_str()
+            }
+        )
+    }
+
     fn start_ai_prompt(&mut self, prompt: &str) -> Result<()> {
         if self.task_rx.is_some() {
             self.write_text_output(ui_text(&self.state.settings.ui_language, "already_busy"));
@@ -1271,8 +1142,10 @@ impl PracticodeApp {
         if let Some(result) = result {
             self.update_rx = None;
             self.update_check = Some(result.clone());
-            if let UpdateCheck::Available(version) = &result {
-                self.update_notice = Some(version.clone());
+            match &result {
+                UpdateCheck::Available(version) => self.update_notice = Some(version.clone()),
+                UpdateCheck::Current | UpdateCheck::Disabled => self.update_notice = None,
+                UpdateCheck::Failed => {}
             }
         }
     }
@@ -1281,11 +1154,24 @@ impl PracticodeApp {
         if self.update_rx.is_some() {
             return;
         }
+        self.last_update_check = Some(Instant::now());
         let (tx, rx) = mpsc::channel();
         thread::spawn(move || {
             let _ = tx.send(check_latest_version());
         });
         self.update_rx = Some(rx);
+    }
+
+    fn maybe_start_periodic_update_check(&mut self) {
+        if self.update_rx.is_some() {
+            return;
+        }
+        if self
+            .last_update_check
+            .is_none_or(|last| last.elapsed() >= UPDATE_CHECK_INTERVAL)
+        {
+            self.start_update_check();
+        }
     }
 
     fn start_model_check(&mut self) {
@@ -1387,6 +1273,13 @@ impl PracticodeApp {
         self.focus = Focus::Output;
     }
 
+    fn refresh_update_notice(&mut self) {
+        self.update_check = None;
+        self.update_notice = None;
+        self.start_update_check();
+        self.show_update_notice();
+    }
+
     fn show_update_notice(&mut self) {
         let lang = self.state.settings.ui_language.clone();
         if let Some(version) = &self.update_notice {
@@ -1414,7 +1307,7 @@ impl PracticodeApp {
     fn show_notes(&mut self) -> Result<()> {
         let notes = read_problem_notes(&self.root)?;
         if notes.is_empty() {
-            self.write_text_output("No notes yet. Add one with /note <text>.");
+            self.write_text_output("No notes yet. Use /topics or /avoid for standing preferences.");
         } else {
             self.write_text_output(&format!("Problem notes ({PROBLEM_NOTES_PATH})\n\n{notes}"));
         }
@@ -1644,7 +1537,7 @@ impl PracticodeApp {
     fn open_problem(&mut self, query: &str) -> Result<()> {
         self.list_cursor = None;
         let Some(problem) = self.find_problem(query).cloned() else {
-            self.write_text_output(&format!("Problem not found: {query}\nTry /list."));
+            self.write_text_output(&format!("Problem not found: {query}\nTry /problems."));
             return Ok(());
         };
         self.problem = problem;
@@ -1746,14 +1639,14 @@ impl PracticodeApp {
 
     fn next_source_help(&self) -> String {
         if self.state.settings.next_source == "ai" {
-            "Next behavior: plain /next asks AI every time. Use /source local to use local problems first.".to_string()
+            "Next behavior: plain /next asks AI every time. /next <request> also sends that request.".to_string()
         } else {
             "Next behavior: /next uses local problems first and asks AI when it needs a new one. Use /next <request> to ask AI directly.".to_string()
         }
     }
 
     fn busy_dots(&self) -> String {
-        ".".repeat(self.busy_frame / 4)
+        ".".repeat((self.busy_frame / 8) % 4)
     }
 
     fn mode_hint(&self) -> &'static str {
@@ -1784,6 +1677,14 @@ impl PracticodeApp {
             ui_text(lang, "keys"),
             ui_text(lang, "debug_prints"),
         )
+    }
+}
+
+fn list_or_none(values: &[String]) -> String {
+    if values.is_empty() {
+        "(none)".to_string()
+    } else {
+        values.join(", ")
     }
 }
 

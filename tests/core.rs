@@ -20,6 +20,9 @@ fn load_state_uses_first_problem_when_state_file_is_missing() {
     assert_eq!(state.current_problem, "001-hello-world");
     assert_eq!(state.settings.language, "python");
     assert_eq!(state.settings.ui_language, "en");
+    assert_eq!(state.settings.difficulty, "auto");
+    assert!(state.settings.topics.is_empty());
+    assert!(state.settings.avoid_topics.is_empty());
     assert_eq!(state.settings.ai_provider, "codex");
     assert_eq!(state.settings.ai_model, "auto");
 }
@@ -78,6 +81,29 @@ fn load_state_keeps_next_source_to_current_values_only() {
     .unwrap();
     let state = load_state(&root, &bank).unwrap();
     assert_eq!(state.settings.next_source, "bank");
+}
+
+#[test]
+fn load_state_normalizes_practice_profile() {
+    let root = tmp_root("state-profile");
+    let bank = load_bank(&root).unwrap();
+    fs::create_dir_all(root.join(".practicode")).unwrap();
+    fs::write(
+        root.join(".practicode/problem-state.json"),
+        r##"{
+  "current_problem": "001-hello-world",
+  "settings": {
+    "difficulty": "weird",
+    "topics": [" Arrays ", "#Strings", "arrays"],
+    "avoid_topics": [" DP ", ""]
+  }
+}"##,
+    )
+    .unwrap();
+    let state = load_state(&root, &bank).unwrap();
+    assert_eq!(state.settings.difficulty, "auto");
+    assert_eq!(state.settings.topics, vec!["arrays", "strings"]);
+    assert_eq!(state.settings.avoid_topics, vec!["dp"]);
 }
 
 #[test]
@@ -250,6 +276,29 @@ fn next_problem_skips_history_and_saves_new_current() {
             .unwrap()
             .contains("002 | echo")
     );
+}
+
+#[test]
+fn next_problem_prefers_profile_difficulty_when_fixed() {
+    let root = tmp_root("next-profile-difficulty");
+    let mut bank = two_problem_bank(&root);
+    bank[1].difficulty = "medium".to_string();
+    save_bank(&root, &bank).unwrap();
+    let mut state = AppState {
+        current_problem: "001-hello-world".to_string(),
+        settings: Settings {
+            difficulty: "medium".to_string(),
+            ..Settings::default()
+        },
+        solved: Vec::new(),
+        history: vec![HistoryItem {
+            id: "001-hello-world".to_string(),
+            status: "solved".to_string(),
+        }],
+        suggested_next_difficulty: "easy".to_string(),
+    };
+    let next = next_problem(&root, &bank, &mut state).unwrap().unwrap();
+    assert_eq!(next.difficulty, "medium");
 }
 
 #[test]

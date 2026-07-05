@@ -71,6 +71,14 @@ fn slash_command_palette_surfaces_settings_commands() {
     app.focus_command_for_test();
     let suggestions = app.command_suggestions_for_test();
     assert!(suggestions.contains(&"/code".to_string()));
+    assert!(suggestions.contains(&"/back".to_string()));
+    assert!(suggestions.contains(&"/problems".to_string()));
+    assert!(suggestions.contains(&"/answer".to_string()));
+    assert!(suggestions.contains(&"/profile".to_string()));
+    assert!(suggestions.contains(&"/difficulty auto".to_string()));
+    assert!(suggestions.contains(&"/topics <list>".to_string()));
+    assert!(suggestions.contains(&"/avoid <list>".to_string()));
+    assert!(suggestions.contains(&"/language python".to_string()));
     assert!(suggestions.contains(&"/provider codex".to_string()));
     assert!(suggestions.contains(&"/model auto".to_string()));
     assert!(suggestions.contains(&"/hint <request>".to_string()));
@@ -79,6 +87,27 @@ fn slash_command_palette_surfaces_settings_commands() {
             .iter()
             .any(|command| command.starts_with("/source"))
     );
+    assert!(!suggestions.contains(&"/lang python".to_string()));
+    assert!(!suggestions.contains(&"/note <text>".to_string()));
+}
+
+#[test]
+fn profile_commands_update_saved_preferences() {
+    let root = tmp_root("profile-commands");
+    let mut app = PracticodeApp::new(root.clone()).unwrap();
+    app.handle_command_for_test("difficulty medium").unwrap();
+    app.handle_command_for_test("topics arrays, strings, arrays")
+        .unwrap();
+    app.handle_command_for_test("avoid dp, graph").unwrap();
+    app.handle_command_for_test("profile").unwrap();
+    let output = app.output_for_test();
+    assert!(output.contains("Difficulty: medium"));
+    assert!(output.contains("Preferred topics: arrays, strings"));
+    assert!(output.contains("Avoid topics: dp, graph"));
+    let saved = std::fs::read_to_string(root.join(".practicode/problem-state.json")).unwrap();
+    assert!(saved.contains("\"difficulty\": \"medium\""));
+    assert!(saved.contains("\"topics\": ["));
+    assert!(saved.contains("\"avoid_topics\": ["));
 }
 
 #[test]

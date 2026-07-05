@@ -9,6 +9,7 @@ Maintainer-only review and release steps live in [MAINTAINING.md](MAINTAINING.md
 - Search existing issues and pull requests first.
 - Small bug fixes, docs fixes, tests, and localization updates can go straight to a pull request.
 - For larger UI, AI-generation, storage, or packaging changes, open an issue first so the scope is clear.
+- Check [ARCHITECTURE.md](ARCHITECTURE.md) before adding commands, settings, provider behavior, or persisted state.
 - Do not commit local practice data from `.practicode/`, `problems/`, or `submissions/`.
 - Do not include secrets, tokens, private prompts, or generated answer keys in docs or examples.
 

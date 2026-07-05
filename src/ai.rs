@@ -123,13 +123,22 @@ pub fn available_models(provider: &str) -> ModelCatalog {
 }
 
 pub fn default_ai_next_prompt(request: &str) -> String {
+    default_ai_next_prompt_with_settings(&Settings::default(), request)
+}
+
+pub fn default_ai_next_prompt_with_settings(settings: &Settings, request: &str) -> String {
     format!(
-        "Read AGENTS.md, docs/problem-authoring-notes.md if present, .practicode/problem_notes.md if present, problems/INDEX.md if present, .practicode/problem_bank.json if present, and .practicode/problem-state.json. Create exactly one new non-duplicate coding practice problem. The built-in 001-hello-world already exists, so do not duplicate it. User request: {}. Make the smallest valid edits: update .practicode/problem_bank.json, one problem directory, problems/INDEX.md, and .practicode/problem-state.json. Do not include the answer in the problem statement.",
+        "Read AGENTS.md, docs/problem-authoring-notes.md if present, .practicode/problem_notes.md if present, problems/INDEX.md if present, .practicode/problem_bank.json if present, and .practicode/problem-state.json. Create exactly one new non-duplicate coding practice problem. The built-in 001-hello-world already exists, so do not duplicate it. User request: {}. Practice profile: difficulty preference: {}; preferred topics: {}; avoid topics: {}; code language: {}; UI language: {}. Treat difficulty auto as gradual progression from state; otherwise prefer the requested difficulty unless the direct user request conflicts. Make the smallest valid edits: update .practicode/problem_bank.json, one problem directory, problems/INDEX.md, and .practicode/problem-state.json. Do not include the answer in the problem statement.",
         if request.is_empty() {
             "(none)"
         } else {
             request
-        }
+        },
+        settings.difficulty,
+        list_or_none(&settings.topics),
+        list_or_none(&settings.avoid_topics),
+        settings.language,
+        settings.ui_language
     )
 }
 
@@ -304,7 +313,9 @@ fn default_codex_next_command(root: &Path, settings: &Settings, request: &str) -
         exec.push_str(&format!(" --model {}", sh_quote(model)));
     }
     exec.push(' ');
-    exec.push_str(&sh_quote(&default_ai_next_prompt(request)));
+    exec.push_str(&sh_quote(&default_ai_next_prompt_with_settings(
+        settings, request,
+    )));
     format!("{start}; {exec}")
 }
 
@@ -322,7 +333,9 @@ fn default_claude_next_command(root: &Path, settings: &Settings, request: &str) 
         claude.push_str(&format!(" --model {}", sh_quote(model)));
     }
     claude.push_str(" -p ");
-    claude.push_str(&sh_quote(&default_ai_next_prompt(request)));
+    claude.push_str(&sh_quote(&default_ai_next_prompt_with_settings(
+        settings, request,
+    )));
     format!(
         "claude daemon status >/dev/null 2>&1 || true; cd {}; {}",
         sh_quote(&root.display().to_string()),
@@ -336,6 +349,14 @@ fn output_text(stdout: &str, stderr: &str) -> String {
         .filter(|part| !part.is_empty())
         .collect::<Vec<_>>()
         .join("\n")
+}
+
+fn list_or_none(values: &[String]) -> String {
+    if values.is_empty() {
+        "(none)".to_string()
+    } else {
+        values.join(", ")
+    }
 }
 
 #[cfg(test)]

@@ -66,23 +66,29 @@ Submissions are saved as you type under `submissions/<problem-id>/solution.<ext>
 | `/code` | Return to the code editor |
 | `/next` | Open the next local problem, or ask AI to create one |
 | `/next easy string problem` | Ask AI for a custom next problem |
-| `/prev` | Go back through problem history |
-| `/list` | Browse problems with `up/down` or `j/k`, open with `Enter` |
+| `/back` | Go back through problem history |
+| `/problems` | Browse problems with `up/down` or `j/k`, open with `Enter` |
 | `/open 2` | Open by number, id, or slug |
-| `/giveup` | Show the reference answer |
+| `/answer` | Show the reference answer |
 | `/hint` | Ask the selected AI for a concise hint |
 | `/hint explain my bug` | Ask the selected AI about the current problem and submission |
+| `/profile` | Show your current practice profile |
+| `/difficulty auto` | Set difficulty preference: `auto`, `easy`, `medium`, `hard` |
+| `/topics arrays, strings` | Set preferred topics for future problems |
+| `/avoid dp, graph` | Set topics to avoid in future problems |
 | `/provider codex` | Set AI provider and show local CLI/daemon status |
 | `/model auto` | Use the provider default model for `/hint` and AI-backed `/next` |
-| `/note prefer hashmap practice` | Append a standing note for future problem generation |
-| `/notes` | Show your local next-problem notes |
-| `/lang python` | Set code language: `python`, `ts`, `java`, `rust` |
+| `/language python` | Set code language: `python`, `ts`, `java`, `rust` |
 | `/ui en` | Set UI language: `en`, `ko`, `ja`, `zh`, `es` |
 | `/theme dark` | Set theme: `dark` or `light` |
 | `/update` | Show update instructions when a newer version is available |
 | `/exit` | Quit |
 
+Older command names such as `/prev`, `/list`, `/giveup`, and `/lang` still work as aliases.
+
 The default UI language is English. Switch it any time with `/ui ko`, `/ui ja`, `/ui zh`, or `/ui es`.
+
+Your practice profile is saved in `.practicode/problem-state.json`. It keeps UI language, code language, theme, preferred difficulty, preferred topics, and topics to avoid. `auto` difficulty follows gradual progression; a fixed difficulty asks local selection and AI generation to prefer that level.
 
 ## AI Problems
 
@@ -138,6 +144,8 @@ cargo install --force practicode
 External contributions use the fork and pull request flow in [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
 
 Maintainer-only review and release notes live in [docs/MAINTAINING.md](docs/MAINTAINING.md).
+
+Code layout and extension boundaries live in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## License
 

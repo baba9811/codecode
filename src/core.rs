@@ -9,6 +9,11 @@ use std::{
     time::Duration,
 };
 
+mod profile;
+pub use profile::{
+    DIFFICULTIES, default_difficulty, normalize_difficulty, normalize_topic_list, parse_topic_list,
+};
+
 pub const LANGUAGES: &[&str] = &["python", "ts", "java", "rust"];
 pub use crate::i18n::{UI_LANGUAGES, normalize_ui_language, ui_text};
 pub const THEMES: &[&str] = &["dark", "light"];
@@ -25,6 +30,12 @@ pub struct Settings {
     pub ui_language: String,
     #[serde(default = "default_theme")]
     pub theme: String,
+    #[serde(default = "default_difficulty")]
+    pub difficulty: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub topics: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub avoid_topics: Vec<String>,
     #[serde(default = "default_editor")]
     pub editor: String,
     #[serde(default = "default_next_source")]
@@ -43,6 +54,9 @@ impl Default for Settings {
             language: default_language(),
             ui_language: default_ui_language(),
             theme: default_theme(),
+            difficulty: default_difficulty(),
+            topics: Vec::new(),
+            avoid_topics: Vec::new(),
             editor: default_editor(),
             next_source: default_next_source(),
             ai_provider: default_ai_provider(),
@@ -364,6 +378,9 @@ pub fn normalize_settings(settings: &mut Settings) {
     if !THEMES.contains(&settings.theme.as_str()) {
         settings.theme = "dark".to_string();
     }
+    settings.difficulty = normalize_difficulty(&settings.difficulty);
+    settings.topics = normalize_topic_list(&settings.topics);
+    settings.avoid_topics = normalize_topic_list(&settings.avoid_topics);
     settings.next_source = normalize_next_source(&settings.next_source);
     settings.ai_provider = normalize_ai_provider(&settings.ai_provider);
     if settings.ai_model.trim().is_empty() {
@@ -376,8 +393,9 @@ pub fn problem_by_id<'a>(bank: &'a [Problem], problem_id: &str) -> Option<&'a Pr
 }
 
 pub fn normalize_language(language: &str) -> String {
-    if LANGUAGES.contains(&language) {
-        language.to_string()
+    let language = language.trim().to_lowercase();
+    if LANGUAGES.contains(&language.as_str()) {
+        language
     } else {
         "python".to_string()
     }
@@ -756,7 +774,11 @@ pub fn next_problem(
         .iter()
         .map(|item| item.id.as_str())
         .collect::<Vec<_>>();
-    let preferred = &state.suggested_next_difficulty;
+    let preferred = if state.settings.difficulty == "auto" {
+        &state.suggested_next_difficulty
+    } else {
+        &state.settings.difficulty
+    };
     let problem = bank
         .iter()
         .find(|item| !seen.contains(&item.id.as_str()) && &item.difficulty == preferred)

@@ -3,8 +3,8 @@ mod common;
 use common::tmp_root;
 use practicode::{
     ai::{
-        append_problem_note, default_ai_next_command, default_ai_next_prompt, provider_status,
-        read_problem_notes, run_ai_next,
+        append_problem_note, default_ai_next_command, default_ai_next_prompt,
+        default_ai_next_prompt_with_settings, provider_status, read_problem_notes, run_ai_next,
     },
     core::{AppState, Settings},
 };
@@ -16,6 +16,26 @@ fn default_ai_next_prompt_reads_notes_and_includes_request() {
     assert!(prompt.contains("docs/problem-authoring-notes.md"));
     assert!(prompt.contains(".practicode/problem_notes.md"));
     assert!(prompt.contains("그래프 쉬운 문제"));
+}
+
+#[test]
+fn default_ai_next_prompt_includes_practice_profile() {
+    let prompt = default_ai_next_prompt_with_settings(
+        &Settings {
+            language: "rust".to_string(),
+            ui_language: "ko".to_string(),
+            difficulty: "medium".to_string(),
+            topics: vec!["strings".to_string(), "hashmap".to_string()],
+            avoid_topics: vec!["dp".to_string()],
+            ..Settings::default()
+        },
+        "more parsing practice",
+    );
+    assert!(prompt.contains("difficulty preference: medium"));
+    assert!(prompt.contains("preferred topics: strings, hashmap"));
+    assert!(prompt.contains("avoid topics: dp"));
+    assert!(prompt.contains("code language: rust"));
+    assert!(prompt.contains("UI language: ko"));
 }
 
 #[test]
