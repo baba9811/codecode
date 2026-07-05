@@ -77,4 +77,5 @@ pub fn normalize_settings(settings: &mut Settings) {
     if settings.ai_model.trim().is_empty() {
         settings.ai_model = default_ai_model();
     }
+    settings.ai_effort = normalize_ai_effort(&settings.ai_provider, &settings.ai_effort);
 }

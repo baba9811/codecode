@@ -149,7 +149,16 @@ impl PracticodeApp {
                     self.state.settings.ai_model.as_str()
                 }
             ),
+            format!(
+                "AI effort: {}",
+                if self.state.settings.ai_effort == "auto" {
+                    "auto (provider default)"
+                } else {
+                    self.state.settings.ai_effort.as_str()
+                }
+            ),
             "Use /model auto to let the provider choose its default.".to_string(),
+            "Use /effort auto to let the provider choose its default.".to_string(),
         ];
         if self.model_rx.is_some() {
             lines.push("Loading provider model list...".to_string());
@@ -161,6 +170,15 @@ impl PracticodeApp {
             );
             lines.push("Use /model <name> for a known model.".to_string());
         } else {
+            if let Some(message) = &self.model_message {
+                lines.push(message.clone());
+            }
+            let efforts = if self.state.settings.ai_provider == "claude" {
+                CLAUDE_AI_EFFORTS
+            } else {
+                CODEX_AI_EFFORTS
+            };
+            lines.push(format!("Available efforts: {}", efforts.join(", ")));
             lines.push("Available models:".to_string());
             lines.extend(
                 self.available_models

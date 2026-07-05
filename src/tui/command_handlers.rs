@@ -86,6 +86,10 @@ impl PracticodeApp {
             }
             "provider" | "ai-provider" if AI_PROVIDERS.contains(&arg) => {
                 self.state.settings.ai_provider = normalize_ai_provider(arg);
+                self.state.settings.ai_effort = normalize_ai_effort(
+                    &self.state.settings.ai_provider,
+                    &self.state.settings.ai_effort,
+                );
                 self.model_rx = None;
                 self.available_models.clear();
                 self.available_models_provider.clear();
@@ -113,6 +117,10 @@ impl PracticodeApp {
                 self.check_models();
                 self.write_model_status();
             }
+            "effort" | "reasoning" | "ai-effort" if arg.is_empty() => {
+                self.write_model_status();
+            }
+            "effort" | "reasoning" | "ai-effort" => self.set_ai_effort(arg)?,
             "hint" if arg.is_empty() => {
                 self.start_ai_prompt("Give one concise hint for the current problem.")?
             }

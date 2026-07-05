@@ -25,6 +25,7 @@ fn load_state_uses_first_problem_when_state_file_is_missing() {
     assert!(state.settings.avoid_topics.is_empty());
     assert_eq!(state.settings.ai_provider, "codex");
     assert_eq!(state.settings.ai_model, "auto");
+    assert_eq!(state.settings.ai_effort, "auto");
 }
 
 #[test]
@@ -138,6 +139,7 @@ fn save_state_writes_ai_settings_without_deprecated_empty_field() {
             next_source: "ai".to_string(),
             ai_provider: "claude".to_string(),
             ai_model: "sonnet".to_string(),
+            ai_effort: "max".to_string(),
             ..Settings::default()
         },
         solved: Vec::new(),
@@ -148,7 +150,28 @@ fn save_state_writes_ai_settings_without_deprecated_empty_field() {
     let saved = fs::read_to_string(root.join(".practicode/problem-state.json")).unwrap();
     assert!(saved.contains("\"ai_provider\": \"claude\""));
     assert!(saved.contains("\"ai_model\": \"sonnet\""));
+    assert!(saved.contains("\"ai_effort\": \"max\""));
     assert_eq!(load_state(&root, &bank).unwrap().settings.next_source, "ai");
+}
+
+#[test]
+fn load_state_normalizes_ai_effort_by_provider() {
+    let root = tmp_root("state-ai-effort");
+    let bank = load_bank(&root).unwrap();
+    fs::create_dir_all(root.join(".practicode")).unwrap();
+    fs::write(
+        root.join(".practicode/problem-state.json"),
+        r#"{
+  "current_problem": "001-hello-world",
+  "settings": {
+    "ai_provider": "codex",
+    "ai_effort": "max"
+  }
+}"#,
+    )
+    .unwrap();
+    let state = load_state(&root, &bank).unwrap();
+    assert_eq!(state.settings.ai_effort, "xhigh");
 }
 
 #[test]

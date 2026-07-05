@@ -3,6 +3,8 @@ use super::*;
 pub const LANGUAGES: &[&str] = &["python", "ts", "java", "rust"];
 pub const THEMES: &[&str] = &["dark", "light"];
 pub const AI_PROVIDERS: &[&str] = &["codex", "claude"];
+pub const CODEX_AI_EFFORTS: &[&str] = &["auto", "low", "medium", "high", "xhigh"];
+pub const CLAUDE_AI_EFFORTS: &[&str] = &["auto", "low", "medium", "high", "xhigh", "max"];
 pub const BANK_PATH: &str = ".practicode/problem_bank.json";
 pub const STATE_PATH: &str = ".practicode/problem-state.json";
 pub const PROBLEM_NOTES_PATH: &str = ".practicode/problem_notes.md";
@@ -33,6 +35,8 @@ pub struct Settings {
     pub ai_provider: String,
     #[serde(default = "default_ai_model")]
     pub ai_model: String,
+    #[serde(default = "default_ai_effort")]
+    pub ai_effort: String,
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub ai_next_command: String,
 }
@@ -52,6 +56,7 @@ impl Default for Settings {
             next_source: default_next_source(),
             ai_provider: default_ai_provider(),
             ai_model: default_ai_model(),
+            ai_effort: default_ai_effort(),
             ai_next_command: String::new(),
         }
     }
@@ -68,6 +73,15 @@ impl Settings {
             None
         } else {
             Some(model)
+        }
+    }
+
+    pub fn effort_arg(&self) -> Option<&str> {
+        let effort = self.ai_effort.trim();
+        if effort.is_empty() || effort == "auto" {
+            None
+        } else {
+            Some(effort)
         }
     }
 }
@@ -145,6 +159,10 @@ pub fn default_ai_provider() -> String {
 }
 
 pub fn default_ai_model() -> String {
+    "auto".to_string()
+}
+
+pub fn default_ai_effort() -> String {
     "auto".to_string()
 }
 

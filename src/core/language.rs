@@ -81,6 +81,24 @@ pub fn normalize_ai_provider(provider: &str) -> String {
         "codex".to_string()
     }
 }
+
+pub fn normalize_ai_effort(provider: &str, effort: &str) -> String {
+    let effort = effort.trim().to_lowercase();
+    let provider = normalize_ai_provider(provider);
+    let allowed = if provider == "claude" {
+        CLAUDE_AI_EFFORTS
+    } else {
+        CODEX_AI_EFFORTS
+    };
+    if allowed.contains(&effort.as_str()) {
+        effort
+    } else if provider == "codex" && effort == "max" {
+        "xhigh".to_string()
+    } else {
+        "auto".to_string()
+    }
+}
+
 pub fn template_for(language: &str) -> String {
     match normalize_language(language).as_str() {
         "python" => "# Read from stdin and print to stdout.\nimport sys\n\n\n".to_string(),

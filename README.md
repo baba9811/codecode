@@ -111,6 +111,7 @@ Submissions are saved as you type under `submissions/<problem-id>/solution.<ext>
 | `/generate-ui ko, en` | Limit generated problem text languages, or use `all` |
 | `/provider codex` | Set AI provider and show local CLI/daemon status |
 | `/model auto` | Use the provider default model for `/hint` and AI-backed `/next` |
+| `/effort auto` | Use the provider default effort, or set `low`, `medium`, `high`, `xhigh`; Claude also supports `max` |
 | `/language python` | Set code language: `python`, `ts`, `java`, `rust` |
 | `/ui en` | Set UI language: `en`, `ko`, `ja`, `zh`, `es` |
 | `/theme dark` | Set theme: `dark` or `light` |
@@ -144,6 +145,7 @@ Codex is the default provider:
 ```text
 /provider codex
 /model auto
+/effort auto
 ```
 
 Claude Code is also supported:
@@ -151,6 +153,7 @@ Claude Code is also supported:
 ```text
 /provider claude
 /model sonnet
+/effort high
 ```
 
 Generated problems and submissions stay local:

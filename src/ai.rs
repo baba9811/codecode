@@ -1,7 +1,7 @@
 use crate::{
     core::{
-        AppState, LANGUAGES, PROBLEM_NOTES_PATH, Problem, Settings, UI_LANGUAGES,
-        ensure_submission, normalize_ai_provider, render_problem,
+        AppState, CLAUDE_AI_EFFORTS, LANGUAGES, PROBLEM_NOTES_PATH, Problem, Settings,
+        UI_LANGUAGES, ensure_submission, normalize_ai_provider, render_problem,
     },
     process::{run_capture, sh_quote, shell_process, unique_temp_path, which},
 };
@@ -20,6 +20,10 @@ pub struct ModelCatalog {
     pub models: Vec<String>,
     pub message: Option<String>,
 }
+
+const CODEX_MODEL_FALLBACKS: &[&str] =
+    &["gpt-5.5", "gpt-5.4", "gpt-5.4-mini", "gpt-5.3-codex-spark"];
+const CLAUDE_MODEL_FALLBACKS: &[&str] = &["sonnet", "opus", "fable", "claude-fable-5"];
 
 pub fn run_ai_prompt(root: &Path, problem: &Problem, settings: &Settings, prompt: &str) -> String {
     let solution = match ensure_submission(root, problem, settings) {
@@ -59,7 +63,8 @@ pub fn run_ai_next(root: &Path, state: &AppState, force: bool, request: &str) ->
         .current_dir(root)
         .env("PRACTICODE_NEXT_REQUEST", request)
         .env("PRACTICODE_AI_PROVIDER", &provider)
-        .env("PRACTICODE_AI_MODEL", &state.settings.ai_model);
+        .env("PRACTICODE_AI_MODEL", &state.settings.ai_model)
+        .env("PRACTICODE_AI_EFFORT", &state.settings.ai_effort);
     match run_capture(&mut process, "", Duration::from_secs(900)) {
         Ok(run) if run.code == Some(0) => {
             let output = output_text(&run.stdout, &run.stderr);
@@ -91,7 +96,8 @@ pub fn run_ai_generate(root: &Path, state: &AppState, request: &str) -> String {
         .env("PRACTICODE_NEXT_REQUEST", request)
         .env("PRACTICODE_GENERATE_BACKGROUND", "1")
         .env("PRACTICODE_AI_PROVIDER", &provider)
-        .env("PRACTICODE_AI_MODEL", &state.settings.ai_model);
+        .env("PRACTICODE_AI_MODEL", &state.settings.ai_model)
+        .env("PRACTICODE_AI_EFFORT", &state.settings.ai_effort);
     match run_capture(&mut process, "", Duration::from_secs(900)) {
         Ok(run) if run.code == Some(0) => {
             let output = output_text(&run.stdout, &run.stderr);
@@ -151,11 +157,15 @@ pub fn available_models(provider: &str) -> ModelCatalog {
     match normalize_ai_provider(provider).as_str() {
         "codex" => codex_models(),
         "claude" => ModelCatalog {
-            models: Vec::new(),
-            message: Some(
-                "Claude CLI does not expose a model list; use /model <name> for a known model."
-                    .to_string(),
-            ),
+            models: CLAUDE_MODEL_FALLBACKS
+                .iter()
+                .map(|model| (*model).to_string())
+                .collect(),
+            message: Some(format!(
+                "Bundled Claude presets from Claude Code {} --help. Efforts: {}.",
+                claude_version().unwrap_or_else(|| "current".to_string()),
+                CLAUDE_AI_EFFORTS.join(", ")
+            )),
         },
         _ => ModelCatalog::default(),
     }
@@ -231,7 +241,7 @@ fn codex_models() -> ModelCatalog {
     }
     if codex_daemon_path().is_none_or(|path| !path.exists()) {
         return ModelCatalog {
-            models: Vec::new(),
+            models: codex_cached_models(),
             message: Some("Codex app-server daemon is unavailable; install the standalone Codex app to list models, or use /model <name>.".to_string()),
         };
     }
@@ -243,18 +253,22 @@ fn codex_models() -> ModelCatalog {
     let input = r#"{"id":1,"method":"model/list","params":{"limit":25}}"#;
     let Ok(run) = run_capture(&mut command, &format!("{input}\n"), Duration::from_secs(2)) else {
         return ModelCatalog {
-            models: Vec::new(),
-            message: Some("Could not query Codex model list.".to_string()),
+            models: codex_cached_models(),
+            message: Some(
+                "Could not query Codex model list; using bundled/cache model presets.".to_string(),
+            ),
         };
     };
     if run.code != Some(0) {
         let detail = output_text(&run.stdout, &run.stderr);
         return ModelCatalog {
-            models: Vec::new(),
+            models: codex_cached_models(),
             message: Some(if detail.is_empty() {
-                "Could not query Codex model list.".to_string()
+                "Could not query Codex model list; using bundled/cache model presets.".to_string()
             } else {
-                format!("Could not query Codex model list: {detail}")
+                format!(
+                    "Could not query Codex model list; using bundled/cache model presets: {detail}"
+                )
             }),
         };
     }
@@ -270,6 +284,51 @@ fn codex_models() -> ModelCatalog {
             message: None,
         }
     }
+}
+
+fn codex_cached_models() -> Vec<String> {
+    let mut models = env::var_os("HOME")
+        .and_then(|home| {
+            fs::read_to_string(PathBuf::from(home).join(".codex/models_cache.json")).ok()
+        })
+        .and_then(|text| serde_json::from_str::<serde_json::Value>(&text).ok())
+        .and_then(|value| {
+            value
+                .get("models")
+                .and_then(|models| models.as_array())
+                .cloned()
+        })
+        .unwrap_or_default()
+        .into_iter()
+        .filter_map(|model| {
+            model
+                .get("slug")
+                .and_then(|value| value.as_str())
+                .map(str::to_string)
+        })
+        .collect::<Vec<_>>();
+    if models.is_empty() {
+        models = CODEX_MODEL_FALLBACKS
+            .iter()
+            .map(|model| (*model).to_string())
+            .collect();
+    }
+    models
+}
+
+fn claude_version() -> Option<String> {
+    which("claude").and_then(|_| {
+        let mut command = Command::new("claude");
+        command.arg("--version");
+        run_capture(&mut command, "", Duration::from_secs(2))
+            .ok()
+            .and_then(|run| {
+                output_text(&run.stdout, &run.stderr)
+                    .lines()
+                    .next()
+                    .map(str::to_string)
+            })
+    })
 }
 
 fn parse_model_list(output: &str) -> Vec<String> {
@@ -309,6 +368,7 @@ fn run_codex_prompt(root: &Path, settings: &Settings, prompt: &str) -> String {
     if let Some(model) = settings.model_arg() {
         command.args(["--model", model]);
     }
+    add_codex_effort_args(&mut command, settings);
     command.args(["-o", &output_path.display().to_string(), prompt]);
     let result = run_capture(&mut command, "", Duration::from_secs(600));
     let last_message = fs::read_to_string(&output_path).unwrap_or_default();
@@ -341,6 +401,9 @@ fn run_claude_prompt(root: &Path, settings: &Settings, prompt: &str) -> String {
     if let Some(model) = settings.model_arg() {
         command.args(["--model", model]);
     }
+    if let Some(effort) = settings.effort_arg() {
+        command.args(["--effort", effort]);
+    }
     command.args(["-p", prompt]);
     match run_capture(&mut command, "", Duration::from_secs(600)) {
         Ok(run) if run.code == Some(0) => {
@@ -371,6 +434,7 @@ fn default_codex_next_command(root: &Path, settings: &Settings, request: &str) -
     if let Some(model) = settings.model_arg() {
         exec.push_str(&format!(" --model {}", sh_quote(model)));
     }
+    push_codex_effort_arg(&mut exec, settings);
     exec.push(' ');
     exec.push_str(&sh_quote(&default_ai_next_prompt_with_settings(
         settings, request,
@@ -387,6 +451,7 @@ fn default_codex_generate_command(root: &Path, settings: &Settings, request: &st
     if let Some(model) = settings.model_arg() {
         exec.push_str(&format!(" --model {}", sh_quote(model)));
     }
+    push_codex_effort_arg(&mut exec, settings);
     exec.push(' ');
     exec.push_str(&sh_quote(&default_ai_generate_prompt_with_settings(
         settings, request,
@@ -407,6 +472,9 @@ fn default_claude_next_command(root: &Path, settings: &Settings, request: &str) 
     if let Some(model) = settings.model_arg() {
         claude.push_str(&format!(" --model {}", sh_quote(model)));
     }
+    if let Some(effort) = settings.effort_arg() {
+        claude.push_str(&format!(" --effort {}", sh_quote(effort)));
+    }
     claude.push_str(" -p ");
     claude.push_str(&sh_quote(&default_ai_next_prompt_with_settings(
         settings, request,
@@ -422,6 +490,9 @@ fn default_claude_generate_command(root: &Path, settings: &Settings, request: &s
     let mut claude = "claude --permission-mode acceptEdits".to_string();
     if let Some(model) = settings.model_arg() {
         claude.push_str(&format!(" --model {}", sh_quote(model)));
+    }
+    if let Some(effort) = settings.effort_arg() {
+        claude.push_str(&format!(" --effort {}", sh_quote(effort)));
     }
     claude.push_str(" -p ");
     claude.push_str(&sh_quote(&default_ai_generate_prompt_with_settings(
@@ -440,6 +511,23 @@ fn output_text(stdout: &str, stderr: &str) -> String {
         .filter(|part| !part.is_empty())
         .collect::<Vec<_>>()
         .join("\n")
+}
+
+fn add_codex_effort_args(command: &mut Command, settings: &Settings) {
+    if let Some(effort) = settings.effort_arg() {
+        let effort = if effort == "max" { "xhigh" } else { effort };
+        command.args(["-c", &format!("model_reasoning_effort=\"{effort}\"")]);
+    }
+}
+
+fn push_codex_effort_arg(command: &mut String, settings: &Settings) {
+    if let Some(effort) = settings.effort_arg() {
+        let effort = if effort == "max" { "xhigh" } else { effort };
+        command.push_str(&format!(
+            " -c {}",
+            sh_quote(&format!("model_reasoning_effort=\"{effort}\""))
+        ));
+    }
 }
 
 fn list_or_none(values: &[String]) -> String {

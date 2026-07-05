@@ -177,6 +177,7 @@ fn slash_command_palette_surfaces_settings_commands() {
     assert!(suggestions.contains(&"/language python".to_string()));
     assert!(suggestions.contains(&"/provider codex".to_string()));
     assert!(suggestions.contains(&"/model auto".to_string()));
+    assert!(suggestions.contains(&"/effort auto".to_string()));
     assert!(suggestions.contains(&"/hint <request>".to_string()));
     assert!(
         !suggestions
@@ -276,11 +277,23 @@ fn model_command_explains_unavailable_provider_models() {
     app.set_model_message_for_test("provider does not expose model list");
     app.handle_command_for_test("model").unwrap();
     assert!(app.output_for_test().contains("AI provider:"));
+    assert!(app.output_for_test().contains("AI effort:"));
     assert!(
         app.output_for_test()
             .contains("provider does not expose model list")
     );
     assert!(app.output_for_test().contains("/model <name>"));
+}
+
+#[test]
+fn effort_command_updates_saved_ai_effort() {
+    let root = tmp_root("effort-command");
+    let mut app = PracticodeApp::new(root.clone()).unwrap();
+    app.handle_command_for_test("effort high").unwrap();
+
+    assert!(app.output_for_test().contains("AI effort: high"));
+    let saved = std::fs::read_to_string(root.join(".practicode/problem-state.json")).unwrap();
+    assert!(saved.contains("\"ai_effort\": \"high\""));
 }
 
 #[test]

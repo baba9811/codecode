@@ -64,6 +64,7 @@ fn default_codex_command_uses_model_when_set() {
         &Settings {
             next_source: "ai".to_string(),
             ai_model: "gpt-5-codex".to_string(),
+            ai_effort: "high".to_string(),
             ..Settings::default()
         },
         "strings",
@@ -71,6 +72,7 @@ fn default_codex_command_uses_model_when_set() {
     assert!(command.contains("codex app-server daemon start"));
     assert!(command.contains("--ephemeral"));
     assert!(command.contains("--model 'gpt-5-codex'"));
+    assert!(command.contains("-c 'model_reasoning_effort=\"high\"'"));
     assert!(command.contains("strings"));
 }
 
@@ -83,6 +85,7 @@ fn default_claude_command_uses_print_mode_and_accepts_edits() {
             next_source: "ai".to_string(),
             ai_provider: "claude".to_string(),
             ai_model: "sonnet".to_string(),
+            ai_effort: "max".to_string(),
             ..Settings::default()
         },
         "arrays",
@@ -90,6 +93,7 @@ fn default_claude_command_uses_print_mode_and_accepts_edits() {
     assert!(command.contains("claude daemon status"));
     assert!(command.contains("claude --permission-mode acceptEdits"));
     assert!(command.contains("--model 'sonnet'"));
+    assert!(command.contains("--effort 'max'"));
     assert!(command.contains("arrays"));
 }
 
@@ -114,8 +118,9 @@ fn run_ai_next_exposes_request_provider_and_model_to_custom_command() {
             next_source: "ai".to_string(),
             ai_provider: "claude".to_string(),
             ai_model: "sonnet".to_string(),
+            ai_effort: "high".to_string(),
             ai_next_command:
-                "printf '%s|%s|%s' \"$PRACTICODE_NEXT_REQUEST\" \"$PRACTICODE_AI_PROVIDER\" \"$PRACTICODE_AI_MODEL\" > request.txt"
+                "printf '%s|%s|%s|%s' \"$PRACTICODE_NEXT_REQUEST\" \"$PRACTICODE_AI_PROVIDER\" \"$PRACTICODE_AI_MODEL\" \"$PRACTICODE_AI_EFFORT\" > request.txt"
                     .to_string(),
             ..Settings::default()
         },
@@ -127,7 +132,7 @@ fn run_ai_next_exposes_request_provider_and_model_to_custom_command() {
     assert!(output.contains("finished"));
     assert_eq!(
         fs::read_to_string(root.join("request.txt")).unwrap(),
-        "문자열 쉬운 문제|claude|sonnet"
+        "문자열 쉬운 문제|claude|sonnet|high"
     );
 }
 

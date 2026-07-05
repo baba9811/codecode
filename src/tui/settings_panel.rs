@@ -72,6 +72,14 @@ pub(super) fn render(state: &AppState, cursor: Option<usize>) -> String {
                 settings.ai_model.as_str()
             }
         ),
+        format!(
+            "AI effort: {}",
+            if settings.ai_effort == "auto" {
+                label(ui_language, "provider_default")
+            } else {
+                settings.ai_effort.as_str()
+            }
+        ),
         String::new(),
         label(ui_language, "answer_toggles").to_string(),
     ];
@@ -106,6 +114,7 @@ pub(super) fn render(state: &AppState, cursor: Option<usize>) -> String {
         "/generate-ui all|en, ko".to_string(),
         "/provider codex|claude".to_string(),
         "/model auto".to_string(),
+        "/effort auto|low|medium|high|xhigh|max".to_string(),
     ]);
     lines.join("\n")
 }

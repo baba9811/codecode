@@ -49,6 +49,9 @@ impl PracticodeApp {
     pub(super) fn command_choices(&self) -> Vec<CommandChoice> {
         let mut choices = Vec::new();
         for hint in COMMAND_HINTS {
+            if hint.insert == "effort max" && self.state.settings.ai_provider != "claude" {
+                continue;
+            }
             if hint.insert == "model " {
                 for model in self
                     .available_models

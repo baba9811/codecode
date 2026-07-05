@@ -251,6 +251,14 @@ impl PracticodeApp {
         Ok(())
     }
 
+    pub(super) fn set_ai_effort(&mut self, effort: &str) -> Result<()> {
+        self.state.settings.ai_effort =
+            normalize_ai_effort(&self.state.settings.ai_provider, effort);
+        save_state(&self.root, &self.state)?;
+        self.write_model_status();
+        Ok(())
+    }
+
     pub(super) fn reset_profile(&mut self) -> Result<()> {
         self.state.settings.difficulty = "auto".to_string();
         self.state.settings.topics.clear();
