@@ -15,24 +15,34 @@ impl PracticodeApp {
             .direction(Direction::Horizontal)
             .constraints([Constraint::Percentage(58), Constraint::Percentage(42)])
             .split(vertical[0]);
-        self.code_area = body[1];
-        self.output_area = body[1];
+        self.code_area = if self.show_output {
+            Rect::default()
+        } else {
+            body[1]
+        };
+        self.output_area = if self.show_output {
+            vertical[0]
+        } else {
+            self.code_area
+        };
         self.command_area = vertical[2];
 
         let light = self.state.settings.theme == "light";
-        let problem = Paragraph::new(problem_view::render(
-            &self.problem,
-            &self.state.settings.ui_language,
-            light,
-        ))
-        .style(Self::pane_style(light))
-        .block(Self::block(
-            ui_text(&self.state.settings.ui_language, "problem"),
-            light,
-            false,
-        ))
-        .wrap(Wrap { trim: false });
-        frame.render_widget(problem, body[0]);
+        if !self.show_output {
+            let problem = Paragraph::new(problem_view::render(
+                &self.problem,
+                &self.state.settings.ui_language,
+                light,
+            ))
+            .style(Self::pane_style(light))
+            .block(Self::block(
+                ui_text(&self.state.settings.ui_language, "problem"),
+                light,
+                false,
+            ))
+            .wrap(Wrap { trim: false });
+            frame.render_widget(problem, body[0]);
+        }
 
         if self.show_output {
             let text = self.output_text();
@@ -44,7 +54,7 @@ impl PracticodeApp {
                     self.focus != Focus::Command,
                 ))
                 .wrap(Wrap { trim: false });
-            frame.render_widget(output, body[1]);
+            frame.render_widget(output, self.output_area);
         } else {
             let code = self
                 .editor
@@ -84,7 +94,7 @@ impl PracticodeApp {
             .wrap(Wrap { trim: false });
         frame.render_widget(command, vertical[2]);
         self.draw_command_palette(frame, vertical[2]);
-        self.set_terminal_cursor(frame, body[1], vertical[2]);
+        self.set_terminal_cursor(frame, self.code_area, vertical[2]);
     }
 
     pub(super) fn wants_mouse_capture(&self) -> bool {
@@ -338,5 +348,32 @@ impl PracticodeApp {
             }
             _ => {}
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ratatui::{Terminal, backend::TestBackend};
+
+    fn tmp_root(name: &str) -> PathBuf {
+        let root =
+            std::env::temp_dir().join(format!("practicode-view-{name}-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&root);
+        fs::create_dir_all(&root).unwrap();
+        root
+    }
+
+    #[test]
+    fn output_uses_full_body_so_terminal_drag_selection_has_no_side_pane() {
+        let mut app = PracticodeApp::new(tmp_root("full-output")).unwrap();
+        app.handle_command("help").unwrap();
+
+        let backend = TestBackend::new(80, 24);
+        let mut terminal = Terminal::new(backend).unwrap();
+        terminal.draw(|frame| app.draw(frame)).unwrap();
+
+        assert_eq!(app.output_area, Rect::new(0, 0, 80, 20));
+        assert_eq!(app.code_area, Rect::default());
     }
 }
