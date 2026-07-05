@@ -15,7 +15,7 @@
   "palette_hint": "上下 选择 | Enter 执行 | Esc 取消",
   "hint_command": "Enter 执行 | Esc 取消",
   "hint_list": "上下 移动 | Enter 打开 | Esc 关闭",
-  "hint_output": "Esc 代码 | / 命令 | ? 帮助",
+  "hint_output": "Esc/点击 编辑 | / 命令 | ? 帮助",
   "hint_code": "Esc 后输入 / 命令",
   "hint_idle": "/ 命令 | ? 帮助",
   "help_title": "帮助",
@@ -23,6 +23,7 @@
   "keys": "按键",
   "debug_prints": "调试输出",
   "cmd_run": "评测当前提交",
+  "cmd_code": "回到代码编辑器",
   "cmd_edit": "回到代码编辑器",
   "cmd_next": "打开下一题",
   "cmd_prev": "打开上一题",
@@ -50,5 +51,7 @@
   "update_check_disabled": "更新检查已禁用。",
   "update_check_failed": "无法检查更新。",
   "generating_next": "正在生成下一题",
-  "already_busy": "已有任务正在运行。"
+  "already_busy": "已有任务正在运行。",
+  "run_pass_next": "下一步: /next",
+  "run_fail_next": "修复: 按 Esc 或点击此面板编辑，然后 /run"
 }

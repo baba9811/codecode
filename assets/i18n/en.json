@@ -15,7 +15,7 @@
   "palette_hint": "up/down select | Enter run | Esc cancel",
   "hint_command": "Enter submit | Esc cancel",
   "hint_list": "up/down move | Enter open | Esc close",
-  "hint_output": "Esc code | / command | ? help",
+  "hint_output": "Esc/click edit | / command | ? help",
   "hint_code": "Esc then / command",
   "hint_idle": "/ command | ? help",
   "help_title": "Help",
@@ -23,6 +23,7 @@
   "keys": "Keys",
   "debug_prints": "Debug prints",
   "cmd_run": "Judge the current submission",
+  "cmd_code": "Return to the code editor",
   "cmd_edit": "Return to the code editor",
   "cmd_next": "Open the next problem",
   "cmd_prev": "Open the previous problem",
@@ -50,5 +51,7 @@
   "update_check_disabled": "Update check is disabled.",
   "update_check_failed": "Could not check for updates.",
   "generating_next": "Generating next problem",
-  "already_busy": "Already busy."
+  "already_busy": "Already busy.",
+  "run_pass_next": "Next: /next",
+  "run_fail_next": "Fix: press Esc or click this pane to edit, then /run"
 }

@@ -189,7 +189,7 @@ fn judge_shows_debug_stdout_on_failure() {
     fs::write(path, "print('debug')\nprint('Hello, World!')\n").unwrap();
     let result = judge(&root, &bank[0], &settings);
     assert!(!result.passed);
-    assert!(result.output.contains("stdout:\ndebug\nHello, World!"));
+    assert!(result.output.contains("Got\n  debug\n  Hello, World!"));
 }
 
 #[test]

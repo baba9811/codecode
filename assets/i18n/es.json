@@ -15,7 +15,7 @@
   "palette_hint": "arriba/abajo elegir | Enter ejecutar | Esc cancelar",
   "hint_command": "Enter ejecutar | Esc cancelar",
   "hint_list": "arriba/abajo mover | Enter abrir | Esc cerrar",
-  "hint_output": "Esc codigo | / comando | ? ayuda",
+  "hint_output": "Esc/clic editar | / comando | ? ayuda",
   "hint_code": "Esc y luego / comando",
   "hint_idle": "/ comando | ? ayuda",
   "help_title": "Ayuda",
@@ -23,6 +23,7 @@
   "keys": "Teclas",
   "debug_prints": "Salida de depuracion",
   "cmd_run": "Evalua la solucion actual",
+  "cmd_code": "Volver al editor de codigo",
   "cmd_edit": "Volver al editor de codigo",
   "cmd_next": "Abrir el siguiente problema",
   "cmd_prev": "Abrir el problema anterior",
@@ -50,5 +51,7 @@
   "update_check_disabled": "La comprobacion de actualizaciones esta desactivada.",
   "update_check_failed": "No se pudo comprobar actualizaciones.",
   "generating_next": "Generando el siguiente problema",
-  "already_busy": "Ya hay una tarea en curso."
+  "already_busy": "Ya hay una tarea en curso.",
+  "run_pass_next": "Siguiente: /next",
+  "run_fail_next": "Corrige: pulsa Esc o haz clic en este panel para editar, luego /run"
 }

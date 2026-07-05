@@ -16,7 +16,10 @@ use crate::{
     update::{CURRENT_VERSION, UpdateCheck, check_latest_version},
 };
 use anyhow::Result;
-use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
+use crossterm::event::{
+    self, Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers, MouseButton, MouseEvent,
+    MouseEventKind,
+};
 use ratatui::{
     DefaultTerminal, Frame,
     layout::{Constraint, Direction, Layout, Position, Rect},
@@ -59,9 +62,9 @@ const COMMAND_HINTS: &[CommandHint] = &[
         help: true,
     },
     CommandHint {
-        insert: "edit",
-        display: "/edit",
-        desc_key: "cmd_edit",
+        insert: "code",
+        display: "/code",
+        desc_key: "cmd_code",
         keep_open: false,
         help: true,
     },
@@ -227,20 +230,6 @@ const COMMAND_HINTS: &[CommandHint] = &[
         help: false,
     },
     CommandHint {
-        insert: "source local",
-        display: "/source local",
-        desc_key: "cmd_source",
-        keep_open: false,
-        help: false,
-    },
-    CommandHint {
-        insert: "source ai",
-        display: "/source ai",
-        desc_key: "cmd_source",
-        keep_open: false,
-        help: false,
-    },
-    CommandHint {
         insert: "update",
         display: "/update",
         desc_key: "cmd_update",
@@ -297,6 +286,9 @@ pub struct PracticodeApp {
     model_message: Option<String>,
     update_check: Option<UpdateCheck>,
     update_notice: Option<String>,
+    code_area: Rect,
+    output_area: Rect,
+    command_area: Rect,
     should_quit: bool,
 }
 
@@ -342,6 +334,9 @@ impl PracticodeApp {
             model_message: None,
             update_check: None,
             update_notice: None,
+            code_area: Rect::default(),
+            output_area: Rect::default(),
+            command_area: Rect::default(),
             should_quit: false,
         };
         app.load_code_editor()?;
@@ -357,11 +352,12 @@ impl PracticodeApp {
             self.check_update();
             self.start_model_check();
             self.check_models();
-            if event::poll(Duration::from_millis(100))?
-                && let Event::Key(key) = event::read()?
-                && key.kind != KeyEventKind::Release
-            {
-                self.handle_key(key)?;
+            if event::poll(Duration::from_millis(100))? {
+                match event::read()? {
+                    Event::Key(key) if key.kind != KeyEventKind::Release => self.handle_key(key)?,
+                    Event::Mouse(mouse) => self.handle_mouse(mouse)?,
+                    _ => {}
+                }
             }
             if !self.busy_label.is_empty() {
                 self.busy_frame = (self.busy_frame + 1) % 16;
@@ -393,6 +389,16 @@ impl PracticodeApp {
 
     pub fn handle_key_for_test(&mut self, key: KeyEvent) -> Result<()> {
         self.handle_key(key)
+    }
+
+    pub fn handle_mouse_for_test(&mut self, mouse: MouseEvent) -> Result<()> {
+        self.handle_mouse(mouse)
+    }
+
+    pub fn set_pane_areas_for_test(&mut self, code: Rect, output: Rect, command: Rect) {
+        self.code_area = code;
+        self.output_area = output;
+        self.command_area = command;
     }
 
     pub fn busy_label(&self) -> &str {
@@ -448,6 +454,9 @@ impl PracticodeApp {
             .direction(Direction::Horizontal)
             .constraints([Constraint::Percentage(58), Constraint::Percentage(42)])
             .split(vertical[0]);
+        self.code_area = body[1];
+        self.output_area = body[1];
+        self.command_area = vertical[2];
 
         let problem = Paragraph::new(self.problem_text())
             .block(Self::block(
@@ -459,13 +468,7 @@ impl PracticodeApp {
         frame.render_widget(problem, body[0]);
 
         if self.show_output {
-            let text = if !self.busy_label.is_empty() {
-                format!("{}{}", self.busy_body, self.busy_dots())
-            } else if self.output_is_markdown {
-                render_markdown_plain(&self.output)
-            } else {
-                self.output.clone()
-            };
+            let text = self.output_text();
             let output = Paragraph::new(text)
                 .block(Self::block(
                     ui_text(&self.state.settings.ui_language, "output"),
@@ -516,6 +519,79 @@ impl PracticodeApp {
         frame.render_widget(command, vertical[2]);
         self.draw_command_palette(frame, vertical[2]);
         self.set_terminal_cursor(frame, body[1], vertical[2]);
+    }
+
+    fn output_text(&self) -> Text<'static> {
+        let light = self.state.settings.theme == "light";
+        let title_style = if light {
+            Style::default()
+                .fg(Color::Blue)
+                .add_modifier(Modifier::BOLD)
+        } else {
+            Style::default()
+                .fg(Color::Yellow)
+                .add_modifier(Modifier::BOLD)
+        };
+        let label_style = if light {
+            Style::default()
+                .fg(Color::Magenta)
+                .add_modifier(Modifier::BOLD)
+        } else {
+            Style::default()
+                .fg(Color::Cyan)
+                .add_modifier(Modifier::BOLD)
+        };
+        let body_style = if light {
+            Style::default().fg(Color::Black)
+        } else {
+            Style::default().fg(Color::Rgb(229, 231, 235))
+        };
+        let code_style = if light {
+            Style::default()
+                .fg(Color::Black)
+                .bg(Color::Rgb(229, 231, 235))
+        } else {
+            Style::default()
+                .fg(Color::Rgb(243, 244, 246))
+                .bg(Color::Rgb(31, 41, 55))
+        };
+        if !self.busy_label.is_empty() {
+            return Text::from(Line::from(Span::styled(
+                format!("{}{}", self.busy_body, self.busy_dots()),
+                title_style,
+            )));
+        }
+        let output = if self.output_is_markdown {
+            render_markdown_plain(&self.output)
+        } else {
+            self.output.clone()
+        };
+        let mut lines = Vec::new();
+        for line in output.lines() {
+            if line.is_empty() {
+                lines.push(Line::default());
+            } else if line.starts_with("PASS ")
+                || line.starts_with("FAIL ")
+                || line.starts_with("Case ")
+                || line.starts_with("Next:")
+                || line.starts_with("Fix:")
+            {
+                lines.push(Line::from(Span::styled(line.to_string(), title_style)));
+            } else if matches!(
+                line,
+                "Input" | "Expected" | "Got" | "Stdout" | "Stderr" | "Compile" | "Error"
+            ) {
+                lines.push(Line::from(Span::styled(line.to_string(), label_style)));
+            } else if line.starts_with("  ") {
+                lines.push(Line::from(vec![
+                    Span::raw("  "),
+                    Span::styled(line.trim_start().to_string(), code_style),
+                ]));
+            } else {
+                lines.push(Line::from(Span::styled(line.to_string(), body_style)));
+            }
+        }
+        Text::from(lines)
     }
 
     fn problem_text(&self) -> Text<'static> {
@@ -732,6 +808,19 @@ impl PracticodeApp {
         }
     }
 
+    fn handle_mouse(&mut self, mouse: MouseEvent) -> Result<()> {
+        if !matches!(mouse.kind, MouseEventKind::Down(MouseButton::Left)) {
+            return Ok(());
+        }
+        let position = Position::new(mouse.column, mouse.row);
+        if self.command_area.contains(position) {
+            self.focus_command();
+        } else if self.code_area.contains(position) || self.output_area.contains(position) {
+            self.action_edit()?;
+        }
+        Ok(())
+    }
+
     fn handle_command_key(&mut self, key: KeyEvent) -> Result<()> {
         match key.code {
             KeyCode::Esc => {
@@ -887,7 +976,7 @@ impl PracticodeApp {
         }
         match command {
             "run" | "r" => self.action_run()?,
-            "edit" | "e" => self.action_edit()?,
+            "code" | "edit" | "e" => self.action_edit()?,
             "next" | "n" => self.action_next(arg)?,
             "prev" | "previous" | "p" => self.action_previous()?,
             "giveup" | "give" | "g" => self.action_give_up()?,
@@ -900,12 +989,12 @@ impl PracticodeApp {
             "theme" if arg.is_empty() => self.action_toggle_theme()?,
             "theme" if THEMES.contains(&arg) => self.set_theme(arg)?,
             "source" | "next-source" if arg.is_empty() => {
-                self.write_text_output(&format!("Next source: {}", self.next_source_label()));
+                self.write_text_output(&self.next_source_help());
             }
             "source" | "next-source" if matches!(arg, "bank" | "local" | "ai") => {
                 self.state.settings.next_source = normalize_next_source(arg);
                 save_state(&self.root, &self.state)?;
-                self.write_text_output(&format!("Next source: {}", self.next_source_label()));
+                self.write_text_output(&self.next_source_help());
             }
             "ai-next-command" if !arg.is_empty() => {
                 self.state.settings.ai_next_command = arg.to_string();
@@ -982,9 +1071,9 @@ impl PracticodeApp {
             result.total_cases
         );
         let next_step = if result.passed {
-            "Next: /next"
+            ui_text(&self.state.settings.ui_language, "run_pass_next")
         } else {
-            "Fix code, then /run"
+            ui_text(&self.state.settings.ui_language, "run_fail_next")
         };
         self.write_text_output(&format!("{headline}\n{}\n\n{next_step}", result.output));
         Ok(())
@@ -1655,11 +1744,11 @@ impl PracticodeApp {
         )
     }
 
-    fn next_source_label(&self) -> &'static str {
+    fn next_source_help(&self) -> String {
         if self.state.settings.next_source == "ai" {
-            "ai"
+            "Next behavior: plain /next asks AI every time. Use /source local to use local problems first.".to_string()
         } else {
-            "local"
+            "Next behavior: /next uses local problems first and asks AI when it needs a new one. Use /next <request> to ask AI directly.".to_string()
         }
     }
 

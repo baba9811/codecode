@@ -601,8 +601,8 @@ pub fn judge(root: &Path, problem: &Problem, settings: &Settings) -> JudgeResult
         let run = match run_capture(&mut process, &case.input, Duration::from_secs(5)) {
             Ok(run) => run,
             Err(error) => {
-                lines.push(format!("case {}: FAIL", index + 1));
-                lines.push(error.to_string());
+                lines.push(format!("Case {}: FAIL", index + 1));
+                push_labeled_block(&mut lines, "Error", &error.to_string());
                 break;
             }
         };
@@ -610,28 +610,20 @@ pub fn judge(root: &Path, problem: &Problem, settings: &Settings) -> JudgeResult
         let expected = case.output.trim();
         if !run.timed_out && run.code == Some(0) && got == expected {
             passed += 1;
-            lines.push(format!("case {}: PASS", index + 1));
+            lines.push(format!("Case {}: PASS", index + 1));
             if !run.stderr.trim().is_empty() {
-                lines.push("stderr:".to_string());
-                lines.push(run.stderr.trim_end().to_string());
+                push_labeled_block(&mut lines, "Stderr", run.stderr.trim_end());
             }
         } else {
-            lines.push(format!("case {}: FAIL", index + 1));
+            lines.push(format!("Case {}: FAIL", index + 1));
             if run.timed_out {
-                lines.push("timeout: 5s".to_string());
+                push_labeled_block(&mut lines, "Error", "timeout: 5s");
             }
-            lines.push(format!("input: {:?}", case.input));
-            lines.push(format!("expected: {:?}", expected));
-            lines.push(format!("got: {:?}", got));
-            lines.push("stdout:".to_string());
-            lines.push(if run.stdout.trim_end().is_empty() {
-                "<empty>".to_string()
-            } else {
-                run.stdout.trim_end().to_string()
-            });
+            push_labeled_block(&mut lines, "Input", case.input.trim_end());
+            push_labeled_block(&mut lines, "Expected", expected);
+            push_labeled_block(&mut lines, "Got", run.stdout.trim_end());
             if !run.stderr.trim().is_empty() {
-                lines.push("stderr:".to_string());
-                lines.push(run.stderr.trim_end().to_string());
+                push_labeled_block(&mut lines, "Stderr", run.stderr.trim_end());
             }
             break;
         }
@@ -642,6 +634,16 @@ pub fn judge(root: &Path, problem: &Problem, settings: &Settings) -> JudgeResult
         passed_cases: passed,
         total_cases: problem.cases.len(),
         output: lines.join("\n"),
+    }
+}
+
+fn push_labeled_block(lines: &mut Vec<String>, label: &str, body: &str) {
+    lines.push(String::new());
+    lines.push(label.to_string());
+    if body.is_empty() {
+        lines.push("  <empty>".to_string());
+    } else {
+        lines.extend(body.lines().map(|line| format!("  {line}")));
     }
 }
 

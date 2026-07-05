@@ -63,6 +63,7 @@ Submissions are saved as you type under `submissions/<problem-id>/solution.<ext>
 | Command | Action |
 | --- | --- |
 | `/run` | Judge the current submission |
+| `/code` | Return to the code editor |
 | `/next` | Open the next local problem, or ask AI to create one |
 | `/next easy string problem` | Ask AI for a custom next problem |
 | `/prev` | Go back through problem history |
@@ -78,7 +79,6 @@ Submissions are saved as you type under `submissions/<problem-id>/solution.<ext>
 | `/lang python` | Set code language: `python`, `ts`, `java`, `rust` |
 | `/ui en` | Set UI language: `en`, `ko`, `ja`, `zh`, `es` |
 | `/theme dark` | Set theme: `dark` or `light` |
-| `/source ai` | Prefer AI for next-problem generation |
 | `/update` | Show update instructions when a newer version is available |
 | `/exit` | Quit |
 
@@ -106,7 +106,6 @@ Claude Code is also supported:
 ```text
 /provider claude
 /model sonnet
-/source ai
 ```
 
 Generated problems and submissions stay local:

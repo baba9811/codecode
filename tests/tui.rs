@@ -1,8 +1,9 @@
 mod common;
 
 use common::{tmp_root, two_problem_bank};
-use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
+use crossterm::event::{KeyCode, KeyEvent, KeyModifiers, MouseButton, MouseEvent, MouseEventKind};
 use practicode::tui::{PracticodeApp, TextEditor};
+use ratatui::layout::Rect;
 
 #[test]
 fn text_editor_preserves_utf8_while_editing() {
@@ -69,9 +70,15 @@ fn slash_command_palette_surfaces_settings_commands() {
     let mut app = PracticodeApp::new(root).unwrap();
     app.focus_command_for_test();
     let suggestions = app.command_suggestions_for_test();
+    assert!(suggestions.contains(&"/code".to_string()));
     assert!(suggestions.contains(&"/provider codex".to_string()));
     assert!(suggestions.contains(&"/model auto".to_string()));
     assert!(suggestions.contains(&"/hint <request>".to_string()));
+    assert!(
+        !suggestions
+            .iter()
+            .any(|command| command.starts_with("/source"))
+    );
 }
 
 #[test]
@@ -131,4 +138,24 @@ fn status_text_hides_internal_problem_source() {
     let status = app.status_text_for_test();
     assert!(!status.contains("bank"));
     assert!(!status.contains("next:"));
+}
+
+#[test]
+fn clicking_output_returns_to_code_editor() {
+    let root = tmp_root("mouse-output-edit");
+    let mut app = PracticodeApp::new(root).unwrap();
+    app.set_pane_areas_for_test(
+        Rect::new(20, 0, 20, 10),
+        Rect::new(20, 0, 20, 10),
+        Rect::new(0, 11, 40, 3),
+    );
+    app.handle_command_for_test("help").unwrap();
+    app.handle_mouse_for_test(MouseEvent {
+        kind: MouseEventKind::Down(MouseButton::Left),
+        column: 21,
+        row: 1,
+        modifiers: KeyModifiers::NONE,
+    })
+    .unwrap();
+    assert!(app.status_text_for_test().contains("Esc then / command"));
 }

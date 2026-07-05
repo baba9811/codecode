@@ -15,7 +15,7 @@
   "palette_hint": "上下 選択 | Enter 実行 | Esc キャンセル",
   "hint_command": "Enter 実行 | Esc キャンセル",
   "hint_list": "上下 移動 | Enter 開く | Esc 閉じる",
-  "hint_output": "Esc コード | / コマンド | ? ヘルプ",
+  "hint_output": "Esc/クリック 編集 | / コマンド | ? ヘルプ",
   "hint_code": "Esc の後 / コマンド",
   "hint_idle": "/ コマンド | ? ヘルプ",
   "help_title": "ヘルプ",
@@ -23,6 +23,7 @@
   "keys": "キー",
   "debug_prints": "デバッグ出力",
   "cmd_run": "現在の提出を判定",
+  "cmd_code": "コードエディタに戻る",
   "cmd_edit": "コードエディタに戻る",
   "cmd_next": "次の問題を開く",
   "cmd_prev": "前の問題を開く",
@@ -50,5 +51,7 @@
   "update_check_disabled": "更新確認は無効です。",
   "update_check_failed": "更新を確認できませんでした。",
   "generating_next": "次の問題を生成中",
-  "already_busy": "すでに処理中です。"
+  "already_busy": "すでに処理中です。",
+  "run_pass_next": "次: /next",
+  "run_fail_next": "修正: Esc またはこのペインをクリックして編集し、/run"
 }
