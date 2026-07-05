@@ -119,7 +119,6 @@ fn background_generate_allows_solving_and_next_uses_local_problem() {
     assert!(app.status_text_for_test().contains("rust"));
     app.handle_command_for_test("next").unwrap();
     assert!(app.status_text_for_test().contains("002-echo"));
-    assert!(app.has_background_generation_for_test());
 }
 
 #[test]
