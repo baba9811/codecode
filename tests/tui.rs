@@ -70,3 +70,13 @@ fn codex_command_surface_is_replaced_by_ai() {
     app.handle_command_for_test("codex hint").unwrap();
     assert!(!app.has_task());
 }
+
+#[test]
+fn status_text_hides_internal_problem_source() {
+    let root = tmp_root("status-source");
+    let mut app = PracticodeApp::new(root).unwrap();
+    app.handle_command_for_test("source local").unwrap();
+    let status = app.status_text_for_test();
+    assert!(!status.contains("bank"));
+    assert!(!status.contains("next:"));
+}

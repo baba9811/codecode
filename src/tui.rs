@@ -1,15 +1,16 @@
 use crate::{
-    ai::{append_problem_note, read_problem_notes, run_ai_next, run_ai_prompt},
+    ai::{append_problem_note, provider_status, read_problem_notes, run_ai_next, run_ai_prompt},
     core::{
         AI_PROVIDERS, AppState, HistoryItem, LANGUAGES, PROBLEM_NOTES_PATH, Problem, THEMES,
         UI_LANGUAGES, ensure_problem_files, ensure_submission, ext_for, give_up, judge, load_bank,
         load_state, localized, next_problem, normalize_ai_provider, normalize_language,
         normalize_next_source, normalize_ui_language, previous_problem, problem_by_id, record_pass,
-        render_problem, save_state, template_for, ui_text,
+        render_problem_tui, save_state, template_for, ui_text,
     },
     text::{
         byte_index, char_len, compose_hangul_jamo, display_width, prefix, render_markdown_plain,
     },
+    update::{CURRENT_VERSION, UpdateCheck, check_latest_version},
 };
 use anyhow::Result;
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
@@ -214,11 +215,11 @@ const COMMAND_HINTS: &[CommandHint] = &[
         help: false,
     },
     CommandHint {
-        insert: "source bank",
-        display: "/source bank",
+        insert: "source local",
+        display: "/source local",
         desc_key: "cmd_source",
         keep_open: false,
-        help: true,
+        help: false,
     },
     CommandHint {
         insert: "source ai",
@@ -226,6 +227,13 @@ const COMMAND_HINTS: &[CommandHint] = &[
         desc_key: "cmd_source",
         keep_open: false,
         help: false,
+    },
+    CommandHint {
+        insert: "update",
+        display: "/update",
+        desc_key: "cmd_update",
+        keep_open: false,
+        help: true,
     },
     CommandHint {
         insert: "help",
@@ -269,6 +277,9 @@ pub struct PracticodeApp {
     busy_body: String,
     busy_frame: usize,
     task_rx: Option<Receiver<TaskResult>>,
+    update_rx: Option<Receiver<UpdateCheck>>,
+    update_check: Option<UpdateCheck>,
+    update_notice: Option<String>,
     should_quit: bool,
 }
 
@@ -306,6 +317,9 @@ impl PracticodeApp {
             busy_body: String::new(),
             busy_frame: 0,
             task_rx: None,
+            update_rx: None,
+            update_check: None,
+            update_notice: None,
             should_quit: false,
         };
         app.load_code_editor()?;
@@ -313,9 +327,11 @@ impl PracticodeApp {
     }
 
     pub fn run(&mut self, terminal: &mut DefaultTerminal) -> Result<()> {
+        self.start_update_check();
         while !self.should_quit {
             terminal.draw(|frame| self.draw(frame))?;
             self.check_task();
+            self.check_update();
             if event::poll(Duration::from_millis(100))?
                 && let Event::Key(key) = event::read()?
                 && key.kind != KeyEventKind::Release
@@ -323,7 +339,7 @@ impl PracticodeApp {
                 self.handle_key(key)?;
             }
             if !self.busy_label.is_empty() {
-                self.busy_frame = (self.busy_frame + 1) % 4;
+                self.busy_frame = (self.busy_frame + 1) % 16;
             }
         }
         self.save_code().ok();
@@ -362,6 +378,10 @@ impl PracticodeApp {
         self.task_rx.is_some()
     }
 
+    pub fn status_text_for_test(&self) -> String {
+        self.status_text()
+    }
+
     fn draw(&mut self, frame: &mut Frame) {
         let size = frame.area();
         let vertical = Layout::default()
@@ -377,10 +397,10 @@ impl PracticodeApp {
             .constraints([Constraint::Percentage(58), Constraint::Percentage(42)])
             .split(vertical[0]);
 
-        let problem = Paragraph::new(render_markdown_plain(&render_problem(
+        let problem = Paragraph::new(render_problem_tui(
             &self.problem,
             &self.state.settings.ui_language,
-        )))
+        ))
         .block(Self::block(
             ui_text(&self.state.settings.ui_language, "problem"),
             self.state.settings.theme == "light",
@@ -390,7 +410,7 @@ impl PracticodeApp {
 
         if self.show_output {
             let text = if !self.busy_label.is_empty() {
-                format!("{}{}", self.busy_body, ".".repeat(self.busy_frame))
+                format!("{}{}", self.busy_body, self.busy_dots())
             } else if self.output_is_markdown {
                 render_markdown_plain(&self.output)
             } else {
@@ -667,18 +687,12 @@ impl PracticodeApp {
             "theme" if arg.is_empty() => self.action_toggle_theme()?,
             "theme" if THEMES.contains(&arg) => self.set_theme(arg)?,
             "source" | "next-source" if arg.is_empty() => {
-                self.write_text_output(&format!(
-                    "Next source: {}",
-                    self.state.settings.next_source
-                ));
+                self.write_text_output(&format!("Next source: {}", self.next_source_label()));
             }
-            "source" | "next-source" if matches!(arg, "bank" | "ai") => {
+            "source" | "next-source" if matches!(arg, "bank" | "local" | "ai") => {
                 self.state.settings.next_source = normalize_next_source(arg);
                 save_state(&self.root, &self.state)?;
-                self.write_text_output(&format!(
-                    "Next source: {}",
-                    self.state.settings.next_source
-                ));
+                self.write_text_output(&format!("Next source: {}", self.next_source_label()));
             }
             "ai-next-command" if !arg.is_empty() => {
                 self.state.settings.ai_next_command = arg.to_string();
@@ -688,16 +702,18 @@ impl PracticodeApp {
             }
             "provider" | "ai-provider" if arg.is_empty() => {
                 self.write_text_output(&format!(
-                    "AI provider: {}",
-                    self.state.settings.ai_provider
+                    "AI provider: {}\n{}",
+                    self.state.settings.ai_provider,
+                    provider_status(&self.state.settings.ai_provider)
                 ));
             }
             "provider" | "ai-provider" if AI_PROVIDERS.contains(&arg) => {
                 self.state.settings.ai_provider = normalize_ai_provider(arg);
                 save_state(&self.root, &self.state)?;
                 self.write_text_output(&format!(
-                    "AI provider: {}",
-                    self.state.settings.ai_provider
+                    "AI provider: {}\n{}",
+                    self.state.settings.ai_provider,
+                    provider_status(&self.state.settings.ai_provider)
                 ));
             }
             "model" if arg.is_empty() => {
@@ -711,6 +727,7 @@ impl PracticodeApp {
             "ai" if !arg.is_empty() => self.start_ai_prompt(arg)?,
             "note" if !arg.is_empty() => self.append_note(arg)?,
             "note" | "notes" => self.show_notes()?,
+            "update" => self.show_update_notice(),
             "exit" | "quit" | "q" => self.should_quit = true,
             _ => self.write_text_output(&format!("Unknown command: {value}\nTry /help.")),
         }
@@ -769,10 +786,13 @@ impl PracticodeApp {
 
     fn start_next_problem(&mut self, old_problem: String, force: bool, request: String) {
         if self.task_rx.is_some() {
-            self.write_text_output("Already busy.");
+            self.write_text_output(ui_text(&self.state.settings.ui_language, "already_busy"));
             return;
         }
-        self.start_busy("next", "Generating next problem");
+        self.start_busy(
+            "next",
+            ui_text(&self.state.settings.ui_language, "generating_next"),
+        );
         let root = self.root.clone();
         let state = self.state.clone();
         let (tx, rx) = mpsc::channel();
@@ -890,7 +910,7 @@ impl PracticodeApp {
 
     fn start_ai_prompt(&mut self, prompt: &str) -> Result<()> {
         if self.task_rx.is_some() {
-            self.write_text_output("Already busy.");
+            self.write_text_output(ui_text(&self.state.settings.ui_language, "already_busy"));
             return Ok(());
         }
         self.save_code()?;
@@ -929,6 +949,28 @@ impl PracticodeApp {
         }
     }
 
+    fn check_update(&mut self) {
+        let result = self.update_rx.as_ref().and_then(|rx| rx.try_recv().ok());
+        if let Some(result) = result {
+            self.update_rx = None;
+            self.update_check = Some(result.clone());
+            if let UpdateCheck::Available(version) = &result {
+                self.update_notice = Some(version.clone());
+            }
+        }
+    }
+
+    fn start_update_check(&mut self) {
+        if self.update_rx.is_some() {
+            return;
+        }
+        let (tx, rx) = mpsc::channel();
+        thread::spawn(move || {
+            let _ = tx.send(check_latest_version());
+        });
+        self.update_rx = Some(rx);
+    }
+
     fn start_busy(&mut self, label: &str, body: &str) {
         self.busy_label = label.to_string();
         self.busy_body = body.to_string();
@@ -955,6 +997,24 @@ impl PracticodeApp {
         self.output_is_markdown = false;
         self.show_output = true;
         self.focus = Focus::Output;
+    }
+
+    fn show_update_notice(&mut self) {
+        let lang = self.state.settings.ui_language.clone();
+        if let Some(version) = &self.update_notice {
+            self.write_text_output(&format!(
+                "{}: practicode {version} (current {CURRENT_VERSION})\n\nnpm update -g practicode\ncargo install --force practicode",
+                ui_text(&lang, "update_available")
+            ));
+        } else if self.update_rx.is_some() {
+            self.write_text_output("Checking for updates...");
+        } else if matches!(self.update_check, Some(UpdateCheck::Disabled)) {
+            self.write_text_output(ui_text(&lang, "update_check_disabled"));
+        } else if matches!(self.update_check, Some(UpdateCheck::Failed)) {
+            self.write_text_output(ui_text(&lang, "update_check_failed"));
+        } else {
+            self.write_text_output(ui_text(&lang, "update_none"));
+        }
     }
 
     fn append_note(&mut self, note: &str) -> Result<()> {
@@ -1243,27 +1303,43 @@ impl PracticodeApp {
 
     fn status_text(&self) -> String {
         let code_status = self.submission_status(&self.problem).0;
+        let activity = if self.busy_label.is_empty() {
+            "idle".to_string()
+        } else {
+            format!("{}{}", self.busy_body, self.busy_dots())
+        };
+        let tail = self
+            .update_notice
+            .as_ref()
+            .map(|version| {
+                format!(
+                    "{}:{version} /update",
+                    ui_text(&self.state.settings.ui_language, "update")
+                )
+            })
+            .unwrap_or_else(|| self.mode_hint().to_string());
         format!(
-            " PRACTICODE | {} | {} | {} | {} | code:{} | {} | next:{} | ai:{}/{} | {} ",
+            " PRACTICODE | {} | {} | {} | {} | code:{} | {} | {} ",
             self.problem.id,
             self.problem.difficulty,
-            self.busy_status(),
             self.problem_status(&self.problem),
+            activity,
             code_status,
             self.state.settings.language,
-            self.state.settings.next_source,
-            self.state.settings.ai_provider,
-            self.state.settings.ai_model,
-            self.mode_hint(),
+            tail,
         )
     }
 
-    fn busy_status(&self) -> String {
-        if self.busy_label.is_empty() {
-            "idle".to_string()
+    fn next_source_label(&self) -> &'static str {
+        if self.state.settings.next_source == "ai" {
+            "ai"
         } else {
-            format!("busy:{}{}", self.busy_label, ".".repeat(self.busy_frame))
+            "local"
         }
+    }
+
+    fn busy_dots(&self) -> String {
+        ".".repeat(self.busy_frame / 4)
     }
 
     fn mode_hint(&self) -> &'static str {

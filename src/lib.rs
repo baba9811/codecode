@@ -4,9 +4,11 @@ use std::{env, io::stdout};
 
 pub mod ai;
 pub mod core;
+pub mod i18n;
 pub mod process;
 pub mod text;
 pub mod tui;
+pub mod update;
 
 pub fn run_cli() -> Result<()> {
     let root = env::current_dir().context("read current directory")?;

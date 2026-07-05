@@ -70,7 +70,7 @@ Submissions are saved as you type under `submissions/<problem-id>/solution.<ext>
 | `/open 2` | Open by number, id, or slug |
 | `/giveup` | Show the reference answer |
 | `/ai hint` | Ask the selected AI about the current problem and submission |
-| `/provider codex` | Set AI provider: `codex` or `claude` |
+| `/provider codex` | Set AI provider and show local CLI/daemon status |
 | `/model auto` | Set the model for `/ai` and AI-backed `/next` |
 | `/note prefer hashmap practice` | Append a standing note for future problem generation |
 | `/notes` | Show your local next-problem notes |
@@ -78,6 +78,7 @@ Submissions are saved as you type under `submissions/<problem-id>/solution.<ext>
 | `/ui en` | Set UI language: `en`, `ko`, `ja`, `zh`, `es` |
 | `/theme dark` | Set theme: `dark` or `light` |
 | `/source ai` | Prefer AI for next-problem generation |
+| `/update` | Show update instructions when a newer version is available |
 | `/exit` | Quit |
 
 The default UI language is English. Switch it any time with `/ui ko`, `/ui ja`, `/ui zh`, or `/ui es`.
@@ -107,11 +108,11 @@ Claude Code is also supported:
 /source ai
 ```
 
-Generated problem banks and submissions stay local:
+Generated problems and submissions stay local:
 
 | Path | Purpose |
 | --- | --- |
-| `.practicode/problem_bank.json` | Local/custom/generated problem bank |
+| `.practicode/problem_bank.json` | Local/custom/generated problems |
 | `.practicode/problem_notes.md` | Optional personal problem-generation notes |
 | `.practicode/problem-state.json` | Current problem, history, settings |
 | `problems/` | Generated problem markdown/index files |
@@ -120,6 +121,8 @@ Generated problem banks and submissions stay local:
 Those paths are ignored by git, so your practice history stays yours.
 
 ## Update
+
+The app checks for newer npm releases in the background and shows `/update` in the status line when one is available. Disable that check with `PRACTICODE_NO_UPDATE_CHECK=1`.
 
 ```bash
 npm update -g practicode

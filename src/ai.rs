@@ -3,13 +3,14 @@ use crate::{
         AppState, PROBLEM_NOTES_PATH, Problem, Settings, ensure_submission, normalize_ai_provider,
         render_problem,
     },
-    process::{run_capture, sh_quote, shell_process, unique_temp_path},
+    process::{run_capture, sh_quote, shell_process, unique_temp_path, which},
 };
 use anyhow::Result;
 use std::{
+    env,
     fs::{self, OpenOptions},
     io::Write,
-    path::Path,
+    path::{Path, PathBuf},
     process::Command,
     time::Duration,
 };
@@ -39,7 +40,7 @@ pub fn run_ai_prompt(root: &Path, problem: &Problem, settings: &Settings, prompt
 
 pub fn run_ai_next(root: &Path, state: &AppState, force: bool, request: &str) -> String {
     if state.settings.next_source != "ai" && !force {
-        return "AI next is disabled; using local problem bank.".to_string();
+        return "AI next is disabled; using local problems.".to_string();
     }
     let provider = normalize_ai_provider(&state.settings.ai_provider);
     let command = if state.settings.next_ai_command().trim().is_empty() {
@@ -78,9 +79,32 @@ pub fn default_ai_next_command(root: &Path, settings: &Settings, request: &str) 
     }
 }
 
+pub fn provider_status(provider: &str) -> String {
+    match normalize_ai_provider(provider).as_str() {
+        "claude" => {
+            if which("claude").is_some() {
+                "Claude CLI found.".to_string()
+            } else {
+                "Claude CLI not found. Install Claude Code or choose /provider codex.".to_string()
+            }
+        }
+        _ => {
+            if which("codex").is_none() {
+                return "Codex CLI not found. Install Codex CLI or choose /provider claude."
+                    .to_string();
+            }
+            if codex_daemon_path().is_some_and(|path| path.exists()) {
+                "Codex CLI found. App-server daemon is available.".to_string()
+            } else {
+                "Codex CLI found. App-server daemon is not available; practicode will use codex exec directly.".to_string()
+            }
+        }
+    }
+}
+
 pub fn default_ai_next_prompt(request: &str) -> String {
     format!(
-        "Read AGENTS.md, docs/problem-authoring-notes.md if present, .practicode/problem_notes.md if present, problems/INDEX.md if present, .practicode/problem_bank.json if present, and .practicode/problem-state.json. The app has a built-in starter problem 001-hello-world, so do not duplicate it. Create exactly one new non-duplicate coding practice problem. User request for this problem: {}. Update .practicode/problem_bank.json, the local problem files, the index, and state files. Do not include the answer in the problem statement.",
+        "Read AGENTS.md, docs/problem-authoring-notes.md if present, .practicode/problem_notes.md if present, problems/INDEX.md if present, .practicode/problem_bank.json if present, and .practicode/problem-state.json. Create exactly one new non-duplicate coding practice problem. The built-in 001-hello-world already exists, so do not duplicate it. User request: {}. Make the smallest valid edits: update .practicode/problem_bank.json, one problem directory, problems/INDEX.md, and .practicode/problem-state.json. Do not include the answer in the problem statement.",
         if request.is_empty() {
             "(none)"
         } else {
@@ -177,9 +201,9 @@ fn run_claude_prompt(root: &Path, settings: &Settings, prompt: &str) -> String {
 }
 
 fn default_codex_next_command(root: &Path, settings: &Settings, request: &str) -> String {
-    let start = "codex app-server daemon start >/dev/null 2>&1 || true";
+    let start = "if [ -x \"$HOME/.codex/packages/standalone/current/codex\" ]; then codex app-server daemon start >/dev/null 2>&1 || true; fi";
     let mut exec = format!(
-        "codex exec --cd {} --sandbox workspace-write",
+        "codex exec --ephemeral --cd {} --sandbox workspace-write",
         sh_quote(&root.display().to_string())
     );
     if let Some(model) = settings.model_arg() {
@@ -188,6 +212,14 @@ fn default_codex_next_command(root: &Path, settings: &Settings, request: &str) -
     exec.push(' ');
     exec.push_str(&sh_quote(&default_ai_next_prompt(request)));
     format!("{start}; {exec}")
+}
+
+fn codex_daemon_path() -> Option<PathBuf> {
+    env::var_os("HOME").map(|home| {
+        PathBuf::from(home)
+            .join(".codex/packages/standalone/current")
+            .join(if cfg!(windows) { "codex.exe" } else { "codex" })
+    })
 }
 
 fn default_claude_next_command(root: &Path, settings: &Settings, request: &str) -> String {

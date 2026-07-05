@@ -3,8 +3,8 @@ mod common;
 use common::tmp_root;
 use practicode::{
     ai::{
-        append_problem_note, default_ai_next_command, default_ai_next_prompt, read_problem_notes,
-        run_ai_next,
+        append_problem_note, default_ai_next_command, default_ai_next_prompt, provider_status,
+        read_problem_notes, run_ai_next,
     },
     core::{AppState, Settings},
 };
@@ -31,6 +31,7 @@ fn default_codex_command_uses_model_when_set() {
         "strings",
     );
     assert!(command.contains("codex app-server daemon start"));
+    assert!(command.contains("--ephemeral"));
     assert!(command.contains("--model 'gpt-5-codex'"));
     assert!(command.contains("strings"));
 }
@@ -52,6 +53,17 @@ fn default_claude_command_uses_print_mode_and_accepts_edits() {
     assert!(command.contains("claude --permission-mode acceptEdits"));
     assert!(command.contains("--model 'sonnet'"));
     assert!(command.contains("arrays"));
+}
+
+#[test]
+fn provider_status_reports_cli_and_daemon_state() {
+    let status = provider_status("codex");
+    assert!(status.contains("Codex CLI"));
+    assert!(
+        status.contains("daemon")
+            || status.contains("Install Codex CLI")
+            || status.contains("codex exec")
+    );
 }
 
 #[test]

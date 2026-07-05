@@ -27,7 +27,8 @@ The source is split by boring responsibility:
 
 | Path | Role |
 | --- | --- |
-| `src/core.rs` | Problem bank, state, rendering, judging |
+| `src/core.rs` | Problem storage, state, rendering, judging |
+| `src/i18n.rs` | Loads UI strings from `assets/i18n/*.json` |
 | `src/tui.rs` | Ratatui app, editor, command parser |
 | `src/ai.rs` | Codex/Claude command integration and notes |
 | `src/text.rs` | UTF-8 cursor math and Hangul composition |
@@ -42,7 +43,7 @@ Local generated data stays ignored by git:
 
 | Path | Purpose |
 | --- | --- |
-| `.practicode/problem_bank.json` | Local/custom/generated problem bank |
+| `.practicode/problem_bank.json` | Local/custom/generated problems |
 | `.practicode/problem_notes.md` | Personal problem-generation notes |
 | `.practicode/problem-state.json` | Current problem, history, settings |
 | `problems/` | Generated problem markdown/index files |
@@ -63,6 +64,10 @@ The release script checks versions, runs tests, creates the version commit and t
 Keep the root [README](../README.md) focused on users. Put contributor workflow, implementation notes, release notes, and design references here or in nearby `docs/` files.
 
 Use relative links for repo-local docs and assets. The terminal screenshot is stored at [assets/practicode-terminal.svg](../assets/practicode-terminal.svg).
+
+## Localization
+
+UI strings live in [assets/i18n](../assets/i18n). Keep English complete first; other locales can be partial because the runtime falls back per key to English.
 
 ## UX And Documentation References
 

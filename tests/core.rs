@@ -4,7 +4,8 @@ use common::{tmp_root, two_problem_bank};
 use practicode::{
     core::{
         AppState, HistoryItem, Settings, ensure_submission, judge, load_bank, load_state,
-        localized, next_problem, problem_by_id, record_pass, render_problem, save_bank, save_state,
+        localized, next_problem, problem_by_id, record_pass, render_problem, render_problem_tui,
+        save_bank, save_state,
     },
     process::which,
     text::render_markdown_plain,
@@ -132,6 +133,19 @@ fn render_problem_defaults_to_english_and_supports_common_ui_languages() {
     assert!(render_problem(&problem, "ja").contains("入力はありません。"));
     assert!(render_problem(&problem, "zh-CN").contains("没有输入。"));
     assert!(render_problem(&problem, "es").contains("No hay entrada."));
+}
+
+#[test]
+fn render_problem_tui_is_scannable_plain_text() {
+    let root = tmp_root("render-tui");
+    let problem = load_bank(&root).unwrap().remove(0);
+    let rendered = render_problem_tui(&problem, "en");
+    assert!(rendered.contains("001. Hello World"));
+    assert!(rendered.contains("Difficulty: easy    Topics: io"));
+    assert!(rendered.contains("Input\n  No input."));
+    assert!(rendered.contains("Examples\n  Example 1"));
+    assert!(!rendered.contains("```"));
+    assert!(!rendered.contains("##"));
 }
 
 #[test]

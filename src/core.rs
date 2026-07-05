@@ -10,7 +10,7 @@ use std::{
 };
 
 pub const LANGUAGES: &[&str] = &["python", "ts", "java", "rust"];
-pub const UI_LANGUAGES: &[&str] = &["en", "ko", "ja", "zh", "es"];
+pub use crate::i18n::{UI_LANGUAGES, normalize_ui_language, ui_text};
 pub const THEMES: &[&str] = &["dark", "light"];
 pub const AI_PROVIDERS: &[&str] = &["codex", "claude"];
 pub const BANK_PATH: &str = ".practicode/problem_bank.json";
@@ -383,20 +383,6 @@ pub fn normalize_language(language: &str) -> String {
     }
 }
 
-pub fn normalize_ui_language(language: &str) -> String {
-    let lower = language.trim().to_lowercase();
-    let short = lower
-        .split(['-', '_'])
-        .next()
-        .filter(|value| !value.is_empty())
-        .unwrap_or("en");
-    if UI_LANGUAGES.contains(&short) {
-        short.to_string()
-    } else {
-        default_ui_language()
-    }
-}
-
 pub fn normalize_next_source(source: &str) -> String {
     if source == "ai" {
         "ai".to_string()
@@ -421,207 +407,6 @@ pub fn localized(map: &HashMap<String, String>, lang: &str) -> String {
         .or_else(|| map.values().next())
         .cloned()
         .unwrap_or_default()
-}
-
-pub fn ui_text(lang: &str, key: &str) -> &'static str {
-    let lang = normalize_ui_language(lang);
-    match (lang.as_str(), key) {
-        ("ko", "problem") => "문제",
-        ("ko", "output") => "출력",
-        ("ko", "command") => "명령",
-        ("ko", "commands") => "명령",
-        ("ko", "difficulty") => "난이도",
-        ("ko", "topics") => "주제",
-        ("ko", "input") => "입력",
-        ("ko", "examples") => "예시",
-        ("ko", "example") => "예시",
-        ("ko", "command_placeholder") => "/ 입력 후 ↑/↓로 선택, Enter 실행",
-        ("ko", "palette_hint") => "↑/↓ 선택 | Enter 실행 | Esc 취소",
-        ("ko", "hint_command") => "Enter 실행 | Esc 취소",
-        ("ko", "hint_list") => "↑/↓ 이동 | Enter 열기 | Esc 닫기",
-        ("ko", "hint_output") => "Esc 코드 | / 명령 | ? 도움말",
-        ("ko", "hint_code") => "Esc 후 / 명령",
-        ("ko", "hint_idle") => "/ 명령 | ? 도움말",
-        ("ko", "help_title") => "도움말",
-        ("ko", "daily_loop") => "기본 흐름",
-        ("ko", "keys") => "키",
-        ("ko", "debug_prints") => "디버그 출력",
-        ("ko", "cmd_run") => "현재 제출을 채점",
-        ("ko", "cmd_edit") => "코드 편집기로 돌아가기",
-        ("ko", "cmd_next") => "다음 문제 열기",
-        ("ko", "cmd_prev") => "이전 문제 열기",
-        ("ko", "cmd_list") => "문제 목록 열기",
-        ("ko", "cmd_open") => "번호, id, slug로 문제 열기",
-        ("ko", "cmd_giveup") => "정답 보기",
-        ("ko", "cmd_ai") => "현재 문제와 코드에 대해 AI에게 질문",
-        ("ko", "cmd_provider") => "AI provider 설정",
-        ("ko", "cmd_model") => "AI model 설정",
-        ("ko", "cmd_note") => "다음 문제 생성 메모 추가",
-        ("ko", "cmd_notes") => "저장된 메모 보기",
-        ("ko", "cmd_lang") => "코드 언어 설정",
-        ("ko", "cmd_ui") => "UI 언어 설정",
-        ("ko", "cmd_theme") => "테마 설정",
-        ("ko", "cmd_source") => "다음 문제 출처 설정",
-        ("ko", "cmd_exit") => "종료",
-        ("ko", "cmd_help") => "도움말 열기",
-
-        ("ja", "problem") => "問題",
-        ("ja", "output") => "出力",
-        ("ja", "command") => "コマンド",
-        ("ja", "commands") => "コマンド",
-        ("ja", "difficulty") => "難易度",
-        ("ja", "topics") => "トピック",
-        ("ja", "input") => "入力",
-        ("ja", "examples") => "例",
-        ("ja", "example") => "例",
-        ("ja", "command_placeholder") => "/ を入力し ↑/↓ で選択、Enter で実行",
-        ("ja", "palette_hint") => "↑/↓ 選択 | Enter 実行 | Esc キャンセル",
-        ("ja", "hint_command") => "Enter 実行 | Esc キャンセル",
-        ("ja", "hint_list") => "↑/↓ 移動 | Enter 開く | Esc 閉じる",
-        ("ja", "hint_output") => "Esc コード | / コマンド | ? ヘルプ",
-        ("ja", "hint_code") => "Esc の後 / コマンド",
-        ("ja", "hint_idle") => "/ コマンド | ? ヘルプ",
-        ("ja", "help_title") => "ヘルプ",
-        ("ja", "daily_loop") => "基本フロー",
-        ("ja", "keys") => "キー",
-        ("ja", "debug_prints") => "デバッグ出力",
-        ("ja", "cmd_run") => "現在の提出を判定",
-        ("ja", "cmd_edit") => "コードエディタに戻る",
-        ("ja", "cmd_next") => "次の問題を開く",
-        ("ja", "cmd_prev") => "前の問題を開く",
-        ("ja", "cmd_list") => "問題一覧を開く",
-        ("ja", "cmd_open") => "番号、id、slug で問題を開く",
-        ("ja", "cmd_giveup") => "解答を見る",
-        ("ja", "cmd_ai") => "現在の問題とコードについて AI に質問",
-        ("ja", "cmd_provider") => "AI provider を設定",
-        ("ja", "cmd_model") => "AI model を設定",
-        ("ja", "cmd_note") => "次の問題生成メモを追加",
-        ("ja", "cmd_notes") => "保存済みメモを見る",
-        ("ja", "cmd_lang") => "コード言語を設定",
-        ("ja", "cmd_ui") => "UI 言語を設定",
-        ("ja", "cmd_theme") => "テーマを設定",
-        ("ja", "cmd_source") => "次の問題の取得元を設定",
-        ("ja", "cmd_exit") => "終了",
-        ("ja", "cmd_help") => "ヘルプを開く",
-
-        ("zh", "problem") => "题目",
-        ("zh", "output") => "输出",
-        ("zh", "command") => "命令",
-        ("zh", "commands") => "命令",
-        ("zh", "difficulty") => "难度",
-        ("zh", "topics") => "主题",
-        ("zh", "input") => "输入",
-        ("zh", "examples") => "示例",
-        ("zh", "example") => "示例",
-        ("zh", "command_placeholder") => "输入 / 后用 ↑/↓ 选择，Enter 执行",
-        ("zh", "palette_hint") => "↑/↓ 选择 | Enter 执行 | Esc 取消",
-        ("zh", "hint_command") => "Enter 执行 | Esc 取消",
-        ("zh", "hint_list") => "↑/↓ 移动 | Enter 打开 | Esc 关闭",
-        ("zh", "hint_output") => "Esc 代码 | / 命令 | ? 帮助",
-        ("zh", "hint_code") => "Esc 后输入 / 命令",
-        ("zh", "hint_idle") => "/ 命令 | ? 帮助",
-        ("zh", "help_title") => "帮助",
-        ("zh", "daily_loop") => "日常流程",
-        ("zh", "keys") => "按键",
-        ("zh", "debug_prints") => "调试输出",
-        ("zh", "cmd_run") => "评测当前提交",
-        ("zh", "cmd_edit") => "回到代码编辑器",
-        ("zh", "cmd_next") => "打开下一题",
-        ("zh", "cmd_prev") => "打开上一题",
-        ("zh", "cmd_list") => "打开题目列表",
-        ("zh", "cmd_open") => "按编号、id 或 slug 打开题目",
-        ("zh", "cmd_giveup") => "显示参考答案",
-        ("zh", "cmd_ai") => "向 AI 询问当前题目和代码",
-        ("zh", "cmd_provider") => "设置 AI provider",
-        ("zh", "cmd_model") => "设置 AI model",
-        ("zh", "cmd_note") => "添加下次出题备注",
-        ("zh", "cmd_notes") => "查看保存的备注",
-        ("zh", "cmd_lang") => "设置代码语言",
-        ("zh", "cmd_ui") => "设置 UI 语言",
-        ("zh", "cmd_theme") => "设置主题",
-        ("zh", "cmd_source") => "设置下一题来源",
-        ("zh", "cmd_exit") => "退出",
-        ("zh", "cmd_help") => "打开帮助",
-
-        ("es", "problem") => "Problema",
-        ("es", "output") => "Salida",
-        ("es", "command") => "Comando",
-        ("es", "commands") => "Comandos",
-        ("es", "difficulty") => "Dificultad",
-        ("es", "topics") => "Temas",
-        ("es", "input") => "Entrada",
-        ("es", "examples") => "Ejemplos",
-        ("es", "example") => "Ejemplo",
-        ("es", "command_placeholder") => "Escribe /, elige con ↑/↓, Enter ejecuta",
-        ("es", "palette_hint") => "↑/↓ elegir | Enter ejecutar | Esc cancelar",
-        ("es", "hint_command") => "Enter ejecutar | Esc cancelar",
-        ("es", "hint_list") => "↑/↓ mover | Enter abrir | Esc cerrar",
-        ("es", "hint_output") => "Esc codigo | / comando | ? ayuda",
-        ("es", "hint_code") => "Esc y luego / comando",
-        ("es", "hint_idle") => "/ comando | ? ayuda",
-        ("es", "help_title") => "Ayuda",
-        ("es", "daily_loop") => "Flujo diario",
-        ("es", "keys") => "Teclas",
-        ("es", "debug_prints") => "Salida de depuracion",
-        ("es", "cmd_run") => "Evalua la solucion actual",
-        ("es", "cmd_edit") => "Volver al editor de codigo",
-        ("es", "cmd_next") => "Abrir el siguiente problema",
-        ("es", "cmd_prev") => "Abrir el problema anterior",
-        ("es", "cmd_list") => "Abrir la lista de problemas",
-        ("es", "cmd_open") => "Abrir por numero, id o slug",
-        ("es", "cmd_giveup") => "Mostrar la respuesta de referencia",
-        ("es", "cmd_ai") => "Preguntar a AI sobre el problema y codigo actuales",
-        ("es", "cmd_provider") => "Configurar AI provider",
-        ("es", "cmd_model") => "Configurar AI model",
-        ("es", "cmd_note") => "Agregar nota para generar problemas",
-        ("es", "cmd_notes") => "Ver notas guardadas",
-        ("es", "cmd_lang") => "Configurar lenguaje de codigo",
-        ("es", "cmd_ui") => "Configurar idioma de UI",
-        ("es", "cmd_theme") => "Configurar tema",
-        ("es", "cmd_source") => "Configurar fuente del siguiente problema",
-        ("es", "cmd_exit") => "Salir",
-        ("es", "cmd_help") => "Abrir ayuda",
-
-        (_, "problem") => "Problem",
-        (_, "output") => "Output",
-        (_, "command") => "Command",
-        (_, "commands") => "Commands",
-        (_, "difficulty") => "Difficulty",
-        (_, "topics") => "Topics",
-        (_, "input") => "Input",
-        (_, "examples") => "Examples",
-        (_, "example") => "Example",
-        (_, "command_placeholder") => "Type /, move with ↑/↓, Enter runs",
-        (_, "palette_hint") => "↑/↓ select | Enter run | Esc cancel",
-        (_, "hint_command") => "Enter submit | Esc cancel",
-        (_, "hint_list") => "up/down move | Enter open | Esc close",
-        (_, "hint_output") => "Esc code | / command | ? help",
-        (_, "hint_code") => "Esc then / command",
-        (_, "hint_idle") => "/ command | ? help",
-        (_, "help_title") => "Help",
-        (_, "daily_loop") => "Daily loop",
-        (_, "keys") => "Keys",
-        (_, "debug_prints") => "Debug prints",
-        (_, "cmd_run") => "Judge the current submission",
-        (_, "cmd_edit") => "Return to the code editor",
-        (_, "cmd_next") => "Open the next problem",
-        (_, "cmd_prev") => "Open the previous problem",
-        (_, "cmd_list") => "Browse problems",
-        (_, "cmd_open") => "Open by number, id, or slug",
-        (_, "cmd_giveup") => "Show the reference answer",
-        (_, "cmd_ai") => "Ask AI about the current problem and code",
-        (_, "cmd_provider") => "Set AI provider",
-        (_, "cmd_model") => "Set AI model",
-        (_, "cmd_note") => "Add a next-problem note",
-        (_, "cmd_notes") => "Show saved notes",
-        (_, "cmd_lang") => "Set code language",
-        (_, "cmd_ui") => "Set UI language",
-        (_, "cmd_theme") => "Set theme",
-        (_, "cmd_source") => "Set next-problem source",
-        (_, "cmd_exit") => "Quit",
-        (_, "cmd_help") => "Open help",
-        _ => "",
-    }
 }
 
 pub fn template_for(language: &str) -> String {
@@ -688,6 +473,66 @@ pub fn render_problem(problem: &Problem, ui_language: &str) -> String {
         ui_text(&lang, "examples"),
         examples
     )
+}
+
+pub fn render_problem_tui(problem: &Problem, ui_language: &str) -> String {
+    let lang = normalize_ui_language(ui_language);
+    let number = problem
+        .id
+        .split_once('-')
+        .map(|(number, _)| number)
+        .unwrap_or(&problem.id);
+    let mut lines = vec![
+        format!("{number}. {}", localized(&problem.title, &lang)),
+        format!(
+            "{}: {}    {}: {}",
+            ui_text(&lang, "difficulty"),
+            problem.difficulty,
+            ui_text(&lang, "topics"),
+            problem.topics.join(", ")
+        ),
+        String::new(),
+        localized(&problem.statement, &lang),
+    ];
+    push_tui_section(
+        &mut lines,
+        ui_text(&lang, "input"),
+        &localized(&problem.input, &lang),
+    );
+    push_tui_section(
+        &mut lines,
+        ui_text(&lang, "output"),
+        &localized(&problem.output, &lang),
+    );
+    lines.push(String::new());
+    lines.push(ui_text(&lang, "examples").to_string());
+    for (index, case) in problem.examples.iter().enumerate() {
+        lines.push(format!("  {} {}", ui_text(&lang, "example"), index + 1));
+        lines.push(format!("    {}:", ui_text(&lang, "input")));
+        push_case_text(&mut lines, &case.input);
+        lines.push(format!("    {}:", ui_text(&lang, "output")));
+        push_case_text(&mut lines, &case.output);
+    }
+    lines.join("\n").trim_end().to_string()
+}
+
+fn push_tui_section(lines: &mut Vec<String>, title: &str, body: &str) {
+    lines.push(String::new());
+    lines.push(title.to_string());
+    for line in body.trim_end().lines() {
+        lines.push(format!("  {line}"));
+    }
+}
+
+fn push_case_text(lines: &mut Vec<String>, body: &str) {
+    let body = body.trim_end();
+    if body.is_empty() {
+        lines.push("      <empty>".to_string());
+    } else {
+        for line in body.lines() {
+            lines.push(format!("      {line}"));
+        }
+    }
 }
 
 pub fn fenced_text(value: &str) -> String {
