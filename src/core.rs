@@ -1,5 +1,5 @@
 use crate::process::{CommandSpec, run_capture, which};
-use anyhow::{Context, Result, anyhow};
+use anyhow::{Context, Result, anyhow, bail};
 use serde::{Deserialize, Serialize};
 use std::{
     collections::HashMap,
@@ -216,6 +216,7 @@ pub fn load_bank(root: &Path) -> Result<Vec<Problem>> {
         let text = fs::read_to_string(&path).with_context(|| format!("read {}", path.display()))?;
         let bank: Vec<Problem> =
             serde_json::from_str(&text).with_context(|| format!("parse {}", path.display()))?;
+        validate_bank(&bank, &path)?;
         Ok(bank)
     } else {
         Ok(vec![starter_problem()])
@@ -224,11 +225,55 @@ pub fn load_bank(root: &Path) -> Result<Vec<Problem>> {
 
 pub fn save_bank(root: &Path, bank: &[Problem]) -> Result<()> {
     let path = root.join(BANK_PATH);
+    validate_bank(bank, &path)?;
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)?;
     }
     fs::write(&path, serde_json::to_string_pretty(bank)? + "\n")?;
     Ok(())
+}
+
+fn validate_bank(bank: &[Problem], path: &Path) -> Result<()> {
+    if bank.is_empty() {
+        bail!("{} must contain at least one problem", path.display());
+    }
+    for problem in bank {
+        if !is_safe_name(&problem.id) {
+            bail!("{} has invalid problem id {:?}", path.display(), problem.id);
+        }
+        if !is_safe_name(&problem.slug) {
+            bail!(
+                "{} has invalid slug {:?} for {}",
+                path.display(),
+                problem.slug,
+                problem.id
+            );
+        }
+        if problem.cases.is_empty() {
+            bail!(
+                "{} problem {} has no judge cases",
+                path.display(),
+                problem.id
+            );
+        }
+        for language in LANGUAGES {
+            if !problem.answers.contains_key(*language) {
+                bail!(
+                    "{} problem {} missing {language} answer",
+                    path.display(),
+                    problem.id
+                );
+            }
+        }
+    }
+    Ok(())
+}
+
+fn is_safe_name(value: &str) -> bool {
+    !value.is_empty()
+        && value
+            .chars()
+            .all(|char| char.is_ascii_alphanumeric() || matches!(char, '-' | '_'))
 }
 
 pub fn load_state(root: &Path, bank: &[Problem]) -> Result<AppState> {
@@ -415,6 +460,14 @@ pub fn fenced_text(value: &str) -> String {
 }
 
 pub fn judge(root: &Path, problem: &Problem, settings: &Settings) -> JudgeResult {
+    if problem.cases.is_empty() {
+        return JudgeResult {
+            passed: false,
+            passed_cases: 0,
+            total_cases: 0,
+            output: "problem has no judge cases".to_string(),
+        };
+    }
     let path = match ensure_submission(root, problem, settings) {
         Ok(path) => path,
         Err(error) => {
@@ -446,12 +499,21 @@ pub fn judge(root: &Path, problem: &Problem, settings: &Settings) -> JudgeResult
             };
         }
     };
+    let run_dir = root.join(".codex/build").join(&problem.id).join("run");
+    if let Err(error) = fs::create_dir_all(&run_dir) {
+        return JudgeResult {
+            passed: false,
+            passed_cases: 0,
+            total_cases: problem.cases.len(),
+            output: error.to_string(),
+        };
+    }
 
     let mut passed = 0;
     let mut lines = Vec::new();
     for (index, case) in problem.cases.iter().enumerate() {
         let mut process = Command::new(&command.program);
-        process.args(&command.args).current_dir(root);
+        process.args(&command.args).current_dir(&run_dir);
         let run = match run_capture(&mut process, &case.input, Duration::from_secs(5)) {
             Ok(run) => run,
             Err(error) => {

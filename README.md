@@ -4,6 +4,7 @@
 ![Ratatui](https://img.shields.io/badge/Ratatui-TUI-00B4D8)
 ![Local first](https://img.shields.io/badge/local--first-practice-14B8A6)
 ![AI ready](https://img.shields.io/badge/AI-Codex%20%2B%20Claude-111827)
+![CI](https://github.com/baba9811/codecode/actions/workflows/ci.yml/badge.svg)
 
 ![codecode terminal UI](assets/codecode-terminal.svg)
 
@@ -34,6 +35,15 @@ Want a local binary?
 cargo install --path .
 codecode
 ```
+
+Prefer npm?
+
+```bash
+npm install -g .
+codecode
+```
+
+The npm wrapper builds the Rust binary with Cargo, so Rust/Cargo is still required.
 
 ## Daily Loop
 
@@ -125,6 +135,10 @@ Generated problem banks stay local:
 | `submissions/` | Your answer files |
 
 Those paths are ignored by git, so your practice history stays yours.
+
+## Safety
+
+`/run` executes your local submission as a normal process. codecode runs it from `.codex/build/<problem-id>/run`, but this is not an OS sandbox. Only run code you trust.
 
 ## Debug Prints
 

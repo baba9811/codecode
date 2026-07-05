@@ -36,6 +36,31 @@ fn save_bank_creates_local_custom_problem_bank() {
 }
 
 #[test]
+fn load_bank_rejects_empty_custom_bank() {
+    let root = tmp_root("empty-bank");
+    fs::create_dir_all(root.join(".codecode")).unwrap();
+    fs::write(root.join(".codecode/problem_bank.json"), "[]").unwrap();
+    let error = load_bank(&root).unwrap_err().to_string();
+    assert!(error.contains("at least one problem"));
+}
+
+#[test]
+fn load_bank_rejects_invalid_problem_shape() {
+    let root = tmp_root("invalid-bank");
+    let mut problem = load_bank(&root).unwrap().remove(0);
+    problem.id = "../bad".to_string();
+    problem.cases.clear();
+    fs::create_dir_all(root.join(".codecode")).unwrap();
+    fs::write(
+        root.join(".codecode/problem_bank.json"),
+        serde_json::to_string_pretty(&vec![problem]).unwrap(),
+    )
+    .unwrap();
+    let error = load_bank(&root).unwrap_err().to_string();
+    assert!(error.contains("invalid problem id"));
+}
+
+#[test]
 fn load_state_keeps_next_source_to_current_values_only() {
     let root = tmp_root("state-source");
     let bank = load_bank(&root).unwrap();
@@ -143,6 +168,40 @@ fn judge_shows_debug_stdout_on_failure() {
     let result = judge(&root, &bank[0], &settings);
     assert!(!result.passed);
     assert!(result.output.contains("stdout:\ndebug\nHello, World!"));
+}
+
+#[test]
+fn judge_rejects_problem_without_cases() {
+    let root = tmp_root("judge-empty-cases");
+    let mut problem = load_bank(&root).unwrap().remove(0);
+    problem.cases.clear();
+    let result = judge(&root, &problem, &Settings::default());
+    assert!(!result.passed);
+    assert_eq!(result.total_cases, 0);
+    assert!(result.output.contains("no judge cases"));
+}
+
+#[test]
+fn judge_runs_submission_from_build_directory() {
+    if which("python3").or_else(|| which("python")).is_none() {
+        return;
+    }
+    let root = tmp_root("judge-cwd");
+    let bank = load_bank(&root).unwrap();
+    let settings = Settings::default();
+    let path = ensure_submission(&root, &bank[0], &settings).unwrap();
+    fs::write(
+        path,
+        "open('touch.txt', 'w').write('x')\nprint('Hello, World!')\n",
+    )
+    .unwrap();
+    let result = judge(&root, &bank[0], &settings);
+    assert!(result.passed, "{}", result.output);
+    assert!(!root.join("touch.txt").exists());
+    assert!(
+        root.join(".codex/build/001-hello-world/run/touch.txt")
+            .exists()
+    );
 }
 
 #[test]

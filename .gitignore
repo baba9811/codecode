@@ -1,4 +1,6 @@
 target/
+node_modules/
+npm-debug.log*
 .codex/build/
 .codex/problem-state.json
 .codecode/
