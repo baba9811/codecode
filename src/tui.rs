@@ -1,11 +1,14 @@
 use crate::{
-    ai::{append_problem_note, provider_status, read_problem_notes, run_ai_next, run_ai_prompt},
+    ai::{
+        append_problem_note, available_models, provider_status, read_problem_notes, run_ai_next,
+        run_ai_prompt,
+    },
     core::{
         AI_PROVIDERS, AppState, HistoryItem, LANGUAGES, PROBLEM_NOTES_PATH, Problem, THEMES,
         UI_LANGUAGES, ensure_problem_files, ensure_submission, ext_for, give_up, judge, load_bank,
         load_state, localized, next_problem, normalize_ai_provider, normalize_language,
         normalize_next_source, normalize_ui_language, previous_problem, problem_by_id, record_pass,
-        render_problem_tui, save_state, template_for, ui_text,
+        save_state, template_for, ui_text,
     },
     text::{
         byte_index, char_len, compose_hangul_jamo, display_width, prefix, render_markdown_plain,
@@ -18,6 +21,7 @@ use ratatui::{
     DefaultTerminal, Frame,
     layout::{Constraint, Direction, Layout, Position, Rect},
     style::{Color, Modifier, Style},
+    text::{Line, Span, Text},
     widgets::{Block, Borders, Clear, Paragraph, Wrap},
 };
 use std::{
@@ -36,6 +40,14 @@ struct CommandHint {
     desc_key: &'static str,
     keep_open: bool,
     help: bool,
+}
+
+#[derive(Clone)]
+struct CommandChoice {
+    insert: String,
+    display: String,
+    desc_key: &'static str,
+    keep_open: bool,
 }
 
 const COMMAND_HINTS: &[CommandHint] = &[
@@ -89,9 +101,9 @@ const COMMAND_HINTS: &[CommandHint] = &[
         help: true,
     },
     CommandHint {
-        insert: "ai ",
-        display: "/ai <prompt>",
-        desc_key: "cmd_ai",
+        insert: "hint ",
+        display: "/hint <request>",
+        desc_key: "cmd_hint",
         keep_open: true,
         help: true,
     },
@@ -112,14 +124,14 @@ const COMMAND_HINTS: &[CommandHint] = &[
     CommandHint {
         insert: "model auto",
         display: "/model auto",
-        desc_key: "cmd_model",
+        desc_key: "cmd_model_auto",
         keep_open: false,
         help: true,
     },
     CommandHint {
         insert: "model ",
         display: "/model <name>",
-        desc_key: "cmd_model",
+        desc_key: "cmd_model_custom",
         keep_open: true,
         help: false,
     },
@@ -278,6 +290,9 @@ pub struct PracticodeApp {
     busy_frame: usize,
     task_rx: Option<Receiver<TaskResult>>,
     update_rx: Option<Receiver<UpdateCheck>>,
+    model_rx: Option<Receiver<Vec<String>>>,
+    available_models: Vec<String>,
+    available_models_provider: String,
     update_check: Option<UpdateCheck>,
     update_notice: Option<String>,
     should_quit: bool,
@@ -318,6 +333,9 @@ impl PracticodeApp {
             busy_frame: 0,
             task_rx: None,
             update_rx: None,
+            model_rx: None,
+            available_models: Vec::new(),
+            available_models_provider: String::new(),
             update_check: None,
             update_notice: None,
             should_quit: false,
@@ -328,10 +346,13 @@ impl PracticodeApp {
 
     pub fn run(&mut self, terminal: &mut DefaultTerminal) -> Result<()> {
         self.start_update_check();
+        self.start_model_check();
         while !self.should_quit {
             terminal.draw(|frame| self.draw(frame))?;
             self.check_task();
             self.check_update();
+            self.start_model_check();
+            self.check_models();
             if event::poll(Duration::from_millis(100))?
                 && let Event::Key(key) = event::read()?
                 && key.kind != KeyEventKind::Release
@@ -382,6 +403,22 @@ impl PracticodeApp {
         self.status_text()
     }
 
+    pub fn command_suggestions_for_test(&self) -> Vec<String> {
+        self.command_suggestions()
+            .into_iter()
+            .map(|choice| choice.display)
+            .collect()
+    }
+
+    pub fn set_available_models_for_test(&mut self, models: Vec<&str>) {
+        self.available_models = models.into_iter().map(str::to_string).collect();
+        self.available_models_provider = self.state.settings.ai_provider.clone();
+    }
+
+    pub fn pane_title_for_test(title: &str, active: bool) -> String {
+        Self::pane_title(title, active)
+    }
+
     fn draw(&mut self, frame: &mut Frame) {
         let size = frame.area();
         let vertical = Layout::default()
@@ -397,15 +434,13 @@ impl PracticodeApp {
             .constraints([Constraint::Percentage(58), Constraint::Percentage(42)])
             .split(vertical[0]);
 
-        let problem = Paragraph::new(render_problem_tui(
-            &self.problem,
-            &self.state.settings.ui_language,
-        ))
-        .block(Self::block(
-            ui_text(&self.state.settings.ui_language, "problem"),
-            self.state.settings.theme == "light",
-        ))
-        .wrap(Wrap { trim: false });
+        let problem = Paragraph::new(self.problem_text())
+            .block(Self::block(
+                ui_text(&self.state.settings.ui_language, "problem"),
+                self.state.settings.theme == "light",
+                false,
+            ))
+            .wrap(Wrap { trim: false });
         frame.render_widget(problem, body[0]);
 
         if self.show_output {
@@ -420,6 +455,7 @@ impl PracticodeApp {
                 .block(Self::block(
                     ui_text(&self.state.settings.ui_language, "output"),
                     self.state.settings.theme == "light",
+                    self.focus != Focus::Command,
                 ))
                 .wrap(Wrap { trim: false });
             frame.render_widget(output, body[1]);
@@ -428,8 +464,11 @@ impl PracticodeApp {
                 .editor
                 .visible_text(body[1].height.saturating_sub(2) as usize);
             let title = format!("solution.{}", ext_for(&self.state.settings.language));
-            let code = Paragraph::new(code)
-                .block(Self::block(&title, self.state.settings.theme == "light"));
+            let code = Paragraph::new(code).block(Self::block(
+                &title,
+                self.state.settings.theme == "light",
+                self.focus == Focus::Code,
+            ));
             frame.render_widget(code, body[1]);
         }
 
@@ -456,6 +495,7 @@ impl PracticodeApp {
             .block(Self::block(
                 ui_text(&self.state.settings.ui_language, "command"),
                 self.state.settings.theme == "light",
+                self.focus == Focus::Command,
             ))
             .wrap(Wrap { trim: false });
         frame.render_widget(command, vertical[2]);
@@ -463,12 +503,147 @@ impl PracticodeApp {
         self.set_terminal_cursor(frame, body[1], vertical[2]);
     }
 
+    fn problem_text(&self) -> Text<'static> {
+        let lang = normalize_ui_language(&self.state.settings.ui_language);
+        let light = self.state.settings.theme == "light";
+        let title_style = if light {
+            Style::default()
+                .fg(Color::Blue)
+                .add_modifier(Modifier::BOLD)
+        } else {
+            Style::default()
+                .fg(Color::Yellow)
+                .add_modifier(Modifier::BOLD)
+        };
+        let section_style = if light {
+            Style::default()
+                .fg(Color::Magenta)
+                .add_modifier(Modifier::BOLD)
+        } else {
+            Style::default()
+                .fg(Color::Cyan)
+                .add_modifier(Modifier::BOLD)
+        };
+        let body_style = if light {
+            Style::default().fg(Color::Black)
+        } else {
+            Style::default().fg(Color::Rgb(229, 231, 235))
+        };
+        let meta_style = if light {
+            Style::default().fg(Color::Rgb(75, 85, 99))
+        } else {
+            Style::default().fg(Color::Rgb(156, 163, 175))
+        };
+        let code_style = if light {
+            Style::default()
+                .fg(Color::Black)
+                .bg(Color::Rgb(229, 231, 235))
+        } else {
+            Style::default()
+                .fg(Color::Rgb(243, 244, 246))
+                .bg(Color::Rgb(31, 41, 55))
+        };
+        let number = self
+            .problem
+            .id
+            .split_once('-')
+            .map(|(number, _)| number)
+            .unwrap_or(&self.problem.id);
+        let mut lines = vec![
+            Line::from(Span::styled(
+                format!("{number}. {}", localized(&self.problem.title, &lang)),
+                title_style,
+            )),
+            Line::from(Span::styled(
+                format!(
+                    "{}: {}    {}: {}",
+                    ui_text(&lang, "difficulty"),
+                    self.problem.difficulty,
+                    ui_text(&lang, "topics"),
+                    self.problem.topics.join(", ")
+                ),
+                meta_style,
+            )),
+        ];
+        lines.push(Line::default());
+        for line in localized(&self.problem.statement, &lang).trim_end().lines() {
+            lines.push(Line::from(Span::styled(line.to_string(), body_style)));
+        }
+        Self::push_problem_section(
+            &mut lines,
+            ui_text(&lang, "input"),
+            &localized(&self.problem.input, &lang),
+            section_style,
+            body_style,
+        );
+        Self::push_problem_section(
+            &mut lines,
+            ui_text(&lang, "output"),
+            &localized(&self.problem.output, &lang),
+            section_style,
+            body_style,
+        );
+        lines.push(Line::default());
+        lines.push(Line::from(Span::styled(
+            ui_text(&lang, "examples").to_string(),
+            section_style,
+        )));
+        for (index, case) in self.problem.examples.iter().enumerate() {
+            lines.push(Line::from(Span::styled(
+                format!("  {} {}", ui_text(&lang, "example"), index + 1),
+                meta_style.add_modifier(Modifier::BOLD),
+            )));
+            lines.push(Line::from(Span::styled(
+                format!("    {}", ui_text(&lang, "input")),
+                meta_style,
+            )));
+            Self::push_code_lines(&mut lines, &case.input, code_style);
+            lines.push(Line::from(Span::styled(
+                format!("    {}", ui_text(&lang, "output")),
+                meta_style,
+            )));
+            Self::push_code_lines(&mut lines, &case.output, code_style);
+        }
+        Text::from(lines)
+    }
+
+    fn push_problem_section(
+        lines: &mut Vec<Line<'static>>,
+        title: &str,
+        body: &str,
+        section_style: Style,
+        body_style: Style,
+    ) {
+        lines.push(Line::default());
+        lines.push(Line::from(Span::styled(title.to_string(), section_style)));
+        for line in body.trim_end().lines() {
+            lines.push(Line::from(Span::styled(format!("  {line}"), body_style)));
+        }
+    }
+
+    fn push_code_lines(lines: &mut Vec<Line<'static>>, body: &str, code_style: Style) {
+        let body = body.trim_end();
+        if body.is_empty() {
+            lines.push(Line::from(vec![
+                Span::raw("      "),
+                Span::styled("<empty>".to_string(), code_style),
+            ]));
+            return;
+        }
+        for line in body.lines() {
+            lines.push(Line::from(vec![
+                Span::raw("      "),
+                Span::styled(line.to_string(), code_style),
+            ]));
+        }
+    }
+
     fn draw_command_palette(&self, frame: &mut Frame, command_area: Rect) {
         let suggestions = self.command_suggestions();
         if suggestions.is_empty() || command_area.y < 3 {
             return;
         }
-        let height = ((suggestions.len() + 3) as u16).min(10).min(command_area.y);
+        let height = ((suggestions.len() + 3) as u16).min(14).min(command_area.y);
         let area = Rect::new(
             command_area.x,
             command_area.y - height,
@@ -476,10 +651,13 @@ impl PracticodeApp {
             height,
         );
         let selected = self.command_palette_cursor.min(suggestions.len() - 1);
+        let visible = height.saturating_sub(2) as usize;
+        let start = selected.saturating_sub(visible.saturating_sub(1));
         let mut lines = suggestions
             .iter()
             .enumerate()
-            .take(height.saturating_sub(2) as usize)
+            .skip(start)
+            .take(visible)
             .map(|(index, hint)| {
                 let marker = if index == selected { ">" } else { " " };
                 format!(
@@ -495,20 +673,40 @@ impl PracticodeApp {
             Paragraph::new(lines.join("\n")).block(Self::block(
                 ui_text(&self.state.settings.ui_language, "commands"),
                 self.state.settings.theme == "light",
+                true,
             )),
             area,
         );
     }
 
-    fn block(title: &str, light: bool) -> Block<'_> {
+    fn block(title: &str, light: bool, active: bool) -> Block<'static> {
+        let border = if active {
+            if light {
+                Style::default()
+                    .fg(Color::Magenta)
+                    .add_modifier(Modifier::BOLD)
+            } else {
+                Style::default()
+                    .fg(Color::Yellow)
+                    .add_modifier(Modifier::BOLD)
+            }
+        } else if light {
+            Style::default().fg(Color::Blue)
+        } else {
+            Style::default().fg(Color::Cyan)
+        };
         Block::default()
             .borders(Borders::ALL)
-            .title(title)
-            .border_style(if light {
-                Style::default().fg(Color::Blue)
-            } else {
-                Style::default().fg(Color::Cyan)
-            })
+            .title(Self::pane_title(title, active))
+            .border_style(border)
+    }
+
+    fn pane_title(title: &str, active: bool) -> String {
+        if active {
+            format!("> {title}")
+        } else {
+            title.to_string()
+        }
     }
 
     fn handle_key(&mut self, key: KeyEvent) -> Result<()> {
@@ -709,6 +907,9 @@ impl PracticodeApp {
             }
             "provider" | "ai-provider" if AI_PROVIDERS.contains(&arg) => {
                 self.state.settings.ai_provider = normalize_ai_provider(arg);
+                self.model_rx = None;
+                self.available_models.clear();
+                self.available_models_provider.clear();
                 save_state(&self.root, &self.state)?;
                 self.write_text_output(&format!(
                     "AI provider: {}\n{}",
@@ -717,14 +918,21 @@ impl PracticodeApp {
                 ));
             }
             "model" if arg.is_empty() => {
-                self.write_text_output(&format!("AI model: {}", self.state.settings.ai_model));
+                self.write_text_output(&self.model_status_text());
             }
             "model" => {
-                self.state.settings.ai_model = arg.to_string();
+                self.state.settings.ai_model = if arg == "auto" {
+                    "auto".to_string()
+                } else {
+                    arg.to_string()
+                };
                 save_state(&self.root, &self.state)?;
-                self.write_text_output(&format!("AI model: {arg}"));
+                self.write_text_output(&self.model_status_text());
             }
-            "ai" if !arg.is_empty() => self.start_ai_prompt(arg)?,
+            "hint" if arg.is_empty() => {
+                self.start_ai_prompt("Give one concise hint for the current problem.")?
+            }
+            "hint" | "ask" | "ai" if !arg.is_empty() => self.start_ai_prompt(arg)?,
             "note" if !arg.is_empty() => self.append_note(arg)?,
             "note" | "notes" => self.show_notes()?,
             "update" => self.show_update_notice(),
@@ -971,6 +1179,56 @@ impl PracticodeApp {
         self.update_rx = Some(rx);
     }
 
+    fn start_model_check(&mut self) {
+        let provider = self.state.settings.ai_provider.clone();
+        if self.model_rx.is_some() || self.available_models_provider == provider {
+            return;
+        }
+        let query_provider = provider.clone();
+        let (tx, rx) = mpsc::channel();
+        thread::spawn(move || {
+            let _ = tx.send(available_models(&query_provider));
+        });
+        self.available_models_provider = provider;
+        self.model_rx = Some(rx);
+    }
+
+    fn check_models(&mut self) {
+        let models = self.model_rx.as_ref().and_then(|rx| rx.try_recv().ok());
+        if let Some(models) = models {
+            self.model_rx = None;
+            self.available_models = models;
+        }
+    }
+
+    fn model_status_text(&self) -> String {
+        let mut lines = vec![
+            format!(
+                "AI model: {}",
+                if self.state.settings.ai_model == "auto" {
+                    "auto (provider default)"
+                } else {
+                    self.state.settings.ai_model.as_str()
+                }
+            ),
+            "Use /model auto to let the provider choose its default.".to_string(),
+        ];
+        if self.available_models.is_empty() {
+            lines.push(
+                "Provider model list is unavailable; use /model <name> for a known model."
+                    .to_string(),
+            );
+        } else {
+            lines.push("Available models:".to_string());
+            lines.extend(
+                self.available_models
+                    .iter()
+                    .map(|model| format!("- /model {model}")),
+            );
+        }
+        lines.join("\n")
+    }
+
     fn start_busy(&mut self, label: &str, body: &str) {
         self.busy_label = label.to_string();
         self.busy_body = body.to_string();
@@ -1064,7 +1322,7 @@ impl PracticodeApp {
         self.normalize_command_input();
     }
 
-    fn command_suggestions(&self) -> Vec<&'static CommandHint> {
+    fn command_suggestions(&self) -> Vec<CommandChoice> {
         if self.focus != Focus::Command {
             return Vec::new();
         }
@@ -1072,11 +1330,37 @@ impl PracticodeApp {
             return Vec::new();
         };
         let query = query.to_lowercase();
-        COMMAND_HINTS
-            .iter()
+        self.command_choices()
+            .into_iter()
             .filter(|hint| hint.insert.starts_with(query.trim_start()))
-            .take(7)
             .collect()
+    }
+
+    fn command_choices(&self) -> Vec<CommandChoice> {
+        let mut choices = Vec::new();
+        for hint in COMMAND_HINTS {
+            if hint.insert == "model " {
+                for model in self
+                    .available_models
+                    .iter()
+                    .filter(|model| *model != "auto")
+                {
+                    choices.push(CommandChoice {
+                        insert: format!("model {model}"),
+                        display: format!("/model {model}"),
+                        desc_key: "cmd_model_available",
+                        keep_open: false,
+                    });
+                }
+            }
+            choices.push(CommandChoice {
+                insert: hint.insert.to_string(),
+                display: hint.display.to_string(),
+                desc_key: hint.desc_key,
+                keep_open: hint.keep_open,
+            });
+        }
+        choices
     }
 
     fn move_command_palette(&mut self, delta: isize) {
@@ -1093,19 +1377,19 @@ impl PracticodeApp {
         if suggestions.is_empty() {
             return Ok(false);
         }
-        let hint = suggestions[self.command_palette_cursor.min(suggestions.len() - 1)];
+        let hint = &suggestions[self.command_palette_cursor.min(suggestions.len() - 1)];
         if hint.keep_open {
             self.command = format!("/{}", hint.insert);
             self.command_cursor = char_len(&self.command);
             self.command_palette_cursor = 0;
             return Ok(true);
         }
-        let value = hint.insert;
+        let value = hint.insert.clone();
         self.command.clear();
         self.command_cursor = 0;
         self.command_palette_cursor = 0;
         self.focus = Focus::None;
-        self.submit_command(value)?;
+        self.submit_command(&value)?;
         Ok(true)
     }
 

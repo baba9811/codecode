@@ -102,6 +102,13 @@ pub fn provider_status(provider: &str) -> String {
     }
 }
 
+pub fn available_models(provider: &str) -> Vec<String> {
+    match normalize_ai_provider(provider).as_str() {
+        "codex" => codex_models(),
+        _ => Vec::new(),
+    }
+}
+
 pub fn default_ai_next_prompt(request: &str) -> String {
     format!(
         "Read AGENTS.md, docs/problem-authoring-notes.md if present, .practicode/problem_notes.md if present, problems/INDEX.md if present, .practicode/problem_bank.json if present, and .practicode/problem-state.json. Create exactly one new non-duplicate coding practice problem. The built-in 001-hello-world already exists, so do not duplicate it. User request: {}. Make the smallest valid edits: update .practicode/problem_bank.json, one problem directory, problems/INDEX.md, and .practicode/problem-state.json. Do not include the answer in the problem statement.",
@@ -130,6 +137,44 @@ pub fn read_problem_notes(root: &Path) -> Result<String> {
     } else {
         Ok(String::new())
     }
+}
+
+fn codex_models() -> Vec<String> {
+    if which("codex").is_none() {
+        return Vec::new();
+    }
+    let mut command = Command::new("codex");
+    command.args(["app-server", "proxy"]);
+    let input = r#"{"id":1,"method":"model/list","params":{"limit":25}}"#;
+    let Ok(run) = run_capture(&mut command, &format!("{input}\n"), Duration::from_secs(2)) else {
+        return Vec::new();
+    };
+    if run.code != Some(0) {
+        return Vec::new();
+    }
+    parse_model_list(&run.stdout)
+}
+
+fn parse_model_list(output: &str) -> Vec<String> {
+    output
+        .lines()
+        .filter_map(|line| serde_json::from_str::<serde_json::Value>(line).ok())
+        .flat_map(|value| {
+            value
+                .pointer("/result/data")
+                .or_else(|| value.get("data"))
+                .and_then(|data| data.as_array())
+                .cloned()
+                .unwrap_or_default()
+        })
+        .filter_map(|model| {
+            model
+                .get("model")
+                .or_else(|| model.get("id"))
+                .and_then(|value| value.as_str())
+                .map(str::to_string)
+        })
+        .collect()
 }
 
 fn run_codex_prompt(root: &Path, settings: &Settings, prompt: &str) -> String {
@@ -242,4 +287,16 @@ fn output_text(stdout: &str, stderr: &str) -> String {
         .filter(|part| !part.is_empty())
         .collect::<Vec<_>>()
         .join("\n")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::parse_model_list;
+
+    #[test]
+    fn parses_codex_model_list_response() {
+        let output =
+            r#"{"id":1,"result":{"data":[{"model":"gpt-test","displayName":"GPT Test"}]}}"#;
+        assert_eq!(parse_model_list(output), vec!["gpt-test"]);
+    }
 }

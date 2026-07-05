@@ -69,9 +69,10 @@ Submissions are saved as you type under `submissions/<problem-id>/solution.<ext>
 | `/list` | Browse problems with `up/down` or `j/k`, open with `Enter` |
 | `/open 2` | Open by number, id, or slug |
 | `/giveup` | Show the reference answer |
-| `/ai hint` | Ask the selected AI about the current problem and submission |
+| `/hint` | Ask the selected AI for a concise hint |
+| `/hint explain my bug` | Ask the selected AI about the current problem and submission |
 | `/provider codex` | Set AI provider and show local CLI/daemon status |
-| `/model auto` | Set the model for `/ai` and AI-backed `/next` |
+| `/model auto` | Use the provider default model for `/hint` and AI-backed `/next` |
 | `/note prefer hashmap practice` | Append a standing note for future problem generation |
 | `/notes` | Show your local next-problem notes |
 | `/lang python` | Set code language: `python`, `ts`, `java`, `rust` |

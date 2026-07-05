@@ -57,10 +57,48 @@ fn slash_command_palette_completes_prompt_commands() {
     let root = tmp_root("command-palette");
     let mut app = PracticodeApp::new(root).unwrap();
     app.focus_command_for_test();
-    app.insert_command_char_for_test('a');
+    app.insert_command_char_for_test('h');
     app.handle_key_for_test(KeyEvent::new(KeyCode::Enter, KeyModifiers::NONE))
         .unwrap();
-    assert_eq!(app.command_text(), "/ai ");
+    assert_eq!(app.command_text(), "/hint ");
+}
+
+#[test]
+fn slash_command_palette_surfaces_settings_commands() {
+    let root = tmp_root("command-palette-settings");
+    let mut app = PracticodeApp::new(root).unwrap();
+    app.focus_command_for_test();
+    let suggestions = app.command_suggestions_for_test();
+    assert!(suggestions.contains(&"/provider codex".to_string()));
+    assert!(suggestions.contains(&"/model auto".to_string()));
+    assert!(suggestions.contains(&"/hint <request>".to_string()));
+}
+
+#[test]
+fn slash_command_palette_uses_provider_models_when_available() {
+    let root = tmp_root("command-palette-models");
+    let mut app = PracticodeApp::new(root).unwrap();
+    app.set_available_models_for_test(vec!["provider-model"]);
+    app.focus_command_for_test();
+    for char in "model ".chars() {
+        app.insert_command_char_for_test(char);
+    }
+    assert!(
+        app.command_suggestions_for_test()
+            .contains(&"/model provider-model".to_string())
+    );
+}
+
+#[test]
+fn focused_pane_title_has_text_indicator() {
+    assert_eq!(
+        PracticodeApp::pane_title_for_test("Command", true),
+        "> Command"
+    );
+    assert_eq!(
+        PracticodeApp::pane_title_for_test("Command", false),
+        "Command"
+    );
 }
 
 #[test]
