@@ -178,6 +178,8 @@ fn slash_command_palette_surfaces_settings_commands() {
     assert!(suggestions.contains(&"/provider codex".to_string()));
     assert!(suggestions.contains(&"/model auto".to_string()));
     assert!(suggestions.contains(&"/effort auto".to_string()));
+    assert!(suggestions.contains(&"/note".to_string()));
+    assert!(suggestions.contains(&"/notes".to_string()));
     assert!(suggestions.contains(&"/hint <request>".to_string()));
     assert!(
         !suggestions

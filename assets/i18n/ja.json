@@ -50,7 +50,7 @@
   "cmd_effort": "AI effort を設定",
   "cmd_effort_auto": "provider の既定 effort を使用",
   "cmd_effort_max": "Claude max effort を使用",
-  "cmd_note": "次の問題生成メモを追加",
+  "cmd_note": "問題生成メモを編集",
   "cmd_notes": "保存済みメモを見る",
   "cmd_lang": "コード言語を設定",
   "cmd_ui": "UI 言語を設定",

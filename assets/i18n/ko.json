@@ -50,7 +50,7 @@
   "cmd_effort": "AI effort 설정",
   "cmd_effort_auto": "provider 기본 effort 사용",
   "cmd_effort_max": "Claude max effort 사용",
-  "cmd_note": "다음 문제 생성 메모 추가",
+  "cmd_note": "문제 생성 메모 편집",
   "cmd_notes": "저장된 메모 보기",
   "cmd_lang": "코드 언어 설정",
   "cmd_ui": "UI 언어 설정",

@@ -50,7 +50,7 @@
   "cmd_effort": "Set AI effort",
   "cmd_effort_auto": "Use provider default effort",
   "cmd_effort_max": "Use Claude max effort",
-  "cmd_note": "Add a next-problem note",
+  "cmd_note": "Edit problem-generation notes",
   "cmd_notes": "Show saved notes",
   "cmd_lang": "Set code language",
   "cmd_ui": "Set UI language",

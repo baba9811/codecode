@@ -50,7 +50,7 @@
   "cmd_effort": "Configurar AI effort",
   "cmd_effort_auto": "Usar el effort predeterminado del provider",
   "cmd_effort_max": "Usar Claude max effort",
-  "cmd_note": "Agregar nota para generar problemas",
+  "cmd_note": "Editar notas para generar problemas",
   "cmd_notes": "Ver notas guardadas",
   "cmd_lang": "Configurar lenguaje de codigo",
   "cmd_ui": "Configurar idioma de UI",

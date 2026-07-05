@@ -163,6 +163,20 @@ pub(super) const COMMAND_HINTS: &[CommandHint] = &[
         help: false,
     },
     CommandHint {
+        insert: "note",
+        display: "/note",
+        desc_key: "cmd_note",
+        keep_open: false,
+        help: true,
+    },
+    CommandHint {
+        insert: "notes",
+        display: "/notes",
+        desc_key: "cmd_notes",
+        keep_open: false,
+        help: true,
+    },
+    CommandHint {
         insert: "effort auto",
         display: "/effort auto",
         desc_key: "cmd_effort_auto",

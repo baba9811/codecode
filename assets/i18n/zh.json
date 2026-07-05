@@ -50,7 +50,7 @@
   "cmd_effort": "设置 AI effort",
   "cmd_effort_auto": "使用 provider 默认 effort",
   "cmd_effort_max": "使用 Claude max effort",
-  "cmd_note": "添加下次出题备注",
+  "cmd_note": "编辑出题备注",
   "cmd_notes": "查看保存的备注",
   "cmd_lang": "设置代码语言",
   "cmd_ui": "设置 UI 语言",
