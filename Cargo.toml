@@ -7,7 +7,7 @@ readme = "README.md"
 license = "MIT"
 repository = "https://github.com/baba9811/practicode"
 homepage = "https://github.com/baba9811/practicode"
-keywords = ["algorithms", "ai", "coding-practice", "competitive-programming", "tui"]
+keywords = ["algorithms", "ai", "coding-practice", "competitive", "tui"]
 categories = ["command-line-utilities", "development-tools", "text-editors"]
 
 [dependencies]
