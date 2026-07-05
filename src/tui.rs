@@ -96,7 +96,7 @@ enum TaskResult {
     Next {
         output: String,
         old_problem: String,
-        force: bool,
+        fallback_to_local: bool,
     },
 }
 
@@ -208,6 +208,10 @@ impl PracticodeApp {
 
     pub fn has_task(&self) -> bool {
         self.task_rx.is_some()
+    }
+
+    pub fn should_quit_for_test(&self) -> bool {
+        self.should_quit
     }
 
     pub fn status_text_for_test(&self) -> String {
@@ -602,6 +606,10 @@ impl PracticodeApp {
     }
 
     fn handle_key(&mut self, key: KeyEvent) -> Result<()> {
+        if key.code == KeyCode::Char('c') && key.modifiers.contains(KeyModifiers::CONTROL) {
+            self.should_quit = true;
+            return Ok(());
+        }
         match self.focus {
             Focus::Command => self.handle_command_key(key),
             Focus::Code => self.handle_code_key(key),
@@ -779,6 +787,7 @@ impl PracticodeApp {
             "run" | "r" => self.action_run()?,
             "code" | "edit" | "e" => self.action_edit()?,
             "next" | "n" => self.action_next(arg)?,
+            "generate" | "gen" | "new" => self.action_generate(arg),
             "back" | "prev" | "previous" | "p" => self.action_previous()?,
             "answer" | "giveup" | "give" | "g" => self.action_give_up()?,
             "problems" | "list" => self.start_problem_list(),
@@ -891,14 +900,6 @@ impl PracticodeApp {
     fn action_next(&mut self, request: &str) -> Result<()> {
         let request = request.trim();
         let old_problem = self.state.current_problem.clone();
-        if !request.is_empty() {
-            self.start_next_problem(old_problem, true, request.to_string());
-            return Ok(());
-        }
-        if self.state.settings.next_source == "ai" {
-            self.start_next_problem(old_problem, false, String::new());
-            return Ok(());
-        }
         if let Some(problem) = next_problem(&self.root, &self.bank, &mut self.state)? {
             self.problem = problem;
             self.load_code_editor()?;
@@ -906,11 +907,24 @@ impl PracticodeApp {
             self.focus = Focus::Code;
             return Ok(());
         }
-        self.start_next_problem(old_problem, true, String::new());
+        self.start_next_problem(old_problem, true, request.to_string());
         Ok(())
     }
 
-    fn start_next_problem(&mut self, old_problem: String, force: bool, request: String) {
+    fn action_generate(&mut self, request: &str) {
+        self.start_next_problem(
+            self.state.current_problem.clone(),
+            false,
+            request.trim().to_string(),
+        );
+    }
+
+    fn start_next_problem(
+        &mut self,
+        old_problem: String,
+        fallback_to_local: bool,
+        request: String,
+    ) {
         if self.task_rx.is_some() {
             self.write_text_output(ui_text(&self.state.settings.ui_language, "already_busy"));
             return;
@@ -923,11 +937,11 @@ impl PracticodeApp {
         let state = self.state.clone();
         let (tx, rx) = mpsc::channel();
         thread::spawn(move || {
-            let output = run_ai_next(&root, &state, force, &request);
+            let output = run_ai_next(&root, &state, true, &request);
             let _ = tx.send(TaskResult::Next {
                 output,
                 old_problem,
-                force,
+                fallback_to_local,
             });
         });
         self.task_rx = Some(rx);
@@ -937,17 +951,17 @@ impl PracticodeApp {
         &mut self,
         output: String,
         old_problem: String,
-        force: bool,
+        fallback_to_local: bool,
     ) -> Result<()> {
-        if self.state.settings.next_source == "ai" || force {
-            self.bank = load_bank(&self.root)?;
-            self.state = load_state(&self.root, &self.bank)?;
-        }
+        self.bank = load_bank(&self.root)?;
+        self.state = load_state(&self.root, &self.bank)?;
         self.problem = problem_by_id(&self.bank, &self.state.current_problem)
             .cloned()
             .unwrap_or_else(|| self.bank[0].clone());
         if self.state.current_problem == old_problem {
-            if let Some(problem) = next_problem(&self.root, &self.bank, &mut self.state)? {
+            if fallback_to_local
+                && let Some(problem) = next_problem(&self.root, &self.bank, &mut self.state)?
+            {
                 self.problem = problem;
             } else {
                 self.write_text_output(&format!(
@@ -1127,9 +1141,11 @@ impl PracticodeApp {
                 TaskResult::Next {
                     output,
                     old_problem,
-                    force,
+                    fallback_to_local,
                 } => {
-                    if let Err(error) = self.finish_next_problem(output, old_problem, force) {
+                    if let Err(error) =
+                        self.finish_next_problem(output, old_problem, fallback_to_local)
+                    {
                         self.write_text_output(&format!("Next failed\n{error}"));
                     }
                 }
@@ -1638,11 +1654,7 @@ impl PracticodeApp {
     }
 
     fn next_source_help(&self) -> String {
-        if self.state.settings.next_source == "ai" {
-            "Next behavior: plain /next asks AI every time. /next <request> also sends that request.".to_string()
-        } else {
-            "Next behavior: /next uses local problems first and asks AI when it needs a new one. Use /next <request> to ask AI directly.".to_string()
-        }
+        "Next behavior: /next opens unsolved local problems first and asks AI only when none remain. Use /generate <request> to create a problem immediately.".to_string()
     }
 
     fn busy_dots(&self) -> String {

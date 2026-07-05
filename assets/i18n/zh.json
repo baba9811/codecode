@@ -26,6 +26,7 @@
   "cmd_code": "回到代码编辑器",
   "cmd_edit": "回到代码编辑器",
   "cmd_next": "打开下一题",
+  "cmd_generate": "立即生成新题",
   "cmd_prev": "打开上一题",
   "cmd_list": "打开题目列表",
   "cmd_open": "按编号、id 或 slug 打开题目",

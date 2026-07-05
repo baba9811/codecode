@@ -30,6 +30,13 @@ pub(super) const COMMAND_HINTS: &[CommandHint] = &[
         help: true,
     },
     CommandHint {
+        insert: "generate ",
+        display: "/generate <request>",
+        desc_key: "cmd_generate",
+        keep_open: true,
+        help: true,
+    },
+    CommandHint {
         insert: "back",
         display: "/back",
         desc_key: "cmd_prev",

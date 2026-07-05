@@ -12,7 +12,14 @@ Personal coding practice, right in your terminal.
 
 `practicode` is a small Rust TUI for stdin/stdout practice: problem on the left, code on the right, judge loop in the same terminal.
 
-## Start
+## What You Get
+
+- Local stdin/stdout judging for Python, TypeScript, Java, and Rust.
+- A two-pane terminal UI with problem text, editor, output, and command palette.
+- Local-first problem history under ignored `.practicode/`, `problems/`, and `submissions/` paths.
+- Optional Codex or Claude Code help for hints and generated next problems.
+
+## Install
 
 ### Prerequisites
 
@@ -43,6 +50,14 @@ npm install
 npm start
 ```
 
+### Check Install
+
+```bash
+practicode --version
+practicode --smoke
+practicode --help
+```
+
 ## Daily Loop
 
 The code editor starts focused.
@@ -54,9 +69,17 @@ choose /run
 choose /next when it passes
 ```
 
-Typing `/` outside the editor opens the command palette. Use `up/down` to move, `Enter` to run or complete the selected command, and `Esc` to cancel.
+Typing `/` outside the editor opens the command palette. Use `up/down` to move, `Enter` to run or complete the selected command, and `Esc` to cancel. Press `?` for in-app help or `Ctrl+C` to quit.
 
 Submissions are saved as you type under `submissions/<problem-id>/solution.<ext>`.
+
+## CLI Flags
+
+| Flag | Action |
+| --- | --- |
+| `--help`, `-h` | Show non-interactive help |
+| `--version`, `-V` | Print the installed version |
+| `--smoke` | Print the current problem title and exit |
 
 ## Commands
 
@@ -64,8 +87,8 @@ Submissions are saved as you type under `submissions/<problem-id>/solution.<ext>
 | --- | --- |
 | `/run` | Judge the current submission |
 | `/code` | Return to the code editor |
-| `/next` | Open the next local problem, or ask AI to create one |
-| `/next easy string problem` | Ask AI for a custom next problem |
+| `/next` | Open the next unsolved problem, or ask AI only when none remain |
+| `/generate easy string problem` | Ask AI to create a new problem now |
 | `/back` | Go back through problem history |
 | `/problems` | Browse problems with `up/down` or `j/k`, open with `Enter` |
 | `/open 2` | Open by number, id, or slug |
@@ -90,14 +113,16 @@ The default UI language is English. Switch it any time with `/ui ko`, `/ui ja`, 
 
 Your practice profile is saved in `.practicode/problem-state.json`. It keeps UI language, code language, theme, preferred difficulty, preferred topics, and topics to avoid. `auto` difficulty follows gradual progression; a fixed difficulty asks local selection and AI generation to prefer that level.
 
-## AI Problems
+## Problem Flow
 
-`/next <request>` passes your request into the selected AI problem generator.
+`/next` is local-first: it opens the next unsolved local problem before generating anything. When no unsolved problem remains, it asks the selected AI provider to create one.
+
+Use `/generate <request>` when you explicitly want to create a new problem now.
 
 ```text
-/next a slightly harder string problem
-/next hashmap practice, easy
-/next sorting problem, no graph yet
+/generate a slightly harder string problem
+/generate hashmap practice, easy
+/generate sorting problem, no graph yet
 ```
 
 Codex is the default provider:
@@ -135,9 +160,22 @@ npm update -g practicode
 cargo install --force practicode
 ```
 
-## Safety
+## Safety And Security
 
-`/run` executes your local submission as a normal process. practicode runs it from `.practicode/build/<problem-id>/run`, but this is not an OS sandbox. Only run code you trust.
+- `/run` executes your local submission as a normal process. practicode runs it from `.practicode/build/<problem-id>/run`, but this is not an OS sandbox. Only run code you trust.
+- `/hint` sends the current problem and submission to the selected AI provider CLI.
+- AI-backed `/next` can run a custom shell command from `settings.ai_next_command`; save only commands you trust.
+- Local `.env`, `.npmrc`, `.practicode/`, `problems/`, and `submissions/` are ignored by git. Do not commit tokens, private prompts, or answer keys.
+
+## Development Checks
+
+```bash
+cargo test
+cargo run -- --smoke
+cargo audit
+```
+
+This repo has no npm dependencies or lockfile today, so `npm audit` and `pnpm audit` are not applicable until a matching lockfile is added.
 
 ## Contributing
 

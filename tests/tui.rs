@@ -30,12 +30,24 @@ fn text_editor_composes_jamo_input_on_current_line() {
 }
 
 #[test]
-fn app_command_next_request_starts_forced_ai_task() {
-    let root = tmp_root("app-next-request");
+fn app_command_next_opens_local_problem_before_ai() {
+    let root = tmp_root("app-next-local-first");
     two_problem_bank(&root);
     let mut app = PracticodeApp::new(root).unwrap();
     app.handle_command_for_test("ai-next-command true").unwrap();
     app.handle_command_for_test("next 해시맵 쉬운 문제")
+        .unwrap();
+    assert!(!app.has_task());
+    assert!(app.status_text_for_test().contains("002-echo"));
+}
+
+#[test]
+fn app_command_generate_request_starts_forced_ai_task() {
+    let root = tmp_root("app-generate-request");
+    two_problem_bank(&root);
+    let mut app = PracticodeApp::new(root).unwrap();
+    app.handle_command_for_test("ai-next-command true").unwrap();
+    app.handle_command_for_test("generate 해시맵 쉬운 문제")
         .unwrap();
     assert!(app.has_task());
     assert_eq!(app.busy_label(), "next");
@@ -74,6 +86,7 @@ fn slash_command_palette_surfaces_settings_commands() {
     assert!(suggestions.contains(&"/back".to_string()));
     assert!(suggestions.contains(&"/problems".to_string()));
     assert!(suggestions.contains(&"/answer".to_string()));
+    assert!(suggestions.contains(&"/generate <request>".to_string()));
     assert!(suggestions.contains(&"/profile".to_string()));
     assert!(suggestions.contains(&"/difficulty auto".to_string()));
     assert!(suggestions.contains(&"/topics <list>".to_string()));
@@ -187,4 +200,13 @@ fn clicking_output_returns_to_code_editor() {
     })
     .unwrap();
     assert!(app.status_text_for_test().contains("Esc then / command"));
+}
+
+#[test]
+fn ctrl_c_quits_from_editor() {
+    let root = tmp_root("ctrl-c-quit");
+    let mut app = PracticodeApp::new(root).unwrap();
+    app.handle_key_for_test(KeyEvent::new(KeyCode::Char('c'), KeyModifiers::CONTROL))
+        .unwrap();
+    assert!(app.should_quit_for_test());
 }

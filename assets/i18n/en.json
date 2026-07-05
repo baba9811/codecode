@@ -26,6 +26,7 @@
   "cmd_code": "Return to the code editor",
   "cmd_edit": "Return to the code editor",
   "cmd_next": "Open the next problem",
+  "cmd_generate": "Generate a new problem now",
   "cmd_prev": "Open the previous problem",
   "cmd_list": "Browse problems",
   "cmd_open": "Open by number, id, or slug",

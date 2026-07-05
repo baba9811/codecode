@@ -26,6 +26,7 @@
   "cmd_code": "コードエディタに戻る",
   "cmd_edit": "コードエディタに戻る",
   "cmd_next": "次の問題を開く",
+  "cmd_generate": "新しい問題を今すぐ生成",
   "cmd_prev": "前の問題を開く",
   "cmd_list": "問題一覧を開く",
   "cmd_open": "番号、id、slug で問題を開く",

@@ -26,6 +26,7 @@
   "cmd_code": "코드 편집기로 돌아가기",
   "cmd_edit": "코드 편집기로 돌아가기",
   "cmd_next": "다음 문제 열기",
+  "cmd_generate": "새 문제를 바로 생성",
   "cmd_prev": "이전 문제 열기",
   "cmd_list": "문제 목록 열기",
   "cmd_open": "번호, id, slug로 문제 열기",
