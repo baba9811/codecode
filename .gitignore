@@ -7,3 +7,4 @@ npm-debug.log*
 .codex/problem-state.json
 problems/
 submissions/
+.env
