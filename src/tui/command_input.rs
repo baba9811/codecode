@@ -55,7 +55,7 @@ impl PracticodeApp {
             .collect()
     }
 
-    fn default_command_inserts(&self) -> &'static [&'static str] {
+    pub(super) fn default_command_inserts(&self) -> &'static [&'static str] {
         match self.mode {
             AppMode::Home => &["learn", "problems", "profile", "help", "quit"],
             AppMode::Problems => &[
@@ -76,7 +76,7 @@ impl PracticodeApp {
     pub(super) fn command_choices(&self) -> Vec<CommandChoice> {
         let mut choices = Vec::new();
         for hint in COMMAND_HINTS {
-            if matches!(hint.insert, "drill" | "next-lesson" | "prev-lesson") {
+            if !hint.help && matches!(hint.insert, "drill" | "next-lesson" | "prev-lesson") {
                 continue;
             }
             if hint.insert == "effort max" && self.state.settings.ai_provider != "claude" {

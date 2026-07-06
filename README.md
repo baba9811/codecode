@@ -65,14 +65,12 @@ practicode --help
 
 ## Daily Loop
 
-On first run, practicode opens a setup panel. After that, the code editor starts focused.
+On first run, practicode opens a home screen. Choose syntax learning or coding-test practice.
 
 ```text
-first run: review /profile setup
-write code
-Esc, then /
-choose /run
-choose /next when it passes
+first run: choose Learn syntax or Practice coding tests
+practice: write code, Esc, /run, then /next when it passes
+learn: read lesson, edit drill, /run, then /next
 ```
 
 Typing `/` outside the editor opens the command palette. Use `up/down` to move, `Enter` to run or complete the selected command, and `Esc` to cancel. Press `?` for in-app help or `Ctrl+C` to quit.
@@ -93,11 +91,12 @@ Submissions are saved as you type under `submissions/<problem-id>/solution.<ext>
 
 | Command | Action |
 | --- | --- |
+| `/home` | Return to the Learn syntax / Practice coding tests chooser |
 | `/run` | Judge the current submission |
 | `/code` | Return to the code editor |
-| `/next` | Open the next unsolved problem, or ask AI only when none remain |
+| `/next` | In practice, open the next problem; in learn mode, open the next lesson |
 | `/generate easy string problem` | Ask AI to create a new problem in the background |
-| `/back` | Go back through problem history |
+| `/back` | In practice, go back through problem history; in learn mode, open the previous lesson |
 | `/problems` | Browse problems with `up/down` or `j/k`, open with `Enter` |
 | `/open 2` | Open by number, id, or slug |
 | `/answer` | Show the reference answer |

@@ -66,7 +66,7 @@ fn home_arrows_and_enter_open_selected_mode() {
         .unwrap();
 
     assert!(app.status_text_for_test().contains("001-hello-world"));
-    assert!(!app.status_text_for_test().contains("home"));
+    assert!(!app.status_text_for_test().contains("| home |"));
     let saved = std::fs::read_to_string(root.join(".practicode/problem-state.json")).unwrap();
     assert!(saved.contains("\"start_mode\": \"problems\""));
 }
@@ -661,7 +661,7 @@ fn clicking_visible_code_editor_focuses_editor() {
         modifiers: KeyModifiers::NONE,
     })
     .unwrap();
-    assert!(app.status_text_for_test().contains("Esc then / command"));
+    assert!(app.status_text_for_test().contains("/run judge"));
     assert!(app.wants_mouse_capture_for_test());
 }
 

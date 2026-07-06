@@ -2,18 +2,22 @@ use super::*;
 
 impl PracticodeApp {
     pub(super) fn home_text(&self) -> String {
+        let lang = &self.state.settings.ui_language;
+        let learn_label = ui_text(lang, "home_learn_choice");
+        let practice_label = ui_text(lang, "home_practice_choice");
+        let help = ui_text(lang, "home_help");
         let learn = if self.home_choice == HomeChoice::Learn {
-            "> Learn syntax"
+            format!("> {learn_label}")
         } else {
-            "  Learn syntax"
+            format!("  {learn_label}")
         };
         let problems = if self.home_choice == HomeChoice::Problems {
-            "> Practice coding tests"
+            format!("> {practice_label}")
         } else {
-            "  Practice coding tests"
+            format!("  {practice_label}")
         };
         format!(
-            "Practicode\n\n{learn}\n  Read a short syntax lesson and validate the drill.\n\n{problems}\n  Solve stdin/stdout coding-test problems.\n\nLeft/Right choose | Enter/Space open | / commands"
+            "Practicode\n\n{learn}\n  Read a short syntax lesson and validate the drill.\n\n{problems}\n  Solve stdin/stdout coding-test problems.\n\n{help}"
         )
     }
 

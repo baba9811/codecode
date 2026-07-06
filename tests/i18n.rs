@@ -5,6 +5,12 @@ use practicode::i18n::{UI_LANGUAGES, normalize_ui_language, ui_text};
 fn ui_catalogs_load_and_fallback_to_english() {
     for lang in UI_LANGUAGES {
         assert!(!ui_text(lang, "cmd_run").is_empty(), "{lang}");
+        assert!(!ui_text(lang, "cmd_home").is_empty(), "{lang}");
+        assert!(!ui_text(lang, "home_learn_choice").is_empty(), "{lang}");
+        assert!(
+            !ui_text(lang, "home_practice_choice").is_empty(),
+            "{lang}"
+        );
         assert!(!ui_text(lang, "update_available").is_empty(), "{lang}");
     }
     assert_eq!(normalize_ui_language("zh-CN"), "zh");
