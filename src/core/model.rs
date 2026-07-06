@@ -17,6 +17,8 @@ pub struct Settings {
     pub ui_language: String,
     #[serde(default = "default_theme")]
     pub theme: String,
+    #[serde(default = "default_start_mode")]
+    pub start_mode: String,
     #[serde(default = "default_difficulty")]
     pub difficulty: String,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -47,6 +49,7 @@ impl Default for Settings {
             language: default_language(),
             ui_language: default_ui_language(),
             theme: default_theme(),
+            start_mode: default_start_mode(),
             difficulty: default_difficulty(),
             topics: Vec::new(),
             avoid_topics: Vec::new(),
@@ -148,6 +151,10 @@ pub fn default_ui_language() -> String {
 
 pub fn default_theme() -> String {
     "dark".to_string()
+}
+
+pub fn default_start_mode() -> String {
+    "home".to_string()
 }
 
 pub fn default_editor() -> String {

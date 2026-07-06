@@ -77,6 +77,7 @@ pub fn normalize_settings(settings: &mut Settings) {
     if !THEMES.contains(&settings.theme.as_str()) {
         settings.theme = "dark".to_string();
     }
+    settings.start_mode = normalize_start_mode(&settings.start_mode);
     settings.difficulty = normalize_difficulty(&settings.difficulty);
     settings.topics = normalize_topic_list(&settings.topics);
     settings.avoid_topics = normalize_topic_list(&settings.avoid_topics);
@@ -88,4 +89,12 @@ pub fn normalize_settings(settings: &mut Settings) {
         settings.ai_model = default_ai_model();
     }
     settings.ai_effort = normalize_ai_effort(&settings.ai_provider, &settings.ai_effort);
+}
+
+pub fn normalize_start_mode(mode: &str) -> String {
+    let mode = mode.trim().to_lowercase();
+    match mode.as_str() {
+        "home" | "learn" | "problems" => mode,
+        _ => "home".to_string(),
+    }
 }
