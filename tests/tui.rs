@@ -30,14 +30,106 @@ fn text_editor_composes_jamo_input_on_current_line() {
 }
 
 #[test]
-fn first_run_shows_onboarding_once() {
-    let root = tmp_root("first-run-onboarding");
+fn first_run_shows_home_once() {
+    let root = tmp_root("first-run-home");
     let app = PracticodeApp::new(root.clone()).unwrap();
-    assert!(app.output_for_test().contains("Welcome to practicode"));
+    assert!(app.status_text_for_test().contains("home"));
+    assert!(app.output_for_test().contains("Learn syntax"));
+    assert!(app.output_for_test().contains("Practice coding tests"));
     assert!(root.join(".practicode/problem-state.json").exists());
 
     let app = PracticodeApp::new(root).unwrap();
-    assert!(!app.output_for_test().contains("Welcome to practicode"));
+    assert!(app.status_text_for_test().contains("home"));
+}
+
+#[test]
+fn home_command_opens_home_and_persists_it() {
+    let root = tmp_root("home-command");
+    let mut app = PracticodeApp::new(root.clone()).unwrap();
+    app.handle_command_for_test("learn").unwrap();
+    app.handle_command_for_test("home").unwrap();
+
+    assert!(app.status_text_for_test().contains("home"));
+    assert!(app.output_for_test().contains("Learn syntax"));
+    let saved = std::fs::read_to_string(root.join(".practicode/problem-state.json")).unwrap();
+    assert!(saved.contains("\"start_mode\": \"home\""));
+}
+
+#[test]
+fn home_arrows_and_enter_open_selected_mode() {
+    let root = tmp_root("home-keyboard-enter");
+    let mut app = PracticodeApp::new(root.clone()).unwrap();
+
+    app.handle_key_for_test(KeyEvent::new(KeyCode::Right, KeyModifiers::NONE))
+        .unwrap();
+    app.handle_key_for_test(KeyEvent::new(KeyCode::Enter, KeyModifiers::NONE))
+        .unwrap();
+
+    assert!(app.status_text_for_test().contains("001-hello-world"));
+    assert!(!app.status_text_for_test().contains("home"));
+    let saved = std::fs::read_to_string(root.join(".practicode/problem-state.json")).unwrap();
+    assert!(saved.contains("\"start_mode\": \"problems\""));
+}
+
+#[test]
+fn home_space_opens_learn_mode() {
+    let root = tmp_root("home-keyboard-space");
+    let mut app = PracticodeApp::new(root.clone()).unwrap();
+
+    app.handle_key_for_test(KeyEvent::new(KeyCode::Char(' '), KeyModifiers::NONE))
+        .unwrap();
+
+    assert!(app.status_text_for_test().contains("learn"));
+    let saved = std::fs::read_to_string(root.join(".practicode/problem-state.json")).unwrap();
+    assert!(saved.contains("\"start_mode\": \"learn\""));
+}
+
+#[test]
+fn home_mouse_click_opens_clicked_choice() {
+    let root = tmp_root("home-mouse-click");
+    let mut app = PracticodeApp::new(root.clone()).unwrap();
+    app.set_home_choice_areas_for_test(Rect::new(0, 2, 20, 3), Rect::new(22, 2, 20, 3));
+
+    app.handle_mouse_for_test(MouseEvent {
+        kind: MouseEventKind::Down(MouseButton::Left),
+        column: 25,
+        row: 3,
+        modifiers: KeyModifiers::NONE,
+    })
+    .unwrap();
+
+    assert!(app.status_text_for_test().contains("001-hello-world"));
+    let saved = std::fs::read_to_string(root.join(".practicode/problem-state.json")).unwrap();
+    assert!(saved.contains("\"start_mode\": \"problems\""));
+}
+
+#[test]
+fn app_start_resumes_learn_mode() {
+    let root = tmp_root("resume-learn-mode");
+    {
+        let mut app = PracticodeApp::new(root.clone()).unwrap();
+        app.handle_command_for_test("learn").unwrap();
+    }
+
+    let app = PracticodeApp::new(root).unwrap();
+    assert!(app.status_text_for_test().contains("learn"));
+    assert!(app.output_for_test().contains("Syntax"));
+}
+
+#[test]
+fn app_start_resumes_problem_mode() {
+    let root = tmp_root("resume-problem-mode");
+    {
+        let mut app = PracticodeApp::new(root.clone()).unwrap();
+        app.handle_key_for_test(KeyEvent::new(KeyCode::Right, KeyModifiers::NONE))
+            .unwrap();
+        app.handle_key_for_test(KeyEvent::new(KeyCode::Enter, KeyModifiers::NONE))
+            .unwrap();
+    }
+
+    let app = PracticodeApp::new(root).unwrap();
+    assert!(app.status_text_for_test().contains("001-hello-world"));
+    assert!(!app.status_text_for_test().contains("home"));
 }
 
 #[test]
