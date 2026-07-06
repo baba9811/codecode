@@ -11,10 +11,11 @@
   <text x="96" y="136" fill="#f8fafc" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="28" font-weight="700">Practicode</text>
 
   <text x="96" y="208" fill="#f8fafc" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="22" font-weight="700">&gt; Learn syntax</text>
-  <text x="126" y="242" fill="#c8d3f5" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="18">Read a short syntax lesson and validate the drill.</text>
+  <text x="126" y="242" fill="#c8d3f5" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="18">Read a short syntax lesson.</text>
+  <text x="126" y="274" fill="#c8d3f5" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="18">Validate the drill.</text>
 
-  <text x="96" y="326" fill="#f8fafc" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="22" font-weight="700">  Practice coding tests</text>
-  <text x="126" y="360" fill="#c8d3f5" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="18">Solve stdin/stdout coding-test problems.</text>
+  <text x="96" y="344" fill="#f8fafc" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="22" font-weight="700">  Practice coding tests</text>
+  <text x="126" y="378" fill="#c8d3f5" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="18">Solve stdin/stdout problems.</text>
 
   <text x="96" y="464" fill="#a6adc8" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="17">Arrows choose | Enter/Space open | / commands</text>
 

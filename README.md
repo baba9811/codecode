@@ -63,6 +63,59 @@ npm start
 
 </details>
 
+### Language runtimes
+
+Install only the languages you plan to practice. Python uses `python3` or `python`; TypeScript uses `node --experimental-strip-types`; Java uses `javac` and `java`; Rust uses `rustc`.
+
+<details>
+<summary>macOS</summary>
+
+```bash
+brew install python node
+brew install --cask temurin@21
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+</details>
+
+<details>
+<summary>Windows</summary>
+
+```powershell
+winget install -e --id Python.Python.3.12
+winget install -e --id OpenJS.NodeJS.LTS
+winget install -e --id EclipseAdoptium.Temurin.21.JDK
+winget install -e --id Rustlang.Rustup
+```
+
+Restart the terminal after installing so `python`, `node`, `javac`, and `rustc` are on `PATH`.
+
+</details>
+
+<details>
+<summary>Ubuntu / Debian</summary>
+
+```bash
+sudo apt update
+sudo apt install -y python3 nodejs npm openjdk-21-jdk curl build-essential
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+If `node --version` is below `v22.6.0`, install a newer Node.js from the official Node.js downloads or your preferred version manager before using TypeScript practice.
+
+</details>
+
+Verify runtimes:
+
+```bash
+python3 --version
+node --version
+javac -version
+rustc --version
+```
+
+References: [Python](https://docs.python.org/3/using/), [Node.js](https://nodejs.org/en/download), [Rust](https://www.rust-lang.org/tools/install), [Eclipse Temurin](https://adoptium.net/installation/).
+
 Check the install:
 
 ```bash
