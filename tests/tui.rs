@@ -312,7 +312,8 @@ fn background_generate_allows_solving_and_next_uses_local_problem() {
 fn next_waits_when_background_generate_is_running_and_no_local_problem_exists() {
     let root = tmp_root("background-generate-next-waits");
     let mut app = PracticodeApp::new(root).unwrap();
-    app.handle_command_for_test("ai-next-command true").unwrap();
+    app.handle_command_for_test("ai-next-command sleep 1")
+        .unwrap();
     app.handle_command_for_test("generate 문자열").unwrap();
     app.handle_command_for_test("next").unwrap();
     assert!(!app.has_task());

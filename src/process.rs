@@ -1,7 +1,7 @@
 use anyhow::{Context, Result};
 use std::{
     env,
-    io::Write,
+    io::{ErrorKind, Write},
     path::PathBuf,
     process::{Command, Stdio},
     time::{Duration, SystemTime, UNIX_EPOCH},
@@ -29,7 +29,11 @@ pub fn run_capture(command: &mut Command, input: &str, timeout: Duration) -> Res
         .stderr(Stdio::piped());
     let mut child = command.spawn().context("spawn command")?;
     if let Some(stdin) = child.stdin.as_mut() {
-        stdin.write_all(input.as_bytes()).context("write stdin")?;
+        match stdin.write_all(input.as_bytes()) {
+            Ok(()) => {}
+            Err(error) if error.kind() == ErrorKind::BrokenPipe => {}
+            Err(error) => return Err(error).context("write stdin"),
+        }
     }
     drop(child.stdin.take());
 
@@ -79,4 +83,23 @@ pub fn unique_temp_path(prefix: &str, ext: &str) -> PathBuf {
         .unwrap_or_default()
         .as_nanos();
     env::temp_dir().join(format!("{prefix}-{}-{nanos}.{ext}", std::process::id()))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn run_capture_tolerates_child_that_exits_before_reading_stdin() {
+        let mut command = shell_process("exit 0");
+        let output = run_capture(
+            &mut command,
+            &"x".repeat(1024 * 1024),
+            Duration::from_secs(5),
+        )
+        .unwrap();
+
+        assert_eq!(output.code, Some(0));
+        assert!(!output.timed_out);
+    }
 }
