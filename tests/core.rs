@@ -574,6 +574,110 @@ fn python_syntax_curriculum_covers_official_python_topics() {
 }
 
 #[test]
+fn typescript_syntax_curriculum_covers_ts_and_node_topics() {
+    let lessons = syntax_lessons_for("ts");
+    let lesson_ids: Vec<_> = lessons.iter().map(|lesson| lesson.id).collect();
+
+    assert!(
+        lesson_ids.len() >= 28,
+        "typescript curriculum is too shallow"
+    );
+
+    for id in [
+        "ts-output",
+        "ts-let-const",
+        "ts-primitives",
+        "ts-strings-templates",
+        "ts-arrays-tuples",
+        "ts-objects",
+        "ts-functions",
+        "ts-input",
+        "ts-control-flow",
+        "ts-union-narrowing",
+        "ts-literal-types",
+        "ts-optional-nullish",
+        "ts-interfaces-aliases",
+        "ts-generics",
+        "ts-keyof-typeof",
+        "ts-indexed-access",
+        "ts-mapped-types",
+        "ts-conditional-types",
+        "ts-utility-types",
+        "ts-discriminated-unions",
+        "ts-async-promise",
+        "ts-error-handling",
+        "ts-modules",
+        "ts-classes",
+        "ts-readonly",
+        "ts-satisfies-as-const",
+        "ts-iterables",
+        "ts-array-methods",
+    ] {
+        assert!(lesson_ids.contains(&id), "missing {id}");
+    }
+
+    let refs = lessons
+        .iter()
+        .flat_map(|lesson| lesson.refs.iter().copied())
+        .collect::<Vec<_>>()
+        .join("\n");
+    for required_ref in [
+        "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html",
+        "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+        "https://www.typescriptlang.org/docs/handbook/2/generics.html",
+        "https://www.typescriptlang.org/docs/handbook/2/keyof-types.html",
+        "https://www.typescriptlang.org/docs/handbook/2/typeof-types.html",
+        "https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html",
+        "https://www.typescriptlang.org/docs/handbook/2/mapped-types.html",
+        "https://www.typescriptlang.org/docs/handbook/2/conditional-types.html",
+        "https://www.typescriptlang.org/docs/handbook/utility-types.html",
+        "https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-0.html",
+        "https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-4.html",
+        "https://nodejs.org/api/typescript.html",
+        "https://nodejs.org/api/fs.html#fsreadfilesyncpath-options",
+        "https://nodejs.org/api/process.html#processstdout",
+        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce",
+    ] {
+        assert!(refs.contains(required_ref), "missing ref {required_ref}");
+    }
+}
+
+#[test]
+fn typescript_lesson_copy_is_topic_specific() {
+    let banned = [
+        "locating three concrete pieces",
+        "Use this example to place",
+        "Copying the shape of the example",
+        "edit only the part tied to this lesson's rule",
+        "Do not write the expected output as a constant",
+        "세 가지 구체적인 부분",
+        "이 예제를 사용해",
+        "三つの具体的な部分",
+        "この例を使って",
+        "三个具体部分",
+        "用这个例子",
+        "tres piezas concretas",
+        "Usa este ejemplo",
+    ];
+    for path in [
+        "assets/lessons/typescript/en.json",
+        "assets/lessons/typescript/ko.json",
+        "assets/lessons/typescript/ja.json",
+        "assets/lessons/typescript/zh.json",
+        "assets/lessons/typescript/es.json",
+    ] {
+        let catalog: serde_json::Value =
+            serde_json::from_str(&fs::read_to_string(path).unwrap()).unwrap();
+        for (id, copy) in catalog["lessons"].as_object().unwrap() {
+            let text = copy.to_string();
+            for phrase in banned {
+                assert!(!text.contains(phrase), "{path}:{id}: generic copy");
+            }
+        }
+    }
+}
+
+#[test]
 fn python_lesson_copy_is_topic_specific() {
     let banned = [
         "focuses on this Python skill",
@@ -684,8 +788,8 @@ fn lessons_use_rich_split_copy_for_all_code_languages() {
         (
             "ko",
             "ts",
-            "ts-arrays-objects",
-            "# 문법: 배열과 객체",
+            "ts-arrays-tuples",
+            "# 문법: 배열과 튜플",
             "배열은 순서가 있는 값의 묶음",
             "흔한 실수",
             "자가 점검",
@@ -823,6 +927,36 @@ fn python_syntax_starters_fail_by_output_not_runtime_error() {
 }
 
 #[test]
+fn typescript_syntax_starters_run_under_node_strip_types() {
+    if which("node").is_none() {
+        return;
+    }
+
+    let root = tmp_root("typescript-syntax-starters-run-cleanly");
+    for lesson in syntax_lessons_for("ts") {
+        let path = ensure_syntax_submission(&root, lesson).unwrap();
+        let result = judge_path(
+            &root,
+            lesson.id,
+            &path,
+            lesson.language,
+            &syntax_cases(lesson),
+        );
+        assert!(
+            !result.output.contains("Stderr"),
+            "{} starter should run without a Node/TypeScript runtime error:\n{}",
+            lesson.id,
+            result.output
+        );
+        assert!(
+            !result.passed,
+            "{} starter should still require the learner edit",
+            lesson.id
+        );
+    }
+}
+
+#[test]
 fn python_syntax_examples_run_cleanly() {
     let Some(python) = which("python3").or_else(|| which("python")) else {
         return;
@@ -832,6 +966,36 @@ fn python_syntax_examples_run_cleanly() {
         let path = root.join(format!("{}.py", lesson.id));
         fs::write(&path, lesson.example).unwrap();
         let output = Command::new(&python).arg(&path).output().unwrap();
+        assert!(
+            output.status.success(),
+            "{} example should exit successfully\nstdout:\n{}\nstderr:\n{}",
+            lesson.id,
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert!(
+            String::from_utf8_lossy(&output.stderr).trim().is_empty(),
+            "{} example should not write stderr\n{}",
+            lesson.id,
+            String::from_utf8_lossy(&output.stderr)
+        );
+    }
+}
+
+#[test]
+fn typescript_syntax_examples_run_under_node_strip_types() {
+    let Some(node) = which("node") else {
+        return;
+    };
+    let root = tmp_root("typescript-syntax-examples-run");
+    for lesson in syntax_lessons_for("ts") {
+        let path = root.join(format!("{}.ts", lesson.id));
+        fs::write(&path, lesson.example).unwrap();
+        let output = Command::new(&node)
+            .arg("--experimental-strip-types")
+            .arg(&path)
+            .output()
+            .unwrap();
         assert!(
             output.status.success(),
             "{} example should exit successfully\nstdout:\n{}\nstderr:\n{}",

@@ -97,6 +97,33 @@ const PY_CORE_REFS: &[&str] = &[
 const TS_REFS: &[&str] = &[
     "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide",
     "https://www.typescriptlang.org/docs/handbook/intro.html",
+    "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html",
+    "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+    "https://nodejs.org/api/typescript.html",
+];
+const TS_NODE_REFS: &[&str] = &[
+    "https://nodejs.org/api/typescript.html",
+    "https://nodejs.org/api/fs.html#fsreadfilesyncpath-options",
+    "https://nodejs.org/api/process.html#processstdout",
+];
+const TS_ARRAY_REFS: &[&str] = &[
+    "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map",
+    "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter",
+    "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce",
+    "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration",
+];
+const TS_TYPE_REFS: &[&str] = &[
+    "https://www.typescriptlang.org/docs/handbook/2/generics.html",
+    "https://www.typescriptlang.org/docs/handbook/2/keyof-types.html",
+    "https://www.typescriptlang.org/docs/handbook/2/typeof-types.html",
+    "https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html",
+    "https://www.typescriptlang.org/docs/handbook/2/mapped-types.html",
+    "https://www.typescriptlang.org/docs/handbook/2/conditional-types.html",
+    "https://www.typescriptlang.org/docs/handbook/utility-types.html",
+    "https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-0.html",
+    "https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-4.html",
+    "https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-6.html",
+    "https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-9.html",
 ];
 const JAVA_REFS: &[&str] = &[
     "https://dev.java/learn/",
@@ -497,133 +524,431 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "ts-output",
         "ts",
         "basic",
-        "Output",
-        "console.log writes a line.",
-        "console.log('ok');",
-        "// TODO: write the expected line\n",
-        EMPTY_HELLO,
+        "Console and stdout",
+        "console.log appends a newline, while process.stdout.write writes exactly the bytes you give it.",
+        "const score: number = 7;\nprocess.stdout.write(`score=${score}\\n`);",
+        "const score: number = 7;\n// TODO: print exactly score=7 with one trailing newline\nprocess.stdout.write('TODO\\n');\n",
+        &[SyntaxCase {
+            input: "",
+            output: "score=7\n",
+        }],
+        TS_NODE_REFS
+    ),
+    lesson!(
+        "ts-let-const",
+        "ts",
+        "basic",
+        "let and const",
+        "const protects a binding from reassignment; let marks the few local values that intentionally change.",
+        "const label = 'sum';\nlet total = 1;\ntotal += 2;\nconsole.log(`${label}:${total}`);",
+        "const label = 'TODO';\nlet total = 1;\n// TODO: keep label stable and mutate total so the output is sum:3\ntotal += 0;\nconsole.log(`${label}:${total}`);\n",
+        &[SyntaxCase {
+            input: "",
+            output: "sum:3\n",
+        }],
+        &[
+            "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let",
+            "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const",
+            "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html",
+        ]
+    ),
+    lesson!(
+        "ts-primitives",
+        "ts",
+        "basic",
+        "Primitive types",
+        "string, number, and boolean describe the common scalar values that most stdin parsing produces.",
+        "function report(name: string, score: number, passed: boolean): string {\n  return `${name}:${score}:${passed ? 'pass' : 'retry'}`;\n}\n\nconsole.log(report('Ada', 7, true));",
+        "function report(name: string, score: number, passed: boolean): string {\n  return `${name}:${score}:${passed ? 'pass' : 'retry'}`;\n}\n\n// TODO: pass the primitive values that produce Ada:7:pass\nconsole.log(report('Ada', 0, false));\n",
+        &[SyntaxCase {
+            input: "",
+            output: "Ada:7:pass\n",
+        }],
         TS_REFS
     ),
     lesson!(
-        "ts-variables",
+        "ts-strings-templates",
         "ts",
         "basic",
-        "Variables",
-        "let changes; const does not reassign.",
-        "const name: string = 'code';",
-        "let word: string = '';\n// TODO: assign the expected word, then log it\nconsole.log(word);\n",
-        EMPTY_HELLO,
-        TS_REFS
+        "Strings and templates",
+        "Template literals keep formatting close to the values, and string methods return new strings instead of mutating text.",
+        "const raw = ' Ada ';\nconst score = 7;\nconsole.log(`${raw.trim()}:${score}`);",
+        "const raw = ' Ada ';\nconst score = 7;\n// TODO: trim the name and interpolate score without changing either value\nconsole.log(`${raw}:${score + 1}`);\n",
+        &[SyntaxCase {
+            input: "",
+            output: "Ada:7\n",
+        }],
+        &[
+            "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals",
+            "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+            "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html",
+        ]
     ),
     lesson!(
-        "ts-strings",
+        "ts-arrays-tuples",
         "ts",
         "basic",
-        "Strings",
-        "Strings expose length and iteration.",
-        "for (const ch of 'ok') console.log(ch);",
-        "const text = 'xokx';\n// TODO: use a slice to print the middle text\nconsole.log(text);\n",
-        EMPTY_HELLO,
-        TS_REFS
+        "Arrays and tuples",
+        "number[] models a sequence of same-shaped values; a tuple fixes both position and type for small records.",
+        "const scores: number[] = [2, 3];\nconst result: [string, number] = ['Ada', scores[0] + scores[1]];\nconsole.log(`${result[0]}:${result[1]}`);",
+        "const scores: number[] = [2, 3];\n// TODO: put the summed score in the tuple, not the array length\nconst result: [string, number] = ['Ada', scores.length];\nconsole.log(`${result[0]}:${result[1]}`);\n",
+        &[SyntaxCase {
+            input: "",
+            output: "Ada:5\n",
+        }],
+        &[
+            "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#arrays",
+            "https://www.typescriptlang.org/docs/handbook/2/objects.html#tuple-types",
+            "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
+        ]
     ),
     lesson!(
-        "ts-control-flow",
+        "ts-objects",
         "ts",
         "basic",
-        "Control flow",
-        "if and loops control execution.",
-        "for (let i = 0; i < 3; i++) {}",
-        "const ready = false;\n// TODO: print the expected word only when ready is true\nif (ready) console.log('ok');\n",
-        EMPTY_HELLO,
-        TS_REFS
+        "Object types",
+        "Object type annotations name required fields so calculations cannot silently ignore missing properties.",
+        "type Rectangle = { width: number; height: number };\nconst rect: Rectangle = { width: 3, height: 4 };\nconsole.log(rect.width * rect.height);",
+        "type Rectangle = { width: number; height: number };\nconst rect: Rectangle = { width: 3, height: 4 };\n// TODO: calculate area from both required fields\nconsole.log(rect.width + rect.height);\n",
+        &[SyntaxCase {
+            input: "",
+            output: "12\n",
+        }],
+        &[
+            "https://www.typescriptlang.org/docs/handbook/2/objects.html",
+            "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects",
+        ]
     ),
     lesson!(
         "ts-functions",
         "ts",
         "basic",
         "Functions",
-        "Parameter and return types make intent explicit.",
-        "function add(a: number, b: number): number { return a + b; }",
-        "function word(): string {\n  // TODO: return the expected word\n  return '';\n}\nconsole.log(word());\n",
-        EMPTY_HELLO,
+        "Parameter and return annotations make the input and output contract visible at the call site.",
+        "function area(width: number, height: number): number {\n  return width * height;\n}\n\nconsole.log(area(3, 4));",
+        "function area(width: number, height: number): number {\n  // TODO: return rectangle area, not perimeter\n  return width + height;\n}\n\nconsole.log(area(3, 4));\n",
+        &[SyntaxCase {
+            input: "",
+            output: "12\n",
+        }],
         TS_REFS
     ),
     lesson!(
         "ts-input",
         "ts",
         "intermediate",
-        "Input parsing",
-        "Node can read stdin for small exercises.",
-        "const input = require('fs').readFileSync(0, 'utf8');",
-        "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: write input back unchanged\n",
-        ECHO_CASE,
-        TS_REFS
-    ),
-    lesson!(
-        "ts-arrays-objects",
-        "ts",
-        "intermediate",
-        "Arrays and objects",
-        "Arrays hold sequences; object types describe shapes.",
-        "type User = { name: string };",
-        "const nums: number[] = [2, 3];\n// TODO: print the sum of nums without hard-coding 5\nconsole.log(nums.length);\n",
+        "Node stdin parsing",
+        "In coding tests, read fd 0 once, split the text into tokens, and convert tokens before doing numeric work.",
+        "const fs = require('node:fs');\nconst input: string = fs.readFileSync(0, 'utf8');\nconst nums = input.trim().split(/\\s+/).filter(Boolean).map(Number);\nconsole.log(nums.reduce((sum, n) => sum + n, 0));",
+        "const fs = require('node:fs');\nconst input: string = fs.readFileSync(0, 'utf8');\n// TODO: parse all integers from stdin and print their sum\nconst nums: number[] = [];\nconsole.log(nums.reduce((sum, n) => sum + n, 0));\n",
         SUM_CASE,
-        TS_REFS
+        TS_NODE_REFS
     ),
     lesson!(
-        "ts-errors-async",
+        "ts-control-flow",
+        "ts",
+        "basic",
+        "Control flow",
+        "if, for, while, and switch all narrow the path values can take before they reach stdout.",
+        "let total = 0;\nfor (let n = 1; n <= 3; n++) {\n  if (n % 2 === 1) total += n;\n}\nconsole.log(total);",
+        "let total = 0;\nfor (let n = 1; n <= 3; n++) {\n  // TODO: add only odd numbers\n  total += n;\n}\nconsole.log(total);\n",
+        &[SyntaxCase {
+            input: "",
+            output: "4\n",
+        }],
+        &[
+            "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Control_flow_and_error_handling",
+            "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Loops_and_iteration",
+            "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+        ]
+    ),
+    lesson!(
+        "ts-union-narrowing",
         "ts",
         "intermediate",
-        "Errors and async",
-        "try/catch handles thrown errors; async wraps promises.",
-        "async function main() { return 1; }",
-        "try {\n  throw new Error('x');\n} catch {\n  // TODO: handle the expected error by printing the expected word\n}\n",
-        EMPTY_HELLO,
-        &["https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await"]
+        "Union and narrowing",
+        "A union accepts several shapes, but TypeScript only allows member-specific operations after a runtime check narrows the value.",
+        "function label(value: string | number): string {\n  if (typeof value === 'string') return value.toUpperCase();\n  return value.toFixed(0);\n}\n\nconsole.log(label('ok'));",
+        "function label(value: string | number): string {\n  if (typeof value === 'string') return value;\n  return value.toFixed(0);\n}\n\n// TODO: preserve the union but narrow the string branch to uppercase\nconsole.log(label('ok'));\n",
+        &[SyntaxCase {
+            input: "",
+            output: "OK\n",
+        }],
+        &[
+            "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#union-types",
+            "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+            "https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-4.html",
+        ]
     ),
     lesson!(
-        "ts-narrowing",
+        "ts-literal-types",
         "ts",
-        "advanced",
-        "Narrowing",
-        "Type guards refine union values.",
-        "if (typeof value === 'string') value.toUpperCase();",
-        "const value: string | number = 0;\n// TODO: narrow a string value before printing\nif (typeof value === 'string') console.log(value);\n",
-        EMPTY_HELLO,
+        "intermediate",
+        "Literal types",
+        "Literal unions restrict values to exact strings or numbers, which is useful for modes, commands, and states.",
+        "type Direction = 'left' | 'right';\nfunction turn(direction: Direction): string {\n  return direction === 'left' ? 'L' : 'R';\n}\n\nconsole.log(turn('left'));",
+        "type Direction = 'left' | 'right';\nfunction turn(direction: Direction): string {\n  return direction === 'left' ? 'L' : 'R';\n}\n\n// TODO: choose the literal that produces L\nconsole.log(turn('right'));\n",
+        &[SyntaxCase {
+            input: "",
+            output: "L\n",
+        }],
         TS_REFS
+    ),
+    lesson!(
+        "ts-optional-nullish",
+        "ts",
+        "intermediate",
+        "Optional and nullish",
+        "Optional properties read as possibly undefined, and ?? keeps valid falsey values such as 0 or an empty string.",
+        "type User = { name: string; score?: number | null };\nconst user: User = { name: 'Ada', score: 0 };\nconsole.log(`${user.name}:${user.score ?? 10}`);",
+        "type User = { name: string; score?: number | null };\nconst user: User = { name: 'Ada', score: 0 };\n// TODO: keep score 0 instead of replacing it with the fallback\nconsole.log(`${user.name}:${user.score || 10}`);\n",
+        &[SyntaxCase {
+            input: "",
+            output: "Ada:0\n",
+        }],
+        &[
+            "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#optional-properties",
+            "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing",
+            "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining",
+        ]
+    ),
+    lesson!(
+        "ts-interfaces-aliases",
+        "ts",
+        "intermediate",
+        "Interfaces and type aliases",
+        "Interfaces and aliases both name object contracts; aliases also name unions, tuples, and type expressions.",
+        "interface Named {\n  name: string;\n}\ntype Score = { points: number };\nfunction summary(user: Named & Score): string {\n  return `${user.name}:${user.points}`;\n}\n\nconsole.log(summary({ name: 'Ada', points: 5 }));",
+        "interface Named {\n  name: string;\n}\ntype Score = { points: number };\nfunction summary(user: Named & Score): string {\n  // TODO: include both the interface field and the alias field\n  return user.name;\n}\n\nconsole.log(summary({ name: 'Ada', points: 5 }));\n",
+        &[SyntaxCase {
+            input: "",
+            output: "Ada:5\n",
+        }],
+        &[
+            "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#interfaces",
+            "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-aliases",
+            "https://www.typescriptlang.org/docs/handbook/2/objects.html",
+        ]
     ),
     lesson!(
         "ts-generics",
         "ts",
-        "advanced",
+        "intermediate",
         "Generics",
-        "Generics preserve type information across reusable code.",
-        "function first<T>(xs: T[]): T { return xs[0]; }",
-        "function id<T>(value: T): T { return value; }\n// TODO: call id with the expected word and print it\nconsole.log(id(''));\n",
+        "Generics let reusable functions preserve the caller's type instead of collapsing values to any.",
+        "function first<T>(items: readonly T[]): T | undefined {\n  return items[0];\n}\n\nconsole.log(first(['ok', 'skip']) ?? 'none');",
+        "function first<T>(items: readonly T[]): T | undefined {\n  // TODO: return the first item while preserving T\n  return items[1];\n}\n\nconsole.log(first(['ok', 'skip']) ?? 'none');\n",
         EMPTY_HELLO,
-        TS_REFS
+        TS_TYPE_REFS
     ),
     lesson!(
-        "ts-mapped",
+        "ts-keyof-typeof",
+        "ts",
+        "advanced",
+        "keyof and typeof",
+        "typeof captures the static type of a value, and keyof turns that object type into a union of valid keys.",
+        "const limits = { small: 2, large: 5 } as const;\ntype Size = keyof typeof limits;\nfunction limitFor(size: Size): number {\n  return limits[size];\n}\n\nconsole.log(limitFor('large'));",
+        "const limits = { small: 2, large: 5 } as const;\ntype Size = keyof typeof limits;\nfunction limitFor(size: Size): number {\n  return limits[size];\n}\n\n// TODO: use the key whose value is 5\nconsole.log(limitFor('small'));\n",
+        SUM_CASE,
+        TS_TYPE_REFS
+    ),
+    lesson!(
+        "ts-indexed-access",
+        "ts",
+        "advanced",
+        "Indexed access types",
+        "Indexed access types read a property type from another type so value code and type code stay in sync.",
+        "type User = { name: string; scores: number[] };\ntype Score = User['scores'][number];\nconst score: Score = 5;\nconsole.log(score);",
+        "type User = { name: string; scores: number[] };\ntype Score = User['scores'][number];\n// TODO: assign a valid Score value that prints 5\nconst score: Score = 0;\nconsole.log(score);\n",
+        SUM_CASE,
+        TS_TYPE_REFS
+    ),
+    lesson!(
+        "ts-mapped-types",
         "ts",
         "advanced",
         "Mapped types",
-        "Mapped types transform object properties.",
-        "type ReadonlyUser<T> = { readonly [K in keyof T]: T[K] };",
-        "type Box<T> = { [K in keyof T]: T[K] };\nconst value: Box<{ word: string }> = { word: '' };\n// TODO: store the expected word, then print it\nconsole.log(value.word);\n",
+        "Mapped types loop over keys at the type level, often to turn one object shape into another related shape.",
+        "type Flags<T> = { [K in keyof T]: boolean };\ntype Features = { search: () => void; share: () => void };\nconst enabled: Flags<Features> = { search: true, share: false };\nconsole.log(Object.entries(enabled).find(([, on]) => on)?.[0] ?? 'none');",
+        "type Flags<T> = { [K in keyof T]: boolean };\ntype Features = { search: () => void; share: () => void };\nconst enabled: Flags<Features> = { search: false, share: false };\n// TODO: enable search while keeping the mapped shape\nconsole.log(Object.entries(enabled).find(([, on]) => on)?.[0] ?? 'none');\n",
         EMPTY_HELLO,
-        &["https://www.typescriptlang.org/docs/handbook/utility-types.html"]
+        TS_TYPE_REFS
     ),
     lesson!(
-        "ts-conditional",
+        "ts-conditional-types",
         "ts",
         "advanced",
         "Conditional types",
-        "Conditional types choose a type from another type.",
-        "type Unwrap<T> = T extends Promise<infer U> ? U : T;",
-        "type IsString<T> = T extends string ? string : never;\nlet word: IsString<'ok'> = '';\n// TODO: assign the expected word, then print it\nconsole.log(word);\n",
+        "Conditional types choose one type branch from another type, and infer can capture part of a matched shape.",
+        "type ElementType<T> = T extends readonly (infer Item)[] ? Item : T;\nconst word: ElementType<string[]> = 'ok';\nconsole.log(word);",
+        "type ElementType<T> = T extends readonly (infer Item)[] ? Item : T;\n// TODO: assign the element type carried by string[]\nconst word: ElementType<string[]> = '';\nconsole.log(word);\n",
         EMPTY_HELLO,
-        TS_REFS
+        TS_TYPE_REFS
+    ),
+    lesson!(
+        "ts-utility-types",
+        "ts",
+        "advanced",
+        "Utility types",
+        "Utility types such as Pick, Partial, Required, and Awaited express common transformations without custom aliases.",
+        "type User = { id: number; name: string; score: number };\ntype UserPatch = Partial<Pick<User, 'name' | 'score'>>;\nconst patch: UserPatch = { name: 'Ada', score: 5 };\nconsole.log(`${patch.name}:${patch.score}`);",
+        "type User = { id: number; name: string; score: number };\ntype UserPatch = Partial<Pick<User, 'name' | 'score'>>;\n// TODO: fill the patch fields allowed by Pick and Partial\nconst patch: UserPatch = { name: 'Ada' };\nconsole.log(`${patch.name}:${patch.score ?? 0}`);\n",
+        &[SyntaxCase {
+            input: "",
+            output: "Ada:5\n",
+        }],
+        TS_TYPE_REFS
+    ),
+    lesson!(
+        "ts-discriminated-unions",
+        "ts",
+        "advanced",
+        "Discriminated unions",
+        "A shared literal field lets switch narrow each variant and makes missing cases visible during type checking.",
+        "type Shape = { kind: 'rect'; width: number; height: number } | { kind: 'circle'; radius: number };\nfunction measure(shape: Shape): number {\n  switch (shape.kind) {\n    case 'rect':\n      return shape.width * shape.height;\n    case 'circle':\n      return shape.radius * 2;\n  }\n}\n\nconsole.log(measure({ kind: 'rect', width: 3, height: 4 }));",
+        "type Shape = { kind: 'rect'; width: number; height: number } | { kind: 'circle'; radius: number };\nfunction measure(shape: Shape): number {\n  switch (shape.kind) {\n    case 'rect':\n      // TODO: use the fields that only exist on the rect variant\n      return shape.width + shape.height;\n    case 'circle':\n      return shape.radius * 2;\n  }\n}\n\nconsole.log(measure({ kind: 'rect', width: 3, height: 4 }));\n",
+        &[SyntaxCase {
+            input: "",
+            output: "12\n",
+        }],
+        &[
+            "https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions",
+            "https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-4.html",
+        ]
+    ),
+    lesson!(
+        "ts-async-promise",
+        "ts",
+        "intermediate",
+        "Async and Promise",
+        "async functions return Promise values; await unwraps the fulfilled value before later code uses it.",
+        "async function double(value: number): Promise<number> {\n  return value * 2;\n}\n\nasync function main(): Promise<void> {\n  console.log(await double(2));\n}\n\nmain();",
+        "async function double(value: number): Promise<number> {\n  return value * 2;\n}\n\nasync function main(): Promise<void> {\n  // TODO: await the Promise before printing its number\n  console.log(String(double(2)));\n}\n\nmain();\n",
+        &[SyntaxCase {
+            input: "",
+            output: "4\n",
+        }],
+        &[
+            "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+            "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await",
+            "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#functions-which-return-promises",
+        ]
+    ),
+    lesson!(
+        "ts-error-handling",
+        "ts",
+        "intermediate",
+        "Error handling",
+        "catch receives an unknown failure; narrow it before reading Error-specific fields or choosing a fallback.",
+        "function parseCount(text: string): number {\n  try {\n    return Number.parseInt(text, 10);\n  } catch (error: unknown) {\n    return error instanceof Error ? 0 : -1;\n  }\n}\n\nconsole.log(parseCount('12'));",
+        "function parseCount(text: string): number {\n  try {\n    const value = Number.parseInt(text, 10);\n    if (Number.isNaN(value)) throw new Error('bad number');\n    return value;\n  } catch (error: unknown) {\n    // TODO: narrow the caught value and recover with 12\n    return error instanceof Error ? 0 : -1;\n  }\n}\n\nconsole.log(parseCount('bad'));\n",
+        &[SyntaxCase {
+            input: "",
+            output: "12\n",
+        }],
+        &[
+            "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch",
+            "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+        ]
+    ),
+    lesson!(
+        "ts-modules",
+        "ts",
+        "intermediate",
+        "Modules and exports",
+        "import and export make file boundaries explicit; in Node type stripping, module syntax still follows Node's module rules.",
+        "export function label(value: string): string {\n  return value.toUpperCase();\n}\n\nconsole.log(label('ok'));",
+        "export function label(value: string): string {\n  // TODO: export behavior that callers can trust\n  return value;\n}\n\nconsole.log(label('ok'));\n",
+        &[SyntaxCase {
+            input: "",
+            output: "OK\n",
+        }],
+        &[
+            "https://www.typescriptlang.org/docs/handbook/2/modules.html",
+            "https://nodejs.org/api/typescript.html#determining-module-system",
+        ]
+    ),
+    lesson!(
+        "ts-classes",
+        "ts",
+        "intermediate",
+        "Classes and access modifiers",
+        "Classes combine state with methods; TypeScript access modifiers describe the intended boundary for that state.",
+        "class Counter {\n  private value: number;\n\n  constructor(start: number) {\n    this.value = start;\n  }\n\n  increment(): number {\n    this.value += 1;\n    return this.value;\n  }\n}\n\nconsole.log(new Counter(1).increment());",
+        "class Counter {\n  private value: number;\n\n  constructor(start: number) {\n    this.value = start;\n  }\n\n  increment(): number {\n    // TODO: update private state before returning it\n    return this.value;\n  }\n}\n\nconsole.log(new Counter(1).increment());\n",
+        &[SyntaxCase {
+            input: "",
+            output: "2\n",
+        }],
+        &[
+            "https://www.typescriptlang.org/docs/handbook/2/classes.html",
+            "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes",
+            "https://nodejs.org/api/typescript.html#typescript-features",
+        ]
+    ),
+    lesson!(
+        "ts-readonly",
+        "ts",
+        "intermediate",
+        "readonly",
+        "readonly documents that callers may read a property or array but should not replace or mutate it through that type.",
+        "type Config = { readonly name: string; readonly scores: readonly number[] };\nconst config: Config = { name: 'Ada', scores: [2, 3] };\nconsole.log(`${config.name}:${config.scores.reduce((sum, n) => sum + n, 0)}`);",
+        "type Config = { readonly name: string; readonly scores: readonly number[] };\nconst config: Config = { name: 'Ada', scores: [2, 3] };\n// TODO: read from readonly data without replacing it\nconsole.log(`${config.name}:${config.scores.length}`);\n",
+        &[SyntaxCase {
+            input: "",
+            output: "Ada:5\n",
+        }],
+        &[
+            "https://www.typescriptlang.org/docs/handbook/2/objects.html#readonly-properties",
+            "https://www.typescriptlang.org/docs/handbook/2/objects.html#the-readonlyarray-type",
+        ]
+    ),
+    lesson!(
+        "ts-satisfies-as-const",
+        "ts",
+        "advanced",
+        "satisfies and as const",
+        "as const preserves literal values, and satisfies checks a wider contract without widening the value's own type.",
+        "const routes = {\n  home: '/',\n  user: '/users',\n} as const satisfies Record<string, `/${string}`>;\ntype RouteName = keyof typeof routes;\nconst selected: RouteName = 'user';\nconsole.log(routes[selected]);",
+        "const routes = {\n  home: '/',\n  user: '/users',\n} as const satisfies Record<string, `/${string}`>;\ntype RouteName = keyof typeof routes;\n// TODO: choose the literal key for the users route\nconst selected: RouteName = 'home';\nconsole.log(routes[selected]);\n",
+        &[SyntaxCase {
+            input: "",
+            output: "/users\n",
+        }],
+        &[
+            "https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html",
+            "https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-0.html",
+            "https://www.typescriptlang.org/docs/handbook/2/typeof-types.html",
+        ]
+    ),
+    lesson!(
+        "ts-iterables",
+        "ts",
+        "intermediate",
+        "Iterables",
+        "for...of consumes any iterable, so arrays, strings, sets, and many Node values can share loop code.",
+        "const chars: Iterable<string> = ['o', 'k'];\nlet word = '';\nfor (const ch of chars) {\n  word += ch;\n}\nconsole.log(word);",
+        "const chars: Iterable<string> = ['o', 'k'];\nlet word = '';\nfor (const ch of chars) {\n  // TODO: collect every yielded character\n  word = ch;\n}\nconsole.log(word);\n",
+        EMPTY_HELLO,
+        &[
+            "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols",
+            "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of",
+            "https://www.typescriptlang.org/docs/handbook/iterators-and-generators.html",
+        ]
+    ),
+    lesson!(
+        "ts-array-methods",
+        "ts",
+        "intermediate",
+        "map, filter, and reduce",
+        "map transforms each item, filter keeps selected items, and reduce folds a sequence into one accumulated value.",
+        "const nums = [1, 2, 3, 4];\nconst total = nums\n  .filter((n) => n % 2 === 0)\n  .map((n) => n * n)\n  .reduce((sum, n) => sum + n, 0);\nconsole.log(total);",
+        "const nums = [1, 2, 3, 4];\n// TODO: square only the even numbers before summing\nconst total = nums.reduce((sum, n) => sum + n, 0);\nconsole.log(total);\n",
+        &[SyntaxCase {
+            input: "",
+            output: "20\n",
+        }],
+        TS_ARRAY_REFS
     ),
 ];
 
