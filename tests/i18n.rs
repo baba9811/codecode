@@ -16,31 +16,20 @@ fn ui_catalogs_load_and_fallback_to_english() {
 }
 
 #[test]
-fn supported_ui_catalogs_cover_syntax_curriculum_copy() {
-    for ui_language in ["ko", "ja", "zh", "es"] {
+fn ui_catalogs_do_not_store_syntax_curriculum_copy() {
+    for ui_language in UI_LANGUAGES {
         for language in LANGUAGES {
             for lesson in syntax_lessons_for(language) {
-                if *language == "python" {
-                    continue;
-                }
                 let id = lesson.id.replace('-', "_");
-                let title_key = format!("syntax_{id}_title");
-                let body_key = format!("syntax_{id}_body");
                 assert!(
-                    !ui_text(ui_language, &title_key).is_empty(),
-                    "{ui_language}:{title_key}"
+                    ui_text(ui_language, &format!("syntax_{id}_title")).is_empty(),
+                    "{ui_language}:{id}:title"
                 );
                 assert!(
-                    !ui_text(ui_language, &body_key).is_empty(),
-                    "{ui_language}:{body_key}"
+                    ui_text(ui_language, &format!("syntax_{id}_body")).is_empty(),
+                    "{ui_language}:{id}:body"
                 );
             }
         }
     }
-}
-
-#[test]
-fn python_lesson_copy_is_not_stored_in_ui_catalog() {
-    assert!(ui_text("en", "syntax_py_lists_dicts_title").is_empty());
-    assert!(ui_text("ko", "syntax_py_lists_dicts_body").is_empty());
 }

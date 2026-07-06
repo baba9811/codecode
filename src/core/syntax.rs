@@ -5,14 +5,21 @@ use std::sync::OnceLock;
 struct SyntaxLessonCopy {
     title: String,
     concept: String,
-    worked_example: String,
-    common_mistakes: Vec<String>,
-    self_check: Vec<String>,
-    exercise_prompt: String,
+    #[serde(default)]
+    worked_example: Option<String>,
+    #[serde(default)]
+    common_mistakes: Option<Vec<String>>,
+    #[serde(default)]
+    self_check: Option<Vec<String>>,
+    #[serde(default)]
+    exercise_prompt: Option<String>,
 }
 
-static PYTHON_EN_COPY: OnceLock<HashMap<String, SyntaxLessonCopy>> = OnceLock::new();
-static PYTHON_KO_COPY: OnceLock<HashMap<String, SyntaxLessonCopy>> = OnceLock::new();
+static EN_LESSONS: OnceLock<HashMap<String, SyntaxLessonCopy>> = OnceLock::new();
+static KO_LESSONS: OnceLock<HashMap<String, SyntaxLessonCopy>> = OnceLock::new();
+static JA_LESSONS: OnceLock<HashMap<String, SyntaxLessonCopy>> = OnceLock::new();
+static ZH_LESSONS: OnceLock<HashMap<String, SyntaxLessonCopy>> = OnceLock::new();
+static ES_LESSONS: OnceLock<HashMap<String, SyntaxLessonCopy>> = OnceLock::new();
 
 #[derive(Clone, Copy, Debug)]
 pub struct SyntaxCase {
@@ -837,7 +844,11 @@ pub fn syntax_lesson_study_context(lesson: &SyntaxLesson, ui_language: &str) -> 
         format!(
             "Worked example:\n{}\n\n```{}\n{}\n```",
             lesson_copy_for(lesson, ui_language)
-                .map(|copy| copy.worked_example.as_str())
+                .map(|copy| {
+                    copy.worked_example
+                        .as_deref()
+                        .unwrap_or_else(|| default_worked_example_note(ui_language))
+                })
                 .unwrap_or(""),
             lesson.language,
             lesson.example
@@ -875,8 +886,10 @@ fn localized_syntax_level(level: &'static str, ui_language: &str) -> &'static st
 }
 
 fn localized_syntax_exercise_prompt(lesson: &SyntaxLesson, ui_language: &str) -> String {
-    if let Some(copy) = lesson_copy_for(lesson, ui_language) {
-        return copy.exercise_prompt.clone();
+    if let Some(copy) = lesson_copy_for(lesson, ui_language)
+        && let Some(prompt) = &copy.exercise_prompt
+    {
+        return prompt.clone();
     }
     if normalize_ui_language(ui_language) == "en" {
         lesson.exercise.prompt.to_string()
@@ -888,21 +901,23 @@ fn localized_syntax_exercise_prompt(lesson: &SyntaxLesson, ui_language: &str) ->
 fn localized_syntax_title(lesson: &SyntaxLesson, ui_language: &str) -> String {
     lesson_copy_for(lesson, ui_language)
         .map(|copy| copy.title.clone())
-        .or_else(|| localized_syntax_copy(lesson, ui_language, "title").map(str::to_string))
         .unwrap_or_else(|| lesson.title.to_string())
 }
 
 fn localized_syntax_body(lesson: &SyntaxLesson, ui_language: &str) -> String {
     lesson_copy_for(lesson, ui_language)
-        .map(|copy| copy.concept.clone())
-        .or_else(|| localized_syntax_copy(lesson, ui_language, "body").map(str::to_string))
+        .map(|copy| concept_with_default_study_note(copy, ui_language))
         .unwrap_or_else(|| lesson.body.to_string())
 }
 
 fn localized_syntax_worked_example(lesson: &SyntaxLesson, ui_language: &str) -> String {
     let mut text = String::new();
     if let Some(copy) = lesson_copy_for(lesson, ui_language) {
-        text.push_str(&copy.worked_example);
+        text.push_str(
+            copy.worked_example
+                .as_deref()
+                .unwrap_or_else(|| default_worked_example_note(ui_language)),
+        );
         text.push_str("\n\n");
     }
     text.push_str(&format!("```{}\n{}\n```", lesson.language, lesson.example));
@@ -913,10 +928,16 @@ fn localized_syntax_list_section(
     lesson: &SyntaxLesson,
     ui_language: &str,
     title_key: &str,
-    items: fn(&SyntaxLessonCopy) -> &Vec<String>,
+    items: fn(&SyntaxLessonCopy) -> &Option<Vec<String>>,
 ) -> Option<String> {
     let copy = lesson_copy_for(lesson, ui_language)?;
-    let items = items(copy);
+    let defaults;
+    let items = if let Some(items) = items(copy) {
+        items
+    } else {
+        defaults = default_lesson_list_items(ui_language, title_key);
+        &defaults
+    };
     if items.is_empty() {
         return None;
     }
@@ -928,29 +949,128 @@ fn localized_syntax_list_section(
     Some(format!("## {}\n\n{body}", ui_text(ui_language, title_key)))
 }
 
-fn localized_syntax_copy(
-    lesson: &SyntaxLesson,
-    ui_language: &str,
-    field: &str,
-) -> Option<&'static str> {
-    let key = format!("syntax_{}_{}", lesson.id.replace('-', "_"), field);
-    let copy = ui_text(ui_language, &key);
-    if copy.is_empty() { None } else { Some(copy) }
+fn concept_with_default_study_note(copy: &SyntaxLessonCopy, ui_language: &str) -> String {
+    if copy.common_mistakes.is_some() || copy.self_check.is_some() {
+        return copy.concept.clone();
+    }
+    format!(
+        "{}\n\n{}",
+        copy.concept,
+        default_concept_study_note(ui_language)
+    )
 }
 
 fn lesson_copy_for(lesson: &SyntaxLesson, ui_language: &str) -> Option<&'static SyntaxLessonCopy> {
-    if normalize_language(lesson.language) != "python" {
-        return None;
-    }
     let ui_language = normalize_ui_language(ui_language);
     let catalog = match ui_language.as_str() {
-        "ko" => PYTHON_KO_COPY
-            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/python.ko.json"))),
-        "en" => PYTHON_EN_COPY
-            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/python.en.json"))),
-        _ => return None,
+        "ko" => KO_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/ko.json"))),
+        "ja" => JA_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/ja.json"))),
+        "zh" => ZH_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/zh.json"))),
+        "es" => ES_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/es.json"))),
+        _ => EN_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/en.json"))),
     };
     catalog.get(lesson.id)
+}
+
+fn default_concept_study_note(ui_language: &str) -> &'static str {
+    match normalize_ui_language(ui_language).as_str() {
+        "ko" => {
+            "예제를 읽을 때는 값이 어디서 만들어지고, 어떤 연산을 거쳐, 어디에서 출력되는지 순서대로 따라가세요. 실행 전에는 결과를 먼저 예상하고, 예상과 실제가 다르면 문법이 아니라 값의 흐름부터 다시 확인하세요."
+        }
+        "ja" => {
+            "例を読むときは、値がどこで作られ、どの操作を通り、どこで出力されるかを順に追ってください。実行前に結果を予想し、違ったら文法名ではなく値の流れから確認します。"
+        }
+        "zh" => {
+            "阅读示例时，按顺序跟踪值在哪里创建、经过什么操作、在哪里输出。运行前先预测结果；如果预测和实际不同，先检查值的流动，再检查语法细节。"
+        }
+        "es" => {
+            "Al leer el ejemplo, sigue dónde se crea cada valor, qué operación lo transforma y dónde se imprime. Antes de ejecutar, predice el resultado; si no coincide, revisa primero el flujo de valores."
+        }
+        _ => {
+            "When reading the example, track where each value is created, how it changes, and where it is printed. Before running, predict the result; if it differs, debug the value flow before the syntax name."
+        }
+    }
+}
+
+fn default_worked_example_note(ui_language: &str) -> &'static str {
+    match normalize_ui_language(ui_language).as_str() {
+        "ko" => {
+            "이 예제는 문법을 가장 작은 형태로 보여줍니다. 코드 블록을 실행하기 전에 각 줄이 어떤 값을 만들거나 사용하는지 먼저 말로 설명해 보세요."
+        }
+        "ja" => {
+            "この例は文法を最小の形で示します。実行する前に、各行がどの値を作るか、どの値を使うかを言葉で説明してみてください。"
+        }
+        "zh" => "这个示例用最小形式展示语法。运行前，先用自己的话说明每一行创建或使用了什么值。",
+        "es" => {
+            "Este ejemplo muestra la sintaxis en su forma mínima. Antes de ejecutarlo, explica qué valor crea o usa cada línea."
+        }
+        _ => {
+            "This example shows the syntax in its smallest useful form. Before running it, explain what value each line creates or uses."
+        }
+    }
+}
+
+fn default_lesson_list_items(ui_language: &str, title_key: &str) -> Vec<String> {
+    let mistakes = match normalize_ui_language(ui_language).as_str() {
+        "ko" => vec![
+            "예제를 그대로 외우고 값이 어떻게 바뀌는지 확인하지 않는 것",
+            "실행부터 하고 예상 출력과 실제 출력의 차이를 기록하지 않는 것",
+            "작은 문법 오류와 값의 흐름 오류를 구분하지 않는 것",
+        ],
+        "ja" => vec![
+            "例を暗記して、値がどう変わるかを確認しないこと",
+            "先に実行して、予想出力と実際の出力の差を記録しないこと",
+            "小さな文法エラーと値の流れのエラーを区別しないこと",
+        ],
+        "zh" => vec![
+            "只背示例，而不检查值如何变化",
+            "先运行代码，却不记录预测输出和实际输出的差异",
+            "没有区分小的语法错误和值流错误",
+        ],
+        "es" => vec![
+            "Memorizar el ejemplo sin comprobar cómo cambian los valores",
+            "Ejecutar primero sin anotar la diferencia entre salida esperada y real",
+            "Confundir un error pequeño de sintaxis con un error de flujo de valores",
+        ],
+        _ => vec![
+            "Memorizing the example without checking how values change",
+            "Running first without recording expected versus actual output",
+            "Confusing small syntax errors with value-flow errors",
+        ],
+    };
+    let checks = match normalize_ui_language(ui_language).as_str() {
+        "ko" => vec![
+            "이 문법은 언제 쓰는 것이 가장 자연스러울까요?",
+            "예제의 마지막 줄이 출력하는 값은 어디서 만들어졌을까요?",
+        ],
+        "ja" => vec![
+            "この文法はどんな場面で使うのが自然ですか？",
+            "例の最後の行が出力する値はどこで作られましたか？",
+        ],
+        "zh" => vec![
+            "这种语法在什么场景下最自然？",
+            "示例最后一行输出的值是在哪里创建的？",
+        ],
+        "es" => vec![
+            "¿Cuándo es natural usar esta sintaxis?",
+            "¿Dónde se creó el valor que imprime la última línea del ejemplo?",
+        ],
+        _ => vec![
+            "When is this syntax the natural tool?",
+            "Where was the value printed by the last example line created?",
+        ],
+    };
+    let source = if title_key == "syntax_self_check" {
+        checks
+    } else {
+        mistakes
+    };
+    source.into_iter().map(str::to_string).collect()
 }
 
 fn load_lesson_copy(text: &str) -> HashMap<String, SyntaxLessonCopy> {

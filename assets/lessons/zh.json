@@ -1,0 +1,194 @@
+{
+  "py-output": {
+    "title": "输出",
+    "concept": "使用 print 将值作为一行输出到屏幕。"
+  },
+  "py-variables": {
+    "title": "变量",
+    "concept": "名称绑定到值，也可以之后重新绑定到其他值。"
+  },
+  "py-strings": {
+    "title": "字符串",
+    "concept": "字符串支持长度、索引、切片和遍历。"
+  },
+  "py-control-flow": {
+    "title": "控制流",
+    "concept": "用 if、for、while 表达选择和重复。"
+  },
+  "py-functions": {
+    "title": "函数",
+    "concept": "用 def 创建带参数和返回值的可复用行为。"
+  },
+  "py-input": {
+    "title": "输入解析",
+    "concept": "用 sys.stdin 和 split 处理竞赛式输入。"
+  },
+  "py-lists-dicts": {
+    "title": "列表和字典",
+    "concept": "列表保留顺序，字典把键映射到值。"
+  },
+  "py-errors": {
+    "title": "异常",
+    "concept": "用 try 和 except 处理可恢复的失败。"
+  },
+  "py-comprehensions": {
+    "title": "推导式",
+    "concept": "推导式用表达式简洁地构建集合。"
+  },
+  "py-generators": {
+    "title": "迭代器和生成器",
+    "concept": "yield 创建按需产生值的序列。"
+  },
+  "py-decorators": {
+    "title": "装饰器",
+    "concept": "装饰器在函数定义时包裹函数并扩展行为。"
+  },
+  "py-context-types": {
+    "title": "上下文管理器和类型提示",
+    "concept": "with 管理作用域内的资源，类型提示说明预期类型。"
+  },
+  "ts-output": {
+    "title": "输出",
+    "concept": "console.log 输出一行。"
+  },
+  "ts-variables": {
+    "title": "变量",
+    "concept": "let 可以重新赋值，const 不能重新赋值。"
+  },
+  "ts-strings": {
+    "title": "字符串",
+    "concept": "字符串提供 length 和遍历能力。"
+  },
+  "ts-control-flow": {
+    "title": "控制流",
+    "concept": "if 和循环控制执行流程。"
+  },
+  "ts-functions": {
+    "title": "函数",
+    "concept": "参数和返回类型让意图更明确。"
+  },
+  "ts-input": {
+    "title": "输入解析",
+    "concept": "在 Node 环境中可以读取 stdin 完成小练习。"
+  },
+  "ts-arrays-objects": {
+    "title": "数组和对象",
+    "concept": "数组保存有序值，对象类型描述值的形状。"
+  },
+  "ts-errors-async": {
+    "title": "错误和异步",
+    "concept": "try/catch 处理错误，async 包装 Promise 流程。"
+  },
+  "ts-narrowing": {
+    "title": "类型收窄",
+    "concept": "类型守卫把 union 值收窄为更具体的类型。"
+  },
+  "ts-generics": {
+    "title": "泛型",
+    "concept": "泛型让可复用代码保留类型信息。"
+  },
+  "ts-mapped": {
+    "title": "映射类型",
+    "concept": "映射类型按规则转换对象属性。"
+  },
+  "ts-conditional": {
+    "title": "条件类型",
+    "concept": "条件类型根据另一个类型选择类型。"
+  },
+  "java-output": {
+    "title": "输出",
+    "concept": "System.out.println 输出一行。"
+  },
+  "java-variables": {
+    "title": "变量",
+    "concept": "Java 变量有声明的类型。"
+  },
+  "java-strings": {
+    "title": "字符串",
+    "concept": "String 方法提供长度、字符和子字符串操作。"
+  },
+  "java-control-flow": {
+    "title": "控制流",
+    "concept": "if、for、while 控制执行流程。"
+  },
+  "java-methods": {
+    "title": "方法",
+    "concept": "方法组织可复用行为。"
+  },
+  "java-input": {
+    "title": "输入解析",
+    "concept": "练习中可以直接读取 System.in 处理输入。"
+  },
+  "java-arrays-collections": {
+    "title": "数组和集合",
+    "concept": "数组大小固定，集合提供更灵活的容器。"
+  },
+  "java-exceptions": {
+    "title": "异常",
+    "concept": "try/catch 处理失败，受检异常会体现在签名中。"
+  },
+  "java-classes-interfaces": {
+    "title": "类和接口",
+    "concept": "类保存状态和行为，接口描述行为契约。"
+  },
+  "java-generics": {
+    "title": "泛型",
+    "concept": "泛型通过类型参数复用代码。"
+  },
+  "java-lambda-streams": {
+    "title": "Lambda 和流",
+    "concept": "Lambda 传递行为，流处理序列。"
+  },
+  "java-records-sealed": {
+    "title": "记录和 sealed 类型",
+    "concept": "记录减少数据样板代码，sealed 类型限制继承范围。"
+  },
+  "rust-output": {
+    "title": "输出",
+    "concept": "println! 宏输出一行。"
+  },
+  "rust-variables": {
+    "title": "变量",
+    "concept": "let 绑定值，mut 允许修改。"
+  },
+  "rust-strings": {
+    "title": "字符串",
+    "concept": "String 拥有文本，&str 借用文本。"
+  },
+  "rust-control-flow": {
+    "title": "控制流",
+    "concept": "if 是表达式，for 遍历范围和集合。"
+  },
+  "rust-functions": {
+    "title": "函数",
+    "concept": "函数声明参数和返回类型。"
+  },
+  "rust-input": {
+    "title": "输入解析",
+    "concept": "将 stdin 读入 String 后再 split 或直接输出。"
+  },
+  "rust-vec-hashmap": {
+    "title": "Vec 和 HashMap",
+    "concept": "Vec 保存有顺序的值，适合按位置访问或按顺序遍历。HashMap 保存键和值，适合用有意义的键快速查找。"
+  },
+  "rust-result": {
+    "title": "Result 和 ?",
+    "concept": "Result 表示可恢复错误，? 在 Err 时提前返回。"
+  },
+  "rust-ownership": {
+    "title": "所有权和借用",
+    "concept": "值只有一个所有者，引用在不移动值的情况下借用它。"
+  },
+  "rust-enum-match": {
+    "title": "枚举和 match",
+    "concept": "enum 建模多种可能，match 穷尽处理所有情况。"
+  },
+  "rust-traits-lifetimes": {
+    "title": "Trait、泛型和生命周期",
+    "concept": "Trait 定义共享行为，生命周期描述借用关系。"
+  },
+  "rust-iterators": {
+    "title": "迭代器和闭包",
+    "concept": "迭代器组合惰性转换。"
+  }
+}

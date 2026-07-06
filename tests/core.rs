@@ -478,11 +478,7 @@ fn render_syntax_lesson_uses_exercise_copy() {
 }
 
 #[test]
-fn py_lists_dicts_lesson_uses_rich_split_copy() {
-    let lesson = syntax_lessons_for("python")
-        .into_iter()
-        .find(|lesson| lesson.id == "py-lists-dicts")
-        .unwrap();
+fn lessons_use_rich_split_copy_for_all_code_languages() {
     let state = AppState {
         current_problem: "001-hello-world".to_string(),
         settings: Settings {
@@ -496,16 +492,101 @@ fn py_lists_dicts_lesson_uses_rich_split_copy() {
         current_syntax_lesson: Default::default(),
     };
 
-    let rendered = render_syntax_lesson(lesson, &state);
+    for (ui_language, language, id, title, concept, mistakes, check) in [
+        (
+            "ko",
+            "ts",
+            "ts-arrays-objects",
+            "# 문법: 배열과 객체",
+            "배열은 순서가 있는 값의 묶음",
+            "흔한 실수",
+            "자가 점검",
+        ),
+        (
+            "ja",
+            "java",
+            "java-arrays-collections",
+            "# 文法: 配列とコレクション",
+            "配列は長さが固定された値のまとまり",
+            "よくある間違い",
+            "セルフチェック",
+        ),
+        (
+            "zh",
+            "rust",
+            "rust-vec-hashmap",
+            "# 语法: Vec 和 HashMap",
+            "Vec 保存有顺序的值",
+            "常见错误",
+            "自我检查",
+        ),
+        (
+            "es",
+            "python",
+            "py-lists-dicts",
+            "# Sintaxis: Listas y diccionarios",
+            "Las listas guardan valores en orden",
+            "Errores frecuentes",
+            "Autoevaluación",
+        ),
+    ] {
+        let mut state = state.clone();
+        state.settings.ui_language = ui_language.to_string();
+        let lesson = syntax_lessons_for(language)
+            .into_iter()
+            .find(|lesson| lesson.id == id)
+            .unwrap();
+        let rendered = render_syntax_lesson(lesson, &state);
 
-    assert!(rendered.contains("# 문법: 리스트와 딕셔너리"));
-    assert!(rendered.contains("리스트는 순서가 있는 값의 묶음"));
-    assert!(rendered.contains("인덱스"));
-    assert!(rendered.contains("키"));
-    assert!(rendered.contains("값"));
-    assert!(rendered.contains("흔한 실수"));
-    assert!(rendered.contains("자가 점검"));
-    assert!(rendered.contains("언제 리스트 대신 딕셔너리를 써야 할까요?"));
+        assert!(
+            rendered.contains(title),
+            "{ui_language}:{language}: {rendered}"
+        );
+        assert!(
+            rendered.contains(concept),
+            "{ui_language}:{language}: {rendered}"
+        );
+        assert!(
+            rendered.contains(mistakes),
+            "{ui_language}:{language}: {rendered}"
+        );
+        assert!(
+            rendered.contains(check),
+            "{ui_language}:{language}: {rendered}"
+        );
+    }
+}
+
+#[test]
+fn split_lesson_copy_covers_every_lesson_in_every_ui_language() {
+    for (ui_language, mistakes, check) in [
+        ("en", "Common mistakes", "Self-check"),
+        ("ko", "흔한 실수", "자가 점검"),
+        ("ja", "よくある間違い", "セルフチェック"),
+        ("zh", "常见错误", "自我检查"),
+        ("es", "Errores frecuentes", "Autoevaluación"),
+    ] {
+        let state = AppState {
+            current_problem: "001-hello-world".to_string(),
+            settings: Settings {
+                ui_language: ui_language.to_string(),
+                ..Settings::default()
+            },
+            solved: Vec::new(),
+            history: Vec::new(),
+            suggested_next_difficulty: "easy".to_string(),
+            syntax_progress: Default::default(),
+            current_syntax_lesson: Default::default(),
+        };
+
+        for language in ["python", "ts", "java", "rust"] {
+            for lesson in syntax_lessons_for(language) {
+                let rendered = render_syntax_lesson(lesson, &state);
+                assert!(rendered.contains(mistakes), "{ui_language}:{}", lesson.id);
+                assert!(rendered.contains(check), "{ui_language}:{}", lesson.id);
+            }
+        }
+    }
 }
 
 #[test]

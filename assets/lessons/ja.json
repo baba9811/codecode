@@ -1,0 +1,194 @@
+{
+  "py-output": {
+    "title": "出力",
+    "concept": "printで値を1行として画面に出力します。"
+  },
+  "py-variables": {
+    "title": "変数",
+    "concept": "名前は値を指し、あとから別の値に結び直せます。"
+  },
+  "py-strings": {
+    "title": "文字列",
+    "concept": "文字列は長さ、インデックス、スライス、反復を扱えます。"
+  },
+  "py-control-flow": {
+    "title": "制御フロー",
+    "concept": "if、for、whileで分岐と繰り返しを表します。"
+  },
+  "py-functions": {
+    "title": "関数",
+    "concept": "defで引数と戻り値を持つ再利用可能な処理を作ります。"
+  },
+  "py-input": {
+    "title": "入力解析",
+    "concept": "sys.stdinとsplitで競技プログラミング形式の入力を処理します。"
+  },
+  "py-lists-dicts": {
+    "title": "リストと辞書",
+    "concept": "リストは順序を保ち、辞書はキーを値に対応づけます。"
+  },
+  "py-errors": {
+    "title": "例外",
+    "concept": "tryとexceptで回復可能な失敗を処理します。"
+  },
+  "py-comprehensions": {
+    "title": "内包表記",
+    "concept": "内包表記は式からコレクションを簡潔に作ります。"
+  },
+  "py-generators": {
+    "title": "イテレータとジェネレータ",
+    "concept": "yieldで必要なときに値を生成するシーケンスを作ります。"
+  },
+  "py-decorators": {
+    "title": "デコレータ",
+    "concept": "デコレータは関数定義時に関数を包んで振る舞いを拡張します。"
+  },
+  "py-context-types": {
+    "title": "コンテキストマネージャと型ヒント",
+    "concept": "withはスコープ付きリソースを管理し、型ヒントは期待する型を示します。"
+  },
+  "ts-output": {
+    "title": "出力",
+    "concept": "console.logで1行を出力します。"
+  },
+  "ts-variables": {
+    "title": "変数",
+    "concept": "letは再代入でき、constは再代入できません。"
+  },
+  "ts-strings": {
+    "title": "文字列",
+    "concept": "文字列はlengthと反復を提供します。"
+  },
+  "ts-control-flow": {
+    "title": "制御フロー",
+    "concept": "ifとループで実行の流れを制御します。"
+  },
+  "ts-functions": {
+    "title": "関数",
+    "concept": "引数と戻り値の型で意図を明確にします。"
+  },
+  "ts-input": {
+    "title": "入力解析",
+    "concept": "Node環境ではstdinを読んで小さなドリルを解けます。"
+  },
+  "ts-arrays-objects": {
+    "title": "配列とオブジェクト",
+    "concept": "配列は順序つきの値を持ち、オブジェクト型は値の形を表します。"
+  },
+  "ts-errors-async": {
+    "title": "エラーと非同期",
+    "concept": "try/catchはエラーを処理し、asyncはPromiseの流れを包みます。"
+  },
+  "ts-narrowing": {
+    "title": "型の絞り込み",
+    "concept": "型ガードはunion値をより具体的な型に絞り込みます。"
+  },
+  "ts-generics": {
+    "title": "ジェネリクス",
+    "concept": "ジェネリクスは再利用コードでも型情報を保ちます。"
+  },
+  "ts-mapped": {
+    "title": "マップ型",
+    "concept": "マップ型はオブジェクトのプロパティを規則に沿って変換します。"
+  },
+  "ts-conditional": {
+    "title": "条件型",
+    "concept": "条件型は別の型を基準に型を選びます。"
+  },
+  "java-output": {
+    "title": "出力",
+    "concept": "System.out.printlnで1行を出力します。"
+  },
+  "java-variables": {
+    "title": "変数",
+    "concept": "Javaの変数は宣言された型を持ちます。"
+  },
+  "java-strings": {
+    "title": "文字列",
+    "concept": "Stringメソッドは長さ、文字、部分文字列を扱います。"
+  },
+  "java-control-flow": {
+    "title": "制御フロー",
+    "concept": "if、for、whileで実行の流れを制御します。"
+  },
+  "java-methods": {
+    "title": "メソッド",
+    "concept": "メソッドは再利用可能な処理をまとめます。"
+  },
+  "java-input": {
+    "title": "入力解析",
+    "concept": "ドリルではSystem.inを直接読んで入力を処理できます。"
+  },
+  "java-arrays-collections": {
+    "title": "配列とコレクション",
+    "concept": "配列は長さが固定された値のまとまりです。コレクションは要素を追加したり、探索したりするための柔軟な入れ物です。"
+  },
+  "java-exceptions": {
+    "title": "例外",
+    "concept": "try/catchは失敗を処理し、チェック例外はシグネチャに現れます。"
+  },
+  "java-classes-interfaces": {
+    "title": "クラスとインターフェース",
+    "concept": "クラスは状態と振る舞いを持ち、インターフェースは振る舞いの契約を表します。"
+  },
+  "java-generics": {
+    "title": "ジェネリクス",
+    "concept": "ジェネリクスは型パラメータでコードを再利用します。"
+  },
+  "java-lambda-streams": {
+    "title": "ラムダとストリーム",
+    "concept": "ラムダは振る舞いを値として渡し、ストリームはシーケンスを処理します。"
+  },
+  "java-records-sealed": {
+    "title": "レコードとsealed型",
+    "concept": "レコードはデータ用の定型コードを減らし、sealed型は継承範囲を制限します。"
+  },
+  "rust-output": {
+    "title": "出力",
+    "concept": "println!マクロで1行を出力します。"
+  },
+  "rust-variables": {
+    "title": "変数",
+    "concept": "letは値を束縛し、mutは変更を許可します。"
+  },
+  "rust-strings": {
+    "title": "文字列",
+    "concept": "Stringはテキストを所有し、&strはテキストを借用します。"
+  },
+  "rust-control-flow": {
+    "title": "制御フロー",
+    "concept": "ifは式で、forは範囲やコレクションを反復します。"
+  },
+  "rust-functions": {
+    "title": "関数",
+    "concept": "関数は引数と戻り値の型を宣言します。"
+  },
+  "rust-input": {
+    "title": "入力解析",
+    "concept": "stdinをStringに読み込み、splitするかそのまま出力します。"
+  },
+  "rust-vec-hashmap": {
+    "title": "VecとHashMap",
+    "concept": "Vecは順序つきの値を保存し、HashMapはキーと値を保存します。"
+  },
+  "rust-result": {
+    "title": "Resultと?",
+    "concept": "Resultは回復可能なエラーを表し、?はErrで早期に戻ります。"
+  },
+  "rust-ownership": {
+    "title": "所有権と借用",
+    "concept": "値には1つの所有者があり、参照は移動せずに値を借用します。"
+  },
+  "rust-enum-match": {
+    "title": "列挙型とmatch",
+    "concept": "enumは選択肢をモデル化し、matchはすべての場合を網羅します。"
+  },
+  "rust-traits-lifetimes": {
+    "title": "トレイト、ジェネリクス、ライフタイム",
+    "concept": "トレイトは共通の振る舞いを定義し、ライフタイムは借用関係を表します。"
+  },
+  "rust-iterators": {
+    "title": "イテレータとクロージャ",
+    "concept": "イテレータは遅延変換を組み合わせます。"
+  }
+}

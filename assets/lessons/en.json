@@ -1,0 +1,327 @@
+{
+  "py-output": {
+    "title": "Output",
+    "concept": "Output is how a program makes a result visible. In Python, `print(value)` writes the text form of `value` and then adds a newline.\n\nIn practice problems, your program is judged by exact stdout. That means extra debug lines, missing newlines, or printing the wrong type shape can fail even when the calculation is correct.",
+    "worked_example": "`print('ok')` sends the characters `ok` to stdout. The quotes create the string; the quotes themselves are not printed.",
+    "common_mistakes": [
+      "Leaving debug prints in the final answer.",
+      "Using `return` at top level when the judge expects printed output.",
+      "Printing a list representation when the expected output is plain text."
+    ],
+    "self_check": [
+      "What is the difference between a string literal and the text that gets printed?",
+      "Why can one extra print line make a correct algorithm fail?"
+    ],
+    "exercise_prompt": "Make the starter print exactly `ok`. Predict the output before running."
+  },
+  "py-variables": {
+    "title": "Variables",
+    "concept": "A variable name is a label bound to a value. Assignment with `=` creates or rebinds that label; it does not mean mathematical equality.\n\nUse variables to give intermediate results names. Good names reduce the amount you have to keep in your head while reading code.",
+    "worked_example": "`count = 1` binds the name `count` to the integer `1`; `print(count)` reads the current value of that name.",
+    "common_mistakes": [
+      "Reading `=` as equality instead of assignment.",
+      "Reusing one vague name for unrelated values.",
+      "Expecting old values to remain after rebinding a name."
+    ],
+    "self_check": [
+      "After `x = 1` and `x = x + 2`, what value is bound to `x`?",
+      "When would a named intermediate value make code easier to check?"
+    ],
+    "exercise_prompt": "Bind a value to a name, then print that name so the output is exactly `ok`."
+  },
+  "py-strings": {
+    "title": "Strings",
+    "concept": "A string is an ordered sequence of characters. `len(text)` gives its length, `text[i]` reads one character by zero-based index, and `text[a:b]` slices a half-open range.\n\nStrings are immutable: operations create new strings or views of characters, rather than changing the original text in place.",
+    "worked_example": "`text = 'code'` followed by `text[:2]` reads characters from index 0 up to, but not including, index 2, producing `co`.",
+    "common_mistakes": [
+      "Forgetting that indexes start at 0.",
+      "Expecting the end index in a slice to be included.",
+      "Trying to assign into a string character."
+    ],
+    "self_check": [
+      "What does `'code'[1]` read?",
+      "Why does `'code'[:2]` produce two characters?"
+    ],
+    "exercise_prompt": "Use indexing or slicing to print exactly `ok`."
+  },
+  "py-control-flow": {
+    "title": "Control flow",
+    "concept": "Control flow decides which statements run and how often. `if` chooses a branch from a condition, `for` repeats over a sequence, and `while` repeats while a condition stays true.\n\nIndentation is part of Python syntax. The indented block belongs to the nearest control statement above it.",
+    "worked_example": "`for n in range(3): print(n)` repeats the body with `n` as 0, 1, then 2.",
+    "common_mistakes": [
+      "Putting a statement at the wrong indentation level.",
+      "Creating a `while` loop whose condition never changes.",
+      "Using `range(n)` and expecting it to include `n`."
+    ],
+    "self_check": [
+      "How many times does `range(3)` run?",
+      "Which lines belong to an `if` block?"
+    ],
+    "exercise_prompt": "Use a branch or loop to print exactly `ok`."
+  },
+  "py-functions": {
+    "title": "Functions",
+    "concept": "A function packages reusable behavior behind a name. `def name(parameters):` defines it; calling `name(arguments)` runs its body.\n\n`return` sends a value back to the caller. Printing inside a function and returning from a function are different actions; coding-test solutions often calculate with returns and print only at the boundary.",
+    "worked_example": "`def add(a, b): return a + b` creates a function that combines two arguments and gives the sum back to the caller.",
+    "common_mistakes": [
+      "Forgetting to call the function after defining it.",
+      "Using `print` where the caller needs a returned value.",
+      "Returning inside a loop too early."
+    ],
+    "self_check": [
+      "What happens when a function reaches the end without `return`?",
+      "Where should the final output usually be printed?"
+    ],
+    "exercise_prompt": "Complete a small function and print its returned value."
+  },
+  "py-input": {
+    "title": "Input parsing",
+    "concept": "Most coding-test programs read stdin, transform text into useful values, then print stdout. `sys.stdin.read()` gets all input as one string; `.split()` separates it by whitespace.\n\nParsing is a boundary step. Keep it small: read text, convert types once, then solve with normal variables and collections.",
+    "worked_example": "`list(map(int, sys.stdin.read().split()))` reads all whitespace-separated tokens and converts each token to an integer.",
+    "common_mistakes": [
+      "Using `input()` when the problem has many lines and bulk read is simpler.",
+      "Forgetting that stdin starts as text.",
+      "Dropping spaces or newlines when the task asks to echo input exactly."
+    ],
+    "self_check": [
+      "Why does `split()` return strings before `int` is applied?",
+      "When should you preserve input exactly instead of splitting it?"
+    ],
+    "exercise_prompt": "Read stdin and write it back unchanged."
+  },
+  "py-lists-dicts": {
+    "title": "Lists and dicts",
+    "concept": "A list is an ordered group of values. You use an index such as `nums[0]` when position matters, and you can iterate through the list in order.\n\nA dict maps keys to values. Use a dict when you want to look up a value by a meaningful key such as a name, id, or character, rather than by position.\n\nFor sums, counts, grouping, and lookup tables, choosing the right collection is often the difference between direct code and tangled code.",
+    "worked_example": "`counts = {'a': 2}` creates a dict with key `'a'` and value `2`. `counts['a']` looks up the value for that key and prints `2`.",
+    "common_mistakes": [
+      "Using a list index when the data is identified by a key.",
+      "Looking up a missing dict key without checking whether it exists.",
+      "Forgetting that list order matters but dict lookup is by key."
+    ],
+    "self_check": [
+      "When should you use a dict instead of a list?",
+      "What does `nums[0]` mean, and what does `counts['a']` mean?",
+      "How would you store counts for many different words?"
+    ],
+    "exercise_prompt": "Use the list in the starter to print the sum of its numbers. Do not hard-code the expected output."
+  },
+  "py-errors": {
+    "title": "Exceptions",
+    "concept": "An exception is a controlled way for code to report that normal execution cannot continue. `try` runs code that might fail; `except SomeError` handles a specific failure.\n\nCatch only errors you can recover from. Broad catches can hide real bugs and make practice failures harder to understand.",
+    "worked_example": "`int('x')` raises `ValueError`; the `except ValueError` block can print a fallback message instead of crashing.",
+    "common_mistakes": [
+      "Catching every exception with bare `except:`.",
+      "Putting too much code inside `try` so the failing line is unclear.",
+      "Treating exceptions as a substitute for normal condition checks."
+    ],
+    "self_check": [
+      "Why is `except ValueError` clearer than bare `except` here?",
+      "What should happen after a recoverable parse failure?"
+    ],
+    "exercise_prompt": "Handle the expected conversion error and print exactly `ok`."
+  },
+  "py-comprehensions": {
+    "title": "Comprehensions",
+    "concept": "A comprehension builds a collection from an expression and a loop. `[expr for item in items if condition]` means: visit each item, keep the ones that match, and store the expression result.\n\nUse comprehensions for simple transformations and filters. If the logic needs several steps or side effects, a normal loop is usually clearer.",
+    "worked_example": "`[n for n in range(5) if n % 2 == 0]` creates `[0, 2, 4]` by keeping only even numbers.",
+    "common_mistakes": [
+      "Making a comprehension so dense that it is harder than a loop.",
+      "Forgetting that the expression comes before `for`.",
+      "Using a comprehension only for side effects."
+    ],
+    "self_check": [
+      "Which part chooses the output value?",
+      "Which part filters items out?"
+    ],
+    "exercise_prompt": "Use a comprehension to build the text needed to print exactly `ok`."
+  },
+  "py-generators": {
+    "title": "Iterators and generators",
+    "concept": "An iterator produces values one at a time. A generator function uses `yield` to produce a value and pause until the next value is requested.\n\nGenerators are useful when a sequence may be large or naturally streamed. They let you describe how to produce values without building the whole list first.",
+    "worked_example": "`def ones(): yield 1` returns a generator object; `next(ones())` asks it for the first produced value.",
+    "common_mistakes": [
+      "Calling a generator function and expecting the body to run immediately.",
+      "Forgetting that `next` can raise `StopIteration`.",
+      "Using a generator when a short list would be simpler."
+    ],
+    "self_check": [
+      "What is the difference between `return` and `yield`?",
+      "When does a generator body actually run?"
+    ],
+    "exercise_prompt": "Complete a generator so asking for its first value prints exactly `ok`."
+  },
+  "py-decorators": {
+    "title": "Decorators",
+    "concept": "A decorator is a function applied to another function at definition time. `@decorator` above a function is shorthand for replacing that function with `decorator(function)`.\n\nDecorators are common for logging, caching, validation, and framework hooks. First learn that the original function is a value being passed to another function.",
+    "worked_example": "`def deco(fn): return fn` is an identity decorator: it receives a function and gives the same function back unchanged.",
+    "common_mistakes": [
+      "Forgetting that decorators run when the function is defined, not when it is later called.",
+      "Returning the result of calling the function instead of returning a wrapper function.",
+      "Adding a decorator when a normal helper function would be clearer."
+    ],
+    "self_check": [
+      "What value does a decorator receive?",
+      "What must a decorator return?"
+    ],
+    "exercise_prompt": "Use the provided decorator shape and print exactly `ok`."
+  },
+  "py-context-types": {
+    "title": "Context managers and type hints",
+    "concept": "`with` opens a managed scope. The context manager sets something up before the block and cleans it up after the block, even if the block exits early.\n\nType hints document expected value shapes for readers and tools. Python still runs dynamically, but hints make interfaces easier to check before execution.",
+    "worked_example": "`def total(xs: Iterable[int]) -> int: return sum(xs)` says the function expects something iterable over integers and returns an integer.",
+    "common_mistakes": [
+      "Thinking type hints enforce every value at runtime by themselves.",
+      "Forgetting that `with` is mainly about setup and cleanup.",
+      "Adding complicated hints before the data shape is clear."
+    ],
+    "self_check": [
+      "What problem does `with open(...)` solve?",
+      "What does `Iterable[int]` tell a reader?"
+    ],
+    "exercise_prompt": "Use a simple type hint constant and print exactly `ok`."
+  },
+  "ts-output": {
+    "title": "Output",
+    "concept": "console.log writes a line."
+  },
+  "ts-variables": {
+    "title": "Variables",
+    "concept": "let changes; const does not reassign."
+  },
+  "ts-strings": {
+    "title": "Strings",
+    "concept": "Strings expose length and iteration."
+  },
+  "ts-control-flow": {
+    "title": "Control flow",
+    "concept": "if and loops control execution."
+  },
+  "ts-functions": {
+    "title": "Functions",
+    "concept": "Parameter and return types make intent explicit."
+  },
+  "ts-input": {
+    "title": "Input parsing",
+    "concept": "Node can read stdin for small exercises."
+  },
+  "ts-arrays-objects": {
+    "title": "Arrays and objects",
+    "concept": "Arrays hold sequences; object types describe shapes."
+  },
+  "ts-errors-async": {
+    "title": "Errors and async",
+    "concept": "try/catch handles thrown errors; async wraps promises."
+  },
+  "ts-narrowing": {
+    "title": "Narrowing",
+    "concept": "Type guards refine union values."
+  },
+  "ts-generics": {
+    "title": "Generics",
+    "concept": "Generics preserve type information across reusable code."
+  },
+  "ts-mapped": {
+    "title": "Mapped types",
+    "concept": "Mapped types transform object properties."
+  },
+  "ts-conditional": {
+    "title": "Conditional types",
+    "concept": "Conditional types choose a type from another type."
+  },
+  "java-output": {
+    "title": "Output",
+    "concept": "System.out.println writes a line."
+  },
+  "java-variables": {
+    "title": "Variables",
+    "concept": "Java variables have declared types."
+  },
+  "java-strings": {
+    "title": "Strings",
+    "concept": "String methods expose length, chars, and substrings."
+  },
+  "java-control-flow": {
+    "title": "Control flow",
+    "concept": "if, for, and while control execution."
+  },
+  "java-methods": {
+    "title": "Methods",
+    "concept": "Methods group reusable behavior."
+  },
+  "java-input": {
+    "title": "Input parsing",
+    "concept": "System.in can be read directly for exercises."
+  },
+  "java-arrays-collections": {
+    "title": "Arrays and collections",
+    "concept": "Arrays are fixed size; collections add flexible containers."
+  },
+  "java-exceptions": {
+    "title": "Exceptions",
+    "concept": "try/catch handles failures; checked exceptions are part of signatures."
+  },
+  "java-classes-interfaces": {
+    "title": "Classes and interfaces",
+    "concept": "Classes hold state and behavior; interfaces describe behavior."
+  },
+  "java-generics": {
+    "title": "Generics",
+    "concept": "Generics reuse code with type parameters."
+  },
+  "java-lambda-streams": {
+    "title": "Lambda and streams",
+    "concept": "Lambdas pass behavior; streams process sequences."
+  },
+  "java-records-sealed": {
+    "title": "Records and sealed types",
+    "concept": "Records reduce data boilerplate; sealed types bound inheritance."
+  },
+  "rust-output": {
+    "title": "Output",
+    "concept": "println! writes a line."
+  },
+  "rust-variables": {
+    "title": "Variables",
+    "concept": "let binds values; mut allows mutation."
+  },
+  "rust-strings": {
+    "title": "Strings",
+    "concept": "String owns text; &str borrows text."
+  },
+  "rust-control-flow": {
+    "title": "Control flow",
+    "concept": "if is an expression; for iterates ranges and collections."
+  },
+  "rust-functions": {
+    "title": "Functions",
+    "concept": "Functions declare parameter and return types."
+  },
+  "rust-input": {
+    "title": "Input parsing",
+    "concept": "Read stdin into a String, then split or print it."
+  },
+  "rust-vec-hashmap": {
+    "title": "Vec and HashMap",
+    "concept": "Vec stores sequences; HashMap stores key/value pairs."
+  },
+  "rust-result": {
+    "title": "Result and ?",
+    "concept": "Result models recoverable errors; ? returns early on Err."
+  },
+  "rust-ownership": {
+    "title": "Ownership and borrowing",
+    "concept": "A value has one owner; references borrow without moving."
+  },
+  "rust-enum-match": {
+    "title": "Enums and match",
+    "concept": "Enums model alternatives; match handles them exhaustively."
+  },
+  "rust-traits-lifetimes": {
+    "title": "Traits, generics, and lifetimes",
+    "concept": "Traits define shared behavior; lifetimes describe borrowed relationships."
+  },
+  "rust-iterators": {
+    "title": "Iterators and closures",
+    "concept": "Iterators compose lazy transformations."
+  }
+}
