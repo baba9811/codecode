@@ -27,7 +27,7 @@ Personal coding practice, right in your terminal.
 
 - Syntax learning and coding-test practice from one entry screen.
 - Local judging for Python, TypeScript, Java, and Rust.
-- A two-pane Ratatui UI with editor, output, status line, and command palette.
+- A scrollable Ratatui UI with lesson/problem text, editor, run output, result status, and command palette.
 - Optional Codex or Claude Code help for hints and generated problems.
 
 ## Install

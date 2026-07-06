@@ -24,6 +24,7 @@
     "assets/",
     "bin/",
     "docs/",
+    "!docs/superpowers/",
     "scripts/",
     "src/",
     "Cargo.lock",
