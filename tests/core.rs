@@ -3,8 +3,8 @@ mod common;
 use common::{tmp_root, two_problem_bank};
 use practicode::{
     core::{
-        AppState, HistoryItem, Settings, ensure_submission, ensure_syntax_submission, judge,
-        load_bank, load_state, localized, next_problem, parse_language_list,
+        AppState, HistoryItem, LANGUAGES, Settings, ensure_submission, ensure_syntax_submission,
+        judge, load_bank, load_state, localized, next_problem, parse_language_list,
         parse_ui_language_list, problem_by_id, record_pass, render_problem, render_problem_tui,
         render_syntax_lesson, save_bank, save_state, syntax_lessons_for, syntax_progress_count,
     },
@@ -590,14 +590,22 @@ fn split_lesson_copy_covers_every_lesson_in_every_ui_language() {
 }
 
 #[test]
-fn syntax_exercise_starter_is_not_complete_answer() {
-    let lesson = syntax_lessons_for("python")
-        .into_iter()
-        .find(|lesson| lesson.id == "py-lists-dicts")
-        .unwrap();
-
-    assert!(!lesson.exercise.starter.contains("print(sum(nums))"));
-    assert!(lesson.exercise.starter.contains("TODO"));
+fn syntax_exercise_starters_require_user_edit_for_every_language() {
+    for language in LANGUAGES {
+        for lesson in syntax_lessons_for(language) {
+            assert!(
+                lesson.exercise.starter.contains("TODO"),
+                "{} starter should require a user edit",
+                lesson.id
+            );
+            assert_ne!(
+                lesson.exercise.starter.trim(),
+                lesson.example.trim(),
+                "{} starter should not be the worked example",
+                lesson.id
+            );
+        }
+    }
 }
 
 #[test]

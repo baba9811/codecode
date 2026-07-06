@@ -1,0 +1,199 @@
+{
+  "schema_version": 1,
+  "programming_language": "java",
+  "ui_language": "en",
+  "lessons": {
+    "java-output": {
+      "title": "Output",
+      "concept": "System.out.println writes a line. In Java, Output is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Output in Java with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Output.",
+        "Changing the Java starter before predicting the expected output.",
+        "Fixing punctuation while missing the Java rule that Output is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Java syntax rule for Output?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Output exercise in Java. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "java-variables": {
+      "title": "Variables",
+      "concept": "Java variables have declared types. In Java, Variables is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Variables in Java with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Variables.",
+        "Changing the Java starter before predicting the expected output.",
+        "Fixing punctuation while missing the Java rule that Variables is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Java syntax rule for Variables?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Variables exercise in Java. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "java-strings": {
+      "title": "Strings",
+      "concept": "String methods expose length, chars, and substrings. In Java, Strings is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Strings in Java with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Strings.",
+        "Changing the Java starter before predicting the expected output.",
+        "Fixing punctuation while missing the Java rule that Strings is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Java syntax rule for Strings?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Strings exercise in Java. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "java-control-flow": {
+      "title": "Control flow",
+      "concept": "if, for, and while control execution. In Java, Control flow is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Control flow in Java with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Control flow.",
+        "Changing the Java starter before predicting the expected output.",
+        "Fixing punctuation while missing the Java rule that Control flow is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Java syntax rule for Control flow?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Control flow exercise in Java. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "java-methods": {
+      "title": "Methods",
+      "concept": "Methods group reusable behavior. In Java, Methods is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Methods in Java with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Methods.",
+        "Changing the Java starter before predicting the expected output.",
+        "Fixing punctuation while missing the Java rule that Methods is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Java syntax rule for Methods?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Methods exercise in Java. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "java-input": {
+      "title": "Input parsing",
+      "concept": "System.in can be read directly for exercises. In Java, Input parsing is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Input parsing in Java with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Input parsing.",
+        "Changing the Java starter before predicting the expected output.",
+        "Fixing punctuation while missing the Java rule that Input parsing is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Java syntax rule for Input parsing?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Input parsing exercise in Java. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "java-arrays-collections": {
+      "title": "Arrays and collections",
+      "concept": "Arrays are fixed size; collections add flexible containers. In Java, Arrays and collections is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Arrays and collections in Java with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Arrays and collections.",
+        "Changing the Java starter before predicting the expected output.",
+        "Fixing punctuation while missing the Java rule that Arrays and collections is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Java syntax rule for Arrays and collections?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Arrays and collections exercise in Java. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "java-exceptions": {
+      "title": "Exceptions",
+      "concept": "try/catch handles failures; checked exceptions are part of signatures. In Java, Exceptions is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Exceptions in Java with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Exceptions.",
+        "Changing the Java starter before predicting the expected output.",
+        "Fixing punctuation while missing the Java rule that Exceptions is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Java syntax rule for Exceptions?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Exceptions exercise in Java. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "java-classes-interfaces": {
+      "title": "Classes and interfaces",
+      "concept": "Classes hold state and behavior; interfaces describe behavior. In Java, Classes and interfaces is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Classes and interfaces in Java with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Classes and interfaces.",
+        "Changing the Java starter before predicting the expected output.",
+        "Fixing punctuation while missing the Java rule that Classes and interfaces is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Java syntax rule for Classes and interfaces?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Classes and interfaces exercise in Java. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "java-generics": {
+      "title": "Generics",
+      "concept": "Generics reuse code with type parameters. In Java, Generics is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Generics in Java with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Generics.",
+        "Changing the Java starter before predicting the expected output.",
+        "Fixing punctuation while missing the Java rule that Generics is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Java syntax rule for Generics?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Generics exercise in Java. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "java-lambda-streams": {
+      "title": "Lambda and streams",
+      "concept": "Lambdas pass behavior; streams process sequences. In Java, Lambda and streams is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Lambda and streams in Java with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Lambda and streams.",
+        "Changing the Java starter before predicting the expected output.",
+        "Fixing punctuation while missing the Java rule that Lambda and streams is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Java syntax rule for Lambda and streams?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Lambda and streams exercise in Java. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "java-records-sealed": {
+      "title": "Records and sealed types",
+      "concept": "Records reduce data boilerplate; sealed types bound inheritance. In Java, Records and sealed types is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Records and sealed types in Java with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Records and sealed types.",
+        "Changing the Java starter before predicting the expected output.",
+        "Fixing punctuation while missing the Java rule that Records and sealed types is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Java syntax rule for Records and sealed types?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Records and sealed types exercise in Java. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    }
+  }
+}

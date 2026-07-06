@@ -1,0 +1,199 @@
+{
+  "schema_version": 1,
+  "programming_language": "rust",
+  "ui_language": "en",
+  "lessons": {
+    "rust-output": {
+      "title": "Output",
+      "concept": "println! writes a line. In Rust, Output is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Output in Rust with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Output.",
+        "Changing the Rust starter before predicting the expected output.",
+        "Fixing punctuation while missing the Rust rule that Output is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Rust syntax rule for Output?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Output exercise in Rust. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "rust-variables": {
+      "title": "Variables",
+      "concept": "let binds values; mut allows mutation. In Rust, Variables is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Variables in Rust with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Variables.",
+        "Changing the Rust starter before predicting the expected output.",
+        "Fixing punctuation while missing the Rust rule that Variables is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Rust syntax rule for Variables?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Variables exercise in Rust. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "rust-strings": {
+      "title": "Strings",
+      "concept": "String owns text; &str borrows text. In Rust, Strings is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Strings in Rust with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Strings.",
+        "Changing the Rust starter before predicting the expected output.",
+        "Fixing punctuation while missing the Rust rule that Strings is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Rust syntax rule for Strings?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Strings exercise in Rust. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "rust-control-flow": {
+      "title": "Control flow",
+      "concept": "if is an expression; for iterates ranges and collections. In Rust, Control flow is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Control flow in Rust with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Control flow.",
+        "Changing the Rust starter before predicting the expected output.",
+        "Fixing punctuation while missing the Rust rule that Control flow is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Rust syntax rule for Control flow?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Control flow exercise in Rust. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "rust-functions": {
+      "title": "Functions",
+      "concept": "Functions declare parameter and return types. In Rust, Functions is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Functions in Rust with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Functions.",
+        "Changing the Rust starter before predicting the expected output.",
+        "Fixing punctuation while missing the Rust rule that Functions is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Rust syntax rule for Functions?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Functions exercise in Rust. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "rust-input": {
+      "title": "Input parsing",
+      "concept": "Read stdin into a String, then split or print it. In Rust, Input parsing is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Input parsing in Rust with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Input parsing.",
+        "Changing the Rust starter before predicting the expected output.",
+        "Fixing punctuation while missing the Rust rule that Input parsing is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Rust syntax rule for Input parsing?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Input parsing exercise in Rust. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "rust-vec-hashmap": {
+      "title": "Vec and HashMap",
+      "concept": "Vec stores sequences; HashMap stores key/value pairs. In Rust, Vec and HashMap is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Vec and HashMap in Rust with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Vec and HashMap.",
+        "Changing the Rust starter before predicting the expected output.",
+        "Fixing punctuation while missing the Rust rule that Vec and HashMap is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Rust syntax rule for Vec and HashMap?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Vec and HashMap exercise in Rust. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "rust-result": {
+      "title": "Result and ?",
+      "concept": "Result models recoverable errors; ? returns early on Err. In Rust, Result and ? is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Result and ? in Rust with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Result and ?.",
+        "Changing the Rust starter before predicting the expected output.",
+        "Fixing punctuation while missing the Rust rule that Result and ? is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Rust syntax rule for Result and ??",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Result and ? exercise in Rust. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "rust-ownership": {
+      "title": "Ownership and borrowing",
+      "concept": "A value has one owner; references borrow without moving. In Rust, Ownership and borrowing is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Ownership and borrowing in Rust with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Ownership and borrowing.",
+        "Changing the Rust starter before predicting the expected output.",
+        "Fixing punctuation while missing the Rust rule that Ownership and borrowing is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Rust syntax rule for Ownership and borrowing?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Ownership and borrowing exercise in Rust. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "rust-enum-match": {
+      "title": "Enums and match",
+      "concept": "Enums model alternatives; match handles them exhaustively. In Rust, Enums and match is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Enums and match in Rust with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Enums and match.",
+        "Changing the Rust starter before predicting the expected output.",
+        "Fixing punctuation while missing the Rust rule that Enums and match is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Rust syntax rule for Enums and match?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Enums and match exercise in Rust. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "rust-traits-lifetimes": {
+      "title": "Traits, generics, and lifetimes",
+      "concept": "Traits define shared behavior; lifetimes describe borrowed relationships. In Rust, Traits, generics, and lifetimes is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Traits, generics, and lifetimes in Rust with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Traits, generics, and lifetimes.",
+        "Changing the Rust starter before predicting the expected output.",
+        "Fixing punctuation while missing the Rust rule that Traits, generics, and lifetimes is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Rust syntax rule for Traits, generics, and lifetimes?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Traits, generics, and lifetimes exercise in Rust. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "rust-iterators": {
+      "title": "Iterators and closures",
+      "concept": "Iterators compose lazy transformations. In Rust, Iterators and closures is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Iterators and closures in Rust with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Iterators and closures.",
+        "Changing the Rust starter before predicting the expected output.",
+        "Fixing punctuation while missing the Rust rule that Iterators and closures is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the Rust syntax rule for Iterators and closures?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Iterators and closures exercise in Rust. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    }
+  }
+}

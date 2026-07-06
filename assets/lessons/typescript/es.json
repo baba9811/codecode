@@ -1,0 +1,199 @@
+{
+  "schema_version": 1,
+  "programming_language": "ts",
+  "ui_language": "es",
+  "lessons": {
+    "ts-output": {
+      "title": "Salida",
+      "concept": "console.log escribe una línea. En TypeScript, Salida se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
+      "worked_example": "El ejemplo resuelto muestra Salida en TypeScript con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "common_mistakes": [
+        "Memorizar el ejemplo sin explicar qué valor se mueve en Salida",
+        "Editar el código inicial de TypeScript antes de predecir la salida esperada",
+        "Corregir solo signos o paréntesis sin aplicar la regla de Salida en TypeScript"
+      ],
+      "self_check": [
+        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
+        "¿Puedes señalar la línea donde se usa la sintaxis de Salida en TypeScript?",
+        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+      ],
+      "exercise_prompt": "Completa el ejercicio de Salida en TypeScript. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+    },
+    "ts-variables": {
+      "title": "Variables",
+      "concept": "let permite reasignar; const no se reasigna. En TypeScript, Variables se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
+      "worked_example": "El ejemplo resuelto muestra Variables en TypeScript con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "common_mistakes": [
+        "Memorizar el ejemplo sin explicar qué valor se mueve en Variables",
+        "Editar el código inicial de TypeScript antes de predecir la salida esperada",
+        "Corregir solo signos o paréntesis sin aplicar la regla de Variables en TypeScript"
+      ],
+      "self_check": [
+        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
+        "¿Puedes señalar la línea donde se usa la sintaxis de Variables en TypeScript?",
+        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+      ],
+      "exercise_prompt": "Completa el ejercicio de Variables en TypeScript. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+    },
+    "ts-strings": {
+      "title": "Cadenas",
+      "concept": "Las cadenas exponen length y recorrido. En TypeScript, Cadenas se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
+      "worked_example": "El ejemplo resuelto muestra Cadenas en TypeScript con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "common_mistakes": [
+        "Memorizar el ejemplo sin explicar qué valor se mueve en Cadenas",
+        "Editar el código inicial de TypeScript antes de predecir la salida esperada",
+        "Corregir solo signos o paréntesis sin aplicar la regla de Cadenas en TypeScript"
+      ],
+      "self_check": [
+        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
+        "¿Puedes señalar la línea donde se usa la sintaxis de Cadenas en TypeScript?",
+        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+      ],
+      "exercise_prompt": "Completa el ejercicio de Cadenas en TypeScript. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+    },
+    "ts-control-flow": {
+      "title": "Flujo de control",
+      "concept": "if y los bucles controlan la ejecución. En TypeScript, Flujo de control se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
+      "worked_example": "El ejemplo resuelto muestra Flujo de control en TypeScript con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "common_mistakes": [
+        "Memorizar el ejemplo sin explicar qué valor se mueve en Flujo de control",
+        "Editar el código inicial de TypeScript antes de predecir la salida esperada",
+        "Corregir solo signos o paréntesis sin aplicar la regla de Flujo de control en TypeScript"
+      ],
+      "self_check": [
+        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
+        "¿Puedes señalar la línea donde se usa la sintaxis de Flujo de control en TypeScript?",
+        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+      ],
+      "exercise_prompt": "Completa el ejercicio de Flujo de control en TypeScript. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+    },
+    "ts-functions": {
+      "title": "Funciones",
+      "concept": "Los tipos de parámetros y retorno hacen explícita la intención. En TypeScript, Funciones se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
+      "worked_example": "El ejemplo resuelto muestra Funciones en TypeScript con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "common_mistakes": [
+        "Memorizar el ejemplo sin explicar qué valor se mueve en Funciones",
+        "Editar el código inicial de TypeScript antes de predecir la salida esperada",
+        "Corregir solo signos o paréntesis sin aplicar la regla de Funciones en TypeScript"
+      ],
+      "self_check": [
+        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
+        "¿Puedes señalar la línea donde se usa la sintaxis de Funciones en TypeScript?",
+        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+      ],
+      "exercise_prompt": "Completa el ejercicio de Funciones en TypeScript. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+    },
+    "ts-input": {
+      "title": "Análisis de entrada",
+      "concept": "En Node puedes leer stdin para ejercicios pequeños. En TypeScript, Análisis de entrada se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
+      "worked_example": "El ejemplo resuelto muestra Análisis de entrada en TypeScript con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "common_mistakes": [
+        "Memorizar el ejemplo sin explicar qué valor se mueve en Análisis de entrada",
+        "Editar el código inicial de TypeScript antes de predecir la salida esperada",
+        "Corregir solo signos o paréntesis sin aplicar la regla de Análisis de entrada en TypeScript"
+      ],
+      "self_check": [
+        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
+        "¿Puedes señalar la línea donde se usa la sintaxis de Análisis de entrada en TypeScript?",
+        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+      ],
+      "exercise_prompt": "Completa el ejercicio de Análisis de entrada en TypeScript. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+    },
+    "ts-arrays-objects": {
+      "title": "Arreglos y objetos",
+      "concept": "Los arreglos guardan secuencias; los tipos de objeto describen formas. En TypeScript, Arreglos y objetos se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
+      "worked_example": "El ejemplo resuelto muestra Arreglos y objetos en TypeScript con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "common_mistakes": [
+        "Memorizar el ejemplo sin explicar qué valor se mueve en Arreglos y objetos",
+        "Editar el código inicial de TypeScript antes de predecir la salida esperada",
+        "Corregir solo signos o paréntesis sin aplicar la regla de Arreglos y objetos en TypeScript"
+      ],
+      "self_check": [
+        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
+        "¿Puedes señalar la línea donde se usa la sintaxis de Arreglos y objetos en TypeScript?",
+        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+      ],
+      "exercise_prompt": "Completa el ejercicio de Arreglos y objetos en TypeScript. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+    },
+    "ts-errors-async": {
+      "title": "Errores y async",
+      "concept": "try/catch maneja errores; async envuelve flujos con Promise. En TypeScript, Errores y async se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
+      "worked_example": "El ejemplo resuelto muestra Errores y async en TypeScript con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "common_mistakes": [
+        "Memorizar el ejemplo sin explicar qué valor se mueve en Errores y async",
+        "Editar el código inicial de TypeScript antes de predecir la salida esperada",
+        "Corregir solo signos o paréntesis sin aplicar la regla de Errores y async en TypeScript"
+      ],
+      "self_check": [
+        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
+        "¿Puedes señalar la línea donde se usa la sintaxis de Errores y async en TypeScript?",
+        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+      ],
+      "exercise_prompt": "Completa el ejercicio de Errores y async en TypeScript. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+    },
+    "ts-narrowing": {
+      "title": "Estrechamiento de tipos",
+      "concept": "Los type guards refinan valores union a tipos más concretos. En TypeScript, Estrechamiento de tipos se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
+      "worked_example": "El ejemplo resuelto muestra Estrechamiento de tipos en TypeScript con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "common_mistakes": [
+        "Memorizar el ejemplo sin explicar qué valor se mueve en Estrechamiento de tipos",
+        "Editar el código inicial de TypeScript antes de predecir la salida esperada",
+        "Corregir solo signos o paréntesis sin aplicar la regla de Estrechamiento de tipos en TypeScript"
+      ],
+      "self_check": [
+        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
+        "¿Puedes señalar la línea donde se usa la sintaxis de Estrechamiento de tipos en TypeScript?",
+        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+      ],
+      "exercise_prompt": "Completa el ejercicio de Estrechamiento de tipos en TypeScript. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+    },
+    "ts-generics": {
+      "title": "Genéricos",
+      "concept": "Los genéricos conservan información de tipos en código reutilizable. En TypeScript, Genéricos se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
+      "worked_example": "El ejemplo resuelto muestra Genéricos en TypeScript con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "common_mistakes": [
+        "Memorizar el ejemplo sin explicar qué valor se mueve en Genéricos",
+        "Editar el código inicial de TypeScript antes de predecir la salida esperada",
+        "Corregir solo signos o paréntesis sin aplicar la regla de Genéricos en TypeScript"
+      ],
+      "self_check": [
+        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
+        "¿Puedes señalar la línea donde se usa la sintaxis de Genéricos en TypeScript?",
+        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+      ],
+      "exercise_prompt": "Completa el ejercicio de Genéricos en TypeScript. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+    },
+    "ts-mapped": {
+      "title": "Tipos mapeados",
+      "concept": "Los tipos mapeados transforman propiedades de objetos. En TypeScript, Tipos mapeados se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
+      "worked_example": "El ejemplo resuelto muestra Tipos mapeados en TypeScript con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "common_mistakes": [
+        "Memorizar el ejemplo sin explicar qué valor se mueve en Tipos mapeados",
+        "Editar el código inicial de TypeScript antes de predecir la salida esperada",
+        "Corregir solo signos o paréntesis sin aplicar la regla de Tipos mapeados en TypeScript"
+      ],
+      "self_check": [
+        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
+        "¿Puedes señalar la línea donde se usa la sintaxis de Tipos mapeados en TypeScript?",
+        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+      ],
+      "exercise_prompt": "Completa el ejercicio de Tipos mapeados en TypeScript. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+    },
+    "ts-conditional": {
+      "title": "Tipos condicionales",
+      "concept": "Los tipos condicionales eligen un tipo a partir de otro. En TypeScript, Tipos condicionales se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
+      "worked_example": "El ejemplo resuelto muestra Tipos condicionales en TypeScript con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "common_mistakes": [
+        "Memorizar el ejemplo sin explicar qué valor se mueve en Tipos condicionales",
+        "Editar el código inicial de TypeScript antes de predecir la salida esperada",
+        "Corregir solo signos o paréntesis sin aplicar la regla de Tipos condicionales en TypeScript"
+      ],
+      "self_check": [
+        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
+        "¿Puedes señalar la línea donde se usa la sintaxis de Tipos condicionales en TypeScript?",
+        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+      ],
+      "exercise_prompt": "Completa el ejercicio de Tipos condicionales en TypeScript. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+    }
+  }
+}

@@ -5,21 +5,44 @@ use std::sync::OnceLock;
 struct SyntaxLessonCopy {
     title: String,
     concept: String,
-    #[serde(default)]
-    worked_example: Option<String>,
-    #[serde(default)]
-    common_mistakes: Option<Vec<String>>,
-    #[serde(default)]
-    self_check: Option<Vec<String>>,
-    #[serde(default)]
-    exercise_prompt: Option<String>,
+    worked_example: String,
+    common_mistakes: Vec<String>,
+    self_check: Vec<String>,
+    exercise_prompt: String,
 }
 
-static EN_LESSONS: OnceLock<HashMap<String, SyntaxLessonCopy>> = OnceLock::new();
-static KO_LESSONS: OnceLock<HashMap<String, SyntaxLessonCopy>> = OnceLock::new();
-static JA_LESSONS: OnceLock<HashMap<String, SyntaxLessonCopy>> = OnceLock::new();
-static ZH_LESSONS: OnceLock<HashMap<String, SyntaxLessonCopy>> = OnceLock::new();
-static ES_LESSONS: OnceLock<HashMap<String, SyntaxLessonCopy>> = OnceLock::new();
+#[derive(Debug, Deserialize)]
+struct SyntaxLessonCatalog {
+    schema_version: u8,
+    #[serde(rename = "programming_language")]
+    _programming_language: String,
+    #[serde(rename = "ui_language")]
+    _ui_language: String,
+    lessons: HashMap<String, SyntaxLessonCopy>,
+}
+
+type SyntaxLessonCopyMap = HashMap<String, SyntaxLessonCopy>;
+
+static PY_EN_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
+static PY_KO_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
+static PY_JA_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
+static PY_ZH_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
+static PY_ES_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
+static TS_EN_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
+static TS_KO_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
+static TS_JA_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
+static TS_ZH_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
+static TS_ES_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
+static JAVA_EN_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
+static JAVA_KO_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
+static JAVA_JA_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
+static JAVA_ZH_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
+static JAVA_ES_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
+static RUST_EN_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
+static RUST_KO_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
+static RUST_JA_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
+static RUST_ZH_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
+static RUST_ES_LESSONS: OnceLock<SyntaxLessonCopyMap> = OnceLock::new();
 
 #[derive(Clone, Copy, Debug)]
 pub struct SyntaxCase {
@@ -232,7 +255,7 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "Output",
         "console.log writes a line.",
         "console.log('ok');",
-        "console.log('ok');\n",
+        "// TODO: write the expected line\n",
         EMPTY_HELLO,
         TS_REFS
     ),
@@ -243,7 +266,7 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "Variables",
         "let changes; const does not reassign.",
         "const name: string = 'code';",
-        "const word: string = 'ok';\nconsole.log(word);\n",
+        "let word: string = '';\n// TODO: assign the expected word, then log it\nconsole.log(word);\n",
         EMPTY_HELLO,
         TS_REFS
     ),
@@ -254,7 +277,7 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "Strings",
         "Strings expose length and iteration.",
         "for (const ch of 'ok') console.log(ch);",
-        "console.log('ok'.slice(0, 2));\n",
+        "const text = 'xokx';\n// TODO: use a slice to print the middle text\nconsole.log(text);\n",
         EMPTY_HELLO,
         TS_REFS
     ),
@@ -265,7 +288,7 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "Control flow",
         "if and loops control execution.",
         "for (let i = 0; i < 3; i++) {}",
-        "if (true) console.log('ok');\n",
+        "const ready = false;\n// TODO: print the expected word only when ready is true\nif (ready) console.log('ok');\n",
         EMPTY_HELLO,
         TS_REFS
     ),
@@ -276,7 +299,7 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "Functions",
         "Parameter and return types make intent explicit.",
         "function add(a: number, b: number): number { return a + b; }",
-        "function word(): string { return 'ok'; }\nconsole.log(word());\n",
+        "function word(): string {\n  // TODO: return the expected word\n  return '';\n}\nconsole.log(word());\n",
         EMPTY_HELLO,
         TS_REFS
     ),
@@ -287,7 +310,7 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "Input parsing",
         "Node can read stdin for small exercises.",
         "const input = require('fs').readFileSync(0, 'utf8');",
-        "const fs = require('fs');\nprocess.stdout.write(fs.readFileSync(0, 'utf8'));\n",
+        "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: write input back unchanged\n",
         ECHO_CASE,
         TS_REFS
     ),
@@ -298,7 +321,7 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "Arrays and objects",
         "Arrays hold sequences; object types describe shapes.",
         "type User = { name: string };",
-        "const nums: number[] = [2, 3];\nconsole.log(nums.reduce((a, b) => a + b, 0));\n",
+        "const nums: number[] = [2, 3];\n// TODO: print the sum of nums without hard-coding 5\nconsole.log(nums.length);\n",
         SUM_CASE,
         TS_REFS
     ),
@@ -309,7 +332,7 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "Errors and async",
         "try/catch handles thrown errors; async wraps promises.",
         "async function main() { return 1; }",
-        "try { throw new Error('x'); } catch { console.log('ok'); }\n",
+        "try {\n  throw new Error('x');\n} catch {\n  // TODO: handle the expected error by printing the expected word\n}\n",
         EMPTY_HELLO,
         &["https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await"]
     ),
@@ -320,7 +343,7 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "Narrowing",
         "Type guards refine union values.",
         "if (typeof value === 'string') value.toUpperCase();",
-        "const value: string | number = 'ok';\nif (typeof value === 'string') console.log(value);\n",
+        "const value: string | number = 0;\n// TODO: narrow a string value before printing\nif (typeof value === 'string') console.log(value);\n",
         EMPTY_HELLO,
         TS_REFS
     ),
@@ -331,7 +354,7 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "Generics",
         "Generics preserve type information across reusable code.",
         "function first<T>(xs: T[]): T { return xs[0]; }",
-        "function id<T>(value: T): T { return value; }\nconsole.log(id('ok'));\n",
+        "function id<T>(value: T): T { return value; }\n// TODO: call id with the expected word and print it\nconsole.log(id(''));\n",
         EMPTY_HELLO,
         TS_REFS
     ),
@@ -342,7 +365,7 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "Mapped types",
         "Mapped types transform object properties.",
         "type ReadonlyUser<T> = { readonly [K in keyof T]: T[K] };",
-        "type Box<T> = { [K in keyof T]: T[K] };\nconst value: Box<{ word: string }> = { word: 'ok' };\nconsole.log(value.word);\n",
+        "type Box<T> = { [K in keyof T]: T[K] };\nconst value: Box<{ word: string }> = { word: '' };\n// TODO: store the expected word, then print it\nconsole.log(value.word);\n",
         EMPTY_HELLO,
         &["https://www.typescriptlang.org/docs/handbook/utility-types.html"]
     ),
@@ -353,7 +376,7 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "Conditional types",
         "Conditional types choose a type from another type.",
         "type Unwrap<T> = T extends Promise<infer U> ? U : T;",
-        "type IsString<T> = T extends string ? string : never;\nconst word: IsString<'ok'> = 'ok';\nconsole.log(word);\n",
+        "type IsString<T> = T extends string ? string : never;\nlet word: IsString<'ok'> = '';\n// TODO: assign the expected word, then print it\nconsole.log(word);\n",
         EMPTY_HELLO,
         TS_REFS
     ),
@@ -367,7 +390,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
         "Output",
         "System.out.println writes a line.",
         "System.out.println(\"ok\");",
-        "class Solution { public static void main(String[] args) { System.out.println(\"ok\"); } }\n",
+        "class Solution { public static void main(String[] args) { /* TODO: print the expected line */ } }\n",
         EMPTY_HELLO,
         JAVA_REFS
     ),
@@ -378,7 +401,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
         "Variables",
         "Java variables have declared types.",
         "String word = \"ok\";",
-        "class Solution { public static void main(String[] args) { String word = \"ok\"; System.out.println(word); } }\n",
+        "class Solution { public static void main(String[] args) { String word = \"\"; /* TODO: assign the expected word */ System.out.println(word); } }\n",
         EMPTY_HELLO,
         JAVA_REFS
     ),
@@ -389,7 +412,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
         "Strings",
         "String methods expose length, chars, and substrings.",
         "\"code\".substring(0, 2)",
-        "class Solution { public static void main(String[] args) { System.out.println(\"ok\".substring(0, 2)); } }\n",
+        "class Solution { public static void main(String[] args) { String text = \"xokx\"; /* TODO: print the middle text */ System.out.println(text); } }\n",
         EMPTY_HELLO,
         JAVA_REFS
     ),
@@ -400,7 +423,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
         "Control flow",
         "if, for, and while control execution.",
         "for (int i = 0; i < 3; i++) {}",
-        "class Solution { public static void main(String[] args) { if (true) System.out.println(\"ok\"); } }\n",
+        "class Solution { public static void main(String[] args) { boolean ready = false; /* TODO: print the expected word only when ready is true */ if (ready) System.out.println(\"ok\"); } }\n",
         EMPTY_HELLO,
         JAVA_REFS
     ),
@@ -411,7 +434,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
         "Methods",
         "Methods group reusable behavior.",
         "static int add(int a, int b) { return a + b; }",
-        "class Solution { static String word() { return \"ok\"; } public static void main(String[] args) { System.out.println(word()); } }\n",
+        "class Solution { static String word() { /* TODO: return the expected word */ return \"\"; } public static void main(String[] args) { System.out.println(word()); } }\n",
         EMPTY_HELLO,
         JAVA_REFS
     ),
@@ -422,7 +445,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
         "Input parsing",
         "System.in can be read directly for exercises.",
         "String input = new String(System.in.readAllBytes());",
-        "import java.io.*;\nclass Solution { public static void main(String[] args) throws Exception { System.out.print(new String(System.in.readAllBytes())); } }\n",
+        "import java.io.*;\nclass Solution { public static void main(String[] args) throws Exception { String input = new String(System.in.readAllBytes()); /* TODO: write input back unchanged */ } }\n",
         ECHO_CASE,
         JAVA_REFS
     ),
@@ -433,7 +456,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
         "Arrays and collections",
         "Arrays are fixed size; collections add flexible containers.",
         "int[] nums = {1, 2};",
-        "class Solution { public static void main(String[] args) { int[] nums = {2, 3}; System.out.println(nums[0] + nums[1]); } }\n",
+        "class Solution { public static void main(String[] args) { int[] nums = {2, 3}; /* TODO: print the sum without hard-coding 5 */ System.out.println(nums.length); } }\n",
         SUM_CASE,
         JAVA_REFS
     ),
@@ -444,7 +467,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
         "Exceptions",
         "try/catch handles failures; checked exceptions are part of signatures.",
         "try { throw new RuntimeException(); } catch (RuntimeException e) {}",
-        "class Solution { public static void main(String[] args) { try { throw new RuntimeException(); } catch (RuntimeException e) { System.out.println(\"ok\"); } } }\n",
+        "class Solution { public static void main(String[] args) { try { throw new RuntimeException(); } catch (RuntimeException e) { /* TODO: print the expected word */ } } }\n",
         EMPTY_HELLO,
         JAVA_REFS
     ),
@@ -455,7 +478,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
         "Classes and interfaces",
         "Classes hold state and behavior; interfaces describe behavior.",
         "interface Named { String name(); }",
-        "interface Named { String name(); }\nclass Solution implements Named { public String name() { return \"ok\"; } public static void main(String[] args) { System.out.println(new Solution().name()); } }\n",
+        "interface Named { String name(); }\nclass Solution implements Named { public String name() { /* TODO: return the expected word */ return \"\"; } public static void main(String[] args) { System.out.println(new Solution().name()); } }\n",
         EMPTY_HELLO,
         JAVA_REFS
     ),
@@ -466,7 +489,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
         "Generics",
         "Generics reuse code with type parameters.",
         "class Box<T> { T value; }",
-        "class Box<T> { T value; Box(T value) { this.value = value; } }\nclass Solution { public static void main(String[] args) { System.out.println(new Box<String>(\"ok\").value); } }\n",
+        "class Box<T> { T value; Box(T value) { this.value = value; } }\nclass Solution { public static void main(String[] args) { /* TODO: put the expected word inside the box */ System.out.println(new Box<String>(\"\").value); } }\n",
         EMPTY_HELLO,
         &["https://dev.java/learn/generics/"]
     ),
@@ -477,7 +500,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
         "Lambda and streams",
         "Lambdas pass behavior; streams process sequences.",
         "list.stream().map(x -> x + 1)",
-        "import java.util.*;\nclass Solution { public static void main(String[] args) { List<String> xs = List.of(\"ok\"); xs.stream().forEach(System.out::println); } }\n",
+        "import java.util.*;\nclass Solution { public static void main(String[] args) { List<String> xs = List.of(\"\"); /* TODO: stream the expected word */ xs.stream().forEach(System.out::println); } }\n",
         EMPTY_HELLO,
         &["https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html"]
     ),
@@ -488,7 +511,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
         "Records and sealed types",
         "Records reduce data boilerplate; sealed types bound inheritance.",
         "record Pair(int a, int b) {}",
-        "record Word(String value) {}\nclass Solution { public static void main(String[] args) { System.out.println(new Word(\"ok\").value()); } }\n",
+        "record Word(String value) {}\nclass Solution { public static void main(String[] args) { /* TODO: store the expected word in the record */ System.out.println(new Word(\"\").value()); } }\n",
         EMPTY_HELLO,
         JAVA_REFS
     ),
@@ -502,7 +525,7 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "Output",
         "println! writes a line.",
         "println!(\"ok\");",
-        "fn main() {\n    println!(\"ok\");\n}\n",
+        "fn main() {\n    // TODO: print the expected line\n}\n",
         EMPTY_HELLO,
         RUST_REFS
     ),
@@ -513,7 +536,7 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "Variables",
         "let binds values; mut allows mutation.",
         "let mut count = 0;",
-        "fn main() {\n    let word = \"ok\";\n    println!(\"{word}\");\n}\n",
+        "fn main() {\n    let word = \"\"; // TODO: bind the expected word\n    println!(\"{word}\");\n}\n",
         EMPTY_HELLO,
         RUST_REFS
     ),
@@ -524,7 +547,7 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "Strings",
         "String owns text; &str borrows text.",
         "let s = String::from(\"ok\");",
-        "fn main() {\n    let word = String::from(\"ok\");\n    println!(\"{word}\");\n}\n",
+        "fn main() {\n    let word = String::new(); // TODO: build the expected word\n    println!(\"{word}\");\n}\n",
         EMPTY_HELLO,
         RUST_REFS
     ),
@@ -535,7 +558,7 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "Control flow",
         "if is an expression; for iterates ranges and collections.",
         "for n in 0..3 {}",
-        "fn main() {\n    if true { println!(\"ok\"); }\n}\n",
+        "fn main() {\n    let ready = false;\n    // TODO: print the expected word only when ready is true\n    if ready { println!(\"ok\"); }\n}\n",
         EMPTY_HELLO,
         RUST_REFS
     ),
@@ -546,7 +569,7 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "Functions",
         "Functions declare parameter and return types.",
         "fn add(a: i32, b: i32) -> i32 { a + b }",
-        "fn word() -> &'static str { \"ok\" }\nfn main() { println!(\"{}\", word()); }\n",
+        "fn word() -> &'static str {\n    // TODO: return the expected word\n    \"\"\n}\nfn main() { println!(\"{}\", word()); }\n",
         EMPTY_HELLO,
         RUST_REFS
     ),
@@ -557,7 +580,7 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "Input parsing",
         "Read stdin into a String, then split or print it.",
         "std::io::stdin().read_to_string(&mut input)",
-        "use std::io::{self, Read};\nfn main() {\n    let mut input = String::new();\n    io::stdin().read_to_string(&mut input).unwrap();\n    print!(\"{input}\");\n}\n",
+        "use std::io::{self, Read};\nfn main() {\n    let mut input = String::new();\n    io::stdin().read_to_string(&mut input).unwrap();\n    // TODO: write input back unchanged\n}\n",
         ECHO_CASE,
         RUST_REFS
     ),
@@ -568,7 +591,7 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "Vec and HashMap",
         "Vec stores sequences; HashMap stores key/value pairs.",
         "let nums = vec![1, 2];",
-        "fn main() {\n    let nums = vec![2, 3];\n    println!(\"{}\", nums.iter().sum::<i32>());\n}\n",
+        "fn main() {\n    let nums = vec![2, 3];\n    // TODO: print the sum without hard-coding 5\n    println!(\"{}\", nums.len());\n}\n",
         SUM_CASE,
         RUST_REFS
     ),
@@ -579,7 +602,7 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "Result and ?",
         "Result models recoverable errors; ? returns early on Err.",
         "fn parse() -> Result<i32, std::num::ParseIntError> { \"1\".parse() }",
-        "fn word() -> Result<&'static str, ()> { Ok(\"ok\") }\nfn main() { println!(\"{}\", word().unwrap()); }\n",
+        "fn word() -> Result<&'static str, ()> {\n    // TODO: return Ok with the expected word\n    Ok(\"\")\n}\nfn main() { println!(\"{}\", word().unwrap()); }\n",
         EMPTY_HELLO,
         RUST_REFS
     ),
@@ -590,7 +613,7 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "Ownership and borrowing",
         "A value has one owner; references borrow without moving.",
         "fn len(s: &String) -> usize { s.len() }",
-        "fn show(s: &str) { println!(\"{s}\"); }\nfn main() { show(\"ok\"); }\n",
+        "fn show(s: &str) { println!(\"{s}\"); }\nfn main() {\n    // TODO: pass the expected word without moving owned data\n    show(\"\");\n}\n",
         EMPTY_HELLO,
         &["https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html"]
     ),
@@ -601,7 +624,7 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "Enums and match",
         "Enums model alternatives; match handles them exhaustively.",
         "match value { Some(x) => x, None => 0 }",
-        "fn main() {\n    let value = Some(\"ok\");\n    match value { Some(word) => println!(\"{word}\"), None => println!(\"no\") }\n}\n",
+        "fn main() {\n    let value: Option<&str> = None;\n    // TODO: match the expected word case\n    match value { Some(word) => println!(\"{word}\"), None => {} }\n}\n",
         EMPTY_HELLO,
         RUST_REFS
     ),
@@ -612,7 +635,7 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "Traits, generics, and lifetimes",
         "Traits define shared behavior; lifetimes describe borrowed relationships.",
         "fn first<'a>(x: &'a str) -> &'a str { x }",
-        "fn id<'a>(value: &'a str) -> &'a str { value }\nfn main() { println!(\"{}\", id(\"ok\")); }\n",
+        "fn id<'a>(value: &'a str) -> &'a str { value }\nfn main() {\n    // TODO: pass the expected borrowed word\n    println!(\"{}\", id(\"\"));\n}\n",
         EMPTY_HELLO,
         &["https://doc.rust-lang.org/book/ch10-00-generics.html"]
     ),
@@ -623,7 +646,7 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "Iterators and closures",
         "Iterators compose lazy transformations.",
         "nums.iter().map(|n| n + 1)",
-        "fn main() {\n    let word = [\"o\", \"k\"].iter().copied().collect::<String>();\n    println!(\"{word}\");\n}\n",
+        "fn main() {\n    // TODO: collect the expected word from iterator pieces\n    let word = [\"\", \"\"].iter().copied().collect::<String>();\n    println!(\"{word}\");\n}\n",
         EMPTY_HELLO,
         RUST_REFS
     ),
@@ -842,16 +865,8 @@ pub fn syntax_lesson_study_context(lesson: &SyntaxLesson, ui_language: &str) -> 
         ),
         format!("Concept:\n{}", localized_syntax_body(lesson, ui_language)),
         format!(
-            "Worked example:\n{}\n\n```{}\n{}\n```",
-            lesson_copy_for(lesson, ui_language)
-                .map(|copy| {
-                    copy.worked_example
-                        .as_deref()
-                        .unwrap_or_else(|| default_worked_example_note(ui_language))
-                })
-                .unwrap_or(""),
-            lesson.language,
-            lesson.example
+            "Worked example:\n{}",
+            localized_syntax_worked_example(lesson, ui_language)
         ),
         common_mistakes.unwrap_or_default(),
         self_check.unwrap_or_default(),
@@ -886,40 +901,25 @@ fn localized_syntax_level(level: &'static str, ui_language: &str) -> &'static st
 }
 
 fn localized_syntax_exercise_prompt(lesson: &SyntaxLesson, ui_language: &str) -> String {
-    if let Some(copy) = lesson_copy_for(lesson, ui_language)
-        && let Some(prompt) = &copy.exercise_prompt
-    {
-        return prompt.clone();
-    }
-    if normalize_ui_language(ui_language) == "en" {
-        lesson.exercise.prompt.to_string()
-    } else {
-        ui_text(ui_language, "syntax_exercise_prompt").to_string()
-    }
+    required_lesson_copy_for(lesson, ui_language)
+        .exercise_prompt
+        .clone()
 }
 
 fn localized_syntax_title(lesson: &SyntaxLesson, ui_language: &str) -> String {
-    lesson_copy_for(lesson, ui_language)
-        .map(|copy| copy.title.clone())
-        .unwrap_or_else(|| lesson.title.to_string())
+    required_lesson_copy_for(lesson, ui_language).title.clone()
 }
 
 fn localized_syntax_body(lesson: &SyntaxLesson, ui_language: &str) -> String {
-    lesson_copy_for(lesson, ui_language)
-        .map(|copy| concept_with_default_study_note(copy, ui_language))
-        .unwrap_or_else(|| lesson.body.to_string())
+    required_lesson_copy_for(lesson, ui_language)
+        .concept
+        .clone()
 }
 
 fn localized_syntax_worked_example(lesson: &SyntaxLesson, ui_language: &str) -> String {
     let mut text = String::new();
-    if let Some(copy) = lesson_copy_for(lesson, ui_language) {
-        text.push_str(
-            copy.worked_example
-                .as_deref()
-                .unwrap_or_else(|| default_worked_example_note(ui_language)),
-        );
-        text.push_str("\n\n");
-    }
+    text.push_str(&required_lesson_copy_for(lesson, ui_language).worked_example);
+    text.push_str("\n\n");
     text.push_str(&format!("```{}\n{}\n```", lesson.language, lesson.example));
     text
 }
@@ -928,16 +928,10 @@ fn localized_syntax_list_section(
     lesson: &SyntaxLesson,
     ui_language: &str,
     title_key: &str,
-    items: fn(&SyntaxLessonCopy) -> &Option<Vec<String>>,
+    items: fn(&SyntaxLessonCopy) -> &Vec<String>,
 ) -> Option<String> {
-    let copy = lesson_copy_for(lesson, ui_language)?;
-    let defaults;
-    let items = if let Some(items) = items(copy) {
-        items
-    } else {
-        defaults = default_lesson_list_items(ui_language, title_key);
-        &defaults
-    };
+    let copy = required_lesson_copy_for(lesson, ui_language);
+    let items = items(copy);
     if items.is_empty() {
         return None;
     }
@@ -949,132 +943,74 @@ fn localized_syntax_list_section(
     Some(format!("## {}\n\n{body}", ui_text(ui_language, title_key)))
 }
 
-fn concept_with_default_study_note(copy: &SyntaxLessonCopy, ui_language: &str) -> String {
-    if copy.common_mistakes.is_some() || copy.self_check.is_some() {
-        return copy.concept.clone();
-    }
-    format!(
-        "{}\n\n{}",
-        copy.concept,
-        default_concept_study_note(ui_language)
-    )
-}
-
-fn lesson_copy_for(lesson: &SyntaxLesson, ui_language: &str) -> Option<&'static SyntaxLessonCopy> {
+fn required_lesson_copy_for(lesson: &SyntaxLesson, ui_language: &str) -> &'static SyntaxLessonCopy {
+    let language = normalize_language(lesson.language);
     let ui_language = normalize_ui_language(ui_language);
-    let catalog = match ui_language.as_str() {
-        "ko" => KO_LESSONS
-            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/ko.json"))),
-        "ja" => JA_LESSONS
-            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/ja.json"))),
-        "zh" => ZH_LESSONS
-            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/zh.json"))),
-        "es" => ES_LESSONS
-            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/es.json"))),
-        _ => EN_LESSONS
-            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/en.json"))),
+    let catalog = match (language.as_str(), ui_language.as_str()) {
+        ("python", "ko") => PY_KO_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/python/ko.json"))),
+        ("python", "ja") => PY_JA_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/python/ja.json"))),
+        ("python", "zh") => PY_ZH_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/python/zh.json"))),
+        ("python", "es") => PY_ES_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/python/es.json"))),
+        ("python", _) => PY_EN_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/python/en.json"))),
+        ("ts", "ko") => TS_KO_LESSONS.get_or_init(|| {
+            load_lesson_copy(include_str!("../../assets/lessons/typescript/ko.json"))
+        }),
+        ("ts", "ja") => TS_JA_LESSONS.get_or_init(|| {
+            load_lesson_copy(include_str!("../../assets/lessons/typescript/ja.json"))
+        }),
+        ("ts", "zh") => TS_ZH_LESSONS.get_or_init(|| {
+            load_lesson_copy(include_str!("../../assets/lessons/typescript/zh.json"))
+        }),
+        ("ts", "es") => TS_ES_LESSONS.get_or_init(|| {
+            load_lesson_copy(include_str!("../../assets/lessons/typescript/es.json"))
+        }),
+        ("ts", _) => TS_EN_LESSONS.get_or_init(|| {
+            load_lesson_copy(include_str!("../../assets/lessons/typescript/en.json"))
+        }),
+        ("java", "ko") => JAVA_KO_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/java/ko.json"))),
+        ("java", "ja") => JAVA_JA_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/java/ja.json"))),
+        ("java", "zh") => JAVA_ZH_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/java/zh.json"))),
+        ("java", "es") => JAVA_ES_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/java/es.json"))),
+        ("java", _) => JAVA_EN_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/java/en.json"))),
+        ("rust", "ko") => RUST_KO_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/rust/ko.json"))),
+        ("rust", "ja") => RUST_JA_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/rust/ja.json"))),
+        ("rust", "zh") => RUST_ZH_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/rust/zh.json"))),
+        ("rust", "es") => RUST_ES_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/rust/es.json"))),
+        ("rust", _) => RUST_EN_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/rust/en.json"))),
+        _ => PY_EN_LESSONS
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/python/en.json"))),
     };
-    catalog.get(lesson.id)
+    catalog.get(lesson.id).unwrap_or_else(|| {
+        panic!(
+            "missing lesson copy: {language}:{ui_language}:{}",
+            lesson.id
+        )
+    })
 }
 
-fn default_concept_study_note(ui_language: &str) -> &'static str {
-    match normalize_ui_language(ui_language).as_str() {
-        "ko" => {
-            "예제를 읽을 때는 값이 어디서 만들어지고, 어떤 연산을 거쳐, 어디에서 출력되는지 순서대로 따라가세요. 실행 전에는 결과를 먼저 예상하고, 예상과 실제가 다르면 문법이 아니라 값의 흐름부터 다시 확인하세요."
-        }
-        "ja" => {
-            "例を読むときは、値がどこで作られ、どの操作を通り、どこで出力されるかを順に追ってください。実行前に結果を予想し、違ったら文法名ではなく値の流れから確認します。"
-        }
-        "zh" => {
-            "阅读示例时，按顺序跟踪值在哪里创建、经过什么操作、在哪里输出。运行前先预测结果；如果预测和实际不同，先检查值的流动，再检查语法细节。"
-        }
-        "es" => {
-            "Al leer el ejemplo, sigue dónde se crea cada valor, qué operación lo transforma y dónde se imprime. Antes de ejecutar, predice el resultado; si no coincide, revisa primero el flujo de valores."
-        }
-        _ => {
-            "When reading the example, track where each value is created, how it changes, and where it is printed. Before running, predict the result; if it differs, debug the value flow before the syntax name."
-        }
-    }
-}
-
-fn default_worked_example_note(ui_language: &str) -> &'static str {
-    match normalize_ui_language(ui_language).as_str() {
-        "ko" => {
-            "이 예제는 문법을 가장 작은 형태로 보여줍니다. 코드 블록을 실행하기 전에 각 줄이 어떤 값을 만들거나 사용하는지 먼저 말로 설명해 보세요."
-        }
-        "ja" => {
-            "この例は文法を最小の形で示します。実行する前に、各行がどの値を作るか、どの値を使うかを言葉で説明してみてください。"
-        }
-        "zh" => "这个示例用最小形式展示语法。运行前，先用自己的话说明每一行创建或使用了什么值。",
-        "es" => {
-            "Este ejemplo muestra la sintaxis en su forma mínima. Antes de ejecutarlo, explica qué valor crea o usa cada línea."
-        }
-        _ => {
-            "This example shows the syntax in its smallest useful form. Before running it, explain what value each line creates or uses."
-        }
-    }
-}
-
-fn default_lesson_list_items(ui_language: &str, title_key: &str) -> Vec<String> {
-    let mistakes = match normalize_ui_language(ui_language).as_str() {
-        "ko" => vec![
-            "예제를 그대로 외우고 값이 어떻게 바뀌는지 확인하지 않는 것",
-            "실행부터 하고 예상 출력과 실제 출력의 차이를 기록하지 않는 것",
-            "작은 문법 오류와 값의 흐름 오류를 구분하지 않는 것",
-        ],
-        "ja" => vec![
-            "例を暗記して、値がどう変わるかを確認しないこと",
-            "先に実行して、予想出力と実際の出力の差を記録しないこと",
-            "小さな文法エラーと値の流れのエラーを区別しないこと",
-        ],
-        "zh" => vec![
-            "只背示例，而不检查值如何变化",
-            "先运行代码，却不记录预测输出和实际输出的差异",
-            "没有区分小的语法错误和值流错误",
-        ],
-        "es" => vec![
-            "Memorizar el ejemplo sin comprobar cómo cambian los valores",
-            "Ejecutar primero sin anotar la diferencia entre salida esperada y real",
-            "Confundir un error pequeño de sintaxis con un error de flujo de valores",
-        ],
-        _ => vec![
-            "Memorizing the example without checking how values change",
-            "Running first without recording expected versus actual output",
-            "Confusing small syntax errors with value-flow errors",
-        ],
-    };
-    let checks = match normalize_ui_language(ui_language).as_str() {
-        "ko" => vec![
-            "이 문법은 언제 쓰는 것이 가장 자연스러울까요?",
-            "예제의 마지막 줄이 출력하는 값은 어디서 만들어졌을까요?",
-        ],
-        "ja" => vec![
-            "この文法はどんな場面で使うのが自然ですか？",
-            "例の最後の行が出力する値はどこで作られましたか？",
-        ],
-        "zh" => vec![
-            "这种语法在什么场景下最自然？",
-            "示例最后一行输出的值是在哪里创建的？",
-        ],
-        "es" => vec![
-            "¿Cuándo es natural usar esta sintaxis?",
-            "¿Dónde se creó el valor que imprime la última línea del ejemplo?",
-        ],
-        _ => vec![
-            "When is this syntax the natural tool?",
-            "Where was the value printed by the last example line created?",
-        ],
-    };
-    let source = if title_key == "syntax_self_check" {
-        checks
-    } else {
-        mistakes
-    };
-    source.into_iter().map(str::to_string).collect()
-}
-
-fn load_lesson_copy(text: &str) -> HashMap<String, SyntaxLessonCopy> {
-    serde_json::from_str(text).expect("valid syntax lesson copy")
+fn load_lesson_copy(text: &str) -> SyntaxLessonCopyMap {
+    let catalog: SyntaxLessonCatalog =
+        serde_json::from_str(text).expect("valid syntax lesson copy");
+    assert_eq!(
+        catalog.schema_version, 1,
+        "unsupported syntax lesson schema"
+    );
+    catalog.lessons
 }
 
 fn normalize_syntax_ids_for(language: &str, ids: &[String]) -> Vec<String> {

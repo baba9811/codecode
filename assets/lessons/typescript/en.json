@@ -1,0 +1,199 @@
+{
+  "schema_version": 1,
+  "programming_language": "ts",
+  "ui_language": "en",
+  "lessons": {
+    "ts-output": {
+      "title": "Output",
+      "concept": "console.log writes a line. In TypeScript, Output is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Output in TypeScript with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Output.",
+        "Changing the TypeScript starter before predicting the expected output.",
+        "Fixing punctuation while missing the TypeScript rule that Output is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the TypeScript syntax rule for Output?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Output exercise in TypeScript. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "ts-variables": {
+      "title": "Variables",
+      "concept": "let changes; const does not reassign. In TypeScript, Variables is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Variables in TypeScript with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Variables.",
+        "Changing the TypeScript starter before predicting the expected output.",
+        "Fixing punctuation while missing the TypeScript rule that Variables is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the TypeScript syntax rule for Variables?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Variables exercise in TypeScript. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "ts-strings": {
+      "title": "Strings",
+      "concept": "Strings expose length and iteration. In TypeScript, Strings is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Strings in TypeScript with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Strings.",
+        "Changing the TypeScript starter before predicting the expected output.",
+        "Fixing punctuation while missing the TypeScript rule that Strings is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the TypeScript syntax rule for Strings?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Strings exercise in TypeScript. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "ts-control-flow": {
+      "title": "Control flow",
+      "concept": "if and loops control execution. In TypeScript, Control flow is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Control flow in TypeScript with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Control flow.",
+        "Changing the TypeScript starter before predicting the expected output.",
+        "Fixing punctuation while missing the TypeScript rule that Control flow is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the TypeScript syntax rule for Control flow?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Control flow exercise in TypeScript. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "ts-functions": {
+      "title": "Functions",
+      "concept": "Parameter and return types make intent explicit. In TypeScript, Functions is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Functions in TypeScript with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Functions.",
+        "Changing the TypeScript starter before predicting the expected output.",
+        "Fixing punctuation while missing the TypeScript rule that Functions is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the TypeScript syntax rule for Functions?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Functions exercise in TypeScript. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "ts-input": {
+      "title": "Input parsing",
+      "concept": "Node can read stdin for small exercises. In TypeScript, Input parsing is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Input parsing in TypeScript with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Input parsing.",
+        "Changing the TypeScript starter before predicting the expected output.",
+        "Fixing punctuation while missing the TypeScript rule that Input parsing is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the TypeScript syntax rule for Input parsing?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Input parsing exercise in TypeScript. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "ts-arrays-objects": {
+      "title": "Arrays and objects",
+      "concept": "Arrays hold sequences; object types describe shapes. In TypeScript, Arrays and objects is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Arrays and objects in TypeScript with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Arrays and objects.",
+        "Changing the TypeScript starter before predicting the expected output.",
+        "Fixing punctuation while missing the TypeScript rule that Arrays and objects is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the TypeScript syntax rule for Arrays and objects?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Arrays and objects exercise in TypeScript. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "ts-errors-async": {
+      "title": "Errors and async",
+      "concept": "try/catch handles thrown errors; async wraps promises. In TypeScript, Errors and async is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Errors and async in TypeScript with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Errors and async.",
+        "Changing the TypeScript starter before predicting the expected output.",
+        "Fixing punctuation while missing the TypeScript rule that Errors and async is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the TypeScript syntax rule for Errors and async?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Errors and async exercise in TypeScript. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "ts-narrowing": {
+      "title": "Narrowing",
+      "concept": "Type guards refine union values. In TypeScript, Narrowing is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Narrowing in TypeScript with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Narrowing.",
+        "Changing the TypeScript starter before predicting the expected output.",
+        "Fixing punctuation while missing the TypeScript rule that Narrowing is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the TypeScript syntax rule for Narrowing?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Narrowing exercise in TypeScript. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "ts-generics": {
+      "title": "Generics",
+      "concept": "Generics preserve type information across reusable code. In TypeScript, Generics is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Generics in TypeScript with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Generics.",
+        "Changing the TypeScript starter before predicting the expected output.",
+        "Fixing punctuation while missing the TypeScript rule that Generics is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the TypeScript syntax rule for Generics?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Generics exercise in TypeScript. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "ts-mapped": {
+      "title": "Mapped types",
+      "concept": "Mapped types transform object properties. In TypeScript, Mapped types is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Mapped types in TypeScript with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Mapped types.",
+        "Changing the TypeScript starter before predicting the expected output.",
+        "Fixing punctuation while missing the TypeScript rule that Mapped types is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the TypeScript syntax rule for Mapped types?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Mapped types exercise in TypeScript. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    },
+    "ts-conditional": {
+      "title": "Conditional types",
+      "concept": "Conditional types choose a type from another type. In TypeScript, Conditional types is easiest to learn by tracing the value flow in the example: where a value is created, which expression reads or transforms it, and what finally reaches stdout. Before editing the exercise, predict the output line by line so the syntax is tied to behavior.",
+      "worked_example": "The worked example shows Conditional types in TypeScript with the smallest code shape that produces an observable result. Read it once for syntax, then trace the value from creation to the final output.",
+      "common_mistakes": [
+        "Memorizing the example instead of explaining the value flow behind Conditional types.",
+        "Changing the TypeScript starter before predicting the expected output.",
+        "Fixing punctuation while missing the TypeScript rule that Conditional types is practicing."
+      ],
+      "self_check": [
+        "What value exists immediately before the program prints or returns?",
+        "Which line uses the TypeScript syntax rule for Conditional types?",
+        "If you could change only one part of the starter first, what would it be?"
+      ],
+      "exercise_prompt": "Complete the Conditional types exercise in TypeScript. First predict what the starter will output, then make the smallest useful edit. Do not paste the expected output as a hard-coded constant."
+    }
+  }
+}
