@@ -208,6 +208,7 @@ fn compile_rust(root: &Path, path: &Path) -> Result<Option<CommandSpec>> {
     let mut compile = Command::new(rustc);
     compile
         .args([
+            "--edition=2024".to_string(),
             path.display().to_string(),
             "-o".to_string(),
             exe.display().to_string(),

@@ -458,6 +458,97 @@ fn syntax_curriculum_covers_basic_to_advanced_for_every_supported_language() {
 }
 
 #[test]
+fn rust_syntax_curriculum_covers_core_book_topics() {
+    let lesson_ids: Vec<_> = syntax_lessons_for("rust")
+        .into_iter()
+        .map(|lesson| lesson.id)
+        .collect();
+
+    assert!(lesson_ids.len() >= 28, "rust curriculum is too shallow");
+
+    for id in [
+        "rust-numbers-tuples",
+        "rust-structs-impl",
+        "rust-modules-use",
+        "rust-option",
+        "rust-borrowing-slices",
+        "rust-generics",
+        "rust-traits",
+        "rust-lifetimes",
+        "rust-testing",
+        "rust-smart-pointers",
+        "rust-interior-mutability",
+        "rust-concurrency",
+        "rust-shared-state",
+        "rust-async-await",
+        "rust-macros",
+        "rust-unsafe",
+        "rust-cargo-workspaces",
+    ] {
+        assert!(lesson_ids.contains(&id), "missing {id}");
+    }
+}
+
+#[test]
+fn rust_lesson_copy_is_topic_specific() {
+    let banned = [
+        "locating three concrete pieces",
+        "Use this example to place",
+        "edit only the part tied to this lesson's rule",
+    ];
+    for path in [
+        "assets/lessons/rust/en.json",
+        "assets/lessons/rust/ko.json",
+        "assets/lessons/rust/ja.json",
+        "assets/lessons/rust/zh.json",
+        "assets/lessons/rust/es.json",
+    ] {
+        let catalog: serde_json::Value =
+            serde_json::from_str(&fs::read_to_string(path).unwrap()).unwrap();
+        for (id, copy) in catalog["lessons"].as_object().unwrap() {
+            let text = copy.to_string();
+            for phrase in banned {
+                assert!(!text.contains(phrase), "{path}:{id}: generic copy");
+            }
+        }
+    }
+}
+
+#[test]
+fn rust_syntax_starters_compile_to_useful_failures() {
+    if std::process::Command::new("rustc")
+        .arg("--version")
+        .output()
+        .is_err()
+    {
+        return;
+    }
+
+    let root = tmp_root("rust-syntax-starters-compile");
+    for lesson in syntax_lessons_for("rust") {
+        let path = ensure_syntax_submission(&root, lesson).unwrap();
+        let result = judge_path(
+            &root,
+            lesson.id,
+            &path,
+            lesson.language,
+            &syntax_cases(lesson),
+        );
+        assert!(
+            !result.output.contains("compile failed"),
+            "{} starter should compile:\n{}",
+            lesson.id,
+            result.output
+        );
+        assert!(
+            !result.passed,
+            "{} starter should still require the learner edit",
+            lesson.id
+        );
+    }
+}
+
+#[test]
 fn render_syntax_lesson_uses_exercise_copy() {
     let lesson = syntax_lessons_for("python")[0];
     let state = AppState {
@@ -520,8 +611,8 @@ fn lessons_use_rich_split_copy_for_all_code_languages() {
             "zh",
             "rust",
             "rust-vec-hashmap",
-            "# 语法: Vec 和 HashMap",
-            "Vec 保存有顺序的值",
+            "# 语法: Vec 与 HashMap",
+            "有顺序的数据使用 Vec",
             "常见错误",
             "自我检查",
         ),
