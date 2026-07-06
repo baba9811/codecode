@@ -30,6 +30,33 @@ fn load_state_uses_first_problem_when_state_file_is_missing() {
 }
 
 #[test]
+fn load_state_defaults_start_mode_to_home() {
+    let root = tmp_root("state-start-mode-default");
+    let bank = load_bank(&root).unwrap();
+    let state = load_state(&root, &bank).unwrap();
+    assert_eq!(state.settings.start_mode, "home");
+}
+
+#[test]
+fn load_state_normalizes_start_mode() {
+    let root = tmp_root("state-start-mode-normalize");
+    let bank = load_bank(&root).unwrap();
+    fs::create_dir_all(root.join(".practicode")).unwrap();
+    fs::write(
+        root.join(".practicode/problem-state.json"),
+        r#"{
+  "current_problem": "001-hello-world",
+  "settings": {
+    "start_mode": "weird"
+  }
+}"#,
+    )
+    .unwrap();
+    let state = load_state(&root, &bank).unwrap();
+    assert_eq!(state.settings.start_mode, "home");
+}
+
+#[test]
 fn save_bank_creates_local_custom_problem_bank() {
     let root = tmp_root("save-bank");
     let bank = two_problem_bank(&root);
