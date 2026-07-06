@@ -307,6 +307,21 @@ fn judge_runs_python_solution_against_cases() {
 }
 
 #[test]
+fn judge_shows_stdout_on_pass() {
+    if which("python3").or_else(|| which("python")).is_none() {
+        return;
+    }
+    let root = tmp_root("judge-pass-stdout");
+    let bank = load_bank(&root).unwrap();
+    let settings = Settings::default();
+    let path = ensure_submission(&root, &bank[0], &settings).unwrap();
+    fs::write(path, "print('Hello, World!')\n").unwrap();
+    let result = judge(&root, &bank[0], &settings);
+    assert!(result.passed, "{}", result.output);
+    assert!(result.output.contains("Stdout\n  Hello, World!"));
+}
+
+#[test]
 fn judge_shows_debug_stdout_on_failure() {
     if which("python3").or_else(|| which("python")).is_none() {
         return;
@@ -319,6 +334,7 @@ fn judge_shows_debug_stdout_on_failure() {
     let result = judge(&root, &bank[0], &settings);
     assert!(!result.passed);
     assert!(result.output.contains("Got\n  debug\n  Hello, World!"));
+    assert!(result.output.find("Got").unwrap() < result.output.find("Expected").unwrap());
 }
 
 #[test]
@@ -582,6 +598,7 @@ fn java_lesson_copy_is_topic_specific() {
         "Copying the shape of the example",
         "edit only the part tied to this lesson's rule",
         "Do not write the expected output as a constant",
+        "matters when",
         "세 가지 구체적인 부분",
         "이 예제를 사용해",
         "三つの具体的な部分",
@@ -978,7 +995,7 @@ fn split_lesson_copy_covers_every_lesson_in_every_ui_language() {
 
 #[test]
 fn syntax_exercise_starters_require_user_edit_for_every_language() {
-    for language in LANGUAGES {
+    for &language in LANGUAGES {
         for lesson in syntax_lessons_for(language) {
             assert!(
                 lesson.exercise.starter.contains("TODO"),
@@ -1152,6 +1169,31 @@ fn java_syntax_examples_pass_lesson_cases() {
     let root = tmp_root("java-syntax-examples-run");
     for lesson in syntax_lessons_for("java") {
         let path = root.join(format!("{}.java", lesson.id));
+        fs::write(&path, lesson.example).unwrap();
+        let result = judge_path(
+            &root,
+            &format!("{}-example", lesson.id),
+            &path,
+            lesson.language,
+            &syntax_cases(lesson),
+        );
+        assert!(
+            result.passed,
+            "{} example should pass its lesson cases:\n{}",
+            lesson.id, result.output
+        );
+    }
+}
+
+#[test]
+fn rust_syntax_examples_pass_lesson_cases() {
+    if which("rustc").is_none() {
+        return;
+    }
+
+    let root = tmp_root("rust-syntax-examples-run");
+    for lesson in syntax_lessons_for("rust") {
+        let path = root.join(format!("{}.rs", lesson.id));
         fs::write(&path, lesson.example).unwrap();
         let result = judge_path(
             &root,

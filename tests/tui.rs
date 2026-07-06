@@ -471,6 +471,7 @@ fn run_in_learn_keeps_lesson_pane_visible() {
     app.handle_command_for_test("run").unwrap();
     assert!(app.output_for_test().contains("Syntax"));
     assert!(app.learn_result_for_test().contains("FAIL"));
+    assert!(app.learn_result_for_test().contains("Got\n  TODO"));
     assert!(app.status_text_for_test().contains("learn"));
 }
 
