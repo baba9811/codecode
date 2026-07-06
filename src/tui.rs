@@ -5,7 +5,7 @@ use crate::{
     },
     core::{
         AI_PROVIDERS, AppState, CLAUDE_AI_EFFORTS, CODEX_AI_EFFORTS, DIFFICULTIES, HistoryItem,
-        LANGUAGES, PROBLEM_NOTES_PATH, Problem, STATE_PATH, THEMES, UI_LANGUAGES,
+        LANGUAGES, PROBLEM_NOTES_PATH, Problem, THEMES, UI_LANGUAGES,
         current_syntax_lesson, ensure_problem_files, ensure_submission, ensure_syntax_submission,
         ext_for, give_up, judge, judge_path, load_bank, load_state, localized, next_problem,
         next_syntax_lesson, normalize_ai_effort, normalize_ai_provider, normalize_difficulty,
@@ -77,8 +77,15 @@ enum Focus {
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 enum AppMode {
+    Home,
     Problems,
     Learn,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum HomeChoice {
+    Learn,
+    Problems,
 }
 
 pub struct PracticodeApp {
@@ -99,6 +106,9 @@ pub struct PracticodeApp {
     show_output: bool,
     focus: Focus,
     mode: AppMode,
+    home_choice: HomeChoice,
+    home_learn_area: Rect,
+    home_problems_area: Rect,
     list_cursor: Option<usize>,
     settings_cursor: Option<usize>,
     busy_label: String,
@@ -138,7 +148,6 @@ enum TaskResult {
 
 impl PracticodeApp {
     pub fn new(root: PathBuf) -> Result<Self> {
-        let first_run = !root.join(STATE_PATH).exists();
         let bank = load_bank(&root)?;
         let state = load_state(&root, &bank)?;
         let problem = problem_by_id(&bank, &state.current_problem)
@@ -162,6 +171,9 @@ impl PracticodeApp {
             show_output: false,
             focus: Focus::Code,
             mode: AppMode::Problems,
+            home_choice: HomeChoice::Learn,
+            home_learn_area: Rect::default(),
+            home_problems_area: Rect::default(),
             list_cursor: None,
             settings_cursor: None,
             busy_label: String::new(),
@@ -190,11 +202,11 @@ impl PracticodeApp {
             should_quit: false,
         };
         app.load_code_editor()?;
-        if first_run {
-            save_state(&app.root, &app.state)?;
-            app.show_profile_with_intro(
-                "Welcome to practicode\n\nUse the setup panel below first.",
-            );
+        save_state(&app.root, &app.state)?;
+        match app.state.settings.start_mode.as_str() {
+            "learn" => app.action_learn("")?,
+            "problems" => app.action_practice()?,
+            _ => app.action_home()?,
         }
         Ok(app)
     }
@@ -259,6 +271,11 @@ impl PracticodeApp {
         self.code_area = code;
         self.output_area = output;
         self.command_area = command;
+    }
+
+    pub fn set_home_choice_areas_for_test(&mut self, learn: Rect, problems: Rect) {
+        self.home_learn_area = learn;
+        self.home_problems_area = problems;
     }
 
     pub fn busy_label(&self) -> &str {

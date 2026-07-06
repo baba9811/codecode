@@ -1,6 +1,63 @@
 use super::*;
 
 impl PracticodeApp {
+    pub(super) fn home_text(&self) -> String {
+        let learn = if self.home_choice == HomeChoice::Learn {
+            "> Learn syntax"
+        } else {
+            "  Learn syntax"
+        };
+        let problems = if self.home_choice == HomeChoice::Problems {
+            "> Practice coding tests"
+        } else {
+            "  Practice coding tests"
+        };
+        format!(
+            "Practicode\n\n{learn}\n  Read a short syntax lesson and validate the drill.\n\n{problems}\n  Solve stdin/stdout coding-test problems.\n\nLeft/Right choose | Enter/Space open | / commands"
+        )
+    }
+
+    pub(super) fn action_home(&mut self) -> Result<()> {
+        self.mode = AppMode::Home;
+        self.state.settings.start_mode = "home".to_string();
+        save_state(&self.root, &self.state)?;
+        self.learn_result.clear();
+        self.show_output = false;
+        self.settings_cursor = None;
+        self.list_cursor = None;
+        self.focus = Focus::None;
+        self.output = self.home_text();
+        self.output_is_markdown = false;
+        Ok(())
+    }
+
+    pub(super) fn action_practice(&mut self) -> Result<()> {
+        self.mode = AppMode::Problems;
+        self.state.settings.start_mode = "problems".to_string();
+        save_state(&self.root, &self.state)?;
+        self.load_code_editor()?;
+        self.settings_cursor = None;
+        self.list_cursor = None;
+        self.show_output = false;
+        self.focus = Focus::Code;
+        Ok(())
+    }
+
+    pub(super) fn move_home_choice(&mut self) {
+        self.home_choice = match self.home_choice {
+            HomeChoice::Learn => HomeChoice::Problems,
+            HomeChoice::Problems => HomeChoice::Learn,
+        };
+        self.output = self.home_text();
+    }
+
+    pub(super) fn open_home_choice(&mut self) -> Result<()> {
+        match self.home_choice {
+            HomeChoice::Learn => self.action_learn(""),
+            HomeChoice::Problems => self.action_practice(),
+        }
+    }
+
     pub(super) fn action_edit(&mut self) -> Result<()> {
         self.editing_notes = false;
         self.load_code_editor()?;
@@ -178,6 +235,7 @@ impl PracticodeApp {
             self.state.settings.language = language.to_string();
         }
         self.mode = AppMode::Learn;
+        self.state.settings.start_mode = "learn".to_string();
         self.learn_result.clear();
         let language = self.state.settings.language.clone();
         let lesson = current_syntax_lesson(&self.state, &language);

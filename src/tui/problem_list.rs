@@ -35,10 +35,13 @@ impl PracticodeApp {
         Ok(())
     }
 
-    pub(super) fn start_problem_list(&mut self) {
+    pub(super) fn start_problem_list(&mut self) -> Result<()> {
         self.mode = AppMode::Problems;
+        self.state.settings.start_mode = "problems".to_string();
+        save_state(&self.root, &self.state)?;
         self.list_cursor = Some(self.current_problem_index());
         self.write_text_output(&self.render_problem_list());
+        Ok(())
     }
 
     pub(super) fn render_problem_list(&self) -> String {
@@ -117,6 +120,8 @@ impl PracticodeApp {
         };
         self.problem = problem;
         self.state.current_problem = self.problem.id.clone();
+        self.mode = AppMode::Problems;
+        self.state.settings.start_mode = "problems".to_string();
         if !self
             .state
             .history
