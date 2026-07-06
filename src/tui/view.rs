@@ -7,7 +7,7 @@ impl PracticodeApp {
                 let (done, total) =
                     syntax_progress_count(&self.state, &self.state.settings.language);
                 format!(
-                    "Learning\n\nLanguage: {}\nProgress: {done}/{total}\n\n/run validates drills\n/next moves to the next lesson",
+                    "Learning\n\nLanguage: {}\nProgress: {done}/{total}\n\n/run validates exercises\n/next moves to the next lesson",
                     syntax_language_name(&self.state.settings.language)
                 )
             }
@@ -149,7 +149,7 @@ impl PracticodeApp {
                 .editor
                 .visible_text(self.code_area.height.saturating_sub(2) as usize);
             let title = if self.mode == AppMode::Learn {
-                format!("drill.{}", ext_for(&self.state.settings.language))
+                format!("exercise.{}", ext_for(&self.state.settings.language))
             } else {
                 format!("solution.{}", ext_for(&self.state.settings.language))
             };
@@ -163,7 +163,7 @@ impl PracticodeApp {
                 let result = Paragraph::new(self.learn_result.clone())
                     .style(Self::pane_style(light))
                     .block(Self::block(
-                        ui_text(&self.state.settings.ui_language, "drill_result"),
+                        ui_text(&self.state.settings.ui_language, "exercise_result"),
                         light,
                         false,
                     ))

@@ -44,9 +44,6 @@
   "cmd_open": "Open by number, id, or slug",
   "cmd_giveup": "Show the reference answer",
   "cmd_learn": "Open syntax learning",
-  "cmd_drill": "Validate the current syntax drill",
-  "cmd_next_lesson": "Open the next syntax lesson",
-  "cmd_prev_lesson": "Open the previous syntax lesson",
   "cmd_hint": "Ask for a hint about the current problem",
   "cmd_ai": "Ask AI about the current problem and code",
   "cmd_profile": "Show user profile",
@@ -98,11 +95,13 @@
   "syntax_progress": "Progress",
   "syntax_complete": "complete",
   "syntax_open": "open",
-  "syntax_drill": "Drill",
-  "syntax_drill_prompt": "Run the starter, then edit it until the expected output matches.",
+  "syntax_concept": "Concept",
+  "syntax_worked_example": "Worked example",
+  "syntax_exercise": "Exercise",
+  "syntax_exercise_prompt": "Before you run, predict the output. Then run the starter and edit it until the expected output matches.",
   "syntax_references": "References",
   "syntax_basic": "basic",
   "syntax_intermediate": "intermediate",
   "syntax_advanced": "advanced",
-  "drill_result": "Drill result"
+  "exercise_result": "Exercise result"
 }

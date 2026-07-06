@@ -17,7 +17,7 @@ impl PracticodeApp {
             format!("  {practice_label}")
         };
         format!(
-            "Practicode\n\n{learn}\n  Read a short syntax lesson and validate the drill.\n\n{problems}\n  Solve stdin/stdout coding-test problems.\n\n{help}"
+            "Practicode\n\n{learn}\n  Read a short syntax lesson and validate the exercise.\n\n{problems}\n  Solve stdin/stdout coding-test problems.\n\n{help}"
         )
     }
 
@@ -76,7 +76,7 @@ impl PracticodeApp {
 
     pub(super) fn action_run(&mut self) -> Result<()> {
         if self.mode == AppMode::Learn {
-            return self.action_drill();
+            return self.action_exercise();
         }
         if self.mode == AppMode::Home {
             self.mode = AppMode::Problems;
@@ -283,7 +283,7 @@ impl PracticodeApp {
         Ok(())
     }
 
-    pub(super) fn action_drill(&mut self) -> Result<()> {
+    pub(super) fn action_exercise(&mut self) -> Result<()> {
         if self.mode != AppMode::Learn {
             self.action_learn("")?;
         }

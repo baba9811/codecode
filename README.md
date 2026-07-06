@@ -11,7 +11,7 @@
 
 Personal coding practice, right in your terminal.
 
-`practicode` is a small Rust TUI for syntax drills and stdin/stdout coding-test practice. It keeps your problems, settings, and submissions local by default.
+`practicode` is a small Rust TUI for syntax exercises and stdin/stdout coding-test practice. It keeps your problems, settings, and submissions local by default.
 
 <figure>
   <img src="assets/practicode-home.svg" alt="Practicode home screen with Learn syntax and Practice coding tests choices">
@@ -161,7 +161,7 @@ npm start
 On first run, choose a mode:
 
 ```text
-Learn syntax: read a short lesson, edit the drill, /run, then /next
+Learn syntax: read a short lesson, study the worked example, edit the exercise, /run, then /next
 Practice coding tests: write code, Esc, /run, then /next when it passes
 ```
 
@@ -176,7 +176,7 @@ Most-used commands:
 | Command | Action |
 | --- | --- |
 | `/home` | Return to the mode chooser |
-| `/run` | Judge the current submission or drill |
+| `/run` | Judge the current submission or syntax exercise |
 | `/next` | Open the next problem or lesson |
 | `/back` | Go to the previous problem or lesson |
 | `/doctor` | Check local runtimes and show install hints |

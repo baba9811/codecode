@@ -7,7 +7,7 @@ pub struct SyntaxCase {
 }
 
 #[derive(Clone, Copy, Debug)]
-pub struct SyntaxDrill {
+pub struct SyntaxExercise {
     pub prompt: &'static str,
     pub starter: &'static str,
     pub cases: &'static [SyntaxCase],
@@ -21,7 +21,7 @@ pub struct SyntaxLesson {
     pub title: &'static str,
     pub body: &'static str,
     pub example: &'static str,
-    pub drill: SyntaxDrill,
+    pub exercise: SyntaxExercise,
     pub refs: &'static [&'static str],
 }
 
@@ -34,8 +34,8 @@ macro_rules! lesson {
             title: $title,
             body: $body,
             example: $example,
-            drill: SyntaxDrill {
-                prompt: "Run the starter, then edit it until the expected output matches.",
+            exercise: SyntaxExercise {
+                prompt: "Before you run, predict the output. Then run the starter and edit it until the expected output matches.",
                 starter: $starter,
                 cases: $cases,
             },
@@ -264,7 +264,7 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "ts",
         "intermediate",
         "Input parsing",
-        "Node can read stdin for small drills.",
+        "Node can read stdin for small exercises.",
         "const input = require('fs').readFileSync(0, 'utf8');",
         "const fs = require('fs');\nprocess.stdout.write(fs.readFileSync(0, 'utf8'));\n",
         ECHO_CASE,
@@ -399,7 +399,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
         "java",
         "intermediate",
         "Input parsing",
-        "System.in can be read directly for drills.",
+        "System.in can be read directly for exercises.",
         "String input = new String(System.in.readAllBytes());",
         "import java.io.*;\nclass Solution { public static void main(String[] args) throws Exception { System.out.print(new String(System.in.readAllBytes())); } }\n",
         ECHO_CASE,
@@ -732,19 +732,31 @@ pub fn ensure_syntax_submission(root: &Path, lesson: &SyntaxLesson) -> Result<Pa
         .join(".syntax")
         .join(lesson.language)
         .join(lesson.id)
+        .join(format!("exercise.{}", ext_for(lesson.language)));
+    let legacy_path = root
+        .join("submissions")
+        .join(".syntax")
+        .join(lesson.language)
+        .join(lesson.id)
         .join(format!("drill.{}", ext_for(lesson.language)));
+    if !path.exists() && legacy_path.exists() {
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent)?;
+        }
+        fs::rename(&legacy_path, &path)?;
+    }
     if !path.exists() {
         if let Some(parent) = path.parent() {
             fs::create_dir_all(parent)?;
         }
-        fs::write(&path, lesson.drill.starter)?;
+        fs::write(&path, lesson.exercise.starter)?;
     }
     Ok(path)
 }
 
 pub fn syntax_cases(lesson: &SyntaxLesson) -> Vec<IoCase> {
     lesson
-        .drill
+        .exercise
         .cases
         .iter()
         .map(|case| IoCase {
@@ -764,7 +776,7 @@ pub fn render_syntax_lesson(lesson: &SyntaxLesson, state: &AppState) -> String {
     };
     let refs = lesson.refs.join("\n");
     format!(
-        "# {}: {}\n\n{}: {}\n{}: {}\n{}: {done}/{total} ({completed})\n\n{}\n\n{}\n```{}\n{}\n```\n\n{}\n{}\n\n{}\n{}",
+        "# {}: {}\n\n{}: {}\n{}: {}\n{}: {done}/{total} ({completed})\n\n## {}\n\n{}\n\n## {}\n\n```{}\n{}\n```\n\n## {}\n\n{}\n\n## {}\n\n{}",
         ui_text(ui_language, "syntax"),
         localized_syntax_title(lesson, ui_language),
         ui_text(ui_language, "syntax_language"),
@@ -772,12 +784,13 @@ pub fn render_syntax_lesson(lesson: &SyntaxLesson, state: &AppState) -> String {
         ui_text(ui_language, "syntax_level"),
         localized_syntax_level(lesson.level, ui_language),
         ui_text(ui_language, "syntax_progress"),
+        ui_text(ui_language, "syntax_concept"),
         localized_syntax_body(lesson, ui_language),
-        ui_text(ui_language, "example"),
+        ui_text(ui_language, "syntax_worked_example"),
         lesson.language,
         lesson.example,
-        ui_text(ui_language, "syntax_drill"),
-        localized_syntax_drill_prompt(lesson, ui_language),
+        ui_text(ui_language, "syntax_exercise"),
+        localized_syntax_exercise_prompt(lesson, ui_language),
         ui_text(ui_language, "syntax_references"),
         refs
     )
@@ -801,11 +814,11 @@ fn localized_syntax_level(level: &'static str, ui_language: &str) -> &'static st
     }
 }
 
-fn localized_syntax_drill_prompt(lesson: &SyntaxLesson, ui_language: &str) -> &'static str {
+fn localized_syntax_exercise_prompt(lesson: &SyntaxLesson, ui_language: &str) -> &'static str {
     if normalize_ui_language(ui_language) == "en" {
-        lesson.drill.prompt
+        lesson.exercise.prompt
     } else {
-        ui_text(ui_language, "syntax_drill_prompt")
+        ui_text(ui_language, "syntax_exercise_prompt")
     }
 }
 
