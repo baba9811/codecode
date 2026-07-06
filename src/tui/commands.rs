@@ -23,6 +23,13 @@ pub(super) const COMMAND_HINTS: &[CommandHint] = &[
         help: true,
     },
     CommandHint {
+        insert: "home",
+        display: "/home",
+        desc_key: "cmd_home",
+        keep_open: false,
+        help: true,
+    },
+    CommandHint {
         insert: "next",
         display: "/next",
         desc_key: "cmd_next",
@@ -76,21 +83,21 @@ pub(super) const COMMAND_HINTS: &[CommandHint] = &[
         display: "/drill",
         desc_key: "cmd_drill",
         keep_open: false,
-        help: true,
+        help: false,
     },
     CommandHint {
         insert: "next-lesson",
         display: "/next-lesson",
         desc_key: "cmd_next_lesson",
         keep_open: false,
-        help: true,
+        help: false,
     },
     CommandHint {
         insert: "prev-lesson",
         display: "/prev-lesson",
         desc_key: "cmd_prev_lesson",
         keep_open: false,
-        help: true,
+        help: false,
     },
     CommandHint {
         insert: "hint ",
@@ -343,5 +350,12 @@ pub(super) const COMMAND_HINTS: &[CommandHint] = &[
         desc_key: "cmd_exit",
         keep_open: false,
         help: true,
+    },
+    CommandHint {
+        insert: "quit",
+        display: "/quit",
+        desc_key: "cmd_exit",
+        keep_open: false,
+        help: false,
     },
 ];

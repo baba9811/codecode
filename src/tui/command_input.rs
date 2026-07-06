@@ -40,15 +40,45 @@ impl PracticodeApp {
             return Vec::new();
         };
         let query = query.to_lowercase();
-        self.command_choices()
+        let trimmed = query.trim_start();
+        let choices = self.command_choices();
+        if trimmed.is_empty() {
+            return self
+                .default_command_inserts()
+                .iter()
+                .filter_map(|insert| choices.iter().find(|hint| hint.insert == *insert).cloned())
+                .collect();
+        }
+        choices
             .into_iter()
-            .filter(|hint| hint.insert.starts_with(query.trim_start()))
+            .filter(|hint| hint.insert.starts_with(trimmed))
             .collect()
+    }
+
+    fn default_command_inserts(&self) -> &'static [&'static str] {
+        match self.mode {
+            AppMode::Home => &["learn", "problems", "profile", "help", "quit"],
+            AppMode::Problems => &[
+                "run",
+                "next",
+                "back",
+                "problems",
+                "answer",
+                "hint ",
+                "generate ",
+                "profile",
+                "home",
+            ],
+            AppMode::Learn => &["run", "next", "back", "learn", "problems", "profile", "home"],
+        }
     }
 
     pub(super) fn command_choices(&self) -> Vec<CommandChoice> {
         let mut choices = Vec::new();
         for hint in COMMAND_HINTS {
+            if matches!(hint.insert, "drill" | "next-lesson" | "prev-lesson") {
+                continue;
+            }
             if hint.insert == "effort max" && self.state.settings.ai_provider != "claude" {
                 continue;
             }

@@ -92,6 +92,9 @@ impl PracticodeApp {
     }
 
     pub(super) fn action_next(&mut self, request: &str) -> Result<()> {
+        if self.mode == AppMode::Learn {
+            return self.action_next_lesson();
+        }
         self.check_background_generation();
         let request = request.trim();
         let old_problem = self.state.current_problem.clone();
@@ -202,6 +205,9 @@ impl PracticodeApp {
     }
 
     pub(super) fn action_previous(&mut self) -> Result<()> {
+        if self.mode == AppMode::Learn {
+            return self.action_prev_lesson();
+        }
         let old_problem = self.state.current_problem.clone();
         self.problem = previous_problem(&self.root, &self.bank, &mut self.state)?;
         if self.state.current_problem == old_problem {

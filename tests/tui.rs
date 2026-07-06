@@ -243,45 +243,96 @@ fn slash_command_palette_completes_prompt_commands() {
     let mut app = PracticodeApp::new(root).unwrap();
     app.focus_command_for_test();
     app.insert_command_char_for_test('h');
+    app.insert_command_char_for_test('i');
     app.handle_key_for_test(KeyEvent::new(KeyCode::Enter, KeyModifiers::NONE))
         .unwrap();
     assert_eq!(app.command_text(), "/hint ");
 }
 
 #[test]
-fn slash_command_palette_surfaces_settings_commands() {
-    let root = tmp_root("command-palette-settings");
+fn slash_command_palette_surfaces_problem_mode_commands() {
+    let root = tmp_root("command-palette-problems");
     let mut app = PracticodeApp::new(root).unwrap();
+    app.handle_key_for_test(KeyEvent::new(KeyCode::Right, KeyModifiers::NONE))
+        .unwrap();
+    app.handle_key_for_test(KeyEvent::new(KeyCode::Enter, KeyModifiers::NONE))
+        .unwrap();
     app.focus_command_for_test();
     let suggestions = app.command_suggestions_for_test();
-    assert!(suggestions.contains(&"/code".to_string()));
+    assert!(suggestions.contains(&"/run".to_string()));
+    assert!(suggestions.contains(&"/next".to_string()));
     assert!(suggestions.contains(&"/back".to_string()));
     assert!(suggestions.contains(&"/problems".to_string()));
     assert!(suggestions.contains(&"/answer".to_string()));
-    assert!(suggestions.contains(&"/learn".to_string()));
-    assert!(suggestions.contains(&"/drill".to_string()));
-    assert!(!suggestions.contains(&"/lesson".to_string()));
+    assert!(suggestions.contains(&"/hint <request>".to_string()));
     assert!(suggestions.contains(&"/generate <request>".to_string()));
     assert!(suggestions.contains(&"/profile".to_string()));
-    assert!(suggestions.contains(&"/difficulty auto".to_string()));
-    assert!(suggestions.contains(&"/topics <list>".to_string()));
-    assert!(suggestions.contains(&"/avoid <list>".to_string()));
-    assert!(suggestions.contains(&"/generate-languages <list|all>".to_string()));
-    assert!(suggestions.contains(&"/generate-ui <list|all>".to_string()));
-    assert!(suggestions.contains(&"/language python".to_string()));
-    assert!(suggestions.contains(&"/provider codex".to_string()));
-    assert!(suggestions.contains(&"/model auto".to_string()));
-    assert!(suggestions.contains(&"/effort auto".to_string()));
-    assert!(suggestions.contains(&"/note".to_string()));
-    assert!(suggestions.contains(&"/notes".to_string()));
-    assert!(suggestions.contains(&"/hint <request>".to_string()));
+    assert!(suggestions.contains(&"/home".to_string()));
+    assert!(!suggestions.contains(&"/drill".to_string()));
+    assert!(!suggestions.contains(&"/next-lesson".to_string()));
+    assert!(!suggestions.contains(&"/prev-lesson".to_string()));
+    assert!(!suggestions.contains(&"/difficulty auto".to_string()));
+    assert!(!suggestions.contains(&"/model auto".to_string()));
+}
+
+#[test]
+fn home_command_palette_shows_entry_commands() {
+    let root = tmp_root("command-palette-home");
+    let mut app = PracticodeApp::new(root).unwrap();
+    app.focus_command_for_test();
+    let suggestions = app.command_suggestions_for_test();
+    assert_eq!(suggestions[0], "/learn");
+    assert!(suggestions.contains(&"/problems".to_string()));
+    assert!(suggestions.contains(&"/profile".to_string()));
+    assert!(suggestions.contains(&"/help".to_string()));
+    assert!(suggestions.contains(&"/quit".to_string()));
+    assert!(!suggestions.contains(&"/run".to_string()));
+}
+
+#[test]
+fn learn_command_palette_uses_run_next_back_aliases() {
+    let root = tmp_root("command-palette-learn-mode");
+    let mut app = PracticodeApp::new(root).unwrap();
+    app.handle_command_for_test("learn python").unwrap();
+    app.focus_command_for_test();
+    let suggestions = app.command_suggestions_for_test();
+    assert!(suggestions.contains(&"/run".to_string()));
+    assert!(suggestions.contains(&"/next".to_string()));
+    assert!(suggestions.contains(&"/back".to_string()));
+    assert!(suggestions.contains(&"/home".to_string()));
+    assert!(!suggestions.contains(&"/drill".to_string()));
+    assert!(!suggestions.contains(&"/next-lesson".to_string()));
+    assert!(!suggestions.contains(&"/prev-lesson".to_string()));
+}
+
+#[test]
+fn typed_secondary_command_remains_discoverable() {
+    let root = tmp_root("command-palette-typed-secondary");
+    let mut app = PracticodeApp::new(root).unwrap();
+    app.focus_command_for_test();
+    for char in "model ".chars() {
+        app.insert_command_char_for_test(char);
+    }
     assert!(
-        !suggestions
+        app.command_suggestions_for_test()
             .iter()
-            .any(|command| command.starts_with("/source"))
+            .any(|command| command.starts_with("/model"))
     );
-    assert!(!suggestions.contains(&"/lang python".to_string()));
-    assert!(!suggestions.contains(&"/note <text>".to_string()));
+}
+
+#[test]
+fn next_and_back_are_mode_aware() {
+    let root = tmp_root("mode-aware-next-back");
+    let mut app = PracticodeApp::new(root).unwrap();
+    app.handle_command_for_test("learn python").unwrap();
+    let first = app.output_for_test().to_string();
+
+    app.handle_command_for_test("next").unwrap();
+    let second = app.output_for_test().to_string();
+    assert_ne!(first, second);
+
+    app.handle_command_for_test("back").unwrap();
+    assert_eq!(app.output_for_test(), first);
 }
 
 #[test]
