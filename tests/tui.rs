@@ -448,16 +448,18 @@ fn learn_command_opens_syntax_course_separate_from_problem_mode() {
 }
 
 #[test]
-fn drill_command_validates_current_syntax_lesson() {
-    let root = tmp_root("drill-command");
+fn old_lesson_aliases_are_removed() {
+    let root = tmp_root("old-lesson-aliases-removed");
     let mut app = PracticodeApp::new(root.clone()).unwrap();
     app.handle_command_for_test("learn python").unwrap();
-    app.handle_command_for_test("drill").unwrap();
-    assert!(app.output_for_test().contains("Syntax"));
-    assert!(app.learn_result_for_test().contains("PASS"));
+    for command in ["drill", "exercise", "next-lesson", "prev-lesson"] {
+        app.handle_command_for_test(command).unwrap();
+        assert!(app.output_for_test().contains("Unknown command"));
+    }
+    assert!(app.learn_result_for_test().is_empty());
     let saved = std::fs::read_to_string(root.join(".practicode/problem-state.json")).unwrap();
-    assert!(saved.contains("\"syntax_progress\""));
-    assert!(saved.contains("py-output"));
+    assert!(saved.contains("\"python\": \"py-output\""));
+    assert!(!saved.contains("\"syntax_progress\": {\n    \"python\""));
 }
 
 #[test]

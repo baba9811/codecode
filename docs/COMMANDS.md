@@ -7,7 +7,7 @@ Type `/` outside the editor to open the command palette. Use `up/down` to move, 
 | Command | Action |
 | --- | --- |
 | `/home` | Return to the Learn syntax / Practice coding tests chooser |
-| `/run` | Judge the current submission or lesson drill |
+| `/run` | Judge the current submission or syntax exercise |
 | `/code` | Return to the code editor |
 | `/next` | In practice, open the next problem; in learn mode, open the next lesson |
 | `/back` | In practice, go back through problem history; in learn mode, open the previous lesson |
@@ -39,11 +39,9 @@ Examples:
 | Command | Action |
 | --- | --- |
 | `/learn` | Open syntax learning |
-| `/run` | Validate the current drill |
+| `/run` | Validate the current exercise |
 | `/next` | Open the next lesson |
 | `/back` | Open the previous lesson |
-
-Older lesson command names such as `/drill`, `/next-lesson`, and `/prev-lesson` still work as aliases.
 
 ## AI Help
 
