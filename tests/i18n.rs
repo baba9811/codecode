@@ -20,6 +20,9 @@ fn supported_ui_catalogs_cover_syntax_curriculum_copy() {
     for ui_language in ["ko", "ja", "zh", "es"] {
         for language in LANGUAGES {
             for lesson in syntax_lessons_for(language) {
+                if *language == "python" {
+                    continue;
+                }
                 let id = lesson.id.replace('-', "_");
                 let title_key = format!("syntax_{id}_title");
                 let body_key = format!("syntax_{id}_body");
@@ -34,4 +37,10 @@ fn supported_ui_catalogs_cover_syntax_curriculum_copy() {
             }
         }
     }
+}
+
+#[test]
+fn python_lesson_copy_is_not_stored_in_ui_catalog() {
+    assert!(ui_text("en", "syntax_py_lists_dicts_title").is_empty());
+    assert!(ui_text("ko", "syntax_py_lists_dicts_body").is_empty());
 }

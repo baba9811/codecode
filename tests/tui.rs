@@ -396,6 +396,7 @@ fn learn_command_palette_uses_run_next_back_aliases() {
     assert!(suggestions.contains(&"/run".to_string()));
     assert!(suggestions.contains(&"/next".to_string()));
     assert!(suggestions.contains(&"/back".to_string()));
+    assert!(suggestions.contains(&"/ask <question>".to_string()));
     assert!(suggestions.contains(&"/doctor".to_string()));
     assert!(suggestions.contains(&"/home".to_string()));
     assert!(!suggestions.contains(&"/drill".to_string()));
@@ -469,7 +470,7 @@ fn run_in_learn_keeps_lesson_pane_visible() {
     app.handle_command_for_test("learn python").unwrap();
     app.handle_command_for_test("run").unwrap();
     assert!(app.output_for_test().contains("Syntax"));
-    assert!(app.learn_result_for_test().contains("PASS"));
+    assert!(app.learn_result_for_test().contains("FAIL"));
     assert!(app.status_text_for_test().contains("learn"));
 }
 
@@ -491,7 +492,7 @@ fn learn_command_uses_korean_syntax_copy() {
 #[test]
 fn learn_command_uses_supported_ui_language_syntax_copy() {
     let cases = [
-        ("ko", "# 문법: 출력", "print로"),
+        ("ko", "# 문법: 출력", "표준 출력"),
         ("ja", "# 文法: 出力", "printで"),
         ("zh", "# 语法: 输出", "使用 print"),
         ("es", "# Sintaxis: Salida", "Usa print"),

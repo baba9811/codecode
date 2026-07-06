@@ -80,6 +80,12 @@ pub(super) const COMMAND_HINTS: &[CommandHint] = &[
         keep_open: true,
     },
     CommandHint {
+        insert: "ask ",
+        display: "/ask <question>",
+        desc_key: "cmd_ask",
+        keep_open: true,
+    },
+    CommandHint {
         insert: "profile",
         display: "/profile",
         desc_key: "cmd_profile",

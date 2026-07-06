@@ -499,7 +499,7 @@ mod tests {
         terminal.draw(|frame| app.draw(frame)).unwrap();
 
         assert!(app.output.contains("Syntax"));
-        assert!(app.learn_result.contains("PASS"));
+        assert!(app.learn_result.contains("FAIL"));
         assert_ne!(app.output_area, Rect::new(0, 0, 80, 20));
         assert!(app.output_area.y > app.code_area.y);
         assert_eq!(app.output_area.x, app.code_area.x);

@@ -71,7 +71,7 @@ impl PracticodeApp {
                 "home",
             ],
             AppMode::Learn => &[
-                "run", "next", "back", "learn", "problems", "profile", "doctor", "home",
+                "run", "next", "back", "ask ", "learn", "problems", "profile", "doctor", "home",
             ],
         }
     }

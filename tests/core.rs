@@ -478,6 +478,72 @@ fn render_syntax_lesson_uses_exercise_copy() {
 }
 
 #[test]
+fn py_lists_dicts_lesson_uses_rich_split_copy() {
+    let lesson = syntax_lessons_for("python")
+        .into_iter()
+        .find(|lesson| lesson.id == "py-lists-dicts")
+        .unwrap();
+    let state = AppState {
+        current_problem: "001-hello-world".to_string(),
+        settings: Settings {
+            ui_language: "ko".to_string(),
+            ..Settings::default()
+        },
+        solved: Vec::new(),
+        history: Vec::new(),
+        suggested_next_difficulty: "easy".to_string(),
+        syntax_progress: Default::default(),
+        current_syntax_lesson: Default::default(),
+    };
+
+    let rendered = render_syntax_lesson(lesson, &state);
+
+    assert!(rendered.contains("# 문법: 리스트와 딕셔너리"));
+    assert!(rendered.contains("리스트는 순서가 있는 값의 묶음"));
+    assert!(rendered.contains("인덱스"));
+    assert!(rendered.contains("키"));
+    assert!(rendered.contains("값"));
+    assert!(rendered.contains("흔한 실수"));
+    assert!(rendered.contains("자가 점검"));
+    assert!(rendered.contains("언제 리스트 대신 딕셔너리를 써야 할까요?"));
+}
+
+#[test]
+fn syntax_exercise_starter_is_not_complete_answer() {
+    let lesson = syntax_lessons_for("python")
+        .into_iter()
+        .find(|lesson| lesson.id == "py-lists-dicts")
+        .unwrap();
+
+    assert!(!lesson.exercise.starter.contains("print(sum(nums))"));
+    assert!(lesson.exercise.starter.contains("TODO"));
+}
+
+#[test]
+fn syntax_exercise_starter_preserves_user_edit() {
+    let root = tmp_root("syntax-exercise-preserve-user-edit");
+    let lesson = syntax_lessons_for("python")
+        .into_iter()
+        .find(|lesson| lesson.id == "py-lists-dicts")
+        .unwrap();
+    let dir = root
+        .join("submissions/.syntax")
+        .join(lesson.language)
+        .join(lesson.id);
+    fs::create_dir_all(&dir).unwrap();
+    let path = dir.join("exercise.py");
+    fs::write(&path, "nums = [2, 3]\nprint(0)\n").unwrap();
+
+    let ensured = ensure_syntax_submission(&root, lesson).unwrap();
+
+    assert_eq!(ensured, path);
+    assert_eq!(
+        fs::read_to_string(path).unwrap(),
+        "nums = [2, 3]\nprint(0)\n"
+    );
+}
+
+#[test]
 fn syntax_lessons_include_learning_scaffolding() {
     let state = AppState {
         current_problem: "001-hello-world".to_string(),
@@ -492,7 +558,7 @@ fn syntax_lessons_include_learning_scaffolding() {
         for lesson in syntax_lessons_for(language) {
             let rendered = render_syntax_lesson(lesson, &state);
             assert!(
-                rendered.contains("Concept") && rendered.contains("Before you run"),
+                rendered.contains("Concept") && rendered.contains("Exercise"),
                 "{} is missing learning scaffolding",
                 lesson.id
             );
@@ -502,8 +568,8 @@ fn syntax_lessons_include_learning_scaffolding() {
 }
 
 #[test]
-fn ensure_syntax_submission_migrates_legacy_drill_file() {
-    let root = tmp_root("syntax-exercise-migration");
+fn ensure_syntax_submission_does_not_migrate_legacy_drill_file() {
+    let root = tmp_root("syntax-exercise-no-migration");
     let lesson = syntax_lessons_for("python")[0];
     let dir = root
         .join("submissions/.syntax")
@@ -516,8 +582,8 @@ fn ensure_syntax_submission_migrates_legacy_drill_file() {
     let path = ensure_syntax_submission(&root, lesson).unwrap();
 
     assert_eq!(path, dir.join("exercise.py"));
-    assert_eq!(fs::read_to_string(path).unwrap(), "print('custom')\n");
-    assert!(!legacy.exists());
+    assert_eq!(fs::read_to_string(path).unwrap(), lesson.exercise.starter);
+    assert_eq!(fs::read_to_string(legacy).unwrap(), "print('custom')\n");
 }
 
 #[test]

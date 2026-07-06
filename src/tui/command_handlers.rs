@@ -126,7 +126,12 @@ impl PracticodeApp {
             }
             "effort" | "reasoning" | "ai-effort" => self.set_ai_effort(arg)?,
             "hint" if arg.is_empty() => {
-                self.start_ai_prompt("Give one concise hint for the current problem.")?
+                let prompt = if self.mode == AppMode::Learn {
+                    "Give one concise hint about the current lesson exercise without giving the full solution."
+                } else {
+                    "Give one concise hint for the current problem."
+                };
+                self.start_ai_prompt(prompt)?
             }
             "hint" | "ask" | "ai" if !arg.is_empty() => self.start_ai_prompt(arg)?,
             "note" if !arg.is_empty() => self.append_note(arg)?,

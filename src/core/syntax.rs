@@ -1,4 +1,18 @@
 use super::*;
+use std::sync::OnceLock;
+
+#[derive(Debug, Deserialize)]
+struct SyntaxLessonCopy {
+    title: String,
+    concept: String,
+    worked_example: String,
+    common_mistakes: Vec<String>,
+    self_check: Vec<String>,
+    exercise_prompt: String,
+}
+
+static PYTHON_EN_COPY: OnceLock<HashMap<String, SyntaxLessonCopy>> = OnceLock::new();
+static PYTHON_KO_COPY: OnceLock<HashMap<String, SyntaxLessonCopy>> = OnceLock::new();
 
 #[derive(Clone, Copy, Debug)]
 pub struct SyntaxCase {
@@ -76,7 +90,7 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "Output",
         "Use print for visible output.",
         "print('ok')",
-        "print('ok')\n",
+        "# TODO: print exactly ok\n",
         EMPTY_HELLO,
         PY_REFS
     ),
@@ -87,7 +101,7 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "Variables",
         "Names bind to values and can be rebound.",
         "count = 1\nprint(count)",
-        "count = 'ok'\nprint(count)\n",
+        "word = None\n# TODO: bind word to 'ok', then print word\n",
         EMPTY_HELLO,
         PY_REFS
     ),
@@ -98,7 +112,7 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "Strings",
         "Strings support len, indexing, slicing, and iteration.",
         "text = 'code'\nprint(text[:2])",
-        "text = 'ok'\nprint(text)\n",
+        "text = 'xokx'\n# TODO: use a slice to print ok\n",
         EMPTY_HELLO,
         PY_REFS
     ),
@@ -109,7 +123,7 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "Control flow",
         "Use if, for, and while to choose and repeat work.",
         "for n in range(3):\n    print(n)",
-        "if True:\n    print('ok')\n",
+        "ready = True\n# TODO: print ok only when ready is true\n",
         EMPTY_HELLO,
         PY_REFS
     ),
@@ -120,7 +134,7 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "Functions",
         "def creates reusable behavior with parameters and returns.",
         "def add(a, b):\n    return a + b",
-        "def word():\n    return 'ok'\nprint(word())\n",
+        "def word():\n    # TODO: return ok as a string\n    pass\n\nprint(word())\n",
         EMPTY_HELLO,
         PY_REFS
     ),
@@ -131,7 +145,7 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "Input parsing",
         "sys.stdin plus split handles contest-style input.",
         "import sys\nnums = list(map(int, sys.stdin.read().split()))",
-        "import sys\nprint(sys.stdin.read(), end='')\n",
+        "import sys\ntext = sys.stdin.read()\n# TODO: write text back unchanged\n",
         ECHO_CASE,
         PY_REFS
     ),
@@ -142,7 +156,7 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "Lists and dicts",
         "Lists keep order; dicts map keys to values.",
         "counts = {'a': 2}\nprint(counts['a'])",
-        "nums = [2, 3]\nprint(sum(nums))\n",
+        "nums = [2, 3]\n# TODO: print the sum of nums without hard-coding 5\n",
         SUM_CASE,
         PY_REFS
     ),
@@ -153,7 +167,7 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "Exceptions",
         "try and except handle recoverable failures.",
         "try:\n    int('x')\nexcept ValueError:\n    print('bad')",
-        "try:\n    int('x')\nexcept ValueError:\n    print('ok')\n",
+        "try:\n    int('x')\nexcept ValueError:\n    # TODO: handle the expected error by printing ok\n    pass\n",
         EMPTY_HELLO,
         PY_REFS
     ),
@@ -164,7 +178,7 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "Comprehensions",
         "Comprehensions build collections from expressions.",
         "evens = [n for n in range(5) if n % 2 == 0]",
-        "items = [o + 'k' for o in ['o']]\nprint(items[0])\n",
+        "letters = ['o', 'k']\n# TODO: build a word with a comprehension and print it\n",
         EMPTY_HELLO,
         PY_REFS
     ),
@@ -175,7 +189,7 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "Iterators and generators",
         "yield creates lazy sequences.",
         "def ones():\n    yield 1",
-        "def words():\n    yield 'ok'\nprint(next(words()))\n",
+        "def words():\n    # TODO: yield ok as a string\n    return\n\nprint(next(words()))\n",
         EMPTY_HELLO,
         PY_REFS
     ),
@@ -186,7 +200,7 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "Decorators",
         "Decorators wrap functions at definition time.",
         "def deco(fn):\n    return fn",
-        "def deco(fn):\n    return fn\n@deco\ndef word():\n    return 'ok'\nprint(word())\n",
+        "def deco(fn):\n    # TODO: return fn unchanged\n    pass\n\n@deco\ndef word():\n    return 'ok'\n\nprint(word())\n",
         EMPTY_HELLO,
         PY_REFS
     ),
@@ -197,7 +211,7 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "Context managers and type hints",
         "with manages scoped resources; annotations document expected types.",
         "from typing import Iterable\n\ndef total(xs: Iterable[int]) -> int:\n    return sum(xs)",
-        "from typing import Final\nword: Final[str] = 'ok'\nprint(word)\n",
+        "from typing import Final\nword: Final[str] = 'ok'\n# TODO: print word\n",
         EMPTY_HELLO,
         &["https://docs.python.org/3/library/contextlib.html"]
     ),
@@ -733,18 +747,6 @@ pub fn ensure_syntax_submission(root: &Path, lesson: &SyntaxLesson) -> Result<Pa
         .join(lesson.language)
         .join(lesson.id)
         .join(format!("exercise.{}", ext_for(lesson.language)));
-    let legacy_path = root
-        .join("submissions")
-        .join(".syntax")
-        .join(lesson.language)
-        .join(lesson.id)
-        .join(format!("drill.{}", ext_for(lesson.language)));
-    if !path.exists() && legacy_path.exists() {
-        if let Some(parent) = path.parent() {
-            fs::create_dir_all(parent)?;
-        }
-        fs::rename(&legacy_path, &path)?;
-    }
     if !path.exists() {
         if let Some(parent) = path.parent() {
             fs::create_dir_all(parent)?;
@@ -775,8 +777,28 @@ pub fn render_syntax_lesson(lesson: &SyntaxLesson, state: &AppState) -> String {
         ui_text(ui_language, "syntax_open")
     };
     let refs = lesson.refs.join("\n");
+    let concept = localized_syntax_body(lesson, ui_language);
+    let worked_example = localized_syntax_worked_example(lesson, ui_language);
+    let common_mistakes =
+        localized_syntax_list_section(lesson, ui_language, "syntax_common_mistakes", |copy| {
+            &copy.common_mistakes
+        });
+    let self_check =
+        localized_syntax_list_section(lesson, ui_language, "syntax_self_check", |copy| {
+            &copy.self_check
+        });
+    let extra_sections = [common_mistakes, self_check]
+        .into_iter()
+        .flatten()
+        .collect::<Vec<_>>()
+        .join("\n\n");
+    let extra_sections = if extra_sections.is_empty() {
+        String::new()
+    } else {
+        format!("\n\n{extra_sections}")
+    };
     format!(
-        "# {}: {}\n\n{}: {}\n{}: {}\n{}: {done}/{total} ({completed})\n\n## {}\n\n{}\n\n## {}\n\n```{}\n{}\n```\n\n## {}\n\n{}\n\n## {}\n\n{}",
+        "# {}: {}\n\n{}: {}\n{}: {}\n{}: {done}/{total} ({completed})\n\n## {}\n\n{}\n\n## {}\n\n{}\n{}\n\n## {}\n\n{}\n\n## {}\n\n{}",
         ui_text(ui_language, "syntax"),
         localized_syntax_title(lesson, ui_language),
         ui_text(ui_language, "syntax_language"),
@@ -785,15 +807,53 @@ pub fn render_syntax_lesson(lesson: &SyntaxLesson, state: &AppState) -> String {
         localized_syntax_level(lesson.level, ui_language),
         ui_text(ui_language, "syntax_progress"),
         ui_text(ui_language, "syntax_concept"),
-        localized_syntax_body(lesson, ui_language),
+        concept,
         ui_text(ui_language, "syntax_worked_example"),
-        lesson.language,
-        lesson.example,
+        worked_example,
+        extra_sections,
         ui_text(ui_language, "syntax_exercise"),
         localized_syntax_exercise_prompt(lesson, ui_language),
         ui_text(ui_language, "syntax_references"),
         refs
     )
+}
+
+pub fn syntax_lesson_study_context(lesson: &SyntaxLesson, ui_language: &str) -> String {
+    let common_mistakes =
+        localized_syntax_list_section(lesson, ui_language, "syntax_common_mistakes", |copy| {
+            &copy.common_mistakes
+        });
+    let self_check =
+        localized_syntax_list_section(lesson, ui_language, "syntax_self_check", |copy| {
+            &copy.self_check
+        });
+    [
+        format!(
+            "Lesson: {} ({})",
+            localized_syntax_title(lesson, ui_language),
+            lesson.id
+        ),
+        format!("Concept:\n{}", localized_syntax_body(lesson, ui_language)),
+        format!(
+            "Worked example:\n{}\n\n```{}\n{}\n```",
+            lesson_copy_for(lesson, ui_language)
+                .map(|copy| copy.worked_example.as_str())
+                .unwrap_or(""),
+            lesson.language,
+            lesson.example
+        ),
+        common_mistakes.unwrap_or_default(),
+        self_check.unwrap_or_default(),
+        format!(
+            "Exercise prompt:\n{}",
+            localized_syntax_exercise_prompt(lesson, ui_language)
+        ),
+        format!("References:\n{}", lesson.refs.join("\n")),
+    ]
+    .into_iter()
+    .filter(|section| !section.trim().is_empty())
+    .collect::<Vec<_>>()
+    .join("\n\n")
 }
 
 pub fn syntax_language_name(language: &str) -> &'static str {
@@ -814,20 +874,58 @@ fn localized_syntax_level(level: &'static str, ui_language: &str) -> &'static st
     }
 }
 
-fn localized_syntax_exercise_prompt(lesson: &SyntaxLesson, ui_language: &str) -> &'static str {
+fn localized_syntax_exercise_prompt(lesson: &SyntaxLesson, ui_language: &str) -> String {
+    if let Some(copy) = lesson_copy_for(lesson, ui_language) {
+        return copy.exercise_prompt.clone();
+    }
     if normalize_ui_language(ui_language) == "en" {
-        lesson.exercise.prompt
+        lesson.exercise.prompt.to_string()
     } else {
-        ui_text(ui_language, "syntax_exercise_prompt")
+        ui_text(ui_language, "syntax_exercise_prompt").to_string()
     }
 }
 
-fn localized_syntax_title(lesson: &SyntaxLesson, ui_language: &str) -> &'static str {
-    localized_syntax_copy(lesson, ui_language, "title").unwrap_or(lesson.title)
+fn localized_syntax_title(lesson: &SyntaxLesson, ui_language: &str) -> String {
+    lesson_copy_for(lesson, ui_language)
+        .map(|copy| copy.title.clone())
+        .or_else(|| localized_syntax_copy(lesson, ui_language, "title").map(str::to_string))
+        .unwrap_or_else(|| lesson.title.to_string())
 }
 
-fn localized_syntax_body(lesson: &SyntaxLesson, ui_language: &str) -> &'static str {
-    localized_syntax_copy(lesson, ui_language, "body").unwrap_or(lesson.body)
+fn localized_syntax_body(lesson: &SyntaxLesson, ui_language: &str) -> String {
+    lesson_copy_for(lesson, ui_language)
+        .map(|copy| copy.concept.clone())
+        .or_else(|| localized_syntax_copy(lesson, ui_language, "body").map(str::to_string))
+        .unwrap_or_else(|| lesson.body.to_string())
+}
+
+fn localized_syntax_worked_example(lesson: &SyntaxLesson, ui_language: &str) -> String {
+    let mut text = String::new();
+    if let Some(copy) = lesson_copy_for(lesson, ui_language) {
+        text.push_str(&copy.worked_example);
+        text.push_str("\n\n");
+    }
+    text.push_str(&format!("```{}\n{}\n```", lesson.language, lesson.example));
+    text
+}
+
+fn localized_syntax_list_section(
+    lesson: &SyntaxLesson,
+    ui_language: &str,
+    title_key: &str,
+    items: fn(&SyntaxLessonCopy) -> &Vec<String>,
+) -> Option<String> {
+    let copy = lesson_copy_for(lesson, ui_language)?;
+    let items = items(copy);
+    if items.is_empty() {
+        return None;
+    }
+    let body = items
+        .iter()
+        .map(|item| format!("- {item}"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    Some(format!("## {}\n\n{body}", ui_text(ui_language, title_key)))
 }
 
 fn localized_syntax_copy(
@@ -838,6 +936,25 @@ fn localized_syntax_copy(
     let key = format!("syntax_{}_{}", lesson.id.replace('-', "_"), field);
     let copy = ui_text(ui_language, &key);
     if copy.is_empty() { None } else { Some(copy) }
+}
+
+fn lesson_copy_for(lesson: &SyntaxLesson, ui_language: &str) -> Option<&'static SyntaxLessonCopy> {
+    if normalize_language(lesson.language) != "python" {
+        return None;
+    }
+    let ui_language = normalize_ui_language(ui_language);
+    let catalog = match ui_language.as_str() {
+        "ko" => PYTHON_KO_COPY
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/python.ko.json"))),
+        "en" => PYTHON_EN_COPY
+            .get_or_init(|| load_lesson_copy(include_str!("../../assets/lessons/python.en.json"))),
+        _ => return None,
+    };
+    catalog.get(lesson.id)
+}
+
+fn load_lesson_copy(text: &str) -> HashMap<String, SyntaxLessonCopy> {
+    serde_json::from_str(text).expect("valid syntax lesson copy")
 }
 
 fn normalize_syntax_ids_for(language: &str, ids: &[String]) -> Vec<String> {
