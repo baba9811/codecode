@@ -396,6 +396,7 @@ fn learn_command_palette_uses_run_next_back_aliases() {
     assert!(suggestions.contains(&"/run".to_string()));
     assert!(suggestions.contains(&"/next".to_string()));
     assert!(suggestions.contains(&"/back".to_string()));
+    assert!(suggestions.contains(&"/ask <question>".to_string()));
     assert!(suggestions.contains(&"/doctor".to_string()));
     assert!(suggestions.contains(&"/home".to_string()));
     assert!(!suggestions.contains(&"/drill".to_string()));
@@ -448,16 +449,18 @@ fn learn_command_opens_syntax_course_separate_from_problem_mode() {
 }
 
 #[test]
-fn drill_command_validates_current_syntax_lesson() {
-    let root = tmp_root("drill-command");
+fn old_lesson_aliases_are_removed() {
+    let root = tmp_root("old-lesson-aliases-removed");
     let mut app = PracticodeApp::new(root.clone()).unwrap();
     app.handle_command_for_test("learn python").unwrap();
-    app.handle_command_for_test("drill").unwrap();
-    assert!(app.output_for_test().contains("Syntax"));
-    assert!(app.learn_result_for_test().contains("PASS"));
+    for command in ["drill", "exercise", "next-lesson", "prev-lesson"] {
+        app.handle_command_for_test(command).unwrap();
+        assert!(app.output_for_test().contains("Unknown command"));
+    }
+    assert!(app.learn_result_for_test().is_empty());
     let saved = std::fs::read_to_string(root.join(".practicode/problem-state.json")).unwrap();
-    assert!(saved.contains("\"syntax_progress\""));
-    assert!(saved.contains("py-output"));
+    assert!(saved.contains("\"python\": \"py-output\""));
+    assert!(!saved.contains("\"syntax_progress\": {\n    \"python\""));
 }
 
 #[test]
@@ -467,7 +470,7 @@ fn run_in_learn_keeps_lesson_pane_visible() {
     app.handle_command_for_test("learn python").unwrap();
     app.handle_command_for_test("run").unwrap();
     assert!(app.output_for_test().contains("Syntax"));
-    assert!(app.learn_result_for_test().contains("PASS"));
+    assert!(app.learn_result_for_test().contains("FAIL"));
     assert!(app.status_text_for_test().contains("learn"));
 }
 
@@ -489,7 +492,7 @@ fn learn_command_uses_korean_syntax_copy() {
 #[test]
 fn learn_command_uses_supported_ui_language_syntax_copy() {
     let cases = [
-        ("ko", "# 문법: 출력", "print로"),
+        ("ko", "# 문법: 출력", "표준 출력"),
         ("ja", "# 文法: 出力", "printで"),
         ("zh", "# 语法: 输出", "使用 print"),
         ("es", "# Sintaxis: Salida", "Usa print"),

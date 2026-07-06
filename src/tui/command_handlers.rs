@@ -38,9 +38,6 @@ impl PracticodeApp {
             "home" => self.action_home()?,
             "doctor" => self.action_doctor(),
             "learn" => self.action_learn(arg)?,
-            "drill" => self.action_drill()?,
-            "next-lesson" => self.action_next_lesson()?,
-            "prev-lesson" => self.action_prev_lesson()?,
             "next" | "n" => self.action_next(arg)?,
             "generate" | "gen" | "new" => self.action_generate(arg),
             "back" | "prev" | "previous" | "p" => self.action_previous()?,
@@ -129,7 +126,12 @@ impl PracticodeApp {
             }
             "effort" | "reasoning" | "ai-effort" => self.set_ai_effort(arg)?,
             "hint" if arg.is_empty() => {
-                self.start_ai_prompt("Give one concise hint for the current problem.")?
+                let prompt = if self.mode == AppMode::Learn {
+                    "Give one concise hint about the current lesson exercise without giving the full solution."
+                } else {
+                    "Give one concise hint for the current problem."
+                };
+                self.start_ai_prompt(prompt)?
             }
             "hint" | "ask" | "ai" if !arg.is_empty() => self.start_ai_prompt(arg)?,
             "note" if !arg.is_empty() => self.append_note(arg)?,

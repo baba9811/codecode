@@ -3,10 +3,10 @@ mod common;
 use common::{tmp_root, two_problem_bank};
 use practicode::{
     core::{
-        AppState, HistoryItem, Settings, ensure_submission, judge, load_bank, load_state,
-        localized, next_problem, parse_language_list, parse_ui_language_list, problem_by_id,
-        record_pass, render_problem, render_problem_tui, save_bank, save_state, syntax_lessons_for,
-        syntax_progress_count,
+        AppState, HistoryItem, LANGUAGES, Settings, ensure_submission, ensure_syntax_submission,
+        judge, load_bank, load_state, localized, next_problem, parse_language_list,
+        parse_ui_language_list, problem_by_id, record_pass, render_problem, render_problem_tui,
+        render_syntax_lesson, save_bank, save_state, syntax_lessons_for, syntax_progress_count,
     },
     process::which,
     text::render_markdown_plain,
@@ -445,11 +445,234 @@ fn syntax_curriculum_covers_basic_to_advanced_for_every_supported_language() {
         assert_eq!(
             lessons
                 .iter()
-                .filter(|lesson| lesson.drill.cases.is_empty())
+                .filter(|lesson| lesson.exercise.cases.is_empty())
                 .count(),
             0
         );
     }
+}
+
+#[test]
+fn render_syntax_lesson_uses_exercise_copy() {
+    let lesson = syntax_lessons_for("python")[0];
+    let state = AppState {
+        current_problem: "001-hello-world".to_string(),
+        settings: Settings::default(),
+        solved: Vec::new(),
+        history: Vec::new(),
+        suggested_next_difficulty: "easy".to_string(),
+        syntax_progress: Default::default(),
+        current_syntax_lesson: Default::default(),
+    };
+    let english = render_syntax_lesson(lesson, &state);
+    assert!(english.contains("Worked example"));
+    assert!(english.contains("Exercise"));
+    assert!(!english.contains("Drill"));
+
+    let mut ko_state = state.clone();
+    ko_state.settings.ui_language = "ko".to_string();
+    let korean = render_syntax_lesson(lesson, &ko_state);
+    assert!(korean.contains("풀이 예제"));
+    assert!(korean.contains("실습"));
+    assert!(!korean.contains("예제 풀이"));
+}
+
+#[test]
+fn lessons_use_rich_split_copy_for_all_code_languages() {
+    let state = AppState {
+        current_problem: "001-hello-world".to_string(),
+        settings: Settings {
+            ui_language: "ko".to_string(),
+            ..Settings::default()
+        },
+        solved: Vec::new(),
+        history: Vec::new(),
+        suggested_next_difficulty: "easy".to_string(),
+        syntax_progress: Default::default(),
+        current_syntax_lesson: Default::default(),
+    };
+
+    for (ui_language, language, id, title, concept, mistakes, check) in [
+        (
+            "ko",
+            "ts",
+            "ts-arrays-objects",
+            "# 문법: 배열과 객체",
+            "배열은 순서가 있는 값의 묶음",
+            "흔한 실수",
+            "자가 점검",
+        ),
+        (
+            "ja",
+            "java",
+            "java-arrays-collections",
+            "# 文法: 配列とコレクション",
+            "配列は長さが固定された値のまとまり",
+            "よくある間違い",
+            "セルフチェック",
+        ),
+        (
+            "zh",
+            "rust",
+            "rust-vec-hashmap",
+            "# 语法: Vec 和 HashMap",
+            "Vec 保存有顺序的值",
+            "常见错误",
+            "自我检查",
+        ),
+        (
+            "es",
+            "python",
+            "py-lists-dicts",
+            "# Sintaxis: Listas y diccionarios",
+            "Las listas guardan valores en orden",
+            "Errores frecuentes",
+            "Autoevaluación",
+        ),
+    ] {
+        let mut state = state.clone();
+        state.settings.ui_language = ui_language.to_string();
+        let lesson = syntax_lessons_for(language)
+            .into_iter()
+            .find(|lesson| lesson.id == id)
+            .unwrap();
+        let rendered = render_syntax_lesson(lesson, &state);
+
+        assert!(
+            rendered.contains(title),
+            "{ui_language}:{language}: {rendered}"
+        );
+        assert!(
+            rendered.contains(concept),
+            "{ui_language}:{language}: {rendered}"
+        );
+        assert!(
+            rendered.contains(mistakes),
+            "{ui_language}:{language}: {rendered}"
+        );
+        assert!(
+            rendered.contains(check),
+            "{ui_language}:{language}: {rendered}"
+        );
+    }
+}
+
+#[test]
+fn split_lesson_copy_covers_every_lesson_in_every_ui_language() {
+    for (ui_language, mistakes, check) in [
+        ("en", "Common mistakes", "Self-check"),
+        ("ko", "흔한 실수", "자가 점검"),
+        ("ja", "よくある間違い", "セルフチェック"),
+        ("zh", "常见错误", "自我检查"),
+        ("es", "Errores frecuentes", "Autoevaluación"),
+    ] {
+        let state = AppState {
+            current_problem: "001-hello-world".to_string(),
+            settings: Settings {
+                ui_language: ui_language.to_string(),
+                ..Settings::default()
+            },
+            solved: Vec::new(),
+            history: Vec::new(),
+            suggested_next_difficulty: "easy".to_string(),
+            syntax_progress: Default::default(),
+            current_syntax_lesson: Default::default(),
+        };
+
+        for language in ["python", "ts", "java", "rust"] {
+            for lesson in syntax_lessons_for(language) {
+                let rendered = render_syntax_lesson(lesson, &state);
+                assert!(rendered.contains(mistakes), "{ui_language}:{}", lesson.id);
+                assert!(rendered.contains(check), "{ui_language}:{}", lesson.id);
+            }
+        }
+    }
+}
+
+#[test]
+fn syntax_exercise_starters_require_user_edit_for_every_language() {
+    for language in LANGUAGES {
+        for lesson in syntax_lessons_for(language) {
+            assert!(
+                lesson.exercise.starter.contains("TODO"),
+                "{} starter should require a user edit",
+                lesson.id
+            );
+            assert_ne!(
+                lesson.exercise.starter.trim(),
+                lesson.example.trim(),
+                "{} starter should not be the worked example",
+                lesson.id
+            );
+        }
+    }
+}
+
+#[test]
+fn syntax_exercise_starter_preserves_user_edit() {
+    let root = tmp_root("syntax-exercise-preserve-user-edit");
+    let lesson = syntax_lessons_for("python")
+        .into_iter()
+        .find(|lesson| lesson.id == "py-lists-dicts")
+        .unwrap();
+    let dir = root
+        .join("submissions/.syntax")
+        .join(lesson.language)
+        .join(lesson.id);
+    fs::create_dir_all(&dir).unwrap();
+    let path = dir.join("exercise.py");
+    fs::write(&path, "nums = [2, 3]\nprint(0)\n").unwrap();
+
+    let ensured = ensure_syntax_submission(&root, lesson).unwrap();
+
+    assert_eq!(ensured, path);
+    assert_eq!(
+        fs::read_to_string(path).unwrap(),
+        "nums = [2, 3]\nprint(0)\n"
+    );
+}
+
+#[test]
+fn syntax_lessons_include_learning_scaffolding() {
+    let state = AppState {
+        current_problem: "001-hello-world".to_string(),
+        settings: Settings::default(),
+        solved: Vec::new(),
+        history: Vec::new(),
+        suggested_next_difficulty: "easy".to_string(),
+        syntax_progress: Default::default(),
+        current_syntax_lesson: Default::default(),
+    };
+    for language in ["python", "ts", "java", "rust"] {
+        for lesson in syntax_lessons_for(language) {
+            let rendered = render_syntax_lesson(lesson, &state);
+            assert!(
+                rendered.contains("Concept") && rendered.contains("Exercise"),
+                "{} is missing learning scaffolding",
+                lesson.id
+            );
+            assert!(!lesson.refs.is_empty(), "{} has no references", lesson.id);
+        }
+    }
+}
+
+#[test]
+fn ensure_syntax_submission_does_not_migrate_legacy_drill_file() {
+    let root = tmp_root("syntax-exercise-no-migration");
+    let lesson = syntax_lessons_for("python")[0];
+    let dir = root
+        .join("submissions/.syntax")
+        .join(lesson.language)
+        .join(lesson.id);
+    fs::create_dir_all(&dir).unwrap();
+    let legacy = dir.join("drill.py");
+    fs::write(&legacy, "print('custom')\n").unwrap();
+
+    let path = ensure_syntax_submission(&root, lesson).unwrap();
+
+    assert_eq!(path, dir.join("exercise.py"));
+    assert_eq!(fs::read_to_string(path).unwrap(), lesson.exercise.starter);
+    assert_eq!(fs::read_to_string(legacy).unwrap(), "print('custom')\n");
 }
 
 #[test]

@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://practicode.local/schemas/lesson-catalog.schema.json",
+  "title": "Practicode Lesson Catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "programming_language",
+    "ui_language",
+    "lessons"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "programming_language": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ui_language": {
+      "type": "string",
+      "enum": [
+        "en",
+        "ko",
+        "ja",
+        "zh",
+        "es"
+      ]
+    },
+    "lessons": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/lessonCopy"
+      }
+    }
+  },
+  "$defs": {
+    "lessonCopy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "concept",
+        "worked_example",
+        "common_mistakes",
+        "self_check",
+        "exercise_prompt"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "concept": {
+          "type": "string",
+          "minLength": 45
+        },
+        "worked_example": {
+          "type": "string",
+          "minLength": 45
+        },
+        "common_mistakes": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "string",
+            "minLength": 12
+          }
+        },
+        "self_check": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "string",
+            "minLength": 12
+          }
+        },
+        "exercise_prompt": {
+          "type": "string",
+          "minLength": 45
+        }
+      }
+    }
+  }
+}

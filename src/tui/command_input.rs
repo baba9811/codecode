@@ -71,7 +71,7 @@ impl PracticodeApp {
                 "home",
             ],
             AppMode::Learn => &[
-                "run", "next", "back", "learn", "problems", "profile", "doctor", "home",
+                "run", "next", "back", "ask ", "learn", "problems", "profile", "doctor", "home",
             ],
         }
     }
@@ -79,9 +79,6 @@ impl PracticodeApp {
     pub(super) fn command_choices(&self) -> Vec<CommandChoice> {
         let mut choices = Vec::new();
         for hint in COMMAND_HINTS {
-            if !hint.help && matches!(hint.insert, "drill" | "next-lesson" | "prev-lesson") {
-                continue;
-            }
             if hint.insert == "effort max" && self.state.settings.ai_provider != "claude" {
                 continue;
             }

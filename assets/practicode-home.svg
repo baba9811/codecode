@@ -12,7 +12,7 @@
 
   <text x="96" y="208" fill="#f8fafc" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="22" font-weight="700">&gt; Learn syntax</text>
   <text x="126" y="242" fill="#c8d3f5" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="18">Read a short syntax lesson.</text>
-  <text x="126" y="274" fill="#c8d3f5" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="18">Validate the drill.</text>
+  <text x="126" y="274" fill="#c8d3f5" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="18">Validate the exercise.</text>
 
   <text x="96" y="344" fill="#f8fafc" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="22" font-weight="700">  Practice coding tests</text>
   <text x="126" y="378" fill="#c8d3f5" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="18">Solve stdin/stdout problems.</text>
@@ -24,7 +24,7 @@
   <text x="694" y="244" fill="#c8d3f5" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="18">Progress: 0/12</text>
 
   <rect x="694" y="306" width="368" height="98" rx="4" fill="#101d28" stroke="#29495a"/>
-  <text x="718" y="346" fill="#7dd3fc" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="17">/run validates drills</text>
+  <text x="718" y="346" fill="#7dd3fc" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="17">/run validates exercises</text>
   <text x="718" y="382" fill="#7dd3fc" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="17">/next opens the next lesson</text>
 
   <rect x="76" y="580" width="1046" height="30" fill="#152033"/>

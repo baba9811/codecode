@@ -1,7 +1,8 @@
 use crate::{
     core::{
         AppState, CLAUDE_AI_EFFORTS, LANGUAGES, PROBLEM_NOTES_PATH, Problem, Settings,
-        UI_LANGUAGES, ensure_submission, normalize_ai_provider, render_problem,
+        SyntaxLesson, UI_LANGUAGES, ensure_submission, ensure_syntax_submission,
+        normalize_ai_provider, render_problem, syntax_lesson_study_context,
     },
     process::{run_capture, sh_quote, shell_process, unique_temp_path, which},
 };
@@ -25,6 +26,27 @@ const CODEX_MODEL_FALLBACKS: &[&str] =
     &["gpt-5.5", "gpt-5.4", "gpt-5.4-mini", "gpt-5.3-codex-spark"];
 const CLAUDE_MODEL_FALLBACKS: &[&str] = &["sonnet", "opus", "fable", "claude-fable-5"];
 
+pub fn build_lesson_ai_prompt(
+    lesson: &SyntaxLesson,
+    settings: &Settings,
+    prompt: &str,
+    relative: &str,
+    code: &str,
+    latest_result: &str,
+) -> String {
+    let latest_result = if latest_result.trim().is_empty() {
+        "(none yet)"
+    } else {
+        latest_result.trim()
+    };
+    format!(
+        "You are a concise Socratic programming tutor for the current syntax lesson. Answer conceptual questions about the lesson, worked example, and learner's current exercise. Prefer explanation, guiding questions, and tiny examples. Do not give the full exercise solution unless the user explicitly asks for the answer.\n\nUser question:\n{prompt}\n\nCurrent syntax lesson context:\n{}\n\nCurrent {} exercise ({relative}):\n```{}\n{code}\n```\n\nLatest validation result:\n{latest_result}",
+        syntax_lesson_study_context(lesson, &settings.ui_language),
+        settings.language,
+        settings.language
+    )
+}
+
 pub fn run_ai_prompt(root: &Path, problem: &Problem, settings: &Settings, prompt: &str) -> String {
     let solution = match ensure_submission(root, problem, settings) {
         Ok(path) => path,
@@ -42,6 +64,31 @@ pub fn run_ai_prompt(root: &Path, problem: &Problem, settings: &Settings, prompt
         settings.language,
         settings.language
     );
+    match normalize_ai_provider(&settings.ai_provider).as_str() {
+        "claude" => run_claude_prompt(root, settings, &full_prompt),
+        _ => run_codex_prompt(root, settings, &full_prompt),
+    }
+}
+
+pub fn run_ai_lesson_prompt(
+    root: &Path,
+    lesson: &SyntaxLesson,
+    settings: &Settings,
+    prompt: &str,
+    latest_result: &str,
+) -> String {
+    let exercise = match ensure_syntax_submission(root, lesson) {
+        Ok(path) => path,
+        Err(error) => return format!("AI prompt failed\n{error}"),
+    };
+    let code = fs::read_to_string(&exercise).unwrap_or_default();
+    let relative = exercise
+        .strip_prefix(root)
+        .unwrap_or(&exercise)
+        .display()
+        .to_string();
+    let full_prompt =
+        build_lesson_ai_prompt(lesson, settings, prompt, &relative, &code, latest_result);
     match normalize_ai_provider(&settings.ai_provider).as_str() {
         "claude" => run_claude_prompt(root, settings, &full_prompt),
         _ => run_codex_prompt(root, settings, &full_prompt),
@@ -177,7 +224,7 @@ pub fn default_ai_next_prompt(request: &str) -> String {
 
 pub fn default_ai_next_prompt_with_settings(settings: &Settings, request: &str) -> String {
     format!(
-        "Read AGENTS.md, docs/problem-authoring-notes.md if present, .practicode/problem_notes.md if present, problems/INDEX.md if present, .practicode/problem_bank.json if present, and .practicode/problem-state.json. Create exactly one new non-duplicate coding practice problem. The built-in 001-hello-world already exists, so do not duplicate it. User request: {}. User profile: difficulty preference: {}; preferred topics: {}; avoid topics: {}; code language: {}; UI language: {}; generated answer languages: {}; generated UI languages: {}. Treat difficulty auto as gradual progression from state; otherwise prefer the requested difficulty unless the direct user request conflicts. Make the smallest valid edits: update .practicode/problem_bank.json, one problem directory, problems/INDEX.md, and .practicode/problem-state.json. Do not include the answer in the problem statement.",
+        "Read AGENTS.md, docs/problem-authoring-notes.md if present, .practicode/problem_notes.md if present, problems/INDEX.md if present, .practicode/problem_bank.json if present, and .practicode/problem-state.json. Create exactly one new non-duplicate coding practice problem. The built-in 001-hello-world already exists, so do not duplicate it. User request: {}. User profile: difficulty preference: {}; preferred topics: {}; avoid topics: {}; code language: {}; UI language: {}; generated answer languages: {}; generated UI languages: {}. Treat difficulty auto as gradual progression from state; otherwise prefer the requested difficulty unless the direct user request conflicts. Make the smallest valid edits: update .practicode/problem_bank.json, one problem directory, problems/INDEX.md, and .practicode/problem-state.json. Do not include the answer in the problem statement. Do not create solution.*, test_solution.*, or any answer-revealing file inside the problem directory.",
         if request.is_empty() {
             "(none)"
         } else {
@@ -195,7 +242,7 @@ pub fn default_ai_next_prompt_with_settings(settings: &Settings, request: &str) 
 
 pub fn default_ai_generate_prompt_with_settings(settings: &Settings, request: &str) -> String {
     format!(
-        "Read AGENTS.md, docs/problem-authoring-notes.md if present, .practicode/problem_notes.md if present, problems/INDEX.md if present, .practicode/problem_bank.json if present, and .practicode/problem-state.json. Create exactly one new non-duplicate coding practice problem for later use. The built-in 001-hello-world already exists, so do not duplicate it. User request: {}. User profile: difficulty preference: {}; preferred topics: {}; avoid topics: {}; current code language: {}; current UI language: {}; generated answer languages: {}; generated UI languages: {}. Treat difficulty auto as gradual progression from state; otherwise prefer the requested difficulty unless the direct user request conflicts. Make the smallest valid edits: update .practicode/problem_bank.json, one problem directory, and problems/INDEX.md. Preserve .practicode/problem-state.json current_problem, history, solved, and settings; do not switch the current problem. Do not include the answer in the problem statement.",
+        "Read AGENTS.md, docs/problem-authoring-notes.md if present, .practicode/problem_notes.md if present, problems/INDEX.md if present, .practicode/problem_bank.json if present, and .practicode/problem-state.json. Create exactly one new non-duplicate coding practice problem for later use. The built-in 001-hello-world already exists, so do not duplicate it. User request: {}. User profile: difficulty preference: {}; preferred topics: {}; avoid topics: {}; current code language: {}; current UI language: {}; generated answer languages: {}; generated UI languages: {}. Treat difficulty auto as gradual progression from state; otherwise prefer the requested difficulty unless the direct user request conflicts. Make the smallest valid edits: update .practicode/problem_bank.json, one problem directory, and problems/INDEX.md. Preserve .practicode/problem-state.json current_problem, history, solved, and settings; do not switch the current problem. Do not include the answer in the problem statement. Do not create solution.*, test_solution.*, or any answer-revealing file inside the problem directory.",
         if request.is_empty() {
             "(none)"
         } else {

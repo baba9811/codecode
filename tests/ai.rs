@@ -3,11 +3,11 @@ mod common;
 use common::tmp_root;
 use practicode::{
     ai::{
-        append_problem_note, default_ai_generate_prompt_with_settings, default_ai_next_command,
-        default_ai_next_prompt, default_ai_next_prompt_with_settings, provider_status,
-        read_problem_notes, run_ai_next,
+        append_problem_note, build_lesson_ai_prompt, default_ai_generate_prompt_with_settings,
+        default_ai_next_command, default_ai_next_prompt, default_ai_next_prompt_with_settings,
+        provider_status, read_problem_notes, run_ai_next,
     },
-    core::{AppState, Settings},
+    core::{AppState, Settings, syntax_lessons_for},
 };
 use std::fs;
 
@@ -54,6 +54,17 @@ fn default_ai_prompts_include_generation_language_scope() {
     let background = default_ai_generate_prompt_with_settings(&settings, "strings");
     assert!(background.contains("for later use"));
     assert!(background.contains("Preserve .practicode/problem-state.json current_problem"));
+}
+
+#[test]
+fn default_ai_prompts_forbid_answer_files_in_problem_dirs() {
+    let next = default_ai_next_prompt("arrays");
+    assert!(next.contains("Do not create solution.*"));
+    assert!(next.contains("test_solution.*"));
+
+    let background = default_ai_generate_prompt_with_settings(&Settings::default(), "arrays");
+    assert!(background.contains("Do not create solution.*"));
+    assert!(background.contains("test_solution.*"));
 }
 
 #[test]
@@ -106,6 +117,36 @@ fn provider_status_reports_cli_and_daemon_state() {
             || status.contains("Install Codex CLI")
             || status.contains("codex exec")
     );
+}
+
+#[test]
+fn lesson_ask_prompt_uses_lesson_tutor_context() {
+    let lesson = syntax_lessons_for("python")
+        .into_iter()
+        .find(|lesson| lesson.id == "py-lists-dicts")
+        .unwrap();
+    let prompt = build_lesson_ai_prompt(
+        lesson,
+        &Settings {
+            language: "python".to_string(),
+            ui_language: "ko".to_string(),
+            ..Settings::default()
+        },
+        "딕셔너리 키가 왜 필요한지 모르겠어",
+        "submissions/.syntax/python/py-lists-dicts/exercise.py",
+        "nums = [2, 3]\n# TODO: nums의 합계를 출력하세요.\n",
+        "FAIL 0/1\nExpected 5, got empty output.",
+    );
+
+    assert!(prompt.contains("Socratic programming tutor"));
+    assert!(prompt.contains("current syntax lesson"));
+    assert!(prompt.contains("딕셔너리 키가 왜 필요한지 모르겠어"));
+    assert!(prompt.contains("py-lists-dicts"));
+    assert!(prompt.contains("리스트와 딕셔너리"));
+    assert!(prompt.contains("submissions/.syntax/python/py-lists-dicts/exercise.py"));
+    assert!(prompt.contains("FAIL 0/1"));
+    assert!(prompt.contains("Do not give the full exercise solution"));
+    assert!(!prompt.contains("current problem"));
 }
 
 #[test]

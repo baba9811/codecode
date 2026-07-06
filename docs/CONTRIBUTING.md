@@ -69,11 +69,13 @@ make test
 | Path | Role |
 | --- | --- |
 | `src/core.rs` | Problem storage, state, rendering, judging |
+| `src/core/syntax.rs` | Built-in syntax lessons, exercises, and lesson-copy loading |
 | `src/i18n.rs` | Loads UI strings from `assets/i18n/*.json` |
 | `src/tui.rs` | Ratatui app, editor, command parser |
 | `src/ai.rs` | Codex/Claude command integration and notes |
 | `src/text.rs` | UTF-8 cursor math and Hangul composition |
 | `src/process.rs` | Process execution helpers |
+| `assets/lessons/` | Syntax lesson study copy split by programming language and UI language |
 | `tests/` | Integration tests split by module |
 
 ## Change Guidelines
@@ -83,6 +85,7 @@ make test
 - Prefer the Rust standard library. Add crates only when they remove real complexity.
 - Put UI strings in [assets/i18n](../assets/i18n), not inline in Rust code.
 - Keep English localization complete first; other locales can be partial because the runtime falls back per key to English.
+- Put syntax lesson study copy in [assets/lessons](../assets/lessons). Unlike UI strings, lesson copy is required for every supported UI language.
 - Keep the root [README](../README.md) focused on users.
 - Use relative links for repo-local docs and assets.
 

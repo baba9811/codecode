@@ -64,6 +64,7 @@ Socket.dev indexes the npm package page at <https://socket.dev/npm/package/pract
 | [CONTRIBUTING.md](CONTRIBUTING.md) | External contributors opening issues or pull requests |
 | [MAINTAINING.md](MAINTAINING.md) | Maintainers reviewing, triaging, and releasing |
 | [problem-authoring-notes.md](problem-authoring-notes.md) | AI/local problem generation rules |
+| [../assets/lessons/README.md](../assets/lessons/README.md) | Syntax lesson catalog layout and required fields |
 
 ## Maintainer References
 

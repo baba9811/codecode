@@ -12,10 +12,17 @@ impl PracticodeApp {
         let root = self.root.clone();
         let problem = self.problem.clone();
         let settings = self.state.settings.clone();
+        let mode = self.mode;
+        let lesson = current_syntax_lesson(&self.state, &self.state.settings.language);
+        let latest_result = self.learn_result.clone();
         let prompt = prompt.to_string();
         let (tx, rx) = mpsc::channel();
         thread::spawn(move || {
-            let output = run_ai_prompt(&root, &problem, &settings, &prompt);
+            let output = if mode == AppMode::Learn {
+                run_ai_lesson_prompt(&root, lesson, &settings, &prompt, &latest_result)
+            } else {
+                run_ai_prompt(&root, &problem, &settings, &prompt)
+            };
             let _ = tx.send(TaskResult::AiPrompt(output));
         });
         self.task_rx = Some(rx);
