@@ -40,6 +40,7 @@ Examples:
 | --- | --- |
 | `/learn` | Open syntax learning |
 | `/run` | Validate the current exercise |
+| `/ask <question>` | Ask about the current lesson, worked example, or exercise |
 | `/next` | Open the next lesson |
 | `/back` | Open the previous lesson |
 
@@ -47,6 +48,7 @@ Examples:
 
 | Command | Action |
 | --- | --- |
+| `/ask <question>` | In learn mode, ask about the current lesson; in practice mode, ask about the current problem and submission |
 | `/hint` | Ask the selected AI for a concise hint |
 | `/hint <request>` | Ask about the current problem and submission |
 | `/provider codex` | Use Codex |

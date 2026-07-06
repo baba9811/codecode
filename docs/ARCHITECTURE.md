@@ -11,6 +11,7 @@ Practicode is local-first: user data stays under `.practicode/`, `problems/`, an
 - `src/core/language.rs` owns language/provider normalization, templates, and extension mapping.
 - `src/core/render.rs` owns plain/markdown problem rendering.
 - `src/core/judge.rs` owns submission file creation, runtime commands, compilation, and judging.
+- `src/core/syntax.rs` owns built-in syntax lesson ordering, starter exercises, localized lesson-copy loading, and syntax progress helpers.
 - `src/core/progress.rs` owns give-up/next/previous/pass history transitions.
 - `src/core/problem_files.rs` owns generated problem README/index file writes.
 - `src/core/profile.rs` owns user-profile defaults and normalization helpers.
@@ -30,12 +31,15 @@ Practicode is local-first: user data stays under `.practicode/`, `problems/`, an
 - `src/ai.rs` owns provider commands, daemon/model checks, and AI prompts for foreground `/next` generation and background `/generate` prefetch.
 - `src/update.rs` owns update checks.
 - `src/text.rs` owns terminal text editing and markdown/plain rendering helpers.
+- `assets/i18n/*.json` stores UI labels and command text.
+- `assets/lessons/<programming-language>/<ui-language>.json` stores required lesson study copy. See [../assets/lessons/README.md](../assets/lessons/README.md).
 
 ## Extension Rules
 
 - Add domain logic under the owning nested module first; keep `core.rs` and `tui.rs` as facades/shells, not catch-alls.
 - Add user-visible commands in `src/tui/commands.rs`, then route behavior in `PracticodeApp::handle_command`.
 - Add persisted user profile settings to `Settings`, normalize them in `normalize_settings`, and cover old-state compatibility with tests.
+- Add syntax lesson copy under `assets/lessons/<programming-language>/<ui-language>.json`; every supported UI language must define the required study fields.
 - Keep provider-specific behavior in `src/ai.rs`; TUI should ask for status or start tasks, not know provider internals.
 - Keep foreground and background generation flows separate: `/next` may block when no local problem exists, while `/generate` must preserve the current problem and user profile state.
 - Keep output panes copy-friendly. Mouse capture should be enabled for the visible code editor, but disabled while output, hints, answers, lists, or settings panels are shown so terminal drag selection keeps working.

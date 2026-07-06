@@ -161,7 +161,7 @@ npm start
 On first run, choose a mode:
 
 ```text
-Learn syntax: read a short lesson, study the worked example, edit the exercise, /run, then /next
+Learn syntax: study the concept, worked example, mistakes, and self-check; use /ask when stuck; edit the exercise, /run, then /next
 Practice coding tests: write code, Esc, /run, then /next when it passes
 ```
 
@@ -177,6 +177,7 @@ Most-used commands:
 | --- | --- |
 | `/home` | Return to the mode chooser |
 | `/run` | Judge the current submission or syntax exercise |
+| `/ask <question>` | Ask AI about the current lesson or problem without leaving the TUI |
 | `/next` | Open the next problem or lesson |
 | `/back` | Go to the previous problem or lesson |
 | `/doctor` | Check local runtimes and show install hints |
