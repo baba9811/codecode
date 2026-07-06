@@ -27,10 +27,10 @@
   <text x="718" y="346" fill="#7dd3fc" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="17">/run validates drills</text>
   <text x="718" y="382" fill="#7dd3fc" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="17">/next opens the next lesson</text>
 
-  <rect x="76" y="588" width="1046" height="30" fill="#152033"/>
-  <text x="94" y="609" fill="#c8d3f5" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="700">PRACTICODE | home | Arrows choose | Enter/Space open | / commands</text>
+  <rect x="76" y="580" width="1046" height="30" fill="#152033"/>
+  <text x="94" y="601" fill="#c8d3f5" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="700">PRACTICODE | home | Arrows choose | Enter/Space open | / commands</text>
 
-  <rect x="76" y="632" width="1046" height="48" rx="2" fill="#0b1017" stroke="#00c2d1" stroke-width="2"/>
-  <text x="94" y="653" fill="#16d6e8" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="700">Command</text>
-  <text x="94" y="670" fill="#64748b" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="18">Type /, move with up/down, Enter runs</text>
+  <rect x="76" y="622" width="1046" height="48" rx="2" fill="#0b1017" stroke="#00c2d1" stroke-width="2"/>
+  <text x="94" y="643" fill="#16d6e8" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="700">Command</text>
+  <text x="94" y="660" fill="#64748b" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="18">Type /, move with up/down, Enter runs</text>
 </svg>
