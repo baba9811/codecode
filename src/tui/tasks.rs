@@ -1,5 +1,7 @@
 use super::*;
 
+const UPDATE_CHECKING_TEXT: &str = "Checking for updates...";
+
 impl PracticodeApp {
     pub(super) fn start_ai_prompt(&mut self, prompt: &str) -> Result<()> {
         if self.task_rx.is_some() {
@@ -82,6 +84,7 @@ impl PracticodeApp {
 
     pub(super) fn check_update(&mut self) {
         let result = self.update_rx.as_ref().and_then(|rx| rx.try_recv().ok());
+        let showing_update_check = self.output == UPDATE_CHECKING_TEXT;
         if let Some(result) = result {
             self.update_rx = None;
             self.update_check = Some(result.clone());
@@ -89,6 +92,9 @@ impl PracticodeApp {
                 UpdateCheck::Available(version) => self.update_notice = Some(version.clone()),
                 UpdateCheck::Current | UpdateCheck::Disabled => self.update_notice = None,
                 UpdateCheck::Failed => {}
+            }
+            if showing_update_check {
+                self.show_update_notice();
             }
         }
     }
@@ -287,7 +293,7 @@ impl PracticodeApp {
                 ui_text(&lang, "update_available")
             ));
         } else if self.update_rx.is_some() {
-            self.write_text_output("Checking for updates...");
+            self.write_text_output(UPDATE_CHECKING_TEXT);
         } else if matches!(self.update_check, Some(UpdateCheck::Disabled)) {
             self.write_text_output(ui_text(&lang, "update_check_disabled"));
         } else if matches!(self.update_check, Some(UpdateCheck::Failed)) {
@@ -311,5 +317,25 @@ impl PracticodeApp {
             self.write_text_output(&format!("Problem notes ({PROBLEM_NOTES_PATH})\n\n{notes}"));
         }
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn update_check_refreshes_visible_checking_notice() {
+        let root = crate::process::unique_temp_path("practicode-update-test", "dir");
+        std::fs::create_dir_all(&root).unwrap();
+        let mut app = PracticodeApp::new(root).unwrap();
+        let (tx, rx) = std::sync::mpsc::channel();
+        tx.send(UpdateCheck::Disabled).unwrap();
+        app.update_rx = Some(rx);
+        app.write_text_output(UPDATE_CHECKING_TEXT);
+
+        app.check_update();
+
+        assert_eq!(app.output, ui_text("en", "update_check_disabled"));
     }
 }
