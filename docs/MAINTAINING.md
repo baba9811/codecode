@@ -60,6 +60,7 @@ Socket.dev indexes the npm package page at <https://socket.dev/npm/package/pract
 | File | Audience |
 | --- | --- |
 | [../README.md](../README.md) | Users installing and running practicode |
+| [COMMANDS.md](COMMANDS.md) | Users looking up slash commands and aliases |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | External contributors opening issues or pull requests |
 | [MAINTAINING.md](MAINTAINING.md) | Maintainers reviewing, triaging, and releasing |
 | [problem-authoring-notes.md](problem-authoring-notes.md) | AI/local problem generation rules |
