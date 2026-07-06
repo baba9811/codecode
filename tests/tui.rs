@@ -166,10 +166,11 @@ fn slash_command_palette_surfaces_settings_commands() {
     assert!(suggestions.contains(&"/back".to_string()));
     assert!(suggestions.contains(&"/problems".to_string()));
     assert!(suggestions.contains(&"/answer".to_string()));
+    assert!(suggestions.contains(&"/learn".to_string()));
+    assert!(suggestions.contains(&"/drill".to_string()));
+    assert!(!suggestions.contains(&"/lesson".to_string()));
     assert!(suggestions.contains(&"/generate <request>".to_string()));
     assert!(suggestions.contains(&"/profile".to_string()));
-    assert!(suggestions.contains(&"/lesson".to_string()));
-    assert!(suggestions.contains(&"/lesson all".to_string()));
     assert!(suggestions.contains(&"/difficulty auto".to_string()));
     assert!(suggestions.contains(&"/topics <list>".to_string()));
     assert!(suggestions.contains(&"/avoid <list>".to_string()));
@@ -192,42 +193,41 @@ fn slash_command_palette_surfaces_settings_commands() {
 }
 
 #[test]
-fn lesson_command_shows_current_language_syntax() {
-    let root = tmp_root("lesson-command");
+fn learn_command_opens_syntax_course_separate_from_problem_mode() {
+    let root = tmp_root("learn-command");
     let mut app = PracticodeApp::new(root).unwrap();
-    app.handle_command_for_test("language rust").unwrap();
-    app.handle_command_for_test("lesson").unwrap();
+    app.handle_command_for_test("learn").unwrap();
+    assert!(app.output_for_test().contains("Syntax"));
+    assert!(app.output_for_test().contains("Python"));
+    assert!(app.status_text_for_test().contains("learn"));
 
-    let output = app.output_for_test();
-    assert!(output.contains("Rust"));
-    assert!(output.contains("read_to_string"));
-    assert!(output.contains("문법") || output.contains("Syntax"));
+    app.handle_command_for_test("problems").unwrap();
+    assert!(app.status_text_for_test().contains("001-hello-world"));
+    assert!(!app.status_text_for_test().contains("learn"));
 }
 
 #[test]
-fn lesson_all_shows_full_basic_to_advanced_curriculum() {
-    let root = tmp_root("lesson-all-command");
-    let mut app = PracticodeApp::new(root).unwrap();
-    app.handle_command_for_test("language ts").unwrap();
-    app.handle_command_for_test("lesson all").unwrap();
-
-    let output = app.output_for_test();
-    assert!(output.contains("TypeScript"));
-    assert!(output.contains("Basic"));
-    assert!(output.contains("Intermediate"));
-    assert!(output.contains("Advanced"));
-    assert!(output.contains("Generics"));
+fn drill_command_validates_current_syntax_lesson() {
+    let root = tmp_root("drill-command");
+    let mut app = PracticodeApp::new(root.clone()).unwrap();
+    app.handle_command_for_test("learn python").unwrap();
+    app.handle_command_for_test("drill").unwrap();
+    assert!(app.output_for_test().contains("PASS"));
+    let saved = std::fs::read_to_string(root.join(".practicode/problem-state.json")).unwrap();
+    assert!(saved.contains("\"syntax_progress\""));
+    assert!(saved.contains("py-output"));
 }
 
 #[test]
-fn profile_panel_shows_syntax_progress() {
-    let root = tmp_root("profile-syntax-progress");
+fn closing_drill_output_restores_lesson_pane() {
+    let root = tmp_root("drill-close-restores-lesson");
     let mut app = PracticodeApp::new(root).unwrap();
-    app.handle_command_for_test("profile").unwrap();
-
-    let output = app.output_for_test();
-    assert!(output.contains("Syntax progress: python 0/15"));
-    assert!(output.contains("Syntax lesson: /lesson all"));
+    app.handle_command_for_test("learn python").unwrap();
+    app.handle_command_for_test("drill").unwrap();
+    app.handle_key_for_test(KeyEvent::new(KeyCode::Esc, KeyModifiers::NONE))
+        .unwrap();
+    assert!(app.output_for_test().contains("Syntax"));
+    assert!(app.status_text_for_test().contains("learn"));
 }
 
 #[test]

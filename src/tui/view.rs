@@ -29,13 +29,19 @@ impl PracticodeApp {
 
         let light = self.state.settings.theme == "light";
         if !self.show_output {
-            let problem = Paragraph::new(problem_view::render(&self.problem, &self.state, light))
+            let left = if self.mode == AppMode::Learn {
+                Text::from(render_markdown_plain(&self.output))
+            } else {
+                problem_view::render(&self.problem, &self.state.settings.ui_language, light)
+            };
+            let title = if self.mode == AppMode::Learn {
+                "Syntax"
+            } else {
+                ui_text(&self.state.settings.ui_language, "problem")
+            };
+            let problem = Paragraph::new(left)
                 .style(Self::pane_style(light))
-                .block(Self::block(
-                    ui_text(&self.state.settings.ui_language, "problem"),
-                    light,
-                    false,
-                ))
+                .block(Self::block(title, light, false))
                 .wrap(Wrap { trim: false });
             frame.render_widget(problem, body[0]);
         }
@@ -66,7 +72,11 @@ impl PracticodeApp {
             let code = self
                 .editor
                 .visible_text(body[1].height.saturating_sub(2) as usize);
-            let title = format!("solution.{}", ext_for(&self.state.settings.language));
+            let title = if self.mode == AppMode::Learn {
+                format!("drill.{}", ext_for(&self.state.settings.language))
+            } else {
+                format!("solution.{}", ext_for(&self.state.settings.language))
+            };
             let code = Paragraph::new(code)
                 .style(Self::pane_style(light))
                 .block(Self::block(&title, light, self.focus == Focus::Code));

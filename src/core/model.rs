@@ -105,6 +105,8 @@ pub struct AppState {
     pub suggested_next_difficulty: String,
     #[serde(default, skip_serializing_if = "HashMap::is_empty")]
     pub syntax_progress: HashMap<String, Vec<String>>,
+    #[serde(default, skip_serializing_if = "HashMap::is_empty")]
+    pub current_syntax_lesson: HashMap<String, String>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

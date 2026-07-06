@@ -1,562 +1,647 @@
 use super::*;
 
+#[derive(Clone, Copy, Debug)]
+pub struct SyntaxCase {
+    pub input: &'static str,
+    pub output: &'static str,
+}
+
+#[derive(Clone, Copy, Debug)]
+pub struct SyntaxDrill {
+    pub prompt: &'static str,
+    pub starter: &'static str,
+    pub cases: &'static [SyntaxCase],
+}
+
+#[derive(Clone, Copy, Debug)]
 pub struct SyntaxLesson {
     pub id: &'static str,
-    pub level: &'static str,
-    pub titles: &'static [(&'static str, &'static str)],
-    pub topics: &'static [&'static str],
-    pub examples: &'static [SyntaxExample],
-}
-
-pub struct SyntaxExample {
     pub language: &'static str,
-    pub code: &'static str,
+    pub level: &'static str,
+    pub title: &'static str,
+    pub body: &'static str,
+    pub example: &'static str,
+    pub drill: SyntaxDrill,
+    pub refs: &'static [&'static str],
 }
 
-const LESSONS: &[SyntaxLesson] = &[
-    SyntaxLesson {
-        id: "variables",
-        level: "basic",
-        titles: &[
-            ("en", "Variables and types"),
-            ("ko", "변수와 타입"),
-            ("ja", "変数と型"),
-            ("zh", "变量和类型"),
-            ("es", "Variables y tipos"),
-        ],
-        topics: &[
-            "variable",
-            "variables",
-            "type",
-            "types",
-            "number",
-            "numbers",
-        ],
-        examples: &[
-            SyntaxExample {
-                language: "python",
-                code: "count = 3\nname = \"code\"\nprint(count, name)",
+macro_rules! lesson {
+    ($id:expr, $language:expr, $level:expr, $title:expr, $body:expr, $example:expr, $starter:expr, $cases:expr, $refs:expr) => {
+        SyntaxLesson {
+            id: $id,
+            language: $language,
+            level: $level,
+            title: $title,
+            body: $body,
+            example: $example,
+            drill: SyntaxDrill {
+                prompt: "Run the starter, then edit it until the expected output matches.",
+                starter: $starter,
+                cases: $cases,
             },
-            SyntaxExample {
-                language: "ts",
-                code: "let count: number = 3;\nconst name: string = \"code\";\nconsole.log(count, name);",
-            },
-            SyntaxExample {
-                language: "java",
-                code: "int count = 3;\nString name = \"code\";\nSystem.out.println(count + \" \" + name);",
-            },
-            SyntaxExample {
-                language: "rust",
-                code: "let count: i32 = 3;\nlet name = \"code\";\nprintln!(\"{count} {name}\");",
-            },
-        ],
-    },
-    SyntaxLesson {
-        id: "io",
-        level: "basic",
-        titles: &[
-            ("en", "Standard input/output"),
-            ("ko", "표준 입출력"),
-            ("ja", "標準入出力"),
-            ("zh", "标准输入输出"),
-            ("es", "Entrada/salida estandar"),
-        ],
-        topics: &["io", "stdin", "stdout", "input", "output"],
-        examples: &[
-            SyntaxExample {
-                language: "python",
-                code: "import sys\ntext = sys.stdin.read()\nprint(text, end=\"\")",
-            },
-            SyntaxExample {
-                language: "ts",
-                code: "const fs = require(\"fs\");\nconst input = fs.readFileSync(0, \"utf8\");\nprocess.stdout.write(input);",
-            },
-            SyntaxExample {
-                language: "java",
-                code: "import java.io.*;\n\nclass Solution {\n    public static void main(String[] args) throws Exception {\n        String input = new String(System.in.readAllBytes());\n        System.out.print(input);\n    }\n}",
-            },
-            SyntaxExample {
-                language: "rust",
-                code: "use std::io::{self, Read};\n\nfn main() {\n    let mut input = String::new();\n    io::stdin().read_to_string(&mut input).unwrap();\n    print!(\"{input}\");\n}",
-            },
-        ],
-    },
-    SyntaxLesson {
-        id: "strings",
-        level: "basic",
-        titles: &[
-            ("en", "Strings"),
-            ("ko", "문자열"),
-            ("ja", "文字列"),
-            ("zh", "字符串"),
-            ("es", "Cadenas"),
-        ],
-        topics: &["string", "strings", "char", "chars", "text"],
-        examples: &[
-            SyntaxExample {
-                language: "python",
-                code: "s = \"hello\"\nprint(len(s))\nfor ch in s:\n    print(ch)",
-            },
-            SyntaxExample {
-                language: "ts",
-                code: "const s = \"hello\";\nconsole.log(s.length);\nfor (const ch of s) {\n  console.log(ch);\n}",
-            },
-            SyntaxExample {
-                language: "java",
-                code: "String s = \"hello\";\nSystem.out.println(s.length());\nfor (int i = 0; i < s.length(); i++) {\n    System.out.println(s.charAt(i));\n}",
-            },
-            SyntaxExample {
-                language: "rust",
-                code: "let s = \"hello\";\nprintln!(\"{}\", s.chars().count());\nfor ch in s.chars() {\n    println!(\"{ch}\");\n}",
-            },
-        ],
-    },
-    SyntaxLesson {
-        id: "loops",
-        level: "basic",
-        titles: &[
-            ("en", "Loops and conditions"),
-            ("ko", "반복문과 조건문"),
-            ("ja", "ループと条件分岐"),
-            ("zh", "循环和条件"),
-            ("es", "Bucles y condiciones"),
-        ],
-        topics: &["loop", "loops", "condition", "conditions", "control-flow"],
-        examples: &[
-            SyntaxExample {
-                language: "python",
-                code: "for n in range(5):\n    if n % 2 == 0:\n        print(n)",
-            },
-            SyntaxExample {
-                language: "ts",
-                code: "for (let n = 0; n < 5; n++) {\n  if (n % 2 === 0) console.log(n);\n}",
-            },
-            SyntaxExample {
-                language: "java",
-                code: "for (int n = 0; n < 5; n++) {\n    if (n % 2 == 0) System.out.println(n);\n}",
-            },
-            SyntaxExample {
-                language: "rust",
-                code: "for n in 0..5 {\n    if n % 2 == 0 {\n        println!(\"{n}\");\n    }\n}",
-            },
-        ],
-    },
-    SyntaxLesson {
-        id: "arrays",
-        level: "basic",
-        titles: &[
-            ("en", "Arrays and lists"),
-            ("ko", "배열과 리스트"),
-            ("ja", "配列とリスト"),
-            ("zh", "数组和列表"),
-            ("es", "Arreglos y listas"),
-        ],
-        topics: &["array", "arrays", "list", "lists", "vec", "vector"],
-        examples: &[
-            SyntaxExample {
-                language: "python",
-                code: "nums = [1, 2, 3]\nnums.append(4)\nprint(sum(nums))",
-            },
-            SyntaxExample {
-                language: "ts",
-                code: "const nums = [1, 2, 3];\nnums.push(4);\nconsole.log(nums.reduce((a, b) => a + b, 0));",
-            },
-            SyntaxExample {
-                language: "java",
-                code: "int[] nums = {1, 2, 3};\nint sum = 0;\nfor (int n : nums) sum += n;\nSystem.out.println(sum);",
-            },
-            SyntaxExample {
-                language: "rust",
-                code: "let nums = vec![1, 2, 3];\nlet sum: i32 = nums.iter().sum();\nprintln!(\"{sum}\");",
-            },
-        ],
-    },
-    SyntaxLesson {
-        id: "parsing",
-        level: "intermediate",
-        titles: &[
-            ("en", "Parsing tokens"),
-            ("ko", "토큰 파싱"),
-            ("ja", "トークンの解析"),
-            ("zh", "解析标记"),
-            ("es", "Parseo de tokens"),
-        ],
-        topics: &["parse", "parsing", "token", "tokens", "split", "scanner"],
-        examples: &[
-            SyntaxExample {
-                language: "python",
-                code: "nums = list(map(int, input().split()))\nprint(sum(nums))",
-            },
-            SyntaxExample {
-                language: "ts",
-                code: "const nums = input.trim().split(/\\s+/).map(Number);\nconsole.log(nums.reduce((a, b) => a + b, 0));",
-            },
-            SyntaxExample {
-                language: "java",
-                code: "String[] parts = input.trim().split(\"\\\\s+\");\nint sum = 0;\nfor (String part : parts) sum += Integer.parseInt(part);\nSystem.out.println(sum);",
-            },
-            SyntaxExample {
-                language: "rust",
-                code: "let nums: Vec<i32> = input.split_whitespace()\n    .map(|s| s.parse().unwrap())\n    .collect();\nprintln!(\"{}\", nums.iter().sum::<i32>());",
-            },
-        ],
-    },
-    SyntaxLesson {
-        id: "maps",
-        level: "intermediate",
-        titles: &[
-            ("en", "Maps and dictionaries"),
-            ("ko", "맵과 딕셔너리"),
-            ("ja", "マップと辞書"),
-            ("zh", "映射和字典"),
-            ("es", "Mapas y diccionarios"),
-        ],
-        topics: &["map", "maps", "dict", "dictionary", "hashmap", "hash-map"],
-        examples: &[
-            SyntaxExample {
-                language: "python",
-                code: "counts = {}\nfor ch in \"banana\":\n    counts[ch] = counts.get(ch, 0) + 1\nprint(counts[\"a\"])",
-            },
-            SyntaxExample {
-                language: "ts",
-                code: "const counts = new Map<string, number>();\nfor (const ch of \"banana\") {\n  counts.set(ch, (counts.get(ch) ?? 0) + 1);\n}\nconsole.log(counts.get(\"a\"));",
-            },
-            SyntaxExample {
-                language: "java",
-                code: "Map<Character, Integer> counts = new HashMap<>();\nfor (char ch : \"banana\".toCharArray()) {\n    counts.put(ch, counts.getOrDefault(ch, 0) + 1);\n}\nSystem.out.println(counts.get('a'));",
-            },
-            SyntaxExample {
-                language: "rust",
-                code: "use std::collections::HashMap;\nlet mut counts = HashMap::new();\nfor ch in \"banana\".chars() {\n    *counts.entry(ch).or_insert(0) += 1;\n}\nprintln!(\"{}\", counts[&'a']);",
-            },
-        ],
-    },
-    SyntaxLesson {
-        id: "sorting",
-        level: "intermediate",
-        titles: &[
-            ("en", "Sorting"),
-            ("ko", "정렬"),
-            ("ja", "ソート"),
-            ("zh", "排序"),
-            ("es", "Ordenacion"),
-        ],
-        topics: &[
-            "sort",
-            "sorting",
-            "order",
-            "ordering",
-            "compare",
-            "comparator",
-        ],
-        examples: &[
-            SyntaxExample {
-                language: "python",
-                code: "items = [(\"b\", 2), (\"a\", 3)]\nitems.sort(key=lambda item: item[0])\nprint(items)",
-            },
-            SyntaxExample {
-                language: "ts",
-                code: "const items: [string, number][] = [[\"b\", 2], [\"a\", 3]];\nitems.sort((a, b) => a[0].localeCompare(b[0]));\nconsole.log(items);",
-            },
-            SyntaxExample {
-                language: "java",
-                code: "List<String> items = new ArrayList<>(List.of(\"b:2\", \"a:3\"));\nitems.sort(Comparator.naturalOrder());\nSystem.out.println(items);",
-            },
-            SyntaxExample {
-                language: "rust",
-                code: "let mut items = vec![(\"b\", 2), (\"a\", 3)];\nitems.sort_by_key(|item| item.0);\nprintln!(\"{:?}\", items);",
-            },
-        ],
-    },
-    SyntaxLesson {
-        id: "classes",
-        level: "intermediate",
-        titles: &[
-            ("en", "Structs and classes"),
-            ("ko", "구조체와 클래스"),
-            ("ja", "構造体とクラス"),
-            ("zh", "结构体和类"),
-            ("es", "Structs y clases"),
-        ],
-        topics: &["class", "classes", "struct", "structs", "object", "objects"],
-        examples: &[
-            SyntaxExample {
-                language: "python",
-                code: "class Point:\n    def __init__(self, x, y):\n        self.x = x\n        self.y = y\n\np = Point(1, 2)\nprint(p.x + p.y)",
-            },
-            SyntaxExample {
-                language: "ts",
-                code: "type Point = { x: number; y: number };\nconst p: Point = { x: 1, y: 2 };\nconsole.log(p.x + p.y);",
-            },
-            SyntaxExample {
-                language: "java",
-                code: "record Point(int x, int y) {}\nPoint p = new Point(1, 2);\nSystem.out.println(p.x() + p.y());",
-            },
-            SyntaxExample {
-                language: "rust",
-                code: "struct Point { x: i32, y: i32 }\nlet p = Point { x: 1, y: 2 };\nprintln!(\"{}\", p.x + p.y);",
-            },
-        ],
-    },
-    SyntaxLesson {
-        id: "functions",
-        level: "intermediate",
-        titles: &[
-            ("en", "Functions"),
-            ("ko", "함수"),
-            ("ja", "関数"),
-            ("zh", "函数"),
-            ("es", "Funciones"),
-        ],
-        topics: &["function", "functions", "method", "methods"],
-        examples: &[
-            SyntaxExample {
-                language: "python",
-                code: "def add(a, b):\n    return a + b\n\nprint(add(2, 3))",
-            },
-            SyntaxExample {
-                language: "ts",
-                code: "function add(a: number, b: number): number {\n  return a + b;\n}\n\nconsole.log(add(2, 3));",
-            },
-            SyntaxExample {
-                language: "java",
-                code: "static int add(int a, int b) {\n    return a + b;\n}\n\nSystem.out.println(add(2, 3));",
-            },
-            SyntaxExample {
-                language: "rust",
-                code: "fn add(a: i32, b: i32) -> i32 {\n    a + b\n}\n\nprintln!(\"{}\", add(2, 3));",
-            },
-        ],
-    },
-    SyntaxLesson {
-        id: "iterators",
-        level: "advanced",
-        titles: &[
-            ("en", "Iterators and pipelines"),
-            ("ko", "이터레이터와 파이프라인"),
-            ("ja", "イテレータとパイプライン"),
-            ("zh", "迭代器和管道"),
-            ("es", "Iteradores y tuberias"),
-        ],
-        topics: &[
-            "iterator",
-            "iterators",
-            "stream",
-            "streams",
-            "pipeline",
-            "comprehension",
-        ],
-        examples: &[
-            SyntaxExample {
-                language: "python",
-                code: "squares = [n * n for n in range(10) if n % 2 == 0]\nprint(sum(squares))",
-            },
-            SyntaxExample {
-                language: "ts",
-                code: "const total = [...Array(10).keys()]\n  .filter(n => n % 2 === 0)\n  .map(n => n * n)\n  .reduce((a, b) => a + b, 0);\nconsole.log(total);",
-            },
-            SyntaxExample {
-                language: "java",
-                code: "int total = IntStream.range(0, 10)\n    .filter(n -> n % 2 == 0)\n    .map(n -> n * n)\n    .sum();\nSystem.out.println(total);",
-            },
-            SyntaxExample {
-                language: "rust",
-                code: "let total: i32 = (0..10)\n    .filter(|n| n % 2 == 0)\n    .map(|n| n * n)\n    .sum();\nprintln!(\"{total}\");",
-            },
-        ],
-    },
-    SyntaxLesson {
-        id: "pattern-matching",
-        level: "advanced",
-        titles: &[
-            ("en", "Pattern matching"),
-            ("ko", "패턴 매칭"),
-            ("ja", "パターンマッチ"),
-            ("zh", "模式匹配"),
-            ("es", "Pattern matching"),
-        ],
-        topics: &["match", "pattern", "patterns", "switch", "case"],
-        examples: &[
-            SyntaxExample {
-                language: "python",
-                code: "match value:\n    case 0:\n        print(\"zero\")\n    case _:\n        print(\"other\")",
-            },
-            SyntaxExample {
-                language: "ts",
-                code: "switch (value) {\n  case 0:\n    console.log(\"zero\");\n    break;\n  default:\n    console.log(\"other\");\n}",
-            },
-            SyntaxExample {
-                language: "java",
-                code: "switch (value) {\n    case 0 -> System.out.println(\"zero\");\n    default -> System.out.println(\"other\");\n}",
-            },
-            SyntaxExample {
-                language: "rust",
-                code: "match value {\n    0 => println!(\"zero\"),\n    _ => println!(\"other\"),\n}",
-            },
-        ],
-    },
-    SyntaxLesson {
-        id: "generics",
-        level: "advanced",
-        titles: &[
-            ("en", "Generics"),
-            ("ko", "제네릭"),
-            ("ja", "ジェネリクス"),
-            ("zh", "泛型"),
-            ("es", "Genericos"),
-        ],
-        topics: &["generic", "generics", "type-parameter", "template"],
-        examples: &[
-            SyntaxExample {
-                language: "python",
-                code: "from typing import TypeVar\nT = TypeVar(\"T\")\n\ndef first(items: list[T]) -> T:\n    return items[0]",
-            },
-            SyntaxExample {
-                language: "ts",
-                code: "function first<T>(items: T[]): T {\n  return items[0];\n}",
-            },
-            SyntaxExample {
-                language: "java",
-                code: "static <T> T first(List<T> items) {\n    return items.get(0);\n}",
-            },
-            SyntaxExample {
-                language: "rust",
-                code: "fn first<T>(items: &[T]) -> &T {\n    &items[0]\n}",
-            },
-        ],
-    },
-    SyntaxLesson {
-        id: "errors",
-        level: "advanced",
-        titles: &[
-            ("en", "Errors and results"),
-            ("ko", "오류와 결과 처리"),
-            ("ja", "エラーと結果の処理"),
-            ("zh", "错误和结果处理"),
-            ("es", "Errores y resultados"),
-        ],
-        topics: &[
-            "error",
-            "errors",
-            "exception",
-            "exceptions",
-            "result",
-            "optional",
-        ],
-        examples: &[
-            SyntaxExample {
-                language: "python",
-                code: "try:\n    value = int(text)\nexcept ValueError:\n    value = 0\nprint(value)",
-            },
-            SyntaxExample {
-                language: "ts",
-                code: "const value = Number.parseInt(text, 10);\nif (Number.isNaN(value)) {\n  throw new Error(\"not a number\");\n}\nconsole.log(value);",
-            },
-            SyntaxExample {
-                language: "java",
-                code: "try {\n    int value = Integer.parseInt(text);\n    System.out.println(value);\n} catch (NumberFormatException error) {\n    System.out.println(0);\n}",
-            },
-            SyntaxExample {
-                language: "rust",
-                code: "let value = text.parse::<i32>().unwrap_or(0);\nprintln!(\"{value}\");",
-            },
-        ],
-    },
-    SyntaxLesson {
-        id: "lifetimes",
-        level: "advanced",
-        titles: &[
-            ("en", "References and ownership"),
-            ("ko", "참조와 소유권"),
-            ("ja", "参照と所有権"),
-            ("zh", "引用和所有权"),
-            ("es", "Referencias y propiedad"),
-        ],
-        topics: &[
-            "reference",
-            "references",
-            "ownership",
-            "borrow",
-            "borrowing",
-            "lifetime",
-        ],
-        examples: &[
-            SyntaxExample {
-                language: "python",
-                code: "items = [1, 2, 3]\nalias = items\nalias.append(4)\nprint(items)",
-            },
-            SyntaxExample {
-                language: "ts",
-                code: "const items = [1, 2, 3];\nconst alias = items;\nalias.push(4);\nconsole.log(items);",
-            },
-            SyntaxExample {
-                language: "java",
-                code: "List<Integer> items = new ArrayList<>(List.of(1, 2, 3));\nList<Integer> alias = items;\nalias.add(4);\nSystem.out.println(items);",
-            },
-            SyntaxExample {
-                language: "rust",
-                code: "let items = vec![1, 2, 3];\nlet borrowed = &items;\nprintln!(\"{}\", borrowed.len());",
-            },
-        ],
-    },
+            refs: $refs,
+        }
+    };
+}
+
+const PY_REFS: &[&str] = &["https://docs.python.org/3/tutorial/index.html"];
+const TS_REFS: &[&str] = &[
+    "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide",
+    "https://www.typescriptlang.org/docs/handbook/intro.html",
+];
+const JAVA_REFS: &[&str] = &[
+    "https://dev.java/learn/",
+    "https://docs.oracle.com/javase/tutorial/",
+];
+const RUST_REFS: &[&str] = &["https://doc.rust-lang.org/book/"];
+
+const EMPTY_HELLO: &[SyntaxCase] = &[SyntaxCase {
+    input: "",
+    output: "ok\n",
+}];
+const ECHO_CASE: &[SyntaxCase] = &[SyntaxCase {
+    input: "code\n",
+    output: "code\n",
+}];
+const SUM_CASE: &[SyntaxCase] = &[SyntaxCase {
+    input: "2 3\n",
+    output: "5\n",
+}];
+
+const PYTHON_LESSONS: &[SyntaxLesson] = &[
+    lesson!(
+        "py-output",
+        "python",
+        "basic",
+        "Output",
+        "Use print for visible output.",
+        "print('ok')",
+        "print('ok')\n",
+        EMPTY_HELLO,
+        PY_REFS
+    ),
+    lesson!(
+        "py-variables",
+        "python",
+        "basic",
+        "Variables",
+        "Names bind to values and can be rebound.",
+        "count = 1\nprint(count)",
+        "count = 'ok'\nprint(count)\n",
+        EMPTY_HELLO,
+        PY_REFS
+    ),
+    lesson!(
+        "py-strings",
+        "python",
+        "basic",
+        "Strings",
+        "Strings support len, indexing, slicing, and iteration.",
+        "text = 'code'\nprint(text[:2])",
+        "text = 'ok'\nprint(text)\n",
+        EMPTY_HELLO,
+        PY_REFS
+    ),
+    lesson!(
+        "py-control-flow",
+        "python",
+        "basic",
+        "Control flow",
+        "Use if, for, and while to choose and repeat work.",
+        "for n in range(3):\n    print(n)",
+        "if True:\n    print('ok')\n",
+        EMPTY_HELLO,
+        PY_REFS
+    ),
+    lesson!(
+        "py-functions",
+        "python",
+        "basic",
+        "Functions",
+        "def creates reusable behavior with parameters and returns.",
+        "def add(a, b):\n    return a + b",
+        "def word():\n    return 'ok'\nprint(word())\n",
+        EMPTY_HELLO,
+        PY_REFS
+    ),
+    lesson!(
+        "py-input",
+        "python",
+        "intermediate",
+        "Input parsing",
+        "sys.stdin plus split handles contest-style input.",
+        "import sys\nnums = list(map(int, sys.stdin.read().split()))",
+        "import sys\nprint(sys.stdin.read(), end='')\n",
+        ECHO_CASE,
+        PY_REFS
+    ),
+    lesson!(
+        "py-lists-dicts",
+        "python",
+        "intermediate",
+        "Lists and dicts",
+        "Lists keep order; dicts map keys to values.",
+        "counts = {'a': 2}\nprint(counts['a'])",
+        "nums = [2, 3]\nprint(sum(nums))\n",
+        SUM_CASE,
+        PY_REFS
+    ),
+    lesson!(
+        "py-errors",
+        "python",
+        "intermediate",
+        "Exceptions",
+        "try and except handle recoverable failures.",
+        "try:\n    int('x')\nexcept ValueError:\n    print('bad')",
+        "try:\n    int('x')\nexcept ValueError:\n    print('ok')\n",
+        EMPTY_HELLO,
+        PY_REFS
+    ),
+    lesson!(
+        "py-comprehensions",
+        "python",
+        "advanced",
+        "Comprehensions",
+        "Comprehensions build collections from expressions.",
+        "evens = [n for n in range(5) if n % 2 == 0]",
+        "items = [o + 'k' for o in ['o']]\nprint(items[0])\n",
+        EMPTY_HELLO,
+        PY_REFS
+    ),
+    lesson!(
+        "py-generators",
+        "python",
+        "advanced",
+        "Iterators and generators",
+        "yield creates lazy sequences.",
+        "def ones():\n    yield 1",
+        "def words():\n    yield 'ok'\nprint(next(words()))\n",
+        EMPTY_HELLO,
+        PY_REFS
+    ),
+    lesson!(
+        "py-decorators",
+        "python",
+        "advanced",
+        "Decorators",
+        "Decorators wrap functions at definition time.",
+        "def deco(fn):\n    return fn",
+        "def deco(fn):\n    return fn\n@deco\ndef word():\n    return 'ok'\nprint(word())\n",
+        EMPTY_HELLO,
+        PY_REFS
+    ),
+    lesson!(
+        "py-context-types",
+        "python",
+        "advanced",
+        "Context managers and type hints",
+        "with manages scoped resources; annotations document expected types.",
+        "from typing import Iterable\n\ndef total(xs: Iterable[int]) -> int:\n    return sum(xs)",
+        "from typing import Final\nword: Final[str] = 'ok'\nprint(word)\n",
+        EMPTY_HELLO,
+        &["https://docs.python.org/3/library/contextlib.html"]
+    ),
 ];
 
-pub fn syntax_lessons() -> &'static [SyntaxLesson] {
-    LESSONS
-}
+const TS_LESSONS: &[SyntaxLesson] = &[
+    lesson!(
+        "ts-output",
+        "ts",
+        "basic",
+        "Output",
+        "console.log writes a line.",
+        "console.log('ok');",
+        "console.log('ok');\n",
+        EMPTY_HELLO,
+        TS_REFS
+    ),
+    lesson!(
+        "ts-variables",
+        "ts",
+        "basic",
+        "Variables",
+        "let changes; const does not reassign.",
+        "const name: string = 'code';",
+        "const word: string = 'ok';\nconsole.log(word);\n",
+        EMPTY_HELLO,
+        TS_REFS
+    ),
+    lesson!(
+        "ts-strings",
+        "ts",
+        "basic",
+        "Strings",
+        "Strings expose length and iteration.",
+        "for (const ch of 'ok') console.log(ch);",
+        "console.log('ok'.slice(0, 2));\n",
+        EMPTY_HELLO,
+        TS_REFS
+    ),
+    lesson!(
+        "ts-control-flow",
+        "ts",
+        "basic",
+        "Control flow",
+        "if and loops control execution.",
+        "for (let i = 0; i < 3; i++) {}",
+        "if (true) console.log('ok');\n",
+        EMPTY_HELLO,
+        TS_REFS
+    ),
+    lesson!(
+        "ts-functions",
+        "ts",
+        "basic",
+        "Functions",
+        "Parameter and return types make intent explicit.",
+        "function add(a: number, b: number): number { return a + b; }",
+        "function word(): string { return 'ok'; }\nconsole.log(word());\n",
+        EMPTY_HELLO,
+        TS_REFS
+    ),
+    lesson!(
+        "ts-input",
+        "ts",
+        "intermediate",
+        "Input parsing",
+        "Node can read stdin for small drills.",
+        "const input = require('fs').readFileSync(0, 'utf8');",
+        "const fs = require('fs');\nprocess.stdout.write(fs.readFileSync(0, 'utf8'));\n",
+        ECHO_CASE,
+        TS_REFS
+    ),
+    lesson!(
+        "ts-arrays-objects",
+        "ts",
+        "intermediate",
+        "Arrays and objects",
+        "Arrays hold sequences; object types describe shapes.",
+        "type User = { name: string };",
+        "const nums: number[] = [2, 3];\nconsole.log(nums.reduce((a, b) => a + b, 0));\n",
+        SUM_CASE,
+        TS_REFS
+    ),
+    lesson!(
+        "ts-errors-async",
+        "ts",
+        "intermediate",
+        "Errors and async",
+        "try/catch handles thrown errors; async wraps promises.",
+        "async function main() { return 1; }",
+        "try { throw new Error('x'); } catch { console.log('ok'); }\n",
+        EMPTY_HELLO,
+        &["https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await"]
+    ),
+    lesson!(
+        "ts-narrowing",
+        "ts",
+        "advanced",
+        "Narrowing",
+        "Type guards refine union values.",
+        "if (typeof value === 'string') value.toUpperCase();",
+        "const value: string | number = 'ok';\nif (typeof value === 'string') console.log(value);\n",
+        EMPTY_HELLO,
+        TS_REFS
+    ),
+    lesson!(
+        "ts-generics",
+        "ts",
+        "advanced",
+        "Generics",
+        "Generics preserve type information across reusable code.",
+        "function first<T>(xs: T[]): T { return xs[0]; }",
+        "function id<T>(value: T): T { return value; }\nconsole.log(id('ok'));\n",
+        EMPTY_HELLO,
+        TS_REFS
+    ),
+    lesson!(
+        "ts-mapped",
+        "ts",
+        "advanced",
+        "Mapped types",
+        "Mapped types transform object properties.",
+        "type ReadonlyUser<T> = { readonly [K in keyof T]: T[K] };",
+        "type Box<T> = { [K in keyof T]: T[K] };\nconst value: Box<{ word: string }> = { word: 'ok' };\nconsole.log(value.word);\n",
+        EMPTY_HELLO,
+        &["https://www.typescriptlang.org/docs/handbook/utility-types.html"]
+    ),
+    lesson!(
+        "ts-conditional",
+        "ts",
+        "advanced",
+        "Conditional types",
+        "Conditional types choose a type from another type.",
+        "type Unwrap<T> = T extends Promise<infer U> ? U : T;",
+        "type IsString<T> = T extends string ? string : never;\nconst word: IsString<'ok'> = 'ok';\nconsole.log(word);\n",
+        EMPTY_HELLO,
+        TS_REFS
+    ),
+];
 
-pub fn syntax_lessons_for_problem(problem: &Problem) -> Vec<&'static SyntaxLesson> {
-    LESSONS
-        .iter()
-        .filter(|lesson| {
-            problem
-                .topics
-                .iter()
-                .any(|topic| lesson.matches_topic(topic))
-        })
-        .collect()
-}
+const JAVA_LESSONS: &[SyntaxLesson] = &[
+    lesson!(
+        "java-output",
+        "java",
+        "basic",
+        "Output",
+        "System.out.println writes a line.",
+        "System.out.println(\"ok\");",
+        "class Solution { public static void main(String[] args) { System.out.println(\"ok\"); } }\n",
+        EMPTY_HELLO,
+        JAVA_REFS
+    ),
+    lesson!(
+        "java-variables",
+        "java",
+        "basic",
+        "Variables",
+        "Java variables have declared types.",
+        "String word = \"ok\";",
+        "class Solution { public static void main(String[] args) { String word = \"ok\"; System.out.println(word); } }\n",
+        EMPTY_HELLO,
+        JAVA_REFS
+    ),
+    lesson!(
+        "java-strings",
+        "java",
+        "basic",
+        "Strings",
+        "String methods expose length, chars, and substrings.",
+        "\"code\".substring(0, 2)",
+        "class Solution { public static void main(String[] args) { System.out.println(\"ok\".substring(0, 2)); } }\n",
+        EMPTY_HELLO,
+        JAVA_REFS
+    ),
+    lesson!(
+        "java-control-flow",
+        "java",
+        "basic",
+        "Control flow",
+        "if, for, and while control execution.",
+        "for (int i = 0; i < 3; i++) {}",
+        "class Solution { public static void main(String[] args) { if (true) System.out.println(\"ok\"); } }\n",
+        EMPTY_HELLO,
+        JAVA_REFS
+    ),
+    lesson!(
+        "java-methods",
+        "java",
+        "basic",
+        "Methods",
+        "Methods group reusable behavior.",
+        "static int add(int a, int b) { return a + b; }",
+        "class Solution { static String word() { return \"ok\"; } public static void main(String[] args) { System.out.println(word()); } }\n",
+        EMPTY_HELLO,
+        JAVA_REFS
+    ),
+    lesson!(
+        "java-input",
+        "java",
+        "intermediate",
+        "Input parsing",
+        "System.in can be read directly for drills.",
+        "String input = new String(System.in.readAllBytes());",
+        "import java.io.*;\nclass Solution { public static void main(String[] args) throws Exception { System.out.print(new String(System.in.readAllBytes())); } }\n",
+        ECHO_CASE,
+        JAVA_REFS
+    ),
+    lesson!(
+        "java-arrays-collections",
+        "java",
+        "intermediate",
+        "Arrays and collections",
+        "Arrays are fixed size; collections add flexible containers.",
+        "int[] nums = {1, 2};",
+        "class Solution { public static void main(String[] args) { int[] nums = {2, 3}; System.out.println(nums[0] + nums[1]); } }\n",
+        SUM_CASE,
+        JAVA_REFS
+    ),
+    lesson!(
+        "java-exceptions",
+        "java",
+        "intermediate",
+        "Exceptions",
+        "try/catch handles failures; checked exceptions are part of signatures.",
+        "try { throw new RuntimeException(); } catch (RuntimeException e) {}",
+        "class Solution { public static void main(String[] args) { try { throw new RuntimeException(); } catch (RuntimeException e) { System.out.println(\"ok\"); } } }\n",
+        EMPTY_HELLO,
+        JAVA_REFS
+    ),
+    lesson!(
+        "java-classes-interfaces",
+        "java",
+        "advanced",
+        "Classes and interfaces",
+        "Classes hold state and behavior; interfaces describe behavior.",
+        "interface Named { String name(); }",
+        "interface Named { String name(); }\nclass Solution implements Named { public String name() { return \"ok\"; } public static void main(String[] args) { System.out.println(new Solution().name()); } }\n",
+        EMPTY_HELLO,
+        JAVA_REFS
+    ),
+    lesson!(
+        "java-generics",
+        "java",
+        "advanced",
+        "Generics",
+        "Generics reuse code with type parameters.",
+        "class Box<T> { T value; }",
+        "class Box<T> { T value; Box(T value) { this.value = value; } }\nclass Solution { public static void main(String[] args) { System.out.println(new Box<String>(\"ok\").value); } }\n",
+        EMPTY_HELLO,
+        &["https://dev.java/learn/generics/"]
+    ),
+    lesson!(
+        "java-lambda-streams",
+        "java",
+        "advanced",
+        "Lambda and streams",
+        "Lambdas pass behavior; streams process sequences.",
+        "list.stream().map(x -> x + 1)",
+        "import java.util.*;\nclass Solution { public static void main(String[] args) { List<String> xs = List.of(\"ok\"); xs.stream().forEach(System.out::println); } }\n",
+        EMPTY_HELLO,
+        &["https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html"]
+    ),
+    lesson!(
+        "java-records-sealed",
+        "java",
+        "advanced",
+        "Records and sealed types",
+        "Records reduce data boilerplate; sealed types bound inheritance.",
+        "record Pair(int a, int b) {}",
+        "record Word(String value) {}\nclass Solution { public static void main(String[] args) { System.out.println(new Word(\"ok\").value()); } }\n",
+        EMPTY_HELLO,
+        JAVA_REFS
+    ),
+];
 
-pub fn syntax_code_for(lesson: &SyntaxLesson, language: &str) -> &'static str {
-    let language = normalize_language(language);
-    lesson
-        .examples
-        .iter()
-        .find(|example| example.language == language)
-        .or_else(|| lesson.examples.first())
-        .map(|example| example.code)
-        .unwrap_or("")
-}
+const RUST_LESSONS: &[SyntaxLesson] = &[
+    lesson!(
+        "rust-output",
+        "rust",
+        "basic",
+        "Output",
+        "println! writes a line.",
+        "println!(\"ok\");",
+        "fn main() {\n    println!(\"ok\");\n}\n",
+        EMPTY_HELLO,
+        RUST_REFS
+    ),
+    lesson!(
+        "rust-variables",
+        "rust",
+        "basic",
+        "Variables",
+        "let binds values; mut allows mutation.",
+        "let mut count = 0;",
+        "fn main() {\n    let word = \"ok\";\n    println!(\"{word}\");\n}\n",
+        EMPTY_HELLO,
+        RUST_REFS
+    ),
+    lesson!(
+        "rust-strings",
+        "rust",
+        "basic",
+        "Strings",
+        "String owns text; &str borrows text.",
+        "let s = String::from(\"ok\");",
+        "fn main() {\n    let word = String::from(\"ok\");\n    println!(\"{word}\");\n}\n",
+        EMPTY_HELLO,
+        RUST_REFS
+    ),
+    lesson!(
+        "rust-control-flow",
+        "rust",
+        "basic",
+        "Control flow",
+        "if is an expression; for iterates ranges and collections.",
+        "for n in 0..3 {}",
+        "fn main() {\n    if true { println!(\"ok\"); }\n}\n",
+        EMPTY_HELLO,
+        RUST_REFS
+    ),
+    lesson!(
+        "rust-functions",
+        "rust",
+        "basic",
+        "Functions",
+        "Functions declare parameter and return types.",
+        "fn add(a: i32, b: i32) -> i32 { a + b }",
+        "fn word() -> &'static str { \"ok\" }\nfn main() { println!(\"{}\", word()); }\n",
+        EMPTY_HELLO,
+        RUST_REFS
+    ),
+    lesson!(
+        "rust-input",
+        "rust",
+        "intermediate",
+        "Input parsing",
+        "Read stdin into a String, then split or print it.",
+        "std::io::stdin().read_to_string(&mut input)",
+        "use std::io::{self, Read};\nfn main() {\n    let mut input = String::new();\n    io::stdin().read_to_string(&mut input).unwrap();\n    print!(\"{input}\");\n}\n",
+        ECHO_CASE,
+        RUST_REFS
+    ),
+    lesson!(
+        "rust-vec-hashmap",
+        "rust",
+        "intermediate",
+        "Vec and HashMap",
+        "Vec stores sequences; HashMap stores key/value pairs.",
+        "let nums = vec![1, 2];",
+        "fn main() {\n    let nums = vec![2, 3];\n    println!(\"{}\", nums.iter().sum::<i32>());\n}\n",
+        SUM_CASE,
+        RUST_REFS
+    ),
+    lesson!(
+        "rust-result",
+        "rust",
+        "intermediate",
+        "Result and ?",
+        "Result models recoverable errors; ? returns early on Err.",
+        "fn parse() -> Result<i32, std::num::ParseIntError> { \"1\".parse() }",
+        "fn word() -> Result<&'static str, ()> { Ok(\"ok\") }\nfn main() { println!(\"{}\", word().unwrap()); }\n",
+        EMPTY_HELLO,
+        RUST_REFS
+    ),
+    lesson!(
+        "rust-ownership",
+        "rust",
+        "advanced",
+        "Ownership and borrowing",
+        "A value has one owner; references borrow without moving.",
+        "fn len(s: &String) -> usize { s.len() }",
+        "fn show(s: &str) { println!(\"{s}\"); }\nfn main() { show(\"ok\"); }\n",
+        EMPTY_HELLO,
+        &["https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html"]
+    ),
+    lesson!(
+        "rust-enum-match",
+        "rust",
+        "advanced",
+        "Enums and match",
+        "Enums model alternatives; match handles them exhaustively.",
+        "match value { Some(x) => x, None => 0 }",
+        "fn main() {\n    let value = Some(\"ok\");\n    match value { Some(word) => println!(\"{word}\"), None => println!(\"no\") }\n}\n",
+        EMPTY_HELLO,
+        RUST_REFS
+    ),
+    lesson!(
+        "rust-traits-lifetimes",
+        "rust",
+        "advanced",
+        "Traits, generics, and lifetimes",
+        "Traits define shared behavior; lifetimes describe borrowed relationships.",
+        "fn first<'a>(x: &'a str) -> &'a str { x }",
+        "fn id<'a>(value: &'a str) -> &'a str { value }\nfn main() { println!(\"{}\", id(\"ok\")); }\n",
+        EMPTY_HELLO,
+        &["https://doc.rust-lang.org/book/ch10-00-generics.html"]
+    ),
+    lesson!(
+        "rust-iterators",
+        "rust",
+        "advanced",
+        "Iterators and closures",
+        "Iterators compose lazy transformations.",
+        "nums.iter().map(|n| n + 1)",
+        "fn main() {\n    let word = [\"o\", \"k\"].iter().copied().collect::<String>();\n    println!(\"{word}\");\n}\n",
+        EMPTY_HELLO,
+        RUST_REFS
+    ),
+];
 
-pub fn syntax_language_name(language: &str) -> &'static str {
-    match normalize_language(language).as_str() {
-        "python" => "Python",
-        "ts" => "TypeScript",
-        "java" => "Java",
-        "rust" => "Rust",
-        _ => "Python",
-    }
-}
-
-pub fn syntax_lesson_title(lesson: &SyntaxLesson, ui_language: &str) -> &'static str {
-    let lang = normalize_ui_language(ui_language);
-    lesson
-        .titles
-        .iter()
-        .find(|(key, _)| *key == lang)
-        .or_else(|| lesson.titles.iter().find(|(key, _)| *key == "en"))
-        .or_else(|| lesson.titles.first())
-        .map(|(_, title)| *title)
-        .unwrap_or("")
-}
-
-pub fn syntax_level_label(level: &str, ui_language: &str) -> &'static str {
-    let key = match level {
-        "intermediate" => "syntax_level_intermediate",
-        "advanced" => "syntax_level_advanced",
-        _ => "syntax_level_basic",
+pub fn syntax_lessons_for(language: &str) -> Vec<&'static SyntaxLesson> {
+    let lessons = match normalize_language(language).as_str() {
+        "ts" => TS_LESSONS,
+        "java" => JAVA_LESSONS,
+        "rust" => RUST_LESSONS,
+        _ => PYTHON_LESSONS,
     };
-    ui_text(ui_language, key)
+    lessons.iter().collect()
+}
+
+pub fn current_syntax_lesson(state: &AppState, language: &str) -> &'static SyntaxLesson {
+    let language = normalize_language(language);
+    let lessons = syntax_lessons_for(&language);
+    if let Some(id) = state.current_syntax_lesson.get(&language)
+        && let Some(lesson) = lessons.iter().find(|lesson| lesson.id == id)
+    {
+        return lesson;
+    }
+    lessons
+        .iter()
+        .find(|lesson| !syntax_lesson_completed(state, &language, lesson.id))
+        .copied()
+        .unwrap_or(lessons[0])
+}
+
+pub fn syntax_progress_count(state: &AppState, language: &str) -> (usize, usize) {
+    let language = normalize_language(language);
+    (
+        state
+            .syntax_progress
+            .get(&language)
+            .map_or(0, |ids| ids.len()),
+        syntax_lessons_for(&language).len(),
+    )
 }
 
 pub fn syntax_lesson_completed(state: &AppState, language: &str, lesson_id: &str) -> bool {
@@ -567,120 +652,144 @@ pub fn syntax_lesson_completed(state: &AppState, language: &str, lesson_id: &str
         .is_some_and(|ids| ids.iter().any(|id| id == lesson_id))
 }
 
-pub fn syntax_progress_count(state: &AppState, language: &str) -> (usize, usize) {
+pub fn record_syntax_pass(state: &mut AppState, language: &str, lesson_id: &str) {
     let language = normalize_language(language);
-    let done = state
-        .syntax_progress
-        .get(&language)
-        .map(|ids| ids.len())
-        .unwrap_or_default();
-    (done, LESSONS.len())
-}
-
-pub fn record_syntax_progress(state: &mut AppState, problem: &Problem) {
-    let lesson_ids = syntax_lessons_for_problem(problem)
-        .into_iter()
-        .map(|lesson| lesson.id.to_string())
-        .collect::<Vec<_>>();
-    if lesson_ids.is_empty() {
+    if !syntax_lessons_for(&language)
+        .iter()
+        .any(|lesson| lesson.id == lesson_id)
+    {
         return;
     }
-    let language = normalize_language(&state.settings.language);
     let mut ids = state.syntax_progress.remove(&language).unwrap_or_default();
-    for id in lesson_ids {
-        if !ids.contains(&id) {
-            ids.push(id);
-        }
+    if !ids.iter().any(|id| id == lesson_id) {
+        ids.push(lesson_id.to_string());
     }
     state
         .syntax_progress
-        .insert(language, normalize_lesson_ids(&ids));
+        .insert(language.clone(), normalize_syntax_ids_for(&language, &ids));
+}
+
+pub fn set_current_syntax_lesson(state: &mut AppState, language: &str, lesson_id: &str) {
+    let language = normalize_language(language);
+    if syntax_lessons_for(&language)
+        .iter()
+        .any(|lesson| lesson.id == lesson_id)
+    {
+        state
+            .current_syntax_lesson
+            .insert(language, lesson_id.to_string());
+    }
+}
+
+pub fn next_syntax_lesson(state: &mut AppState, language: &str, direction: isize) {
+    let language = normalize_language(language);
+    let lessons = syntax_lessons_for(&language);
+    let current = current_syntax_lesson(state, &language).id;
+    let index = lessons
+        .iter()
+        .position(|lesson| lesson.id == current)
+        .unwrap_or(0);
+    let next = (index as isize + direction).clamp(0, lessons.len() as isize - 1) as usize;
+    state
+        .current_syntax_lesson
+        .insert(language, lessons[next].id.to_string());
 }
 
 pub fn normalize_syntax_progress(
     progress: &HashMap<String, Vec<String>>,
 ) -> HashMap<String, Vec<String>> {
     let mut normalized = HashMap::new();
-    for (language, ids) in progress {
-        let language = language.trim().to_lowercase();
-        if LANGUAGES.contains(&language.as_str()) {
-            let ids = normalize_lesson_ids(ids);
+    for language in LANGUAGES {
+        if let Some(ids) = progress.get(*language) {
+            let ids = normalize_syntax_ids_for(language, ids);
             if !ids.is_empty() {
-                normalized.insert(language, ids);
+                normalized.insert((*language).to_string(), ids);
             }
         }
     }
     normalized
 }
 
-pub fn syntax_lesson_text(
-    problem: &Problem,
-    language: &str,
-    ui_language: &str,
-    state: &AppState,
-) -> String {
-    let language = normalize_language(language);
-    let lessons = syntax_lessons_for_problem(problem);
-    let lang = normalize_ui_language(ui_language);
-    if lessons.is_empty() {
-        return ui_text(&lang, "syntax_no_lesson").to_string();
+pub fn normalize_current_syntax_lessons(
+    current: &HashMap<String, String>,
+) -> HashMap<String, String> {
+    let mut normalized = HashMap::new();
+    for language in LANGUAGES {
+        if let Some(id) = current.get(*language)
+            && syntax_lessons_for(language)
+                .iter()
+                .any(|lesson| lesson.id == id)
+        {
+            normalized.insert((*language).to_string(), id.clone());
+        }
     }
-
-    syntax_lesson_text_for_lessons(&lessons, &language, &lang, state)
+    normalized
 }
 
-pub fn syntax_curriculum_text(language: &str, ui_language: &str, state: &AppState) -> String {
-    let language = normalize_language(language);
-    let lang = normalize_ui_language(ui_language);
-    let lessons = LESSONS.iter().collect::<Vec<_>>();
-    syntax_lesson_text_for_lessons(&lessons, &language, &lang, state)
-}
-
-fn syntax_lesson_text_for_lessons(
-    lessons: &[&'static SyntaxLesson],
-    language: &str,
-    ui_language: &str,
-    state: &AppState,
-) -> String {
-    let name = syntax_language_name(language);
-    let mut lines = vec![format!("# {}: {name}", ui_text(ui_language, "syntax"))];
-    for lesson in lessons {
-        let checked = if syntax_lesson_completed(state, language, lesson.id) {
-            "[x]"
-        } else {
-            "[ ]"
-        };
-        lines.extend([
-            String::new(),
-            format!(
-                "## {checked} [{}] {}",
-                syntax_level_label(lesson.level, ui_language),
-                syntax_lesson_title(lesson, ui_language)
-            ),
-            String::new(),
-            format!("```{language}"),
-            syntax_code_for(lesson, language).to_string(),
-            "```".to_string(),
-        ]);
+pub fn ensure_syntax_submission(root: &Path, lesson: &SyntaxLesson) -> Result<PathBuf> {
+    let path = root
+        .join("submissions")
+        .join(".syntax")
+        .join(lesson.language)
+        .join(lesson.id)
+        .join(format!("drill.{}", ext_for(lesson.language)));
+    if !path.exists() {
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent)?;
+        }
+        fs::write(&path, lesson.drill.starter)?;
     }
-    lines.extend([
-        String::new(),
-        format!("{} ({})", ui_text(ui_language, "syntax_practice"), name),
-    ]);
-    lines.join("\n")
+    Ok(path)
 }
 
-impl SyntaxLesson {
-    fn matches_topic(&self, topic: &str) -> bool {
-        let topic = topic.trim().to_lowercase();
-        self.topics.contains(&topic.as_str())
-    }
-}
-
-fn normalize_lesson_ids(ids: &[String]) -> Vec<String> {
-    LESSONS
+pub fn syntax_cases(lesson: &SyntaxLesson) -> Vec<IoCase> {
+    lesson
+        .drill
+        .cases
         .iter()
-        .filter(|lesson| ids.iter().any(|id| id == lesson.id))
-        .map(|lesson| lesson.id.to_string())
+        .map(|case| IoCase {
+            input: case.input.to_string(),
+            output: case.output.to_string(),
+        })
         .collect()
+}
+
+pub fn render_syntax_lesson(lesson: &SyntaxLesson, state: &AppState) -> String {
+    let (done, total) = syntax_progress_count(state, lesson.language);
+    let completed = if syntax_lesson_completed(state, lesson.language, lesson.id) {
+        "complete"
+    } else {
+        "open"
+    };
+    let refs = lesson.refs.join("\n");
+    format!(
+        "# Syntax: {}\n\nLanguage: {}\nLevel: {}\nProgress: {done}/{total} ({completed})\n\n{}\n\nExample\n```{}\n{}\n```\n\nDrill\n{}\n\nReferences\n{}",
+        lesson.title,
+        syntax_language_name(lesson.language),
+        lesson.level,
+        lesson.body,
+        lesson.language,
+        lesson.example,
+        lesson.drill.prompt,
+        refs
+    )
+}
+
+pub fn syntax_language_name(language: &str) -> &'static str {
+    match normalize_language(language).as_str() {
+        "ts" => "TypeScript",
+        "java" => "Java",
+        "rust" => "Rust",
+        _ => "Python",
+    }
+}
+
+fn normalize_syntax_ids_for(language: &str, ids: &[String]) -> Vec<String> {
+    let mut normalized = Vec::new();
+    for lesson in syntax_lessons_for(language) {
+        if ids.iter().any(|id| id == lesson.id) && !normalized.iter().any(|id| id == lesson.id) {
+            normalized.push(lesson.id.to_string());
+        }
+    }
+    normalized
 }
