@@ -5,195 +5,195 @@
   "lessons": {
     "py-output": {
       "title": "Salida",
-      "concept": "Usa print para mostrar un valor como una línea en pantalla. En Python, Salida se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Salida en Python con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Usa print para mostrar un valor como una línea en pantalla. En Python, estudia Salida ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Salida dentro de código real de Python. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Salida",
-        "Editar el código inicial de Python antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Salida en Python"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Salida",
+        "Editar el código inicial de Python sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Salida en Python?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Salida?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Salida en Python. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Salida en Python. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "py-variables": {
       "title": "Variables",
-      "concept": "Un nombre apunta a un valor y puede volver a vincularse a otro. En Python, Variables se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Variables en Python con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Un nombre apunta a un valor y puede volver a vincularse a otro. En Python, estudia Variables ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Variables dentro de código real de Python. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Variables",
-        "Editar el código inicial de Python antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Variables en Python"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Variables",
+        "Editar el código inicial de Python sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Variables en Python?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Variables?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Variables en Python. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Variables en Python. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "py-strings": {
       "title": "Cadenas",
-      "concept": "Las cadenas admiten longitud, índice, cortes y recorrido. En Python, Cadenas se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Cadenas en Python con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Las cadenas admiten longitud, índice, cortes y recorrido. En Python, estudia Cadenas ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Cadenas dentro de código real de Python. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Cadenas",
-        "Editar el código inicial de Python antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Cadenas en Python"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Cadenas",
+        "Editar el código inicial de Python sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Cadenas en Python?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Cadenas?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Cadenas en Python. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Cadenas en Python. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "py-control-flow": {
       "title": "Flujo de control",
-      "concept": "Usa if, for y while para expresar decisiones y repetición. En Python, Flujo de control se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Flujo de control en Python con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Usa if, for y while para expresar decisiones y repetición. En Python, estudia Flujo de control ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Flujo de control dentro de código real de Python. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Flujo de control",
-        "Editar el código inicial de Python antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Flujo de control en Python"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Flujo de control",
+        "Editar el código inicial de Python sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Flujo de control en Python?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Flujo de control?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Flujo de control en Python. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Flujo de control en Python. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "py-functions": {
       "title": "Funciones",
-      "concept": "def crea comportamiento reutilizable con parámetros y retorno. En Python, Funciones se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Funciones en Python con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "def crea comportamiento reutilizable con parámetros y retorno. En Python, estudia Funciones ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Funciones dentro de código real de Python. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Funciones",
-        "Editar el código inicial de Python antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Funciones en Python"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Funciones",
+        "Editar el código inicial de Python sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Funciones en Python?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Funciones?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Funciones en Python. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Funciones en Python. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "py-input": {
       "title": "Análisis de entrada",
-      "concept": "sys.stdin y split manejan entradas típicas de concursos. En Python, Análisis de entrada se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Análisis de entrada en Python con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "sys.stdin y split manejan entradas típicas de concursos. En Python, estudia Análisis de entrada ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Análisis de entrada dentro de código real de Python. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Análisis de entrada",
-        "Editar el código inicial de Python antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Análisis de entrada en Python"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Análisis de entrada",
+        "Editar el código inicial de Python sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Análisis de entrada en Python?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Análisis de entrada?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Análisis de entrada en Python. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Análisis de entrada en Python. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "py-lists-dicts": {
       "title": "Listas y diccionarios",
-      "concept": "Las listas guardan valores en orden y se leen por índice. Los diccionarios conectan claves con valores cuando quieres buscar por un nombre, id o carácter significativo. En Python, Listas y diccionarios se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Listas y diccionarios en Python con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Las listas guardan valores en orden y se leen por índice. En Python, estudia Listas y diccionarios ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Listas y diccionarios dentro de código real de Python. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Listas y diccionarios",
-        "Editar el código inicial de Python antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Listas y diccionarios en Python"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Listas y diccionarios",
+        "Editar el código inicial de Python sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Listas y diccionarios en Python?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Listas y diccionarios?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Listas y diccionarios en Python. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Listas y diccionarios en Python. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "py-errors": {
       "title": "Excepciones",
-      "concept": "try y except manejan fallos recuperables. En Python, Excepciones se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Excepciones en Python con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "try y except manejan fallos recuperables. En Python, estudia Excepciones ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Excepciones dentro de código real de Python. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Excepciones",
-        "Editar el código inicial de Python antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Excepciones en Python"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Excepciones",
+        "Editar el código inicial de Python sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Excepciones en Python?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Excepciones?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Excepciones en Python. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Excepciones en Python. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "py-comprehensions": {
       "title": "Comprensiones",
-      "concept": "Las comprensiones crean colecciones de forma compacta desde expresiones. En Python, Comprensiones se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Comprensiones en Python con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Las comprensiones crean colecciones de forma compacta desde expresiones. En Python, estudia Comprensiones ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Comprensiones dentro de código real de Python. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Comprensiones",
-        "Editar el código inicial de Python antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Comprensiones en Python"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Comprensiones",
+        "Editar el código inicial de Python sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Comprensiones en Python?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Comprensiones?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Comprensiones en Python. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Comprensiones en Python. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "py-generators": {
       "title": "Iteradores y generadores",
-      "concept": "yield crea secuencias que producen valores bajo demanda. En Python, Iteradores y generadores se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Iteradores y generadores en Python con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "yield crea secuencias que producen valores bajo demanda. En Python, estudia Iteradores y generadores ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Iteradores y generadores dentro de código real de Python. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Iteradores y generadores",
-        "Editar el código inicial de Python antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Iteradores y generadores en Python"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Iteradores y generadores",
+        "Editar el código inicial de Python sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Iteradores y generadores en Python?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Iteradores y generadores?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Iteradores y generadores en Python. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Iteradores y generadores en Python. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "py-decorators": {
       "title": "Decoradores",
-      "concept": "Los decoradores envuelven funciones al definirlas para ampliar su comportamiento. En Python, Decoradores se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Decoradores en Python con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Los decoradores envuelven funciones al definirlas para ampliar su comportamiento. En Python, estudia Decoradores ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Decoradores dentro de código real de Python. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Decoradores",
-        "Editar el código inicial de Python antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Decoradores en Python"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Decoradores",
+        "Editar el código inicial de Python sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Decoradores en Python?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Decoradores?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Decoradores en Python. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Decoradores en Python. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "py-context-types": {
       "title": "Context managers y type hints",
-      "concept": "with gestiona recursos acotados; las anotaciones muestran tipos esperados. En Python, Context managers y type hints se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Context managers y type hints en Python con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "with gestiona recursos acotados; las anotaciones muestran tipos esperados. En Python, estudia Context managers y type hints ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Context managers y type hints dentro de código real de Python. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Context managers y type hints",
-        "Editar el código inicial de Python antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Context managers y type hints en Python"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Context managers y type hints",
+        "Editar el código inicial de Python sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Context managers y type hints en Python?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Context managers y type hints?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Context managers y type hints en Python. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Context managers y type hints en Python. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     }
   }
 }

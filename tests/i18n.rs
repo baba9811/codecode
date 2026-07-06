@@ -23,6 +23,28 @@ fn assert_no_english_scaffolding_terms(ui_language: &str, lesson_id: &str, text:
     }
 }
 
+fn assert_not_generic_lesson_copy(ui_language: &str, lesson_id: &str, text: &str) {
+    for phrase in [
+        "is easiest to learn by tracing the value flow",
+        "with the smallest code shape",
+        "Memorizing the example instead of explaining the value flow",
+        "What value exists immediately before",
+        "문법 이름을 외우기보다 예제의 값 흐름",
+        "가장 작은 관찰 가능한 코드",
+        "用語を暗記するよりも",
+        "最小限のコードで示しています",
+        "不要只记语法名称",
+        "最小但可观察的代码",
+        "se aprende mejor siguiendo el recorrido del valor",
+        "con el código mínimo que produce un resultado observable",
+    ] {
+        assert!(
+            !text.contains(phrase),
+            "{ui_language}:{lesson_id} contains generic lesson-copy phrase: {phrase}"
+        );
+    }
+}
+
 #[test]
 fn ui_catalogs_load_and_fallback_to_english() {
     for lang in UI_LANGUAGES {
@@ -74,6 +96,21 @@ fn lesson_catalogs_have_complete_study_copy_for_every_language() {
             );
             let catalog: Value =
                 serde_json::from_str(&fs::read_to_string(&path).unwrap()).expect(&path);
+            let catalog_object = catalog
+                .as_object()
+                .unwrap_or_else(|| panic!("{path}: catalog should be an object"));
+            for key in catalog_object.keys() {
+                assert!(
+                    [
+                        "schema_version",
+                        "programming_language",
+                        "ui_language",
+                        "lessons"
+                    ]
+                    .contains(&key.as_str()),
+                    "{path}: unexpected top-level key {key}"
+                );
+            }
             assert_eq!(
                 catalog
                     .get("schema_version")
@@ -102,10 +139,33 @@ fn lesson_catalogs_have_complete_study_copy_for_every_language() {
                 .get("lessons")
                 .and_then(Value::as_object)
                 .unwrap_or_else(|| panic!("{path}: missing lessons object"));
+            assert_eq!(
+                lessons.len(),
+                syntax_lessons_for(language).len(),
+                "{path}: unexpected lesson count"
+            );
             for lesson in syntax_lessons_for(language) {
                 let copy = lessons.get(lesson.id).unwrap_or_else(|| {
                     panic!("{ui_language}: missing lesson copy for {}", lesson.id)
                 });
+                let copy_object = copy.as_object().unwrap_or_else(|| {
+                    panic!("{ui_language}:{} copy should be an object", lesson.id)
+                });
+                for key in copy_object.keys() {
+                    assert!(
+                        [
+                            "title",
+                            "concept",
+                            "worked_example",
+                            "common_mistakes",
+                            "self_check",
+                            "exercise_prompt",
+                        ]
+                        .contains(&key.as_str()),
+                        "{ui_language}:{} unexpected lesson-copy key {key}",
+                        lesson.id
+                    );
+                }
                 for field in ["title", "concept", "worked_example", "exercise_prompt"] {
                     let text = copy
                         .get(field)
@@ -117,6 +177,7 @@ fn lesson_catalogs_have_complete_study_copy_for_every_language() {
                         lesson.id
                     );
                     assert_no_english_scaffolding_terms(ui_language, lesson.id, text);
+                    assert_not_generic_lesson_copy(ui_language, lesson.id, text);
                 }
                 for field in ["common_mistakes", "self_check"] {
                     let items = copy
@@ -138,6 +199,7 @@ fn lesson_catalogs_have_complete_study_copy_for_every_language() {
                             lesson.id
                         );
                         assert_no_english_scaffolding_terms(ui_language, lesson.id, text);
+                        assert_not_generic_lesson_copy(ui_language, lesson.id, text);
                     }
                 }
             }

@@ -4,9 +4,10 @@ use common::{tmp_root, two_problem_bank};
 use practicode::{
     core::{
         AppState, HistoryItem, LANGUAGES, Settings, ensure_submission, ensure_syntax_submission,
-        judge, load_bank, load_state, localized, next_problem, parse_language_list,
+        judge, judge_path, load_bank, load_state, localized, next_problem, parse_language_list,
         parse_ui_language_list, problem_by_id, record_pass, render_problem, render_problem_tui,
-        render_syntax_lesson, save_bank, save_state, syntax_lessons_for, syntax_progress_count,
+        render_syntax_lesson, save_bank, save_state, syntax_cases, syntax_lessons_for,
+        syntax_progress_count,
     },
     process::which,
     text::render_markdown_plain,
@@ -430,11 +431,15 @@ fn record_pass_marks_solved_and_raises_suggested_difficulty_after_two_solves() {
 
 #[test]
 fn syntax_curriculum_covers_basic_to_advanced_for_every_supported_language() {
-    for language in ["python", "ts", "java", "rust"] {
+    for language in LANGUAGES {
         let lessons = syntax_lessons_for(language);
         assert!(
             lessons.len() >= 12,
             "{language} should have a real syntax course"
+        );
+        assert!(
+            lessons.iter().all(|lesson| lesson.language == *language),
+            "{language} should not fall back to another language's lessons"
         );
         for level in ["basic", "intermediate", "advanced"] {
             assert!(
@@ -605,6 +610,27 @@ fn syntax_exercise_starters_require_user_edit_for_every_language() {
                 lesson.id
             );
         }
+    }
+}
+
+#[test]
+fn python_syntax_starters_fail_by_output_not_runtime_error() {
+    let root = tmp_root("python-syntax-starters-run-cleanly");
+    for lesson in syntax_lessons_for("python") {
+        let path = ensure_syntax_submission(&root, lesson).unwrap();
+        let result = judge_path(
+            &root,
+            lesson.id,
+            &path,
+            lesson.language,
+            &syntax_cases(lesson),
+        );
+        assert!(
+            !result.output.contains("Stderr"),
+            "{} starter should run without a runtime traceback:\n{}",
+            lesson.id,
+            result.output
+        );
     }
 }
 

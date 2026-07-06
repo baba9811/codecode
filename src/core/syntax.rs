@@ -219,7 +219,7 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "Iterators and generators",
         "yield creates lazy sequences.",
         "def ones():\n    yield 1",
-        "def words():\n    # TODO: yield ok as a string\n    return\n\nprint(next(words()))\n",
+        "def words():\n    # TODO: yield ok as a string\n    yield ''\n\nprint(next(words()))\n",
         EMPTY_HELLO,
         PY_REFS
     ),
@@ -230,7 +230,7 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "Decorators",
         "Decorators wrap functions at definition time.",
         "def deco(fn):\n    return fn",
-        "def deco(fn):\n    # TODO: return fn unchanged\n    pass\n\n@deco\ndef word():\n    return 'ok'\n\nprint(word())\n",
+        "def deco(fn):\n    # TODO: return fn unchanged\n    return lambda: ''\n\n@deco\ndef word():\n    return 'ok'\n\nprint(word())\n",
         EMPTY_HELLO,
         PY_REFS
     ),

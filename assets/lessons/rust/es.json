@@ -5,195 +5,195 @@
   "lessons": {
     "rust-output": {
       "title": "Salida",
-      "concept": "println! escribe una línea. En Rust, Salida se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Salida en Rust con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "println! En Rust, estudia Salida ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Salida dentro de código real de Rust. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Salida",
-        "Editar el código inicial de Rust antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Salida en Rust"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Salida",
+        "Editar el código inicial de Rust sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Salida en Rust?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Salida?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Salida en Rust. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Salida en Rust. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "rust-variables": {
       "title": "Variables",
-      "concept": "let vincula valores; mut permite cambiarlos. En Rust, Variables se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Variables en Rust con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "let vincula valores; mut permite cambiarlos. En Rust, estudia Variables ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Variables dentro de código real de Rust. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Variables",
-        "Editar el código inicial de Rust antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Variables en Rust"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Variables",
+        "Editar el código inicial de Rust sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Variables en Rust?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Variables?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Variables en Rust. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Variables en Rust. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "rust-strings": {
       "title": "Cadenas",
-      "concept": "String posee texto; &str toma texto prestado. En Rust, Cadenas se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Cadenas en Rust con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "String posee texto; &str toma texto prestado. En Rust, estudia Cadenas ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Cadenas dentro de código real de Rust. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Cadenas",
-        "Editar el código inicial de Rust antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Cadenas en Rust"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Cadenas",
+        "Editar el código inicial de Rust sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Cadenas en Rust?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Cadenas?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Cadenas en Rust. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Cadenas en Rust. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "rust-control-flow": {
       "title": "Flujo de control",
-      "concept": "if es una expresión; for recorre rangos y colecciones. En Rust, Flujo de control se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Flujo de control en Rust con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "if es una expresión; for recorre rangos y colecciones. En Rust, estudia Flujo de control ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Flujo de control dentro de código real de Rust. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Flujo de control",
-        "Editar el código inicial de Rust antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Flujo de control en Rust"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Flujo de control",
+        "Editar el código inicial de Rust sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Flujo de control en Rust?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Flujo de control?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Flujo de control en Rust. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Flujo de control en Rust. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "rust-functions": {
       "title": "Funciones",
-      "concept": "Las funciones declaran parámetros y tipo de retorno. En Rust, Funciones se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Funciones en Rust con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Las funciones declaran parámetros y tipo de retorno. En Rust, estudia Funciones ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Funciones dentro de código real de Rust. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Funciones",
-        "Editar el código inicial de Rust antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Funciones en Rust"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Funciones",
+        "Editar el código inicial de Rust sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Funciones en Rust?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Funciones?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Funciones en Rust. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Funciones en Rust. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "rust-input": {
       "title": "Análisis de entrada",
-      "concept": "Lee stdin en un String, luego divide o imprime. En Rust, Análisis de entrada se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Análisis de entrada en Rust con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Lee stdin en un String, luego divide o imprime. En Rust, estudia Análisis de entrada ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Análisis de entrada dentro de código real de Rust. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Análisis de entrada",
-        "Editar el código inicial de Rust antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Análisis de entrada en Rust"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Análisis de entrada",
+        "Editar el código inicial de Rust sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Análisis de entrada en Rust?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Análisis de entrada?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Análisis de entrada en Rust. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Análisis de entrada en Rust. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "rust-vec-hashmap": {
       "title": "Vec y HashMap",
-      "concept": "Vec guarda secuencias; HashMap guarda pares clave/valor. En Rust, Vec y HashMap se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Vec y HashMap en Rust con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Vec guarda secuencias; HashMap guarda pares clave/valor. En Rust, estudia Vec y HashMap ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Vec y HashMap dentro de código real de Rust. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Vec y HashMap",
-        "Editar el código inicial de Rust antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Vec y HashMap en Rust"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Vec y HashMap",
+        "Editar el código inicial de Rust sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Vec y HashMap en Rust?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Vec y HashMap?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Vec y HashMap en Rust. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Vec y HashMap en Rust. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "rust-result": {
       "title": "Result y ?",
-      "concept": "Result modela errores recuperables; ? vuelve temprano en Err. En Rust, Result y ? se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Result y ? en Rust con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Result modela errores recuperables; ? En Rust, estudia Result y ? ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Result y ? dentro de código real de Rust. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Result y ?",
-        "Editar el código inicial de Rust antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Result y ? en Rust"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Result y ?",
+        "Editar el código inicial de Rust sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Result y ? en Rust?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Result y ??"
       ],
-      "exercise_prompt": "Completa el ejercicio de Result y ? en Rust. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Result y ? en Rust. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "rust-ownership": {
       "title": "Propiedad y préstamos",
-      "concept": "Un valor tiene un propietario; las referencias toman prestado sin mover. En Rust, Propiedad y préstamos se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Propiedad y préstamos en Rust con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Un valor tiene un propietario; las referencias toman prestado sin mover. En Rust, estudia Propiedad y préstamos ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Propiedad y préstamos dentro de código real de Rust. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Propiedad y préstamos",
-        "Editar el código inicial de Rust antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Propiedad y préstamos en Rust"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Propiedad y préstamos",
+        "Editar el código inicial de Rust sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Propiedad y préstamos en Rust?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Propiedad y préstamos?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Propiedad y préstamos en Rust. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Propiedad y préstamos en Rust. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "rust-enum-match": {
       "title": "Enums y match",
-      "concept": "Los enum modelan alternativas; match las cubre exhaustivamente. En Rust, Enums y match se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Enums y match en Rust con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Los enum modelan alternativas; match las cubre exhaustivamente. En Rust, estudia Enums y match ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Enums y match dentro de código real de Rust. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Enums y match",
-        "Editar el código inicial de Rust antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Enums y match en Rust"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Enums y match",
+        "Editar el código inicial de Rust sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Enums y match en Rust?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Enums y match?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Enums y match en Rust. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Enums y match en Rust. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "rust-traits-lifetimes": {
       "title": "Traits, genéricos y lifetimes",
-      "concept": "Los traits definen comportamiento común; los lifetimes describen relaciones prestadas. En Rust, Traits, genéricos y lifetimes se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Traits, genéricos y lifetimes en Rust con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Los traits definen comportamiento común; los lifetimes describen relaciones prestadas. En Rust, estudia Traits, genéricos y lifetimes ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Traits, genéricos y lifetimes dentro de código real de Rust. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Traits, genéricos y lifetimes",
-        "Editar el código inicial de Rust antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Traits, genéricos y lifetimes en Rust"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Traits, genéricos y lifetimes",
+        "Editar el código inicial de Rust sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Traits, genéricos y lifetimes en Rust?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Traits, genéricos y lifetimes?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Traits, genéricos y lifetimes en Rust. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Traits, genéricos y lifetimes en Rust. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "rust-iterators": {
       "title": "Iteradores y closures",
-      "concept": "Los iteradores componen transformaciones perezosas. En Rust, Iteradores y closures se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Iteradores y closures en Rust con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Los iteradores componen transformaciones perezosas. En Rust, estudia Iteradores y closures ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Iteradores y closures dentro de código real de Rust. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Iteradores y closures",
-        "Editar el código inicial de Rust antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Iteradores y closures en Rust"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Iteradores y closures",
+        "Editar el código inicial de Rust sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Iteradores y closures en Rust?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Iteradores y closures?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Iteradores y closures en Rust. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Iteradores y closures en Rust. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     }
   }
 }

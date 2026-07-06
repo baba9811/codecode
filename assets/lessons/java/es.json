@@ -5,195 +5,195 @@
   "lessons": {
     "java-output": {
       "title": "Salida",
-      "concept": "System.out.println escribe una línea. En Java, Salida se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Salida en Java con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "System.out.println escribe una línea. En Java, estudia Salida ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Salida dentro de código real de Java. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Salida",
-        "Editar el código inicial de Java antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Salida en Java"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Salida",
+        "Editar el código inicial de Java sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Salida en Java?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Salida?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Salida en Java. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Salida en Java. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "java-variables": {
       "title": "Variables",
-      "concept": "Las variables de Java tienen tipos declarados. En Java, Variables se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Variables en Java con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Las variables de Java tienen tipos declarados. En Java, estudia Variables ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Variables dentro de código real de Java. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Variables",
-        "Editar el código inicial de Java antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Variables en Java"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Variables",
+        "Editar el código inicial de Java sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Variables en Java?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Variables?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Variables en Java. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Variables en Java. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "java-strings": {
       "title": "Cadenas",
-      "concept": "Los métodos de String exponen longitud, caracteres y subcadenas. En Java, Cadenas se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Cadenas en Java con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Los métodos de String exponen longitud, caracteres y subcadenas. En Java, estudia Cadenas ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Cadenas dentro de código real de Java. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Cadenas",
-        "Editar el código inicial de Java antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Cadenas en Java"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Cadenas",
+        "Editar el código inicial de Java sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Cadenas en Java?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Cadenas?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Cadenas en Java. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Cadenas en Java. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "java-control-flow": {
       "title": "Flujo de control",
-      "concept": "if, for y while controlan la ejecución. En Java, Flujo de control se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Flujo de control en Java con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "if, for y while controlan la ejecución. En Java, estudia Flujo de control ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Flujo de control dentro de código real de Java. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Flujo de control",
-        "Editar el código inicial de Java antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Flujo de control en Java"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Flujo de control",
+        "Editar el código inicial de Java sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Flujo de control en Java?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Flujo de control?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Flujo de control en Java. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Flujo de control en Java. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "java-methods": {
       "title": "Métodos",
-      "concept": "Los métodos agrupan comportamiento reutilizable. En Java, Métodos se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Métodos en Java con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Los métodos agrupan comportamiento reutilizable. En Java, estudia Métodos ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Métodos dentro de código real de Java. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Métodos",
-        "Editar el código inicial de Java antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Métodos en Java"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Métodos",
+        "Editar el código inicial de Java sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Métodos en Java?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Métodos?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Métodos en Java. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Métodos en Java. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "java-input": {
       "title": "Análisis de entrada",
-      "concept": "En los ejercicios puedes leer System.in directamente. En Java, Análisis de entrada se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Análisis de entrada en Java con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "En los ejercicios puedes leer System.in directamente. En Java, estudia Análisis de entrada ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Análisis de entrada dentro de código real de Java. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Análisis de entrada",
-        "Editar el código inicial de Java antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Análisis de entrada en Java"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Análisis de entrada",
+        "Editar el código inicial de Java sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Análisis de entrada en Java?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Análisis de entrada?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Análisis de entrada en Java. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Análisis de entrada en Java. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "java-arrays-collections": {
       "title": "Arreglos y colecciones",
-      "concept": "Los arreglos tienen tamaño fijo; las colecciones ofrecen contenedores flexibles. En Java, Arreglos y colecciones se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Arreglos y colecciones en Java con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Los arreglos tienen tamaño fijo; las colecciones ofrecen contenedores flexibles. En Java, estudia Arreglos y colecciones ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Arreglos y colecciones dentro de código real de Java. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Arreglos y colecciones",
-        "Editar el código inicial de Java antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Arreglos y colecciones en Java"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Arreglos y colecciones",
+        "Editar el código inicial de Java sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Arreglos y colecciones en Java?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Arreglos y colecciones?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Arreglos y colecciones en Java. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Arreglos y colecciones en Java. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "java-exceptions": {
       "title": "Excepciones",
-      "concept": "try/catch maneja fallos; las excepciones comprobadas aparecen en las firmas. En Java, Excepciones se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Excepciones en Java con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "try/catch maneja fallos; las excepciones comprobadas aparecen en las firmas. En Java, estudia Excepciones ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Excepciones dentro de código real de Java. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Excepciones",
-        "Editar el código inicial de Java antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Excepciones en Java"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Excepciones",
+        "Editar el código inicial de Java sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Excepciones en Java?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Excepciones?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Excepciones en Java. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Excepciones en Java. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "java-classes-interfaces": {
       "title": "Clases e interfaces",
-      "concept": "Las clases contienen estado y comportamiento; las interfaces describen contratos. En Java, Clases e interfaces se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Clases e interfaces en Java con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Las clases contienen estado y comportamiento; las interfaces describen contratos. En Java, estudia Clases e interfaces ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Clases e interfaces dentro de código real de Java. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Clases e interfaces",
-        "Editar el código inicial de Java antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Clases e interfaces en Java"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Clases e interfaces",
+        "Editar el código inicial de Java sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Clases e interfaces en Java?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Clases e interfaces?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Clases e interfaces en Java. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Clases e interfaces en Java. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "java-generics": {
       "title": "Genéricos",
-      "concept": "Los genéricos reutilizan código con parámetros de tipo. En Java, Genéricos se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Genéricos en Java con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Los genéricos reutilizan código con parámetros de tipo. En Java, estudia Genéricos ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Genéricos dentro de código real de Java. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Genéricos",
-        "Editar el código inicial de Java antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Genéricos en Java"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Genéricos",
+        "Editar el código inicial de Java sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Genéricos en Java?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Genéricos?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Genéricos en Java. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Genéricos en Java. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "java-lambda-streams": {
       "title": "Lambdas y streams",
-      "concept": "Las lambdas pasan comportamiento; los streams procesan secuencias. En Java, Lambdas y streams se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Lambdas y streams en Java con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Las lambdas pasan comportamiento; los streams procesan secuencias. En Java, estudia Lambdas y streams ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Lambdas y streams dentro de código real de Java. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Lambdas y streams",
-        "Editar el código inicial de Java antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Lambdas y streams en Java"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Lambdas y streams",
+        "Editar el código inicial de Java sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Lambdas y streams en Java?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Lambdas y streams?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Lambdas y streams en Java. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Lambdas y streams en Java. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     },
     "java-records-sealed": {
       "title": "Records y tipos sealed",
-      "concept": "Los records reducen boilerplate de datos; los tipos sealed limitan la herencia. En Java, Records y tipos sealed se aprende mejor siguiendo el recorrido del valor en el ejemplo: dónde se crea, qué expresión lo lee o lo transforma y qué llega finalmente a la salida estándar. Antes de editar el ejercicio, predice la salida línea por línea.",
-      "worked_example": "El ejemplo resuelto muestra Records y tipos sealed en Java con el código mínimo que produce un resultado observable. Léelo primero por la forma de la sintaxis y después sigue el valor hasta la salida final.",
+      "concept": "Los records reducen boilerplate de datos; los tipos sealed limitan la herencia. En Java, estudia Records y tipos sealed ubicando tres cosas en el ejemplo: la línea que prepara el valor, la expresión que lo lee y la instrucción que llega a la salida. Antes de editar el código inicial, predice su salida actual.",
+      "worked_example": "El ejemplo resuelto sitúa la regla de Records y tipos sealed dentro de código real de Java. Sigue la línea que prepara el dato, la expresión que lo usa y la instrucción que produce la salida.",
       "common_mistakes": [
-        "Memorizar el ejemplo sin explicar qué valor se mueve en Records y tipos sealed",
-        "Editar el código inicial de Java antes de predecir la salida esperada",
-        "Corregir solo signos o paréntesis sin aplicar la regla de Records y tipos sealed en Java"
+        "Copiar la forma del ejemplo sin explicar qué papel cumple Records y tipos sealed",
+        "Editar el código inicial de Java sin comprobar primero su salida actual",
+        "Arreglar solo paréntesis o signos sin aplicar la regla principal de la lección"
       ],
       "self_check": [
-        "¿Qué valor existe justo antes de imprimir o devolver el resultado?",
-        "¿Puedes señalar la línea donde se usa la sintaxis de Records y tipos sealed en Java?",
-        "Si solo pudieras cambiar una parte del código inicial, ¿cuál cambiarías primero?"
+        "¿Qué expresión del ejemplo crea el valor que se imprimirá?",
+        "¿Qué pasaría si ese valor estuviera vacío, faltara o tuviera otro tipo?",
+        "¿Qué línea del código inicial está conectada directamente con Records y tipos sealed?"
       ],
-      "exercise_prompt": "Completa el ejercicio de Records y tipos sealed en Java. Primero predice la salida del código inicial y luego cambia solo la parte necesaria. No pegues la salida esperada como una constante."
+      "exercise_prompt": "Completa el ejercicio de Records y tipos sealed en Java. Primero predice la salida actual del código inicial y luego edita solo la parte relacionada con la regla de esta lección. No escribas la salida esperada como una constante."
     }
   }
 }
