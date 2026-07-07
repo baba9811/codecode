@@ -6,377 +6,377 @@
     "py-output": {
       "title": "print and stdout",
       "concept": "`print` is the boundary between a Python calculation and judge-visible output. It converts each argument to text, inserts spaces between arguments, and ends with a newline by default, so exact stdout matters.",
-      "worked_example": "`name = 'Ada'; score = 7; print(f'{name}:{score}')` uses an f-string to format existing values as `Ada:7` without adding debug text.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying print and stdout to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Leaving extra debug prints in a submission that is judged by exact stdout.",
-        "Printing a container such as `['Ada', 7]` when the expected output is plain text.",
-        "Using `return` at top level instead of printing the final answer."
+        "Changing only the final output line while leaving the print and stdout rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the print and stdout exercise.",
+        "Matching the judge output without checking this lesson idea: `print` is the boundary between a Python calculation and judge-visible output."
       ],
       "self_check": [
-        "Which characters does `print` add when you do not pass `end=`?",
-        "If the value is correct but stdout has one extra line, what will the judge compare?"
+        "Which expression in the example applies print and stdout before the `example:` output?",
+        "Which TODO line in the print and stdout exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Use the given `name` and `score` variables to print exactly `Ada:7`, with no extra labels or debug output."
+      "exercise_prompt": "Complete the TODO by applying print and stdout to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-variables": {
       "title": "Variables",
       "concept": "A variable name is bound to an object by assignment. Rebinding the same name changes what future reads see, while any previous object keeps existing until no references need it.",
-      "worked_example": "`count = 1; count = count + 2` reads the old integer, creates a new integer, and binds `count` to that new value before printing `3`.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Variables to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Reading `=` as a mathematical equality test instead of assignment.",
-        "Reusing a short name for unrelated meanings in the same solution.",
-        "Expecting a rebinding to mutate every earlier value automatically."
+        "Changing only the final output line while leaving the Variables rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Variables exercise.",
+        "Matching the judge output without checking this lesson idea: A variable name is bound to an object by assignment."
       ],
       "self_check": [
-        "After `x = 1` and `x = x + 2`, what does `x` refer to?",
-        "Which temporary value deserves a name in the code you are reading?"
+        "Which expression in the example applies Variables before the `example:` output?",
+        "Which TODO line in the Variables exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Rebind `word` to the expected text, then print the name rather than hard-coding a second literal in `print`."
+      "exercise_prompt": "Complete the TODO by applying Variables to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-numbers": {
       "title": "Numbers",
       "concept": "Python integers have arbitrary precision, and numeric operators choose different meanings: `/` returns a float, `//` floors, `%` gives the remainder, and `**` powers. Problems often need the integer operators, not decimal division.",
-      "worked_example": "`total // size` and `total % size` split `7` items into groups of `2`, producing quotient `3` and remainder `1`.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Numbers to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Using `/` when the task expects integer division.",
-        "Forgetting that `%` is the remainder after division, not a percentage.",
-        "Mixing float output into a judge answer that expects integers."
+        "Changing only the final output line while leaving the Numbers rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Numbers exercise.",
+        "Matching the judge output without checking this lesson idea: Python integers have arbitrary precision, and numeric operators choose different meanings: `/` returns a float, `//` floors, `%` gives the remainder, and `**` powers."
       ],
       "self_check": [
-        "What are the values of `7 // 2` and `7 % 2`?",
-        "When would `round` be the wrong replacement for `//`?"
+        "Which expression in the example applies Numbers before the `example:` output?",
+        "Which TODO line in the Numbers exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Change the arithmetic so the starter prints the integer quotient and remainder as `3:1`."
+      "exercise_prompt": "Complete the TODO by applying Numbers to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-strings": {
       "title": "Strings",
       "concept": "A string is an immutable sequence of Unicode characters. Indexing reads one character, slicing reads a half-open range, and operations such as concatenation create a new string instead of editing the old one.",
-      "worked_example": "`text = 'python'; text[1:4]` reads indexes 1, 2, and 3, so the printed slice is `yth`.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Strings to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Expecting the stop index in a slice to be included.",
-        "Trying to assign into `text[0]` even though strings are immutable.",
-        "Counting indexes from 1 instead of 0."
+        "Changing only the final output line while leaving the Strings rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Strings exercise.",
+        "Matching the judge output without checking this lesson idea: A string is an immutable sequence of Unicode characters."
       ],
       "self_check": [
-        "What does `'code'[1]` read?",
-        "Why does `'xokx'[1:3]` produce exactly two characters?"
+        "Which expression in the example applies Strings before the `example:` output?",
+        "Which TODO line in the Strings exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Use a slice of `text` so the output is exactly `ok`, not the surrounding marker characters."
+      "exercise_prompt": "Complete the TODO by applying Strings to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-control-flow": {
       "title": "Control flow",
       "concept": "`if` selects a block, `for` consumes an iterable, and `while` repeats until a condition changes. Python uses indentation as syntax, so moving one line changes which branch or loop owns it.",
-      "worked_example": "The example visits `1`, `2`, and `3`, adds only odd values, and prints `4` after the loop finishes.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Control flow to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Putting accumulation code outside the loop by one indentation level.",
-        "Using `range(n)` while expecting it to include `n`.",
-        "Writing a `while` loop whose condition never changes."
+        "Changing only the final output line while leaving the Control flow rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Control flow exercise.",
+        "Matching the judge output without checking this lesson idea: `if` selects a block, `for` consumes an iterable, and `while` repeats until a condition changes."
       ],
       "self_check": [
-        "Which lines run once per item in the loop?",
-        "What values are produced by `range(1, 4)`?"
+        "Which expression in the example applies Control flow before the `example:` output?",
+        "Which TODO line in the Control flow exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the loop body so it adds only the odd numbers and prints the final total after the loop."
+      "exercise_prompt": "Complete the TODO by applying Control flow to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-functions": {
       "title": "Functions",
       "concept": "`def` creates a callable object with parameters and a body. `return` sends a value to the caller; printing inside the function is separate from returning the calculation for later use.",
-      "worked_example": "`area(3, 4)` passes two arguments, the function multiplies them, and the caller prints the returned `12`.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Functions to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Forgetting to call a function after defining it.",
-        "Printing a value where the caller needs it returned.",
-        "Returning too early from inside a loop."
+        "Changing only the final output line while leaving the Functions rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Functions exercise.",
+        "Matching the judge output without checking this lesson idea: `def` creates a callable object with parameters and a body."
       ],
       "self_check": [
-        "What value is returned if execution reaches the end of a function without `return`?",
-        "Which part of this program should own the final `print`?"
+        "Which expression in the example applies Functions before the `example:` output?",
+        "Which TODO line in the Functions exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Fix the function body so it returns rectangle area, then let the existing call print the result."
+      "exercise_prompt": "Complete the TODO by applying Functions to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-input": {
       "title": "Input parsing",
       "concept": "Coding-test input arrives as text on stdin. A common pattern is to read once, split whitespace into tokens, convert the tokens, and keep the solving logic separate from parsing.",
-      "worked_example": "`[int(token) for token in sys.stdin.read().split()]` converts all whitespace-separated input tokens into integers before summing them.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Input parsing to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Calling `input()` repeatedly when one bulk read is simpler for unknown line counts.",
-        "Forgetting that `split()` produces strings until `int` is applied.",
-        "Mixing parsing code into the middle of the algorithm so it is hard to test."
+        "Changing only the final output line while leaving the Input parsing rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Input parsing exercise.",
+        "Matching the judge output without checking this lesson idea: Coding-test input arrives as text on stdin."
       ],
       "self_check": [
-        "What does `sys.stdin.read()` return before conversion?",
-        "Where would you handle an empty input string?"
+        "Which expression in the example applies Input parsing before the `example:` output?",
+        "Which TODO line in the Input parsing exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Parse all integers from stdin and print their sum for the provided judge case."
+      "exercise_prompt": "Complete the TODO by applying Input parsing to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-lists-dicts": {
       "title": "Lists and dicts",
       "concept": "Lists store ordered values and are read by index or iteration. Dicts map keys to values, which makes lookup, grouping, and counting clearer than searching a list by hand.",
-      "worked_example": "`scores['Ada']` finds Ada's list of scores, and `sum(...)` calculates the total for that key without scanning unrelated names.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Lists and dicts to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Using a list index when the data is identified by a meaningful key.",
-        "Looking up a dict key before deciding what should happen if it is missing.",
-        "Printing `len(nums)` when the problem asks for the sum of the numbers."
+        "Changing only the final output line while leaving the Lists and dicts rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Lists and dicts exercise.",
+        "Matching the judge output without checking this lesson idea: Lists store ordered values and are read by index or iteration."
       ],
       "self_check": [
-        "When should a value become a dict key instead of a list position?",
-        "What does `scores['Ada']` retrieve in the example?"
+        "Which expression in the example applies Lists and dicts before the `example:` output?",
+        "Which TODO line in the Lists and dicts exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Use the list stored under `Ada` to print the sum of its numbers without hard-coding `5`."
+      "exercise_prompt": "Complete the TODO by applying Lists and dicts to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-tuples-sets": {
       "title": "Tuples and sets",
       "concept": "A tuple is a fixed-position sequence, useful for small records such as coordinates or pairs. A set stores unique hashable values and is the usual tool for deduplication and membership tests.",
-      "worked_example": "`pair = ('o', 'k')` keeps order for joining, while `set(pair)` records that there are two distinct letters.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Tuples and sets to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Using a set when output order matters.",
-        "Trying to change a tuple item in place.",
-        "Forgetting that duplicate set inserts do not increase its length."
+        "Changing only the final output line while leaving the Tuples and sets rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Tuples and sets exercise.",
+        "Matching the judge output without checking this lesson idea: A tuple is a fixed-position sequence, useful for small records such as coordinates or pairs."
       ],
       "self_check": [
-        "Which part of the example needs tuple order?",
-        "What would `len(set(['a', 'a']))` return?"
+        "Which expression in the example applies Tuples and sets before the `example:` output?",
+        "Which TODO line in the Tuples and sets exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Build a set from the tuple and print both the joined tuple text and the count of unique items."
+      "exercise_prompt": "Complete the TODO by applying Tuples and sets to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-comprehensions": {
       "title": "Comprehensions",
       "concept": "A comprehension builds a collection from an expression, a loop, and optional filters. It is best for a simple map or filter that can be read in one pass.",
-      "worked_example": "`[n * n for n in nums if n % 2 == 0]` squares only even numbers, producing values that can be summed immediately.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Comprehensions to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Putting so much logic in a comprehension that a normal loop would be clearer.",
-        "Forgetting that the output expression appears before the `for`.",
-        "Using a comprehension only for side effects such as printing."
+        "Changing only the final output line while leaving the Comprehensions rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Comprehensions exercise.",
+        "Matching the judge output without checking this lesson idea: A comprehension builds a collection from an expression, a loop, and optional filters."
       ],
       "self_check": [
-        "Which part of the comprehension chooses the output value?",
-        "Which condition removes the unwanted item in the starter?"
+        "Which expression in the example applies Comprehensions before the `example:` output?",
+        "Which TODO line in the Comprehensions exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Adjust the filter so the comprehension keeps the letters needed to print `ok`."
+      "exercise_prompt": "Complete the TODO by applying Comprehensions to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-errors": {
       "title": "Exceptions",
       "concept": "Exceptions separate normal flow from recoverable failure. Keep the `try` block small, catch a specific exception such as `ValueError`, and recover only when you know the replacement behavior.",
-      "worked_example": "The example tries to parse text as an integer and uses `except ValueError` only for the parse failure path.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Exceptions to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Catching every exception with bare `except:` and hiding bugs.",
-        "Putting unrelated code inside the `try` block.",
-        "Using exceptions for ordinary branches that an `if` could express directly."
+        "Changing only the final output line while leaving the Exceptions rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Exceptions exercise.",
+        "Matching the judge output without checking this lesson idea: Exceptions separate normal flow from recoverable failure."
       ],
       "self_check": [
-        "Why is `except ValueError` better than a bare catch here?",
-        "What value should the program use after the parse fails?"
+        "Which expression in the example applies Exceptions before the `example:` output?",
+        "Which TODO line in the Exceptions exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Handle the expected conversion error by assigning the recovery value that makes the output `12`."
+      "exercise_prompt": "Complete the TODO by applying Exceptions to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-files-context": {
       "title": "Files and context managers",
       "concept": "`with` enters a context manager, runs the block, and guarantees cleanup afterward. File objects and contextlib utilities use this to close resources even if the block exits early.",
-      "worked_example": "The `StringIO` handle behaves like a small file; reading inside the `with` block captures `ok` before the handle is closed.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Files and context managers to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Trying to read a handle after the context manager has already closed it.",
-        "Opening files without a `with` block and forgetting cleanup.",
-        "Catching cleanup errors by accident with an overly broad exception handler."
+        "Changing only the final output line while leaving the Files and context managers rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Files and context managers exercise.",
+        "Matching the judge output without checking this lesson idea: `with` enters a context manager, runs the block, and guarantees cleanup afterward."
       ],
       "self_check": [
-        "Which line must run before the handle closes?",
-        "What cleanup does `with open(...)` normally give you?"
+        "Which expression in the example applies Files and context managers before the `example:` output?",
+        "Which TODO line in the Files and context managers exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Read from the managed handle inside the `with` block, then print the saved text outside the block."
+      "exercise_prompt": "Complete the TODO by applying Files and context managers to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-modules-imports": {
       "title": "Modules and imports",
       "concept": "A module groups reusable code behind a namespace. `import math` binds the module name, while style guides put imports at the top so dependencies are visible before the program logic starts.",
-      "worked_example": "`math.ceil(2.1)` calls the standard-library function through the imported module and prints `3`.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Modules and imports to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Rewriting a standard-library helper instead of importing it.",
-        "Shadowing an imported module with a variable of the same name.",
-        "Putting imports deep inside code without a reason."
+        "Changing only the final output line while leaving the Modules and imports rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Modules and imports exercise.",
+        "Matching the judge output without checking this lesson idea: A module groups reusable code behind a namespace."
       ],
       "self_check": [
-        "What name becomes available after `import math`?",
-        "Why does PEP 8 prefer imports near the top of the file?"
+        "Which expression in the example applies Modules and imports before the `example:` output?",
+        "Which TODO line in the Modules and imports exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Use the imported `math` module to round upward so the result is `3`."
+      "exercise_prompt": "Complete the TODO by applying Modules and imports to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-dataclasses": {
       "title": "Dataclasses",
       "concept": "`@dataclass` generates routine methods for classes that mainly hold data. It keeps field names, type hints, construction, and representation close together without hand-written boilerplate.",
-      "worked_example": "`Point(2, 3)` creates an object with `x` and `y` fields, and the example adds those fields like any other attributes.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Dataclasses to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Using a dataclass for behavior-heavy objects that need explicit methods first.",
-        "Forgetting the `@` when applying the decorator.",
-        "Changing mutable default fields without using the right default factory."
+        "Changing only the final output line while leaving the Dataclasses rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Dataclasses exercise.",
+        "Matching the judge output without checking this lesson idea: `@dataclass` generates routine methods for classes that mainly hold data."
       ],
       "self_check": [
-        "Which constructor call is generated for `Point`?",
-        "What fields should be read to calculate the sum?"
+        "Which expression in the example applies Dataclasses before the `example:` output?",
+        "Which TODO line in the Dataclasses exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Use both dataclass fields so the point prints the sum of its coordinates."
+      "exercise_prompt": "Complete the TODO by applying Dataclasses to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-typing": {
       "title": "Type hints",
       "concept": "Type hints describe expected shapes for readers, editors, and type checkers. They do not automatically prevent a wrong runtime value, so the function body still has to implement the contract.",
-      "worked_example": "`Iterable[int]` tells the reader that `total` can consume any iterable of integers and returns an `int` after calling `sum`.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Type hints to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Assuming annotations enforce every value at runtime by themselves.",
-        "Writing a complex type before the data shape is stable.",
-        "Letting the implementation contradict the annotated return type."
+        "Changing only the final output line while leaving the Type hints rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Type hints exercise.",
+        "Matching the judge output without checking this lesson idea: Type hints describe expected shapes for readers, editors, and type checkers."
       ],
       "self_check": [
-        "What does `Iterable[int]` promise about the argument?",
-        "Which line proves the function actually returns an integer total?"
+        "Which expression in the example applies Type hints before the `example:` output?",
+        "Which TODO line in the Type hints exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Make the annotated function return the sum of the iterable it receives."
+      "exercise_prompt": "Complete the TODO by applying Type hints to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-generators": {
       "title": "Iterators and generators",
       "concept": "An iterator produces values one at a time. A generator function uses `yield`, which returns a generator object first and runs the body only when the caller asks for the next value.",
-      "worked_example": "`next(countdown(3))` starts the generator, reaches the first `yield`, and receives `3` without building a whole list.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Iterators and generators to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Calling a generator function and expecting the body to run immediately.",
-        "Forgetting that `next` can raise `StopIteration` after values are exhausted.",
-        "Building a list when a lazy stream would avoid unnecessary memory."
+        "Changing only the final output line while leaving the Iterators and generators rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Iterators and generators exercise.",
+        "Matching the judge output without checking this lesson idea: An iterator produces values one at a time."
       ],
       "self_check": [
-        "When does the body of `words()` actually run?",
-        "What is the first value yielded by the fixed starter?"
+        "Which expression in the example applies Iterators and generators before the `example:` output?",
+        "Which TODO line in the Iterators and generators exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Yield `ok` as the first generated value so the existing `next` call prints it."
+      "exercise_prompt": "Complete the TODO by applying Iterators and generators to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-lambdas-closures": {
       "title": "Lambdas and closures",
       "concept": "`lambda` creates a small expression function. When that function uses a name from an outer function, it forms a closure and remembers that outer value after the outer call returns.",
-      "worked_example": "`make_adder(2)` returns a lambda that remembers `delta = 2`, so calling it with `3` prints `5`.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Lambdas and closures to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Using lambda for multi-step logic that deserves a named function.",
-        "Expecting a closure to copy a changing variable's old value automatically.",
-        "Forgetting to return the inner function from the outer function."
+        "Changing only the final output line while leaving the Lambdas and closures rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Lambdas and closures exercise.",
+        "Matching the judge output without checking this lesson idea: `lambda` creates a small expression function."
       ],
       "self_check": [
-        "Which value is remembered by the lambda in `make_suffix`?",
-        "Why does `make_suffix('ok')` return a function instead of a string?"
+        "Which expression in the example applies Lambdas and closures before the `example:` output?",
+        "Which TODO line in the Lambdas and closures exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Return a lambda that appends the captured suffix to its argument."
+      "exercise_prompt": "Complete the TODO by applying Lambdas and closures to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-decorators": {
       "title": "Decorators",
       "concept": "A decorator is called when a function is defined. It receives the original function object and returns the object that the function name should refer to afterward.",
-      "worked_example": "The identity decorator returns `fn` unchanged, so `word()` still calls the original function and prints `ok`.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Decorators to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Returning the result of calling `fn()` instead of returning a function object.",
-        "Forgetting that decorator code runs at definition time.",
-        "Adding a decorator when a simple helper call would be easier to read."
+        "Changing only the final output line while leaving the Decorators rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Decorators exercise.",
+        "Matching the judge output without checking this lesson idea: A decorator is called when a function is defined."
       ],
       "self_check": [
-        "What argument does `identity` receive?",
-        "What must be returned for `word` to stay callable?"
+        "Which expression in the example applies Decorators before the `example:` output?",
+        "Which TODO line in the Decorators exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Make the decorator return the original function so the decorated call prints `ok`."
+      "exercise_prompt": "Complete the TODO by applying Decorators to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-sorting-keys": {
       "title": "Sorting and key functions",
       "concept": "`sorted` returns a new list and leaves the original iterable alone. A `key` function computes the comparison value for each item, which is how records are sorted by one field.",
-      "worked_example": "The example sorts users by the score field with `key=lambda item: item[1]` and uses `reverse=True` to put the highest score first.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Sorting and key functions to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Sorting tuples by their default first field when the task asks for a later field.",
-        "Mutating with `.sort()` when the original order is still needed elsewhere.",
-        "Writing a key function that returns text for numeric ordering."
+        "Changing only the final output line while leaving the Sorting and key functions rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Sorting and key functions exercise.",
+        "Matching the judge output without checking this lesson idea: `sorted` returns a new list and leaves the original iterable alone."
       ],
       "self_check": [
-        "Which tuple field is the score?",
-        "Why does `reverse=True` matter for choosing the best user?"
+        "Which expression in the example applies Sorting and key functions before the `example:` output?",
+        "Which TODO line in the Sorting and key functions exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Sort by score descending so the selected user is `Lin:5`."
+      "exercise_prompt": "Complete the TODO by applying Sorting and key functions to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-counter-defaultdict": {
       "title": "Counter and defaultdict",
       "concept": "`Counter` is a dict subclass for counts, and `defaultdict(list)` creates a new list for missing groups. They remove the noisy `if key not in dict` code from common counting and grouping tasks.",
-      "worked_example": "The example counts each color and also groups words by first letter, then prints the count and group size for `red`.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Counter and defaultdict to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Manually initializing every count when `Counter` can count the iterable.",
-        "Using a normal dict and then appending to a missing list key.",
-        "Grouping by the wrong key, such as the whole word instead of its first letter."
+        "Changing only the final output line while leaving the Counter and defaultdict rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Counter and defaultdict exercise.",
+        "Matching the judge output without checking this lesson idea: `Counter` is a dict subclass for counts, and `defaultdict(list)` creates a new list for missing groups."
       ],
       "self_check": [
-        "What does `Counter(words)['red']` return?",
-        "What list does `groups['r']` contain after grouping?"
+        "Which expression in the example applies Counter and defaultdict before the `example:` output?",
+        "Which TODO line in the Counter and defaultdict exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Fill both the counter and the first-letter groups so the output is `2 2`."
+      "exercise_prompt": "Complete the TODO by applying Counter and defaultdict to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-deque": {
       "title": "deque",
       "concept": "`deque` is a double-ended queue with efficient append and pop operations on both ends. It is the standard-library choice for BFS queues and sliding-window front removal.",
-      "worked_example": "The example adds `start` on the left and `end` on the right, then removes one value from each end.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying deque to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Using `list.pop(0)` repeatedly for queue behavior.",
-        "Mixing up `append` and `appendleft`.",
-        "Reading from an empty deque without checking whether work remains."
+        "Changing only the final output line while leaving the deque rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the deque exercise.",
+        "Matching the judge output without checking this lesson idea: `deque` is a double-ended queue with efficient append and pop operations on both ends."
       ],
       "self_check": [
-        "Which method adds a value to the left side?",
-        "After adding both ends, what should `popleft` and `pop` return?"
+        "Which expression in the example applies deque before the `example:` output?",
+        "Which TODO line in the deque exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Add the missing left and right values, then print the two removed end values."
+      "exercise_prompt": "Complete the TODO by applying deque to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-itertools": {
       "title": "itertools",
       "concept": "`itertools` contains lazy iterator building blocks such as `chain`, `islice`, `product`, and `pairwise`. They describe iteration pipelines without building intermediate lists unless you ask for them.",
-      "worked_example": "`chain.from_iterable(parts)` flattens the nested one-letter lists lazily, and `join` consumes that iterator to print `ok`.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying itertools to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Forgetting that many itertools results are iterators, not reusable lists.",
-        "Slicing the input before the iterator sees all needed values.",
-        "Using a nested loop when a small itertools helper states the intent clearly."
+        "Changing only the final output line while leaving the itertools rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the itertools exercise.",
+        "Matching the judge output without checking this lesson idea: `itertools` contains lazy iterator building blocks such as `chain`, `islice`, `product`, and `pairwise`."
       ],
       "self_check": [
-        "What does `chain.from_iterable` flatten in the example?",
-        "Why does the starter lose the second letter?"
+        "Which expression in the example applies itertools before the `example:` output?",
+        "Which TODO line in the itertools exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Flatten both inner lists lazily so the joined result is `ok`."
+      "exercise_prompt": "Complete the TODO by applying itertools to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-pathlib": {
       "title": "pathlib",
       "concept": "`pathlib` models paths as objects instead of raw strings. Properties such as `name`, `stem`, `suffix`, and `parent` make file-path code clearer and less dependent on manual separators.",
-      "worked_example": "`PurePosixPath('logs/app.txt')` can report `stem` as `app` and `suffix` as `.txt` without touching the real filesystem.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying pathlib to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Splitting paths by `/` even when path rules differ by platform.",
-        "Confusing `name`, `stem`, and `suffix`.",
-        "Using `Path` filesystem methods in a judge exercise that only needs pure path parsing."
+        "Changing only the final output line while leaving the pathlib rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the pathlib exercise.",
+        "Matching the judge output without checking this lesson idea: `pathlib` models paths as objects instead of raw strings."
       ],
       "self_check": [
-        "What is the stem of `logs/app.txt`?",
-        "Why does `PurePosixPath` avoid filesystem access here?"
+        "Which expression in the example applies pathlib before the `example:` output?",
+        "Which TODO line in the pathlib exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Use path properties to print the stem and suffix as `app:.txt`."
+      "exercise_prompt": "Complete the TODO by applying pathlib to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-testing-assert": {
       "title": "Testing and assert",
       "concept": "`assert` is a compact check for an invariant in examples and small tests. Real projects usually put those checks in repeatable test functions, but the core idea is still expected versus actual behavior.",
-      "worked_example": "The example checks `add_two(3) == 5` before printing `ok`, so a broken function fails before producing success output.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Testing and assert to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the assertion to match broken code instead of fixing the code.",
-        "Depending on assert for user-facing validation in optimized runtime modes.",
-        "Testing only the final print and not the small function that does the work."
+        "Changing only the final output line while leaving the Testing and assert rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Testing and assert exercise.",
+        "Matching the judge output without checking this lesson idea: `assert` is a compact check for an invariant in examples and small tests."
       ],
       "self_check": [
-        "What behavior should `add_two` guarantee?",
-        "Which line would fail if the function returned the input unchanged?"
+        "Which expression in the example applies Testing and assert before the `example:` output?",
+        "Which TODO line in the Testing and assert exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Fix the function and the assertion so the check protects the intended `+2` behavior before printing `ok`."
+      "exercise_prompt": "Complete the TODO by applying Testing and assert to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "py-async": {
       "title": "Async concepts",
       "concept": "`async def` creates a coroutine function. Calling it creates a coroutine object, `await` waits for its result inside another coroutine, and `asyncio.run` drives the top-level coroutine in this single-file exercise.",
-      "worked_example": "`main` awaits `label()`, receives `ok`, prints it, and `asyncio.run(main())` starts the event loop for that coroutine.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Async concepts to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Printing a coroutine object instead of awaiting it.",
-        "Calling `asyncio.run` from code that is already inside a running event loop.",
-        "Using async syntax for CPU-only work that has no waiting point."
+        "Changing only the final output line while leaving the Async concepts rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Async concepts exercise.",
+        "Matching the judge output without checking this lesson idea: `async def` creates a coroutine function."
       ],
       "self_check": [
-        "Which expression actually waits for `label()` to finish?",
-        "Why does this exercise use `asyncio.run(main())` at the file boundary?"
+        "Which expression in the example applies Async concepts before the `example:` output?",
+        "Which TODO line in the Async concepts exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Await the coroutine inside `main` and print the awaited result."
+      "exercise_prompt": "Complete the TODO by applying Async concepts to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     }
   }
 }

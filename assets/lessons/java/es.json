@@ -6,394 +6,422 @@
     "java-output": {
       "title": "Salida estándar",
       "concept": "Salida estándar importa cuando el juez compara cada carácter y salto de línea. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en formar score=7 desde un int antes de que println añada el salto. Sigue la línea que concatena la etiqueta con score; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Salida estándar. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Usar print cuando la salida esperada necesita el salto que agrega println.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Salida estándar en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Salida estándar.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Salida estándar importa cuando el juez compara cada carácter y salto de línea."
       ],
       "self_check": [
-        "¿Dónde se convierte el entero en el texto score=7?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Salida estándar antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Salida estándar debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar System.out.println con un valor calculado. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Salida estándar a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-variables-types": {
       "title": "Variables y tipos",
       "concept": "Variables y tipos importa cuando los valores primitivos y las referencias a objetos deben declararse antes de usarse. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en combinar un String, un int y un boolean en una línea. Sigue la línea que mantiene score y passed coherentes; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Variables y tipos. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el boolean y dejar score con el valor anterior.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Variables y tipos en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Variables y tipos.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Variables y tipos importa cuando los valores primitivos y las referencias a objetos deben declararse antes de usarse."
       ],
       "self_check": [
-        "¿Qué variables determinan las tres partes de Ada:7:true?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Variables y tipos antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Variables y tipos debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar variables locales tipadas coherentes con el reporte. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Variables y tipos a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-numbers-operators": {
       "title": "Números y operadores",
       "concept": "Números y operadores importa cuando la división y el resto deben mantenerse enteros en muchos problemas. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en obtener cociente y resto desde el mismo total y size. Sigue la línea que usa / y % con los mismos operandos; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Números y operadores. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Usar un divisor distinto para el cociente y para el resto.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Números y operadores en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Números y operadores.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Números y operadores importa cuando la división y el resto deben mantenerse enteros en muchos problemas."
       ],
       "self_check": [
-        "¿Por qué 17 / 5 produce 3 y no 3.4?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Números y operadores antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Números y operadores debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar división entera y resto. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Números y operadores a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-strings": {
       "title": "Cadenas",
       "concept": "Cadenas importa cuando la limpieza de texto y substring ocurren antes de comparar o imprimir. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en recortar espacios antes de tomar el prefijo ok. Sigue la línea que llama a trim antes de substring; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Cadenas. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Calcular substring antes de quitar los espacios alrededor.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Cadenas en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Cadenas.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Cadenas importa cuando la limpieza de texto y substring ocurren antes de comparar o imprimir."
       ],
       "self_check": [
-        "¿Qué valor conserva raw después de calcular cleaned?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Cadenas antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Cadenas debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar métodos de String sin mutar el texto original. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Cadenas a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-control-flow": {
       "title": "Flujo de control",
       "concept": "Flujo de control importa cuando ramas y bucles deciden qué valores entran al acumulador. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en recorrer 1..3 y sumar solo impares. Sigue la línea que protege la suma con n % 2 == 1; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Flujo de control. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Sumar todos los valores del bucle esperando que el total coincida.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Flujo de control en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Flujo de control.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Flujo de control importa cuando ramas y bucles deciden qué valores entran al acumulador."
       ],
       "self_check": [
-        "¿Qué iteraciones entran al if y cuáles se saltan?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Flujo de control antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Flujo de control debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar if dentro de un bucle for. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Flujo de control a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-methods": {
       "title": "Métodos",
       "concept": "Métodos importa cuando un cálculo reutilizable necesita un límite con nombre. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en pasar width y height a area. Sigue la línea que devuelve la multiplicación en vez de imprimir dentro del método; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Métodos. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Devolver perímetro cuando el llamador espera área.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Métodos en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Métodos.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Métodos importa cuando un cálculo reutilizable necesita un límite con nombre."
       ],
       "self_check": [
-        "¿Qué línea devuelve el valor calculado a main?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Métodos antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Métodos debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar parámetros y valor de retorno. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Métodos a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-input": {
       "title": "Lectura de entrada",
       "concept": "Lectura de entrada importa cuando stdin llega como bytes y debe convertirse en tokens tipados. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en leer System.in una vez y sumar enteros parseados. Sigue la línea que divide por espacios antes de Integer.parseInt; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Lectura de entrada. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Parsear solo el primer token cuando el juez puede enviar muchos números.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Lectura de entrada en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Lectura de entrada.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Lectura de entrada importa cuando stdin llega como bytes y debe convertirse en tokens tipados."
       ],
       "self_check": [
-        "¿Dónde el texto pasa de String a int?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Lectura de entrada antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Lectura de entrada debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar readAllBytes, split e Integer.parseInt. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Lectura de entrada a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-arrays-collections": {
       "title": "Arrays y colecciones",
       "concept": "Arrays y colecciones importa cuando arrays fijos, List expandible, Map por clave y Set único resuelven tareas distintas. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en pasar valores de array a List, Map y Set. Sigue la línea que usa merge para el total del Map y add para el Set; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Arrays y colecciones. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Usar nums.length cuando el problema pide el total numérico.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Arrays y colecciones en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Arrays y colecciones.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Arrays y colecciones importa cuando arrays fijos, List expandible, Map por clave y Set único resuelven tareas distintas."
       ],
       "self_check": [
-        "¿Qué colección guarda orden, cuál búsqueda y cuál elimina duplicados?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Arrays y colecciones antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Arrays y colecciones debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar APIs List, Map y Set con un array de origen. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Arrays y colecciones a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-classes-objects": {
       "title": "Clases y objetos",
       "concept": "Clases y objetos importa cuando los objetos necesitan estado de instancia y comportamiento. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en crear Counter y llamar a add. Sigue la línea que actualiza this.value antes de devolver; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Clases y objetos. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir new, campos y métodos de instancia.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Clases y objetos en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Clases y objetos.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Clases y objetos importa cuando los objetos necesitan estado de instancia y comportamiento."
       ],
       "self_check": [
-        "¿Qué expresión demuestra new, campos y métodos de instancia?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Clases y objetos antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Clases y objetos debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar new, campos y métodos de instancia. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Clases y objetos a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-constructors": {
       "title": "Constructores",
       "concept": "Constructores importa cuando los objetos nuevos deben empezar con campos válidos. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en guardar width y height antes de ejecutar area. Sigue la línea que asigna parámetros del constructor a campos final; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Constructores. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir parámetros de constructor y asignación this.field.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Constructores en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Constructores.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Constructores importa cuando los objetos nuevos deben empezar con campos válidos."
       ],
       "self_check": [
-        "¿Qué expresión demuestra parámetros de constructor y asignación this.field?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Constructores antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Constructores debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar parámetros de constructor y asignación this.field. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Constructores a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-encapsulation": {
       "title": "Encapsulación",
       "concept": "Encapsulación importa cuando los llamadores deben cambiar estado mediante métodos y no campos. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en sumar puntos mediante Score.add. Sigue la línea que cambia el campo private points solo tras validar; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Encapsulación. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir campos private con métodos public.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Encapsulación en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Encapsulación.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Encapsulación importa cuando los llamadores deben cambiar estado mediante métodos y no campos."
       ],
       "self_check": [
-        "¿Qué expresión demuestra campos private con métodos public?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Encapsulación antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Encapsulación debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar campos private con métodos public. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Encapsulación a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-static-members": {
       "title": "Miembros static",
       "concept": "Miembros static importa cuando un valor pertenece a la clase y no a una instancia. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en llamar Scale.apply desde la clase. Sigue la línea que multiplica por FACTOR compartido; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Miembros static. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir constantes static final y métodos static.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Miembros static en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Miembros static.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Miembros static importa cuando un valor pertenece a la clase y no a una instancia."
       ],
       "self_check": [
-        "¿Qué expresión demuestra constantes static final y métodos static?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Miembros static antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Miembros static debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar constantes static final y métodos static. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Miembros static a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-enum-switch": {
       "title": "Enum y switch",
       "concept": "Enum y switch importa cuando un conjunto fijo de estados debe mapearse a resultados explícitos. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en convertir Status.DONE en ok con switch. Sigue la línea que maneja directamente la rama DONE; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Enum y switch. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir constantes enum y ramas de switch.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Enum y switch en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Enum y switch.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Enum y switch importa cuando un conjunto fijo de estados debe mapearse a resultados explícitos."
       ],
       "self_check": [
-        "¿Qué expresión demuestra constantes enum y ramas de switch?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Enum y switch antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Enum y switch debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar constantes enum y ramas de switch. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Enum y switch a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-exceptions": {
       "title": "Excepciones",
       "concept": "Excepciones importa cuando una entrada inválida debe recuperarse sin ocultar fallos no relacionados. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en capturar NumberFormatException y devolver fallback. Sigue la línea que captura el fallo específico de parseo; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Excepciones. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir try/catch alrededor de Integer.parseInt.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Excepciones en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Excepciones.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Excepciones importa cuando una entrada inválida debe recuperarse sin ocultar fallos no relacionados."
       ],
       "self_check": [
-        "¿Qué expresión demuestra try/catch alrededor de Integer.parseInt?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Excepciones antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Excepciones debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar try/catch alrededor de Integer.parseInt. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Excepciones a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-generics": {
       "title": "Genéricos",
       "concept": "Genéricos importa cuando un método debe conservar el tipo de elemento del llamador. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en devolver el último elemento de List<T>. Sigue la línea que usa T en vez de Object; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Genéricos. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir método genérico <T> con List<T>.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Genéricos en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Genéricos.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Genéricos importa cuando un método debe conservar el tipo de elemento del llamador."
       ],
       "self_check": [
-        "¿Qué expresión demuestra método genérico <T> con List<T>?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Genéricos antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Genéricos debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar método genérico <T> con List<T>. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Genéricos a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-interfaces": {
       "title": "Interfaces",
       "concept": "Interfaces importa cuando los llamadores deben depender del comportamiento y no de una clase concreta. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en pasar User como Named. Sigue la línea que implementa name con la firma public; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Interfaces. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir implements y parámetros de tipo interfaz.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Interfaces en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Interfaces.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Interfaces importa cuando los llamadores deben depender del comportamiento y no de una clase concreta."
       ],
       "self_check": [
-        "¿Qué expresión demuestra implements y parámetros de tipo interfaz?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Interfaces antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Interfaces debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar implements y parámetros de tipo interfaz. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Interfaces a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-inheritance-composition": {
       "title": "Herencia y composición",
       "concept": "Herencia y composición importa cuando una subclase también necesita un objeto auxiliar. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en PremiumUser combina baseScore heredado con Bonus. Sigue la línea que llama bonus.apply(baseScore()); si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Herencia y composición. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir extends más un campo compuesto.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Herencia y composición en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Herencia y composición.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Herencia y composición importa cuando una subclase también necesita un objeto auxiliar."
       ],
       "self_check": [
-        "¿Qué expresión demuestra extends más un campo compuesto?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Herencia y composición antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Herencia y composición debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar extends más un campo compuesto. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Herencia y composición a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-records": {
       "title": "Records",
       "concept": "Records importa cuando los portadores de datos inmutables necesitan menos repetición. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en usar los accesores generados x() e y(). Sigue la línea que suma ambos componentes del record; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Records. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir componentes record y accesores generados.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Records en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Records.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Records importa cuando los portadores de datos inmutables necesitan menos repetición."
       ],
       "self_check": [
-        "¿Qué expresión demuestra componentes record y accesores generados?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Records antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Records debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar componentes record y accesores generados. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Records a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-optional": {
       "title": "Optional",
       "concept": "Optional importa cuando un valor ausente debe manejarse explícitamente. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en filtrar Optional antes de orElse. Sigue la línea que mantiene ok presente en vez de empty; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Optional. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir Optional.of, filter y orElse.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Optional en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Optional.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Optional importa cuando un valor ausente debe manejarse explícitamente."
       ],
       "self_check": [
-        "¿Qué expresión demuestra Optional.of, filter y orElse?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Optional antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Optional debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar Optional.of, filter y orElse. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Optional a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-streams-lambdas": {
       "title": "Streams y lambdas",
       "concept": "Streams y lambdas importa cuando el procesamiento de colecciones es más claro como tubería. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en filtrar pares y luego elevarlos al cuadrado. Sigue la línea que usa filter antes de mapToInt; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Streams y lambdas. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir predicados lambda y terminal sum.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Streams y lambdas en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Streams y lambdas.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Streams y lambdas importa cuando el procesamiento de colecciones es más claro como tubería."
       ],
       "self_check": [
-        "¿Qué expresión demuestra predicados lambda y terminal sum?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Streams y lambdas antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Streams y lambdas debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar predicados lambda y terminal sum. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Streams y lambdas a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-comparators-sorting": {
       "title": "Comparadores y ordenación",
       "concept": "Comparadores y ordenación importa cuando los objetos necesitan orden separado de su forma de datos. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en ordenar usuarios por score descendente. Sigue la línea que crea un Comparator desde User::score; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Comparadores y ordenación. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir Comparator.comparingInt y reversed.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Comparadores y ordenación en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Comparadores y ordenación.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Comparadores y ordenación importa cuando los objetos necesitan orden separado de su forma de datos."
       ],
       "self_check": [
-        "¿Qué expresión demuestra Comparator.comparingInt y reversed?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Comparadores y ordenación antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Comparadores y ordenación debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar Comparator.comparingInt y reversed. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Comparadores y ordenación a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-try-with-resources": {
       "title": "try-with-resources",
       "concept": "try-with-resources importa cuando los recursos deben cerrarse aunque el código salga temprano. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en leer bytes dentro de un bloque gestionado. Sigue la línea que declara el recurso en la cabecera try; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de try-with-resources. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir AutoCloseable en cabecera try.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de try-with-resources en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de try-with-resources.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: try-with-resources importa cuando los recursos deben cerrarse aunque el código salga temprano."
       ],
       "self_check": [
-        "¿Qué expresión demuestra AutoCloseable en cabecera try?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica try-with-resources antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de try-with-resources debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar AutoCloseable en cabecera try. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando try-with-resources a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-packages-imports": {
       "title": "Paquetes e imports",
       "concept": "Paquetes e imports importa cuando los ejercicios de archivo único aún necesitan clases de paquetes JDK. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en importar List y ArrayList. Sigue la línea que usa nombres importados sin calificación completa; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Paquetes e imports. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir declaraciones import en Solution.java sin package.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Paquetes e imports en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Paquetes e imports.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Paquetes e imports importa cuando los ejercicios de archivo único aún necesitan clases de paquetes JDK."
       ],
       "self_check": [
-        "¿Qué expresión demuestra declaraciones import en Solution.java sin package?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Paquetes e imports antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Paquetes e imports debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar declaraciones import en Solution.java sin package. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Paquetes e imports a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-annotations": {
       "title": "Anotaciones",
       "concept": "Anotaciones importa cuando los metadatos pertenecen a declaraciones y no a lógica de ejecución. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en definir @Audit y anotar un método. Sigue la línea que mantiene el retorno normal del método; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Anotaciones. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir @interface y método anotado.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Anotaciones en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Anotaciones.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Anotaciones importa cuando los metadatos pertenecen a declaraciones y no a lógica de ejecución."
       ],
       "self_check": [
-        "¿Qué expresión demuestra @interface y método anotado?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Anotaciones antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Anotaciones debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar @interface y método anotado. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Anotaciones a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-sealed-classes": {
       "title": "Clases sealed",
       "concept": "Clases sealed importa cuando una jerarquía de dominio debe listar implementaciones permitidas. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en restringir Shape a Rect y Dot. Sigue la línea que calcula measure en un record permitido; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Clases sealed. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir sealed interface, permits y records final.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Clases sealed en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Clases sealed.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Clases sealed importa cuando una jerarquía de dominio debe listar implementaciones permitidas."
       ],
       "self_check": [
-        "¿Qué expresión demuestra sealed interface, permits y records final?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Clases sealed antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Clases sealed debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar sealed interface, permits y records final. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Clases sealed a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-testing-assert": {
       "title": "Pruebas y assert",
       "concept": "Pruebas y assert importa cuando las comprobaciones pequeñas deben fallar cerca del método roto. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en comprobar addTwo antes de imprimir. Sigue la línea que lanza AssertionError cuando el comportamiento difiere; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Pruebas y assert. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir helper puro más aserción explícita.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Pruebas y assert en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Pruebas y assert.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Pruebas y assert importa cuando las comprobaciones pequeñas deben fallar cerca del método roto."
       ],
       "self_check": [
-        "¿Qué expresión demuestra helper puro más aserción explícita?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Pruebas y assert antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Pruebas y assert debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar helper puro más aserción explícita. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Pruebas y assert a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-equality-hashcode": {
       "title": "equals y hashCode",
       "concept": "equals y hashCode importa cuando HashSet debe reconocer objetos de valor iguales. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en agregar dos objetos Point iguales. Sigue la línea que compara campos y hashea los mismos campos; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de equals y hashCode. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir equals(Object) con hashCode coherente.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de equals y hashCode en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de equals y hashCode.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: equals y hashCode importa cuando HashSet debe reconocer objetos de valor iguales."
       ],
       "self_check": [
-        "¿Qué expresión demuestra equals(Object) con hashCode coherente?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica equals y hashCode antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de equals y hashCode debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar equals(Object) con hashCode coherente. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando equals y hashCode a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "java-overloading-varargs": {
       "title": "Sobrecarga y varargs",
       "concept": "Sobrecarga y varargs importa cuando las llamadas eligen firmas y agrupan argumentos extra. La lección se mantiene en un solo Solution.java para que se vea la preparación del valor, la llamada a la API de Java y la línea exacta de stdout.",
-      "worked_example": "El ejemplo se centra en sumar first más el array rest. Sigue la línea que recorre cada valor varargs; si cambia, cambia la salida evaluada por una razón concreta.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Sobrecarga y varargs. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar solo el literal impreso en vez de corregir int... rest y label sobrecargado.",
-        "Imprimir la respuesta final como literal evita practicar la construcción de Java de esta lección."
+        "Cambiar solo la línea final de salida sin dejar la regla de Sobrecarga y varargs en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Sobrecarga y varargs.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Sobrecarga y varargs importa cuando las llamadas eligen firmas y agrupan argumentos extra."
       ],
       "self_check": [
-        "¿Qué expresión demuestra int... rest y label sobrecargado?",
-        "Si cambia la entrada o el estado del objeto, ¿qué expresión debe cambiar antes de imprimir en stdout?"
+        "¿Qué expresión del ejemplo aplica Sobrecarga y varargs antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Sobrecarga y varargs debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el ejercicio Solution.java para usar int... rest y label sobrecargado. Conserva la forma de archivo único y haz que el caso pase mediante esa sintaxis."
+      "exercise_prompt": "Completa el TODO aplicando Sobrecarga y varargs a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     }
   }
 }

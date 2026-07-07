@@ -174,8 +174,14 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "print and stdout",
         "print converts values to text, writes them to stdout, and adds a newline unless told otherwise.",
-        "name = 'Ada'\nscore = 7\nprint(f'{name}:{score}')",
-        "name = 'Ada'\nscore = 7\n# TODO: print exactly Ada:7 using the variables above\nprint('TODO')\n",
+        r#"name = 'Ada'
+score = 7
+print('example:', f'{name}:{score}')"#,
+        r#"name = 'Ada'
+score = 7
+# TODO: format the variables for stdout
+print('TODO')
+"#,
         &[SyntaxCase {
             input: "",
             output: "Ada:7\n",
@@ -192,8 +198,13 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Variables",
         "Assignment binds a name to an object; rebinding changes what the name points at, not the old object.",
-        "count = 1\ncount = count + 2\nprint(count)",
-        "word = 'todo'\n# TODO: rebind word to the expected text\nprint(word)\n",
+        r#"count = 1
+count = count + 2
+print('example:', count)"#,
+        r#"word = 'todo'
+# TODO: rebind word before it reaches stdout
+print(word)
+"#,
         EMPTY_HELLO,
         PY_CORE_REFS
     ),
@@ -203,8 +214,14 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Numbers",
         "int and float cover most numeric work; //, %, and ** are common in problem solutions.",
-        "total = 7\nsize = 2\nprint(f'{total // size}:{total % size}')",
-        "total = 7\nsize = 2\n# TODO: use integer division and remainder so the output is 3:1\nprint(f'{total / size}:0')\n",
+        r#"total = 7
+size = 2
+print('example:', f'{total // size}:{total % size}')"#,
+        r#"total = 7
+size = 2
+# TODO: use integer division and remainder together
+print(f'{total / size}:0')
+"#,
         &[SyntaxCase {
             input: "",
             output: "3:1\n",
@@ -220,8 +237,12 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Strings",
         "Strings are immutable sequences, so indexing and slicing read characters without changing the original text.",
-        "text = 'python'\nprint(text[1:4])",
-        "text = 'xokx'\n# TODO: use a slice to print ok\nprint(text)\n",
+        r#"text = 'python'
+print('example:', text[1:4])"#,
+        r#"text = 'xokx'
+# TODO: slice away the marker characters before printing
+print(text)
+"#,
         EMPTY_HELLO,
         &[
             "https://docs.python.org/3/tutorial/introduction.html#text",
@@ -234,8 +255,17 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Control flow",
         "if chooses a block, for iterates over an iterable, and while repeats until its condition changes.",
-        "total = 0\nfor n in range(1, 4):\n    if n % 2 == 1:\n        total += n\nprint(total)",
-        "total = 0\nfor n in range(1, 4):\n    # TODO: add only odd numbers\n    total += 0\nprint(total)\n",
+        r#"total = 0
+for n in range(1, 4):
+    if n % 2 == 1:
+        total += n
+print('example:', total)"#,
+        r#"total = 0
+for n in range(1, 4):
+    # TODO: add only odd numbers
+    total += 0
+print(total)
+"#,
         &[SyntaxCase {
             input: "",
             output: "4\n",
@@ -251,8 +281,16 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Functions",
         "def creates a callable object; parameters receive arguments and return sends a value back to the caller.",
-        "def area(width, height):\n    return width * height\n\nprint(area(3, 4))",
-        "def area(width, height):\n    # TODO: return rectangle area, not perimeter\n    return width + height\n\nprint(area(3, 4))\n",
+        r#"def area(width, height):
+    return width * height
+
+print('example:', area(3, 4))"#,
+        r#"def area(width, height):
+    # TODO: return rectangle area, not perimeter
+    return width + height
+
+print(area(3, 4))
+"#,
         &[SyntaxCase {
             input: "",
             output: "12\n",
@@ -268,8 +306,14 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Input parsing",
         "stdin starts as text; read it once, split into tokens when structure matters, then convert tokens explicitly.",
-        "import sys\nnums = [int(token) for token in sys.stdin.read().split()]\nprint(sum(nums))",
-        "import sys\nnums = []\n# TODO: parse all integers from stdin and print their sum\nprint(sum(nums))\n",
+        r#"import sys
+nums = [int(token) for token in sys.stdin.read().split()]
+print('example:', sum(nums))"#,
+        r#"import sys
+nums = []
+# TODO: parse all integers from stdin and print their sum
+print(sum(nums))
+"#,
         SUM_CASE,
         &[
             "https://docs.python.org/3/library/sys.html#sys.stdin",
@@ -282,8 +326,13 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Lists and dicts",
         "Lists keep ordered values by position; dicts map keys to values for direct lookup and counting.",
-        "scores = {'Ada': [2, 3], 'Lin': [4]}\nprint(sum(scores['Ada']))",
-        "nums = [2, 3]\nscores = {'Ada': nums}\n# TODO: print the sum stored under Ada without hard-coding 5\nprint(len(scores['Ada']))\n",
+        r#"scores = {'Ada': [2, 3], 'Lin': [4]}
+print('example:', sum(scores['Ada']))"#,
+        r#"nums = [2, 3]
+scores = {'Ada': nums}
+# TODO: print the sum stored under Ada without hard-coding 5
+print(len(scores['Ada']))
+"#,
         SUM_CASE,
         &[
             "https://docs.python.org/3/tutorial/datastructures.html#more-on-lists",
@@ -297,8 +346,14 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Tuples and sets",
         "Tuples group a fixed sequence of values; sets keep unique members and make membership checks cheap.",
-        "pair = ('o', 'k')\nseen = set(pair)\nprint(''.join(pair), len(seen))",
-        "pair = ('o', 'k')\nseen = set()\n# TODO: build a set from the tuple and print ok 2\nprint(''.join(pair[:1]), len(seen))\n",
+        r#"pair = ('o', 'k')
+seen = set(pair)
+print('example:', ''.join(pair), len(seen))"#,
+        r#"pair = ('o', 'k')
+seen = set()
+# TODO: build a set from the tuple and print ok 2
+print(''.join(pair[:1]), len(seen))
+"#,
         &[SyntaxCase {
             input: "",
             output: "ok 2\n",
@@ -315,8 +370,14 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Comprehensions",
         "A comprehension combines an output expression, a loop, and optional filters into one collection-building expression.",
-        "nums = [1, 2, 3, 4]\nsquares = [n * n for n in nums if n % 2 == 0]\nprint(sum(squares))",
-        "letters = ['o', 'x', 'k']\n# TODO: keep only the letters needed for ok with a comprehension\nword = ''.join([ch for ch in letters if ch != 'x' and ch != 'k'])\nprint(word)\n",
+        r#"nums = [1, 2, 3, 4]
+squares = [n * n for n in nums if n % 2 == 0]
+print('example:', sum(squares))"#,
+        r#"letters = ['o', 'x', 'k']
+# TODO: keep only the letters needed for ok with a comprehension
+word = ''.join([ch for ch in letters if ch != 'x' and ch != 'k'])
+print(word)
+"#,
         EMPTY_HELLO,
         &[
             "https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions",
@@ -329,8 +390,18 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Exceptions",
         "try isolates code that may fail; except handles a specific recoverable error without hiding unrelated bugs.",
-        "try:\n    value = int('12')\nexcept ValueError:\n    value = 0\nprint(value)",
-        "try:\n    value = int('bad')\nexcept ValueError:\n    # TODO: recover with the expected value\n    value = 0\nprint(value)\n",
+        r#"try:
+    value = int('12')
+except ValueError:
+    value = 0
+print('example:', value)"#,
+        r#"try:
+    value = int('bad')
+except ValueError:
+    # TODO: recover in the ValueError branch
+    value = 0
+print(value)
+"#,
         &[SyntaxCase {
             input: "",
             output: "12\n",
@@ -346,8 +417,18 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Files and context managers",
         "with enters a managed scope and calls cleanup automatically; file handles and contextlib helpers use this pattern.",
-        "from io import StringIO\n\nwith StringIO('ok') as handle:\n    text = handle.read()\nprint(text)",
-        "from io import StringIO\n\nwith StringIO('ok') as handle:\n    # TODO: read from the managed handle before it closes\n    text = ''\nprint(text)\n",
+        r#"from io import StringIO
+
+with StringIO('ok') as handle:
+    text = handle.read()
+print('example:', text)"#,
+        r#"from io import StringIO
+
+with StringIO('ok') as handle:
+    # TODO: read from the managed handle before it closes
+    text = ''
+print(text)
+"#,
         EMPTY_HELLO,
         &[
             "https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files",
@@ -361,8 +442,14 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Modules and imports",
         "import binds a module or object name so code can reuse standard-library behavior instead of rewriting it.",
-        "import math\n\nprint(math.ceil(2.1))",
-        "import math\n\n# TODO: use the imported module to round upward\nprint(math.floor(2.1))\n",
+        r#"import math
+
+print('example:', math.ceil(2.1))"#,
+        r#"import math
+
+# TODO: use the imported module to round upward
+print(math.floor(2.1))
+"#,
         &[SyntaxCase {
             input: "",
             output: "3\n",
@@ -379,8 +466,26 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Dataclasses",
         "dataclass generates the routine class methods for simple data containers while leaving behavior explicit.",
-        "from dataclasses import dataclass\n\n@dataclass\nclass Point:\n    x: int\n    y: int\n\npoint = Point(2, 3)\nprint(point.x + point.y)",
-        "from dataclasses import dataclass\n\n@dataclass\nclass Point:\n    x: int\n    y: int\n\npoint = Point(2, 3)\n# TODO: use both fields\nprint(point.x)\n",
+        r#"from dataclasses import dataclass
+
+@dataclass
+class Point:
+    x: int
+    y: int
+
+point = Point(2, 3)
+print('example:', point.x + point.y)"#,
+        r#"from dataclasses import dataclass
+
+@dataclass
+class Point:
+    x: int
+    y: int
+
+point = Point(2, 3)
+# TODO: use both fields
+print(point.x)
+"#,
         SUM_CASE,
         &["https://docs.python.org/3/library/dataclasses.html"]
     ),
@@ -390,8 +495,20 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Type hints",
         "Type hints document expected shapes for readers and tools; Python still executes values dynamically at runtime.",
-        "from typing import Iterable\n\ndef total(values: Iterable[int]) -> int:\n    return sum(values)\n\nprint(total([2, 3]))",
-        "from typing import Iterable\n\ndef total(values: Iterable[int]) -> int:\n    # TODO: return the sum of the iterable\n    return 0\n\nprint(total([2, 3]))\n",
+        r#"from typing import Iterable
+
+def total(values: Iterable[int]) -> int:
+    return sum(values)
+
+print('example:', total([2, 3]))"#,
+        r#"from typing import Iterable
+
+def total(values: Iterable[int]) -> int:
+    # TODO: return the sum of the iterable
+    return 0
+
+print(total([2, 3]))
+"#,
         SUM_CASE,
         &[
             "https://docs.python.org/3/library/typing.html",
@@ -404,8 +521,18 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "Iterators and generators",
         "Iterators produce values one at a time; a generator function uses yield to pause and resume that production.",
-        "def countdown(n):\n    while n > 0:\n        yield n\n        n -= 1\n\nprint(next(countdown(3)))",
-        "def words():\n    # TODO: yield ok as the first generated value\n    yield ''\n\nprint(next(words()))\n",
+        r#"def countdown(n):
+    while n > 0:
+        yield n
+        n -= 1
+
+print('example:', next(countdown(3)))"#,
+        r#"def words():
+    # TODO: yield ok as the first generated value
+    yield ''
+
+print(next(words()))
+"#,
         EMPTY_HELLO,
         &[
             "https://docs.python.org/3/tutorial/classes.html#iterators",
@@ -419,8 +546,18 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "Lambdas and closures",
         "lambda makes a small expression function; a closure remembers names from the surrounding scope.",
-        "def make_adder(delta):\n    return lambda value: value + delta\n\nadd_two = make_adder(2)\nprint(add_two(3))",
-        "def make_suffix(suffix):\n    # TODO: return a lambda that appends suffix to word\n    return lambda word: word\n\nadd_ok = make_suffix('ok')\nprint(add_ok(''))\n",
+        r#"def make_adder(delta):
+    return lambda value: value + delta
+
+add_two = make_adder(2)
+print('example:', add_two(3))"#,
+        r#"def make_suffix(suffix):
+    # TODO: return a lambda that appends suffix to word
+    return lambda word: word
+
+add_ok = make_suffix('ok')
+print(add_ok(''))
+"#,
         EMPTY_HELLO,
         &[
             "https://docs.python.org/3/tutorial/controlflow.html#lambda-expressions",
@@ -434,8 +571,24 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "Decorators",
         "A decorator receives a function at definition time and returns the function object that name should now refer to.",
-        "def identity(fn):\n    return fn\n\n@identity\ndef word():\n    return 'ok'\n\nprint(word())",
-        "def identity(fn):\n    # TODO: return the original function unchanged\n    return lambda: ''\n\n@identity\ndef word():\n    return 'ok'\n\nprint(word())\n",
+        r#"def identity(fn):
+    return fn
+
+@identity
+def word():
+    return 'ok'
+
+print('example:', word())"#,
+        r#"def identity(fn):
+    # TODO: return the original function unchanged
+    return lambda: ''
+
+@identity
+def word():
+    return 'ok'
+
+print(word())
+"#,
         EMPTY_HELLO,
         &[
             "https://docs.python.org/3/reference/compound_stmts.html#function-definitions",
@@ -448,8 +601,14 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Sorting and key functions",
         "sorted returns a new ordered list; key functions choose the value used for each comparison.",
-        "users = [('Ada', 3), ('Lin', 5), ('Bo', 4)]\nbest = sorted(users, key=lambda item: item[1], reverse=True)[0]\nprint(f'{best[0]}:{best[1]}')",
-        "users = [('Ada', 3), ('Lin', 5), ('Bo', 4)]\n# TODO: sort by score descending, not by name\nbest = sorted(users)[0]\nprint(f'{best[0]}:{best[1]}')\n",
+        r#"users = [('Ada', 3), ('Lin', 5), ('Bo', 4)]
+best = sorted(users, key=lambda item: item[1], reverse=True)[0]
+print('example:', f'{best[0]}:{best[1]}')"#,
+        r#"users = [('Ada', 3), ('Lin', 5), ('Bo', 4)]
+# TODO: sort by score descending, not by name
+best = sorted(users)[0]
+print(f'{best[0]}:{best[1]}')
+"#,
         &[SyntaxCase {
             input: "",
             output: "Lin:5\n",
@@ -465,8 +624,22 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Counter and defaultdict",
         "Counter counts hashable values directly; defaultdict creates missing collection values when grouping.",
-        "from collections import Counter, defaultdict\n\nwords = ['red', 'blue', 'red']\ncounts = Counter(words)\ngroups = defaultdict(list)\nfor word in words:\n    groups[word[0]].append(word)\nprint(counts['red'], len(groups['r']))",
-        "from collections import Counter, defaultdict\n\nwords = ['red', 'blue', 'red']\ncounts = Counter()\ngroups = defaultdict(list)\n# TODO: count words and group them by first letter\nprint(counts['red'], len(groups['r']))\n",
+        r#"from collections import Counter, defaultdict
+
+words = ['red', 'blue', 'red']
+counts = Counter(words)
+groups = defaultdict(list)
+for word in words:
+    groups[word[0]].append(word)
+print('example:', counts['red'], len(groups['r']))"#,
+        r#"from collections import Counter, defaultdict
+
+words = ['red', 'blue', 'red']
+counts = Counter()
+groups = defaultdict(list)
+# TODO: count words and group them by first letter
+print(counts['red'], len(groups['r']))
+"#,
         &[SyntaxCase {
             input: "",
             output: "2 2\n",
@@ -479,8 +652,18 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "deque",
         "deque supports efficient appends and pops on both ends, which is why it is the usual queue type.",
-        "from collections import deque\n\nqueue = deque(['middle'])\nqueue.appendleft('start')\nqueue.append('end')\nprint(queue.popleft(), queue.pop())",
-        "from collections import deque\n\nqueue = deque(['middle'])\n# TODO: add start on the left and end on the right\nprint(queue.popleft(), 'missing')\n",
+        r#"from collections import deque
+
+queue = deque(['middle'])
+queue.appendleft('start')
+queue.append('end')
+print('example:', queue.popleft(), queue.pop())"#,
+        r#"from collections import deque
+
+queue = deque(['middle'])
+# TODO: add start on the left and end on the right
+print(queue.popleft(), 'missing')
+"#,
         &[SyntaxCase {
             input: "",
             output: "start end\n",
@@ -493,8 +676,16 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "itertools",
         "itertools provides lazy iterator building blocks for pairing, chaining, slicing, and combinatorics.",
-        "import itertools\n\nparts = [['o'], ['k']]\nprint(''.join(itertools.chain.from_iterable(parts)))",
-        "import itertools\n\nparts = [['o'], ['k']]\n# TODO: flatten both inner lists lazily\nprint(''.join(itertools.chain.from_iterable(parts[:1])))\n",
+        r#"import itertools
+
+parts = [['o'], ['k']]
+print('example:', ''.join(itertools.chain.from_iterable(parts)))"#,
+        r#"import itertools
+
+parts = [['o'], ['k']]
+# TODO: flatten both inner lists lazily
+print(''.join(itertools.chain.from_iterable(parts[:1])))
+"#,
         EMPTY_HELLO,
         &["https://docs.python.org/3/library/itertools.html"]
     ),
@@ -504,8 +695,16 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "pathlib",
         "pathlib represents paths as objects, so code can ask for names, suffixes, and parents without manual string splitting.",
-        "from pathlib import PurePosixPath\n\npath = PurePosixPath('logs/app.txt')\nprint(f'{path.stem}:{path.suffix}')",
-        "from pathlib import PurePosixPath\n\npath = PurePosixPath('logs/app.txt')\n# TODO: print the stem and suffix as app:.txt\nprint(path.name)\n",
+        r#"from pathlib import PurePosixPath
+
+path = PurePosixPath('logs/app.txt')
+print('example:', f'{path.stem}:{path.suffix}')"#,
+        r#"from pathlib import PurePosixPath
+
+path = PurePosixPath('logs/app.txt')
+# TODO: combine the stem and suffix properties
+print(path.name)
+"#,
         &[SyntaxCase {
             input: "",
             output: "app:.txt\n",
@@ -518,8 +717,18 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Testing and assert",
         "assert checks an invariant in small examples; test frameworks build on the same idea with repeatable test functions.",
-        "def add_two(value):\n    return value + 2\n\nassert add_two(3) == 5\nprint('ok')",
-        "def add_two(value):\n    # TODO: make the assertion describe the intended behavior\n    return value\n\nassert add_two(3) == 3\nprint('todo')\n",
+        r#"def add_two(value):
+    return value + 2
+
+assert add_two(3) == 5
+print('example:', 'ok')"#,
+        r#"def add_two(value):
+    # TODO: make the assertion describe the intended behavior
+    return value
+
+assert add_two(3) == 3
+print('todo')
+"#,
         EMPTY_HELLO,
         &[
             "https://docs.python.org/3/reference/simple_stmts.html#the-assert-statement",
@@ -533,8 +742,27 @@ const PYTHON_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "Async concepts",
         "async def creates a coroutine; await pauses until the awaited operation completes, and asyncio.run drives the top-level coroutine.",
-        "import asyncio\n\nasync def label():\n    return 'ok'\n\nasync def main():\n    print(await label())\n\nasyncio.run(main())",
-        "import asyncio\n\nasync def label():\n    return 'ok'\n\nasync def main():\n    # TODO: await the coroutine and print its result\n    result = 'pending'\n    print(result)\n\nasyncio.run(main())\n",
+        r#"import asyncio
+
+async def label():
+    return 'ok'
+
+async def main():
+    print('example:', await label())
+
+asyncio.run(main())"#,
+        r#"import asyncio
+
+async def label():
+    return 'ok'
+
+async def main():
+    # TODO: await the coroutine before printing
+    result = 'pending'
+    print(result)
+
+asyncio.run(main())
+"#,
         EMPTY_HELLO,
         &[
             "https://docs.python.org/3/library/asyncio.html",
@@ -551,8 +779,12 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Console and stdout",
         "console.log appends a newline, while process.stdout.write writes exactly the bytes you give it.",
-        "const score: number = 7;\nprocess.stdout.write(`score=${score}\\n`);",
-        "const score: number = 7;\n// TODO: print exactly score=7 with one trailing newline\nprocess.stdout.write('TODO\\n');\n",
+        r#"const score: number = 7;
+process.stdout.write(`example:score=${score}\n`);"#,
+        r#"const score: number = 7;
+// TODO: format the score for stdout with one trailing newline
+process.stdout.write('TODO\n');
+"#,
         &[SyntaxCase {
             input: "",
             output: "score=7\n",
@@ -565,8 +797,16 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "let and const",
         "const protects a binding from reassignment; let marks the few local values that intentionally change.",
-        "const label = 'sum';\nlet total = 1;\ntotal += 2;\nconsole.log(`${label}:${total}`);",
-        "const label = 'TODO';\nlet total = 1;\n// TODO: keep label stable and mutate total so the output is sum:3\ntotal += 0;\nconsole.log(`${label}:${total}`);\n",
+        r#"const label = 'sum';
+let total = 1;
+total += 2;
+console.log('example:', `${label}:${total}`);"#,
+        r#"const label = 'TODO';
+let total = 1;
+// TODO: keep label stable and mutate total before formatting
+total += 0;
+console.log(`${label}:${total}`);
+"#,
         &[SyntaxCase {
             input: "",
             output: "sum:3\n",
@@ -583,8 +823,18 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Primitive types",
         "string, number, and boolean describe the common scalar values that most stdin parsing produces.",
-        "function report(name: string, score: number, passed: boolean): string {\n  return `${name}:${score}:${passed ? 'pass' : 'retry'}`;\n}\n\nconsole.log(report('Ada', 7, true));",
-        "function report(name: string, score: number, passed: boolean): string {\n  return `${name}:${score}:${passed ? 'pass' : 'retry'}`;\n}\n\n// TODO: pass the primitive values that produce Ada:7:pass\nconsole.log(report('Ada', 0, false));\n",
+        r#"function report(name: string, score: number, passed: boolean): string {
+  return `${name}:${score}:${passed ? 'pass' : 'retry'}`;
+}
+
+console.log('example:', report('Ada', 7, true));"#,
+        r#"function report(name: string, score: number, passed: boolean): string {
+  return `${name}:${score}:${passed ? 'pass' : 'retry'}`;
+}
+
+// TODO: pass values whose types match the report contract
+console.log(report('Ada', 0, false));
+"#,
         &[SyntaxCase {
             input: "",
             output: "Ada:7:pass\n",
@@ -597,8 +847,14 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Strings and templates",
         "Template literals keep formatting close to the values, and string methods return new strings instead of mutating text.",
-        "const raw = ' Ada ';\nconst score = 7;\nconsole.log(`${raw.trim()}:${score}`);",
-        "const raw = ' Ada ';\nconst score = 7;\n// TODO: trim the name and interpolate score without changing either value\nconsole.log(`${raw}:${score + 1}`);\n",
+        r#"const raw = ' Ada ';
+const score = 7;
+console.log('example:', `${raw.trim()}:${score}`);"#,
+        r#"const raw = ' Ada ';
+const score = 7;
+// TODO: trim the name and interpolate score without changing either value
+console.log(`${raw}:${score + 1}`);
+"#,
         &[SyntaxCase {
             input: "",
             output: "Ada:7\n",
@@ -615,8 +871,14 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Arrays and tuples",
         "number[] models a sequence of same-shaped values; a tuple fixes both position and type for small records.",
-        "const scores: number[] = [2, 3];\nconst result: [string, number] = ['Ada', scores[0] + scores[1]];\nconsole.log(`${result[0]}:${result[1]}`);",
-        "const scores: number[] = [2, 3];\n// TODO: put the summed score in the tuple, not the array length\nconst result: [string, number] = ['Ada', scores.length];\nconsole.log(`${result[0]}:${result[1]}`);\n",
+        r#"const scores: number[] = [2, 3];
+const result: [string, number] = ['Ada', scores[0] + scores[1]];
+console.log('example:', `${result[0]}:${result[1]}`);"#,
+        r#"const scores: number[] = [2, 3];
+// TODO: put the summed score in the tuple, not the array length
+const result: [string, number] = ['Ada', scores.length];
+console.log(`${result[0]}:${result[1]}`);
+"#,
         &[SyntaxCase {
             input: "",
             output: "Ada:5\n",
@@ -633,8 +895,14 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Object types",
         "Object type annotations name required fields so calculations cannot silently ignore missing properties.",
-        "type Rectangle = { width: number; height: number };\nconst rect: Rectangle = { width: 3, height: 4 };\nconsole.log(rect.width * rect.height);",
-        "type Rectangle = { width: number; height: number };\nconst rect: Rectangle = { width: 3, height: 4 };\n// TODO: calculate area from both required fields\nconsole.log(rect.width + rect.height);\n",
+        r#"type Rectangle = { width: number; height: number };
+const rect: Rectangle = { width: 3, height: 4 };
+console.log('example:', rect.width * rect.height);"#,
+        r#"type Rectangle = { width: number; height: number };
+const rect: Rectangle = { width: 3, height: 4 };
+// TODO: calculate area from both required fields
+console.log(rect.width + rect.height);
+"#,
         &[SyntaxCase {
             input: "",
             output: "12\n",
@@ -650,8 +918,18 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Functions",
         "Parameter and return annotations make the input and output contract visible at the call site.",
-        "function area(width: number, height: number): number {\n  return width * height;\n}\n\nconsole.log(area(3, 4));",
-        "function area(width: number, height: number): number {\n  // TODO: return rectangle area, not perimeter\n  return width + height;\n}\n\nconsole.log(area(3, 4));\n",
+        r#"function area(width: number, height: number): number {
+  return width * height;
+}
+
+console.log('example:', area(3, 4));"#,
+        r#"function area(width: number, height: number): number {
+  // TODO: return rectangle area, not perimeter
+  return width + height;
+}
+
+console.log(area(3, 4));
+"#,
         &[SyntaxCase {
             input: "",
             output: "12\n",
@@ -664,8 +942,16 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Node stdin parsing",
         "In coding tests, read fd 0 once, split the text into tokens, and convert tokens before doing numeric work.",
-        "const fs = require('node:fs');\nconst input: string = fs.readFileSync(0, 'utf8');\nconst nums = input.trim().split(/\\s+/).filter(Boolean).map(Number);\nconsole.log(nums.reduce((sum, n) => sum + n, 0));",
-        "const fs = require('node:fs');\nconst input: string = fs.readFileSync(0, 'utf8');\n// TODO: parse all integers from stdin and print their sum\nconst nums: number[] = [];\nconsole.log(nums.reduce((sum, n) => sum + n, 0));\n",
+        r#"const fs = require('node:fs');
+const input: string = fs.readFileSync(0, 'utf8');
+const nums = input.trim().split(/\s+/).filter(Boolean).map(Number);
+console.log('example:', nums.reduce((sum, n) => sum + n, 0));"#,
+        r#"const fs = require('node:fs');
+const input: string = fs.readFileSync(0, 'utf8');
+// TODO: parse all integers from stdin and print their sum
+const nums: number[] = [];
+console.log(nums.reduce((sum, n) => sum + n, 0));
+"#,
         SUM_CASE,
         TS_NODE_REFS
     ),
@@ -675,8 +961,18 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Control flow",
         "if, for, while, and switch all narrow the path values can take before they reach stdout.",
-        "let total = 0;\nfor (let n = 1; n <= 3; n++) {\n  if (n % 2 === 1) total += n;\n}\nconsole.log(total);",
-        "let total = 0;\nfor (let n = 1; n <= 3; n++) {\n  // TODO: add only odd numbers\n  total += n;\n}\nconsole.log(total);\n",
+        r#"let total = 0;
+for (let n = 1; n <= 3; n++) {
+  if (n % 2 === 1) total += n;
+}
+console.log('example:', total);"#,
+        r#"let total = 0;
+for (let n = 1; n <= 3; n++) {
+  // TODO: add only odd numbers
+  total += n;
+}
+console.log(total);
+"#,
         &[SyntaxCase {
             input: "",
             output: "4\n",
@@ -693,8 +989,20 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Union and narrowing",
         "A union accepts several shapes, but TypeScript only allows member-specific operations after a runtime check narrows the value.",
-        "function label(value: string | number): string {\n  if (typeof value === 'string') return value.toUpperCase();\n  return value.toFixed(0);\n}\n\nconsole.log(label('ok'));",
-        "function label(value: string | number): string {\n  if (typeof value === 'string') return value;\n  return value.toFixed(0);\n}\n\n// TODO: preserve the union but narrow the string branch to uppercase\nconsole.log(label('ok'));\n",
+        r#"function label(value: string | number): string {
+  if (typeof value === 'string') return value.toUpperCase();
+  return value.toFixed(0);
+}
+
+console.log('example:', label('ok'));"#,
+        r#"function label(value: string | number): string {
+  if (typeof value === 'string') return value;
+  return value.toFixed(0);
+}
+
+// TODO: preserve the union but narrow the string branch to uppercase
+console.log(label('ok'));
+"#,
         &[SyntaxCase {
             input: "",
             output: "OK\n",
@@ -711,8 +1019,20 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Literal types",
         "Literal unions restrict values to exact strings or numbers, which is useful for modes, commands, and states.",
-        "type Direction = 'left' | 'right';\nfunction turn(direction: Direction): string {\n  return direction === 'left' ? 'L' : 'R';\n}\n\nconsole.log(turn('left'));",
-        "type Direction = 'left' | 'right';\nfunction turn(direction: Direction): string {\n  return direction === 'left' ? 'L' : 'R';\n}\n\n// TODO: choose the literal that produces L\nconsole.log(turn('right'));\n",
+        r#"type Direction = 'left' | 'right';
+function turn(direction: Direction): string {
+  return direction === 'left' ? 'L' : 'R';
+}
+
+console.log('example:', turn('left'));"#,
+        r#"type Direction = 'left' | 'right';
+function turn(direction: Direction): string {
+  return direction === 'left' ? 'L' : 'R';
+}
+
+// TODO: choose the allowed direction literal for the left branch
+console.log(turn('right'));
+"#,
         &[SyntaxCase {
             input: "",
             output: "L\n",
@@ -725,8 +1045,14 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Optional and nullish",
         "Optional properties read as possibly undefined, and ?? keeps valid falsey values such as 0 or an empty string.",
-        "type User = { name: string; score?: number | null };\nconst user: User = { name: 'Ada', score: 0 };\nconsole.log(`${user.name}:${user.score ?? 10}`);",
-        "type User = { name: string; score?: number | null };\nconst user: User = { name: 'Ada', score: 0 };\n// TODO: keep score 0 instead of replacing it with the fallback\nconsole.log(`${user.name}:${user.score || 10}`);\n",
+        r#"type User = { name: string; score?: number | null };
+const user: User = { name: 'Ada', score: 0 };
+console.log('example:', `${user.name}:${user.score ?? 10}`);"#,
+        r#"type User = { name: string; score?: number | null };
+const user: User = { name: 'Ada', score: 0 };
+// TODO: keep score 0 instead of replacing it with the fallback
+console.log(`${user.name}:${user.score || 10}`);
+"#,
         &[SyntaxCase {
             input: "",
             output: "Ada:0\n",
@@ -743,8 +1069,26 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Interfaces and type aliases",
         "Interfaces and aliases both name object contracts; aliases also name unions, tuples, and type expressions.",
-        "interface Named {\n  name: string;\n}\ntype Score = { points: number };\nfunction summary(user: Named & Score): string {\n  return `${user.name}:${user.points}`;\n}\n\nconsole.log(summary({ name: 'Ada', points: 5 }));",
-        "interface Named {\n  name: string;\n}\ntype Score = { points: number };\nfunction summary(user: Named & Score): string {\n  // TODO: include both the interface field and the alias field\n  return user.name;\n}\n\nconsole.log(summary({ name: 'Ada', points: 5 }));\n",
+        r#"interface Named {
+  name: string;
+}
+type Score = { points: number };
+function summary(user: Named & Score): string {
+  return `${user.name}:${user.points}`;
+}
+
+console.log('example:', summary({ name: 'Ada', points: 5 }));"#,
+        r#"interface Named {
+  name: string;
+}
+type Score = { points: number };
+function summary(user: Named & Score): string {
+  // TODO: include both the interface field and the alias field
+  return user.name;
+}
+
+console.log(summary({ name: 'Ada', points: 5 }));
+"#,
         &[SyntaxCase {
             input: "",
             output: "Ada:5\n",
@@ -761,8 +1105,18 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Generics",
         "Generics let reusable functions preserve the caller's type instead of collapsing values to any.",
-        "function first<T>(items: readonly T[]): T | undefined {\n  return items[0];\n}\n\nconsole.log(first(['ok', 'skip']) ?? 'none');",
-        "function first<T>(items: readonly T[]): T | undefined {\n  // TODO: return the first item while preserving T\n  return items[1];\n}\n\nconsole.log(first(['ok', 'skip']) ?? 'none');\n",
+        r#"function first<T>(items: readonly T[]): T | undefined {
+  return items[0];
+}
+
+console.log('example:', first(['ok', 'skip']) ?? 'none');"#,
+        r#"function first<T>(items: readonly T[]): T | undefined {
+  // TODO: return the first item while preserving T
+  return items[1];
+}
+
+console.log(first(['ok', 'skip']) ?? 'none');
+"#,
         EMPTY_HELLO,
         TS_TYPE_REFS
     ),
@@ -772,8 +1126,22 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "keyof and typeof",
         "typeof captures the static type of a value, and keyof turns that object type into a union of valid keys.",
-        "const limits = { small: 2, large: 5 } as const;\ntype Size = keyof typeof limits;\nfunction limitFor(size: Size): number {\n  return limits[size];\n}\n\nconsole.log(limitFor('large'));",
-        "const limits = { small: 2, large: 5 } as const;\ntype Size = keyof typeof limits;\nfunction limitFor(size: Size): number {\n  return limits[size];\n}\n\n// TODO: use the key whose value is 5\nconsole.log(limitFor('small'));\n",
+        r#"const limits = { small: 2, large: 5 } as const;
+type Size = keyof typeof limits;
+function limitFor(size: Size): number {
+  return limits[size];
+}
+
+console.log('example:', limitFor('large'));"#,
+        r#"const limits = { small: 2, large: 5 } as const;
+type Size = keyof typeof limits;
+function limitFor(size: Size): number {
+  return limits[size];
+}
+
+// TODO: use the key that selects the larger limit
+console.log(limitFor('small'));
+"#,
         SUM_CASE,
         TS_TYPE_REFS
     ),
@@ -783,8 +1151,16 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "Indexed access types",
         "Indexed access types read a property type from another type so value code and type code stay in sync.",
-        "type User = { name: string; scores: number[] };\ntype Score = User['scores'][number];\nconst score: Score = 5;\nconsole.log(score);",
-        "type User = { name: string; scores: number[] };\ntype Score = User['scores'][number];\n// TODO: assign a valid Score value that prints 5\nconst score: Score = 0;\nconsole.log(score);\n",
+        r#"type User = { name: string; scores: number[] };
+type Score = User['scores'][number];
+const score: Score = 5;
+console.log('example:', score);"#,
+        r#"type User = { name: string; scores: number[] };
+type Score = User['scores'][number];
+// TODO: assign a value that satisfies the indexed access type
+const score: Score = 0;
+console.log(score);
+"#,
         SUM_CASE,
         TS_TYPE_REFS
     ),
@@ -794,8 +1170,16 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "Mapped types",
         "Mapped types loop over keys at the type level, often to turn one object shape into another related shape.",
-        "type Flags<T> = { [K in keyof T]: boolean };\ntype Features = { search: () => void; share: () => void };\nconst enabled: Flags<Features> = { search: true, share: false };\nconsole.log(Object.entries(enabled).find(([, on]) => on)?.[0] ?? 'none');",
-        "type Flags<T> = { [K in keyof T]: boolean };\ntype Features = { search: () => void; share: () => void };\nconst enabled: Flags<Features> = { search: false, share: false };\n// TODO: enable search while keeping the mapped shape\nconsole.log(Object.entries(enabled).find(([, on]) => on)?.[0] ?? 'none');\n",
+        r#"type Flags<T> = { [K in keyof T]: boolean };
+type Features = { search: () => void; share: () => void };
+const enabled: Flags<Features> = { search: true, share: false };
+console.log('example:', Object.entries(enabled).find(([, on]) => on)?.[0] ?? 'none');"#,
+        r#"type Flags<T> = { [K in keyof T]: boolean };
+type Features = { search: () => void; share: () => void };
+const enabled: Flags<Features> = { search: false, share: false };
+// TODO: enable search while keeping the mapped shape
+console.log(Object.entries(enabled).find(([, on]) => on)?.[0] ?? 'none');
+"#,
         EMPTY_HELLO,
         TS_TYPE_REFS
     ),
@@ -805,8 +1189,14 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "Conditional types",
         "Conditional types choose one type branch from another type, and infer can capture part of a matched shape.",
-        "type ElementType<T> = T extends readonly (infer Item)[] ? Item : T;\nconst word: ElementType<string[]> = 'ok';\nconsole.log(word);",
-        "type ElementType<T> = T extends readonly (infer Item)[] ? Item : T;\n// TODO: assign the element type carried by string[]\nconst word: ElementType<string[]> = '';\nconsole.log(word);\n",
+        r#"type ElementType<T> = T extends readonly (infer Item)[] ? Item : T;
+const word: ElementType<string[]> = 'ok';
+console.log('example:', word);"#,
+        r#"type ElementType<T> = T extends readonly (infer Item)[] ? Item : T;
+// TODO: assign the element type carried by string[]
+const word: ElementType<string[]> = '';
+console.log(word);
+"#,
         EMPTY_HELLO,
         TS_TYPE_REFS
     ),
@@ -816,8 +1206,16 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "Utility types",
         "Utility types such as Pick, Partial, Required, and Awaited express common transformations without custom aliases.",
-        "type User = { id: number; name: string; score: number };\ntype UserPatch = Partial<Pick<User, 'name' | 'score'>>;\nconst patch: UserPatch = { name: 'Ada', score: 5 };\nconsole.log(`${patch.name}:${patch.score}`);",
-        "type User = { id: number; name: string; score: number };\ntype UserPatch = Partial<Pick<User, 'name' | 'score'>>;\n// TODO: fill the patch fields allowed by Pick and Partial\nconst patch: UserPatch = { name: 'Ada' };\nconsole.log(`${patch.name}:${patch.score ?? 0}`);\n",
+        r#"type User = { id: number; name: string; score: number };
+type UserPatch = Partial<Pick<User, 'name' | 'score'>>;
+const patch: UserPatch = { name: 'Ada', score: 5 };
+console.log('example:', `${patch.name}:${patch.score}`);"#,
+        r#"type User = { id: number; name: string; score: number };
+type UserPatch = Partial<Pick<User, 'name' | 'score'>>;
+// TODO: fill the patch fields allowed by Pick and Partial
+const patch: UserPatch = { name: 'Ada' };
+console.log(`${patch.name}:${patch.score ?? 0}`);
+"#,
         &[SyntaxCase {
             input: "",
             output: "Ada:5\n",
@@ -830,8 +1228,30 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "Discriminated unions",
         "A shared literal field lets switch narrow each variant and makes missing cases visible during type checking.",
-        "type Shape = { kind: 'rect'; width: number; height: number } | { kind: 'circle'; radius: number };\nfunction measure(shape: Shape): number {\n  switch (shape.kind) {\n    case 'rect':\n      return shape.width * shape.height;\n    case 'circle':\n      return shape.radius * 2;\n  }\n}\n\nconsole.log(measure({ kind: 'rect', width: 3, height: 4 }));",
-        "type Shape = { kind: 'rect'; width: number; height: number } | { kind: 'circle'; radius: number };\nfunction measure(shape: Shape): number {\n  switch (shape.kind) {\n    case 'rect':\n      // TODO: use the fields that only exist on the rect variant\n      return shape.width + shape.height;\n    case 'circle':\n      return shape.radius * 2;\n  }\n}\n\nconsole.log(measure({ kind: 'rect', width: 3, height: 4 }));\n",
+        r#"type Shape = { kind: 'rect'; width: number; height: number } | { kind: 'circle'; radius: number };
+function measure(shape: Shape): number {
+  switch (shape.kind) {
+    case 'rect':
+      return shape.width * shape.height;
+    case 'circle':
+      return shape.radius * 2;
+  }
+}
+
+console.log('example:', measure({ kind: 'rect', width: 3, height: 4 }));"#,
+        r#"type Shape = { kind: 'rect'; width: number; height: number } | { kind: 'circle'; radius: number };
+function measure(shape: Shape): number {
+  switch (shape.kind) {
+    case 'rect':
+      // TODO: use the fields that only exist on the rect variant
+      return shape.width + shape.height;
+    case 'circle':
+      return shape.radius * 2;
+  }
+}
+
+console.log(measure({ kind: 'rect', width: 3, height: 4 }));
+"#,
         &[SyntaxCase {
             input: "",
             output: "12\n",
@@ -847,8 +1267,26 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Async and Promise",
         "async functions return Promise values; await unwraps the fulfilled value before later code uses it.",
-        "async function double(value: number): Promise<number> {\n  return value * 2;\n}\n\nasync function main(): Promise<void> {\n  console.log(await double(2));\n}\n\nmain();",
-        "async function double(value: number): Promise<number> {\n  return value * 2;\n}\n\nasync function main(): Promise<void> {\n  // TODO: await the Promise before printing its number\n  console.log(String(double(2)));\n}\n\nmain();\n",
+        r#"async function double(value: number): Promise<number> {
+  return value * 2;
+}
+
+async function main(): Promise<void> {
+  console.log('example:', await double(2));
+}
+
+main();"#,
+        r#"async function double(value: number): Promise<number> {
+  return value * 2;
+}
+
+async function main(): Promise<void> {
+  // TODO: await the Promise before printing its number
+  console.log(String(double(2)));
+}
+
+main();
+"#,
         &[SyntaxCase {
             input: "",
             output: "4\n",
@@ -865,8 +1303,28 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Error handling",
         "catch receives an unknown failure; narrow it before reading Error-specific fields or choosing a fallback.",
-        "function parseCount(text: string): number {\n  try {\n    return Number.parseInt(text, 10);\n  } catch (error: unknown) {\n    return error instanceof Error ? 0 : -1;\n  }\n}\n\nconsole.log(parseCount('12'));",
-        "function parseCount(text: string): number {\n  try {\n    const value = Number.parseInt(text, 10);\n    if (Number.isNaN(value)) throw new Error('bad number');\n    return value;\n  } catch (error: unknown) {\n    // TODO: narrow the caught value and recover with 12\n    return error instanceof Error ? 0 : -1;\n  }\n}\n\nconsole.log(parseCount('bad'));\n",
+        r#"function parseCount(text: string): number {
+  try {
+    return Number.parseInt(text, 10);
+  } catch (error: unknown) {
+    return error instanceof Error ? 0 : -1;
+  }
+}
+
+console.log('example:', parseCount('12'));"#,
+        r#"function parseCount(text: string): number {
+  try {
+    const value = Number.parseInt(text, 10);
+    if (Number.isNaN(value)) throw new Error('bad number');
+    return value;
+  } catch (error: unknown) {
+    // TODO: narrow the caught value and recover with 12
+    return error instanceof Error ? 0 : -1;
+  }
+}
+
+console.log(parseCount('bad'));
+"#,
         &[SyntaxCase {
             input: "",
             output: "12\n",
@@ -882,8 +1340,18 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Modules and exports",
         "import and export make file boundaries explicit; in Node type stripping, module syntax still follows Node's module rules.",
-        "export function label(value: string): string {\n  return value.toUpperCase();\n}\n\nconsole.log(label('ok'));",
-        "export function label(value: string): string {\n  // TODO: export behavior that callers can trust\n  return value;\n}\n\nconsole.log(label('ok'));\n",
+        r#"export function label(value: string): string {
+  return value.toUpperCase();
+}
+
+console.log('example:', label('ok'));"#,
+        r#"export function label(value: string): string {
+  // TODO: export behavior that callers can trust
+  return value;
+}
+
+console.log(label('ok'));
+"#,
         &[SyntaxCase {
             input: "",
             output: "OK\n",
@@ -899,8 +1367,35 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Classes and access modifiers",
         "Classes combine state with methods; TypeScript access modifiers describe the intended boundary for that state.",
-        "class Counter {\n  private value: number;\n\n  constructor(start: number) {\n    this.value = start;\n  }\n\n  increment(): number {\n    this.value += 1;\n    return this.value;\n  }\n}\n\nconsole.log(new Counter(1).increment());",
-        "class Counter {\n  private value: number;\n\n  constructor(start: number) {\n    this.value = start;\n  }\n\n  increment(): number {\n    // TODO: update private state before returning it\n    return this.value;\n  }\n}\n\nconsole.log(new Counter(1).increment());\n",
+        r#"class Counter {
+  private value: number;
+
+  constructor(start: number) {
+    this.value = start;
+  }
+
+  increment(): number {
+    this.value += 1;
+    return this.value;
+  }
+}
+
+console.log('example:', new Counter(1).increment());"#,
+        r#"class Counter {
+  private value: number;
+
+  constructor(start: number) {
+    this.value = start;
+  }
+
+  increment(): number {
+    // TODO: update private state before returning it
+    return this.value;
+  }
+}
+
+console.log(new Counter(1).increment());
+"#,
         &[SyntaxCase {
             input: "",
             output: "2\n",
@@ -917,8 +1412,14 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "readonly",
         "readonly documents that callers may read a property or array but should not replace or mutate it through that type.",
-        "type Config = { readonly name: string; readonly scores: readonly number[] };\nconst config: Config = { name: 'Ada', scores: [2, 3] };\nconsole.log(`${config.name}:${config.scores.reduce((sum, n) => sum + n, 0)}`);",
-        "type Config = { readonly name: string; readonly scores: readonly number[] };\nconst config: Config = { name: 'Ada', scores: [2, 3] };\n// TODO: read from readonly data without replacing it\nconsole.log(`${config.name}:${config.scores.length}`);\n",
+        r#"type Config = { readonly name: string; readonly scores: readonly number[] };
+const config: Config = { name: 'Ada', scores: [2, 3] };
+console.log('example:', `${config.name}:${config.scores.reduce((sum, n) => sum + n, 0)}`);"#,
+        r#"type Config = { readonly name: string; readonly scores: readonly number[] };
+const config: Config = { name: 'Ada', scores: [2, 3] };
+// TODO: read from readonly data without replacing it
+console.log(`${config.name}:${config.scores.length}`);
+"#,
         &[SyntaxCase {
             input: "",
             output: "Ada:5\n",
@@ -934,8 +1435,22 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "satisfies and as const",
         "as const preserves literal values, and satisfies checks a wider contract without widening the value's own type.",
-        "const routes = {\n  home: '/',\n  user: '/users',\n} as const satisfies Record<string, `/${string}`>;\ntype RouteName = keyof typeof routes;\nconst selected: RouteName = 'user';\nconsole.log(routes[selected]);",
-        "const routes = {\n  home: '/',\n  user: '/users',\n} as const satisfies Record<string, `/${string}`>;\ntype RouteName = keyof typeof routes;\n// TODO: choose the literal key for the users route\nconst selected: RouteName = 'home';\nconsole.log(routes[selected]);\n",
+        r#"const routes = {
+  home: '/',
+  user: '/users',
+} as const satisfies Record<string, `/${string}`>;
+type RouteName = keyof typeof routes;
+const selected: RouteName = 'user';
+console.log('example:', routes[selected]);"#,
+        r#"const routes = {
+  home: '/',
+  user: '/users',
+} as const satisfies Record<string, `/${string}`>;
+type RouteName = keyof typeof routes;
+// TODO: choose the route key that selects the user path
+const selected: RouteName = 'home';
+console.log(routes[selected]);
+"#,
         &[SyntaxCase {
             input: "",
             output: "/users\n",
@@ -952,8 +1467,20 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Iterables",
         "for...of consumes any iterable, so arrays, strings, sets, and many Node values can share loop code.",
-        "const chars: Iterable<string> = ['o', 'k'];\nlet word = '';\nfor (const ch of chars) {\n  word += ch;\n}\nconsole.log(word);",
-        "const chars: Iterable<string> = ['o', 'k'];\nlet word = '';\nfor (const ch of chars) {\n  // TODO: collect every yielded character\n  word = ch;\n}\nconsole.log(word);\n",
+        r#"const chars: Iterable<string> = ['o', 'k'];
+let word = '';
+for (const ch of chars) {
+  word += ch;
+}
+console.log('example:', word);"#,
+        r#"const chars: Iterable<string> = ['o', 'k'];
+let word = '';
+for (const ch of chars) {
+  // TODO: collect every yielded character
+  word = ch;
+}
+console.log(word);
+"#,
         EMPTY_HELLO,
         &[
             "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols",
@@ -967,8 +1494,17 @@ const TS_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "map, filter, and reduce",
         "map transforms each item, filter keeps selected items, and reduce folds a sequence into one accumulated value.",
-        "const nums = [1, 2, 3, 4];\nconst total = nums\n  .filter((n) => n % 2 === 0)\n  .map((n) => n * n)\n  .reduce((sum, n) => sum + n, 0);\nconsole.log(total);",
-        "const nums = [1, 2, 3, 4];\n// TODO: square only the even numbers before summing\nconst total = nums.reduce((sum, n) => sum + n, 0);\nconsole.log(total);\n",
+        r#"const nums = [1, 2, 3, 4];
+const total = nums
+  .filter((n) => n % 2 === 0)
+  .map((n) => n * n)
+  .reduce((sum, n) => sum + n, 0);
+console.log('example:', total);"#,
+        r#"const nums = [1, 2, 3, 4];
+// TODO: square only the even numbers before summing
+const total = nums.reduce((sum, n) => sum + n, 0);
+console.log(total);
+"#,
         &[SyntaxCase {
             input: "",
             output: "20\n",
@@ -987,14 +1523,14 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
         r#"class Solution {
     public static void main(String[] args) {
         int score = 7;
-        System.out.println("score=" + score);
+        System.out.println("example:" + ("score=" + score));
     }
 }
 "#,
         r#"class Solution {
     public static void main(String[] args) {
         int score = 7;
-        // TODO: print exactly score=7 with one trailing newline.
+        // TODO: format the score for stdout with one trailing newline.
         System.out.println("TODO");
     }
 }
@@ -1016,7 +1552,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
         String name = "Ada";
         int score = 7;
         boolean passed = score >= 5;
-        System.out.println(name + ":" + score + ":" + passed);
+        System.out.println("example:" + (name + ":" + score + ":" + passed));
     }
 }
 "#,
@@ -1025,7 +1561,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
         String name = "Ada";
         int score = 0;
         boolean passed = false;
-        // TODO: update the typed values so the report matches the expected output.
+        // TODO: update the typed values before the report is formatted.
         System.out.println(name + ":" + score + ":" + passed);
     }
 }
@@ -1046,7 +1582,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
     public static void main(String[] args) {
         int total = 17;
         int size = 5;
-        System.out.println((total / size) + ":" + (total % size));
+        System.out.println("example:" + ((total / size) + ":" + (total % size)));
     }
 }
 "#,
@@ -1054,7 +1590,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
     public static void main(String[] args) {
         int total = 17;
         int size = 5;
-        // TODO: use integer division and remainder so the output is 3:2.
+        // TODO: use integer division and remainder together.
         System.out.println((total / 2) + ":" + (total - size));
     }
 }
@@ -1075,7 +1611,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
     public static void main(String[] args) {
         String raw = "  ok!  ";
         String cleaned = raw.trim().substring(0, 2);
-        System.out.println(cleaned);
+        System.out.println("example:" + (cleaned));
     }
 }
 "#,
@@ -1105,7 +1641,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
                 total += n;
             }
         }
-        System.out.println(total);
+        System.out.println("example:" + (total));
     }
 }
 "#,
@@ -1142,7 +1678,7 @@ const JAVA_LESSONS: &[SyntaxLesson] = &[
     }
 
     public static void main(String[] args) {
-        System.out.println(area(3, 4));
+        System.out.println("example:" + (area(3, 4)));
     }
 }
 "#,
@@ -1180,7 +1716,7 @@ class Solution {
                 sum += Integer.parseInt(token);
             }
         }
-        System.out.println(sum);
+        System.out.println("example:" + (sum));
     }
 }
 "#,
@@ -1229,7 +1765,7 @@ class Solution {
             totals.merge("sum", n, Integer::sum);
             seen.add(n);
         }
-        System.out.println(totals.get("sum") + ":" + list.size() + ":" + seen.size());
+        System.out.println("example:" + (totals.get("sum") + ":" + list.size() + ":" + seen.size()));
     }
 }
 "#,
@@ -1278,7 +1814,7 @@ class Solution {
 class Solution {
     public static void main(String[] args) {
         Counter counter = new Counter();
-        System.out.println(counter.add(2));
+        System.out.println("example:" + (counter.add(2)));
     }
 }
 "#,
@@ -1323,7 +1859,7 @@ class Solution {
 
 class Solution {
     public static void main(String[] args) {
-        System.out.println(new Rectangle(3, 4).area());
+        System.out.println("example:" + (new Rectangle(3, 4).area()));
     }
 }
 "#,
@@ -1382,7 +1918,7 @@ class Solution {
     public static void main(String[] args) {
         Score score = new Score();
         score.add(5);
-        System.out.println(score.points());
+        System.out.println("example:" + (score.points()));
     }
 }
 "#,
@@ -1427,7 +1963,7 @@ class Solution {
 
 class Solution {
     public static void main(String[] args) {
-        System.out.println(Scale.apply(2));
+        System.out.println("example:" + (Scale.apply(2)));
     }
 }
 "#,
@@ -1475,7 +2011,7 @@ class Solution {
     }
 
     public static void main(String[] args) {
-        System.out.println(label(Status.DONE));
+        System.out.println("example:" + (label(Status.DONE)));
     }
 }
 "#,
@@ -1520,7 +2056,7 @@ class Solution {
     }
 
     public static void main(String[] args) {
-        System.out.println(parseOrDefault("bad"));
+        System.out.println("example:" + (parseOrDefault("bad")));
     }
 }
 "#,
@@ -1529,7 +2065,7 @@ class Solution {
         try {
             return Integer.parseInt(text);
         } catch (NumberFormatException error) {
-            // TODO: recover with the expected fallback value.
+            // TODO: recover in the NumberFormatException branch.
             return 0;
         }
     }
@@ -1559,7 +2095,7 @@ class Solution {
     }
 
     public static void main(String[] args) {
-        System.out.println(last(List.of("skip", "ok")));
+        System.out.println("example:" + (last(List.of("skip", "ok"))));
     }
 }
 "#,
@@ -1605,7 +2141,7 @@ class Solution {
     }
 
     public static void main(String[] args) {
-        System.out.println(describe(new User()));
+        System.out.println("example:" + (describe(new User())));
     }
 }
 "#,
@@ -1615,7 +2151,7 @@ class Solution {
 
 class User implements Named {
     public String name() {
-        // TODO: satisfy the interface with the expected name.
+        // TODO: satisfy the interface through the implementing method.
         return "";
     }
 }
@@ -1665,7 +2201,7 @@ class PremiumUser extends User {
 
 class Solution {
     public static void main(String[] args) {
-        System.out.println(new PremiumUser().score());
+        System.out.println("example:" + (new PremiumUser().score()));
     }
 }
 "#,
@@ -1718,7 +2254,7 @@ class Solution {
 class Solution {
     public static void main(String[] args) {
         Point point = new Point(2, 3);
-        System.out.println(point.sum());
+        System.out.println("example:" + (point.sum()));
     }
 }
 "#,
@@ -1754,7 +2290,7 @@ class Solution {
     public static void main(String[] args) {
         Optional<String> value = Optional.of("ok");
         String label = value.filter(text -> text.length() == 2).orElse("missing");
-        System.out.println(label);
+        System.out.println("example:" + (label));
     }
 }
 "#,
@@ -1789,7 +2325,7 @@ class Solution {
             .filter(n -> n % 2 == 0)
             .mapToInt(n -> n * n)
             .sum();
-        System.out.println(total);
+        System.out.println("example:" + (total));
     }
 }
 "#,
@@ -1832,7 +2368,7 @@ class Solution {
         ));
         users.sort(Comparator.comparingInt(User::score).reversed());
         User best = users.get(0);
-        System.out.println(best.name() + ":" + best.score());
+        System.out.println("example:" + (best.name() + ":" + best.score()));
     }
 }
 "#,
@@ -1879,7 +2415,7 @@ import java.nio.charset.StandardCharsets;
 class Solution {
     public static void main(String[] args) throws IOException {
         try (ByteArrayInputStream in = new ByteArrayInputStream("ok".getBytes(StandardCharsets.UTF_8))) {
-            System.out.println(new String(in.readAllBytes(), StandardCharsets.UTF_8));
+            System.out.println("example:" + (new String(in.readAllBytes(), StandardCharsets.UTF_8)));
         }
     }
 }
@@ -1918,7 +2454,7 @@ class Solution {
         List<String> words = new ArrayList<>();
         words.add("o");
         words.add("k");
-        System.out.println(String.join("", words));
+        System.out.println("example:" + (String.join("", words)));
     }
 }
 "#,
@@ -1958,7 +2494,7 @@ class Solution {
     }
 
     public static void main(String[] args) {
-        System.out.println(label());
+        System.out.println("example:" + (label()));
     }
 }
 "#,
@@ -2010,7 +2546,7 @@ record Dot() implements Shape {
 class Solution {
     public static void main(String[] args) {
         Shape shape = new Rect(3, 4);
-        System.out.println(shape.measure());
+        System.out.println("example:" + (shape.measure()));
     }
 }
 "#,
@@ -2067,13 +2603,13 @@ class Solution {
 
     public static void main(String[] args) {
         check();
-        System.out.println(addTwo(3));
+        System.out.println("example:" + (addTwo(3)));
     }
 }
 "#,
         r#"class Solution {
     static int addTwo(int value) {
-        // TODO: make the method satisfy the assertion and expected output.
+        // TODO: make the method satisfy the assertion before stdout.
         return value;
     }
 
@@ -2132,7 +2668,7 @@ class Solution {
         Set<Point> points = new HashSet<>();
         points.add(new Point(2, 3));
         points.add(new Point(2, 3));
-        System.out.println(points.size());
+        System.out.println("example:" + (points.size()));
     }
 }
 "#,
@@ -2194,7 +2730,7 @@ class Solution {
     }
 
     public static void main(String[] args) {
-        System.out.println(label("Ada", total(2, 3)));
+        System.out.println("example:" + (label("Ada", total(2, 3))));
     }
 }
 "#,
@@ -2235,8 +2771,16 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Output",
         "println! formats values and writes exactly one line to stdout.",
-        "fn main() {\n    let score = 7;\n    println!(\"score={score}\");\n}",
-        "fn main() {\n    let score = 7;\n    // TODO: print exactly score=7 using the value above\n    println!(\"TODO\");\n}\n",
+        r#"fn main() {
+    let score = 7;
+    println!("example:score={score}");
+}"#,
+        r#"fn main() {
+    let score = 7;
+    // TODO: format the value above for stdout
+    println!("TODO");
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "score=7\n",
@@ -2249,8 +2793,20 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Bindings and mutability",
         "let creates immutable bindings by default; mut makes rebinding through the same name explicit.",
-        "fn main() {\n    let label = \"sum\";\n    let mut total = 1;\n    total += 2;\n    println!(\"{label}:{total}\");\n}",
-        "fn main() {\n    let label = \"TODO\";\n    let mut total = 1;\n    // TODO: change total with mutation, then print sum:3\n    total += 0;\n    println!(\"{label}:{total}\");\n}\n",
+        r#"fn main() {
+    let label = "sum";
+    let mut total = 1;
+    total += 2;
+    println!("example:{label}:{total}");
+}"#,
+        r#"fn main() {
+    let label = "TODO";
+    let mut total = 1;
+    // TODO: change total with mutation before formatting
+    total += 0;
+    println!("{label}:{total}");
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "sum:3\n",
@@ -2263,8 +2819,18 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Numbers and tuples",
         "Numeric types are explicit when inference is not enough; tuples group a fixed number of different values.",
-        "fn main() {\n    let pair: (i32, i32) = (2, 3);\n    let sum = pair.0 + pair.1;\n    println!(\"{sum}\");\n}",
-        "fn main() {\n    let pair: (i32, i32) = (2, 3);\n    // TODO: use both tuple fields so the output is 5\n    let sum = pair.0;\n    println!(\"{sum}\");\n}\n",
+        r#"fn main() {
+    let pair: (i32, i32) = (2, 3);
+    let sum = pair.0 + pair.1;
+    println!("example:{sum}");
+}"#,
+        r#"fn main() {
+    let pair: (i32, i32) = (2, 3);
+    // TODO: use both tuple fields in the calculation
+    let sum = pair.0;
+    println!("{sum}");
+}
+"#,
         SUM_CASE,
         &["https://doc.rust-lang.org/book/ch03-02-data-types.html"]
     ),
@@ -2274,8 +2840,20 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Strings",
         "String owns growable UTF-8 text; &str is a borrowed string slice into existing UTF-8 text.",
-        "fn main() {\n    let mut name = String::from(\"rust\");\n    name.push_str(\"ace\");\n    let prefix: &str = &name[..4];\n    println!(\"{prefix}:{}\", name.len());\n}",
-        "fn main() {\n    let mut name = String::from(\"rust\");\n    // TODO: extend the owned String, then print rust:7\n    name.push_str(\"\");\n    let prefix: &str = &name[..4];\n    println!(\"{prefix}:{}\", name.len());\n}\n",
+        r#"fn main() {
+    let mut name = String::from("rust");
+    name.push_str("ace");
+    let prefix: &str = &name[..4];
+    println!("example:{prefix}:{}", name.len());
+}"#,
+        r#"fn main() {
+    let mut name = String::from("rust");
+    // TODO: extend the owned String before slicing and formatting
+    name.push_str("");
+    let prefix: &str = &name[..4];
+    println!("{prefix}:{}", name.len());
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "rust:7\n",
@@ -2288,8 +2866,26 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Control flow",
         "if can produce a value, and loop forms such as for let you turn ranges or collections into accumulated results.",
-        "fn main() {\n    let n = 3;\n    let parity = if n % 2 == 0 { \"even\" } else { \"odd\" };\n    let mut total = 0;\n    for value in 1..=n {\n        total += value;\n    }\n    println!(\"{parity}:{total}\");\n}",
-        "fn main() {\n    let n = 3;\n    let parity = if n % 2 == 0 { \"even\" } else { \"TODO\" };\n    let mut total = 0;\n    // TODO: include 1, 2, and 3 in the sum\n    for value in 1..n {\n        total += value;\n    }\n    println!(\"{parity}:{total}\");\n}\n",
+        r#"fn main() {
+    let n = 3;
+    let parity = if n % 2 == 0 { "even" } else { "odd" };
+    let mut total = 0;
+    for value in 1..=n {
+        total += value;
+    }
+    println!("example:{parity}:{total}");
+}"#,
+        r#"fn main() {
+    let n = 3;
+    let parity = if n % 2 == 0 { "even" } else { "TODO" };
+    let mut total = 0;
+    // TODO: include 1, 2, and 3 in the sum
+    for value in 1..n {
+        total += value;
+    }
+    println!("{parity}:{total}");
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "odd:6\n",
@@ -2302,8 +2898,22 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Functions",
         "Function signatures name parameter types and return types; the last expression can be the returned value.",
-        "fn area(width: u32, height: u32) -> u32 {\n    width * height\n}\n\nfn main() {\n    println!(\"{}\", area(3, 4));\n}",
-        "fn area(width: u32, height: u32) -> u32 {\n    // TODO: return rectangle area, not perimeter\n    width + height\n}\n\nfn main() {\n    println!(\"{}\", area(3, 4));\n}\n",
+        r#"fn area(width: u32, height: u32) -> u32 {
+    width * height
+}
+
+fn main() {
+    println!("example:{}", area(3, 4));
+}"#,
+        r#"fn area(width: u32, height: u32) -> u32 {
+    // TODO: return rectangle area, not perimeter
+    width + height
+}
+
+fn main() {
+    println!("{}", area(3, 4));
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "12\n",
@@ -2316,8 +2926,38 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Structs and impl",
         "A struct names related fields, and an impl block attaches methods and associated functions to that type.",
-        "struct Rectangle {\n    width: u32,\n    height: u32,\n}\n\nimpl Rectangle {\n    fn area(&self) -> u32 {\n        self.width * self.height\n    }\n}\n\nfn main() {\n    let rect = Rectangle { width: 3, height: 4 };\n    println!(\"{}\", rect.area());\n}",
-        "struct Rectangle {\n    width: u32,\n    height: u32,\n}\n\nimpl Rectangle {\n    fn area(&self) -> u32 {\n        // TODO: calculate from both fields\n        self.width + self.height\n    }\n}\n\nfn main() {\n    let rect = Rectangle { width: 3, height: 4 };\n    println!(\"{}\", rect.area());\n}\n",
+        r#"struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+}
+
+fn main() {
+    let rect = Rectangle { width: 3, height: 4 };
+    println!("example:{}", rect.area());
+}"#,
+        r#"struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+    fn area(&self) -> u32 {
+        // TODO: calculate from both fields
+        self.width + self.height
+    }
+}
+
+fn main() {
+    let rect = Rectangle { width: 3, height: 4 };
+    println!("{}", rect.area());
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "12\n",
@@ -2330,8 +2970,38 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Enums and match",
         "Enums model a closed set of variants, and match forces each variant to be handled deliberately.",
-        "enum Command {\n    Add(i32, i32),\n    Quit,\n}\n\nfn run(command: Command) -> i32 {\n    match command {\n        Command::Add(a, b) => a + b,\n        Command::Quit => 0,\n    }\n}\n\nfn main() {\n    println!(\"{}\", run(Command::Add(2, 3)));\n}",
-        "enum Command {\n    Add(i32, i32),\n    Quit,\n}\n\nfn run(command: Command) -> i32 {\n    match command {\n        // TODO: return the sum carried by Add\n        Command::Add(_a, _b) => 0,\n        Command::Quit => 0,\n    }\n}\n\nfn main() {\n    println!(\"{}\", run(Command::Add(2, 3)));\n}\n",
+        r#"enum Command {
+    Add(i32, i32),
+    Quit,
+}
+
+fn run(command: Command) -> i32 {
+    match command {
+        Command::Add(a, b) => a + b,
+        Command::Quit => 0,
+    }
+}
+
+fn main() {
+    println!("example:{}", run(Command::Add(2, 3)));
+}"#,
+        r#"enum Command {
+    Add(i32, i32),
+    Quit,
+}
+
+fn run(command: Command) -> i32 {
+    match command {
+        // TODO: return the sum carried by Add
+        Command::Add(_a, _b) => 0,
+        Command::Quit => 0,
+    }
+}
+
+fn main() {
+    println!("{}", run(Command::Add(2, 3)));
+}
+"#,
         SUM_CASE,
         &["https://doc.rust-lang.org/book/ch06-00-enums.html"]
     ),
@@ -2341,8 +3011,30 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Option and if let",
         "Option<T> makes absence explicit, so code must handle Some(value) and None instead of assuming a value exists.",
-        "fn first_char(text: &str) -> Option<char> {\n    text.chars().next()\n}\n\nfn main() {\n    if let Some(ch) = first_char(\"rust\") {\n        println!(\"{ch}\");\n    } else {\n        println!(\"empty\");\n    }\n}",
-        "fn first_char(text: &str) -> Option<char> {\n    text.chars().next()\n}\n\nfn main() {\n    // TODO: choose input that makes Some('r') flow through if let\n    if let Some(ch) = first_char(\"\") {\n        println!(\"{ch}\");\n    } else {\n        println!(\"empty\");\n    }\n}\n",
+        r#"fn first_char(text: &str) -> Option<char> {
+    text.chars().next()
+}
+
+fn main() {
+    if let Some(ch) = first_char("rust") {
+        println!("example:{ch}");
+    } else {
+        println!("example:empty");
+    }
+}"#,
+        r#"fn first_char(text: &str) -> Option<char> {
+    text.chars().next()
+}
+
+fn main() {
+    // TODO: choose input that makes Some('r') flow through if let
+    if let Some(ch) = first_char("") {
+        println!("{ch}");
+    } else {
+        println!("empty");
+    }
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "r\n",
@@ -2355,8 +3047,30 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "basic",
         "Modules and use",
         "mod creates a namespace, pub exposes selected items, and use brings a path into local scope without changing ownership.",
-        "mod scoring {\n    pub fn label(score: u32) -> &'static str {\n        if score >= 80 { \"pass\" } else { \"retry\" }\n    }\n}\n\nuse scoring::label;\n\nfn main() {\n    println!(\"{}\", label(91));\n}",
-        "mod scoring {\n    pub fn label(score: u32) -> &'static str {\n        if score >= 80 { \"pass\" } else { \"retry\" }\n    }\n}\n\nuse scoring::label;\n\nfn main() {\n    // TODO: pass a score that selects pass\n    println!(\"{}\", label(10));\n}\n",
+        r#"mod scoring {
+    pub fn label(score: u32) -> &'static str {
+        if score >= 80 { "pass" } else { "retry" }
+    }
+}
+
+use scoring::label;
+
+fn main() {
+    println!("example:{}", label(91));
+}"#,
+        r#"mod scoring {
+    pub fn label(score: u32) -> &'static str {
+        if score >= 80 { "pass" } else { "retry" }
+    }
+}
+
+use scoring::label;
+
+fn main() {
+    // TODO: pass a score that selects pass
+    println!("{}", label(10));
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "pass\n",
@@ -2371,8 +3085,26 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Input parsing",
         "Coding-test Rust usually reads stdin as text, splits it, parses tokens once, and solves with typed values.",
-        "use std::io::{self, Read};\n\nfn main() {\n    let mut input = String::new();\n    io::stdin().read_to_string(&mut input).unwrap();\n    let sum: i32 = input.split_whitespace()\n        .map(|token| token.parse::<i32>().unwrap())\n        .sum();\n    println!(\"{sum}\");\n}",
-        "use std::io::{self, Read};\n\nfn main() {\n    let mut input = String::new();\n    io::stdin().read_to_string(&mut input).unwrap();\n    // TODO: parse all integers from stdin and print their sum\n    let sum = 0;\n    println!(\"{sum}\");\n}\n",
+        r#"use std::io::{self, Read};
+
+fn main() {
+    let mut input = String::new();
+    io::stdin().read_to_string(&mut input).unwrap();
+    let sum: i32 = input.split_whitespace()
+        .map(|token| token.parse::<i32>().unwrap())
+        .sum();
+    println!("example:{sum}");
+}"#,
+        r#"use std::io::{self, Read};
+
+fn main() {
+    let mut input = String::new();
+    io::stdin().read_to_string(&mut input).unwrap();
+    // TODO: parse all integers from stdin and print their sum
+    let sum = 0;
+    println!("{sum}");
+}
+"#,
         SUM_CASE,
         &["https://doc.rust-lang.org/std/io/trait.Read.html"]
     ),
@@ -2382,8 +3114,28 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Vec and HashMap",
         "Vec<T> stores ordered values, while HashMap<K, V> stores lookups by key; entry is the usual counting API.",
-        "use std::collections::HashMap;\n\nfn main() {\n    let nums = vec![1, 2, 3];\n    let mut counts = HashMap::new();\n    for word in [\"red\", \"blue\", \"red\"] {\n        *counts.entry(word).or_insert(0) += 1;\n    }\n    println!(\"{} {}\", nums.iter().sum::<i32>(), counts[\"red\"]);\n}",
-        "use std::collections::HashMap;\n\nfn main() {\n    let nums = vec![1, 2, 3];\n    let mut counts = HashMap::new();\n    for word in [\"red\", \"blue\", \"red\"] {\n        // TODO: count each word with entry(...).or_insert(...)\n        counts.insert(word, 1);\n    }\n    println!(\"{} {}\", nums.len(), counts[\"red\"]);\n}\n",
+        r#"use std::collections::HashMap;
+
+fn main() {
+    let nums = vec![1, 2, 3];
+    let mut counts = HashMap::new();
+    for word in ["red", "blue", "red"] {
+        *counts.entry(word).or_insert(0) += 1;
+    }
+    println!("example:{} {}", nums.iter().sum::<i32>(), counts["red"]);
+}"#,
+        r#"use std::collections::HashMap;
+
+fn main() {
+    let nums = vec![1, 2, 3];
+    let mut counts = HashMap::new();
+    for word in ["red", "blue", "red"] {
+        // TODO: count each word with entry(...).or_insert(...)
+        counts.insert(word, 1);
+    }
+    println!("{} {}", nums.len(), counts["red"]);
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "6 2\n",
@@ -2399,8 +3151,25 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Borrowing and slices",
         "Borrowed slices let functions read part of owned data without taking ownership of the whole value.",
-        "fn first_word(text: &str) -> &str {\n    text.split_whitespace().next().unwrap_or(\"\")\n}\n\nfn main() {\n    let line = String::from(\"rust rules\");\n    println!(\"{}\", first_word(&line));\n}\n",
-        "fn first_word(text: &str) -> &str {\n    text.split_whitespace().next().unwrap_or(\"\")\n}\n\nfn main() {\n    let line = String::from(\"rust rules\");\n    // TODO: borrow the String so first_word can read it\n    println!(\"{}\", first_word(\"\"));\n}\n",
+        r#"fn first_word(text: &str) -> &str {
+    text.split_whitespace().next().unwrap_or("")
+}
+
+fn main() {
+    let line = String::from("rust rules");
+    println!("example:{}", first_word(&line));
+}
+"#,
+        r#"fn first_word(text: &str) -> &str {
+    text.split_whitespace().next().unwrap_or("")
+}
+
+fn main() {
+    let line = String::from("rust rules");
+    // TODO: borrow the String so first_word can read it
+    println!("{}", first_word(""));
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "rust\n",
@@ -2413,8 +3182,26 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Result and ?",
         "Result<T, E> represents recoverable failure; the ? operator unwraps Ok or returns the Err to the caller.",
-        "fn parse_count(text: &str) -> Result<i32, std::num::ParseIntError> {\n    text.parse::<i32>()\n}\n\nfn main() -> Result<(), std::num::ParseIntError> {\n    let count = parse_count(\"3\")?;\n    println!(\"{}\", count + 2);\n    Ok(())\n}",
-        "fn parse_count(text: &str) -> Result<i32, std::num::ParseIntError> {\n    text.parse::<i32>()\n}\n\nfn main() -> Result<(), std::num::ParseIntError> {\n    // TODO: parse 3 and use ? instead of unwrap\n    let count = parse_count(\"0\")?;\n    println!(\"{}\", count + 2);\n    Ok(())\n}\n",
+        r#"fn parse_count(text: &str) -> Result<i32, std::num::ParseIntError> {
+    text.parse::<i32>()
+}
+
+fn main() -> Result<(), std::num::ParseIntError> {
+    let count = parse_count("3")?;
+    println!("example:{}", count + 2);
+    Ok(())
+}"#,
+        r#"fn parse_count(text: &str) -> Result<i32, std::num::ParseIntError> {
+    text.parse::<i32>()
+}
+
+fn main() -> Result<(), std::num::ParseIntError> {
+    // TODO: parse 3 and use ? instead of unwrap
+    let count = parse_count("0")?;
+    println!("{}", count + 2);
+    Ok(())
+}
+"#,
         SUM_CASE,
         &["https://doc.rust-lang.org/book/ch09-02-recoverable-errors-with-result.html"]
     ),
@@ -2424,8 +3211,28 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "Ownership and borrowing",
         "Each owned value has one owner; moving transfers ownership, while borrowing lets code inspect data without taking it.",
-        "fn describe(name: String) -> (String, usize) {\n    let len = name.len();\n    (name, len)\n}\n\nfn main() {\n    let name = String::from(\"rust\");\n    let (name, len) = describe(name);\n    println!(\"{name}:{len}\");\n}",
-        "fn describe(name: String) -> (String, usize) {\n    let len = name.len();\n    (name, len)\n}\n\nfn main() {\n    let name = String::from(\"\");\n    // TODO: move the owned String into describe and use the returned owner\n    let (name, len) = describe(name);\n    println!(\"{name}:{len}\");\n}\n",
+        r#"fn describe(name: String) -> (String, usize) {
+    let len = name.len();
+    (name, len)
+}
+
+fn main() {
+    let name = String::from("rust");
+    let (name, len) = describe(name);
+    println!("example:{name}:{len}");
+}"#,
+        r#"fn describe(name: String) -> (String, usize) {
+    let len = name.len();
+    (name, len)
+}
+
+fn main() {
+    let name = String::from("");
+    // TODO: move the owned String into describe and use the returned owner
+    let (name, len) = describe(name);
+    println!("{name}:{len}");
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "rust:4\n",
@@ -2438,8 +3245,21 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Iterators and closures",
         "Iterators are lazy until consumed; closures let map, filter, and fold express local transformations.",
-        "fn main() {\n    let nums = [1, 2, 3, 4];\n    let total: i32 = nums.iter()\n        .filter(|n| **n % 2 == 0)\n        .map(|n| n * n)\n        .sum();\n    println!(\"{total}\");\n}",
-        "fn main() {\n    let nums = [1, 2, 3, 4];\n    // TODO: square only the even numbers before summing\n    let total: i32 = nums.iter().map(|n| n).sum();\n    println!(\"{total}\");\n}\n",
+        r#"fn main() {
+    let nums = [1, 2, 3, 4];
+    let total: i32 = nums.iter()
+        .filter(|n| **n % 2 == 0)
+        .map(|n| n * n)
+        .sum();
+    println!("example:{total}");
+}"#,
+        r#"fn main() {
+    let nums = [1, 2, 3, 4];
+    // TODO: square only the even numbers before summing
+    let total: i32 = nums.iter().map(|n| n).sum();
+    println!("{total}");
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "20\n",
@@ -2452,8 +3272,23 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Generics",
         "Generics let one function or type work with many concrete types while preserving compile-time type checking.",
-        "fn last_copy<T: Copy>(items: &[T]) -> Option<T> {\n    items.last().copied()\n}\n\nfn main() {\n    println!(\"{}\", last_copy(&[1, 2, 3]).unwrap());\n}",
-        "fn last_copy<T: Copy>(items: &[T]) -> Option<T> {\n    // TODO: return the last copied item\n    let _ = items;\n    None\n}\n\nfn main() {\n    println!(\"{}\", last_copy(&[1, 2, 3]).unwrap_or(0));\n}\n",
+        r#"fn last_copy<T: Copy>(items: &[T]) -> Option<T> {
+    items.last().copied()
+}
+
+fn main() {
+    println!("example:{}", last_copy(&[1, 2, 3]).unwrap());
+}"#,
+        r#"fn last_copy<T: Copy>(items: &[T]) -> Option<T> {
+    // TODO: return the last copied item
+    let _ = items;
+    None
+}
+
+fn main() {
+    println!("{}", last_copy(&[1, 2, 3]).unwrap_or(0));
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "3\n",
@@ -2466,8 +3301,54 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Traits and bounds",
         "Traits describe shared behavior, and bounds say which behavior a generic function is allowed to rely on.",
-        "trait Summary {\n    fn summarize(&self) -> String;\n}\n\nstruct User {\n    name: String,\n    tasks: usize,\n}\n\nimpl Summary for User {\n    fn summarize(&self) -> String {\n        format!(\"{}: {}\", self.name, self.tasks)\n    }\n}\n\nfn print_summary<T: Summary>(item: &T) {\n    println!(\"{}\", item.summarize());\n}\n\nfn main() {\n    let user = User { name: String::from(\"Ada\"), tasks: 3 };\n    print_summary(&user);\n}",
-        "trait Summary {\n    fn summarize(&self) -> String;\n}\n\nstruct User {\n    name: String,\n    tasks: usize,\n}\n\nimpl Summary for User {\n    fn summarize(&self) -> String {\n        // TODO: include both fields as Ada: 3\n        self.name.clone()\n    }\n}\n\nfn print_summary<T: Summary>(item: &T) {\n    println!(\"{}\", item.summarize());\n}\n\nfn main() {\n    let user = User { name: String::from(\"Ada\"), tasks: 3 };\n    print_summary(&user);\n}\n",
+        r#"trait Summary {
+    fn summarize(&self) -> String;
+}
+
+struct User {
+    name: String,
+    tasks: usize,
+}
+
+impl Summary for User {
+    fn summarize(&self) -> String {
+        format!("{}: {}", self.name, self.tasks)
+    }
+}
+
+fn print_summary<T: Summary>(item: &T) {
+    println!("example:{}", item.summarize());
+}
+
+fn main() {
+    let user = User { name: String::from("Ada"), tasks: 3 };
+    print_summary(&user);
+}"#,
+        r#"trait Summary {
+    fn summarize(&self) -> String;
+}
+
+struct User {
+    name: String,
+    tasks: usize,
+}
+
+impl Summary for User {
+    fn summarize(&self) -> String {
+        // TODO: include both fields in the summary
+        self.name.clone()
+    }
+}
+
+fn print_summary<T: Summary>(item: &T) {
+    println!("{}", item.summarize());
+}
+
+fn main() {
+    let user = User { name: String::from("Ada"), tasks: 3 };
+    print_summary(&user);
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "Ada: 3\n",
@@ -2480,8 +3361,23 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Lifetimes",
         "Lifetime annotations describe relationships between borrowed values; they do not make any value live longer.",
-        "fn longer<'a>(left: &'a str, right: &'a str) -> &'a str {\n    if left.len() >= right.len() { left } else { right }\n}\n\nfn main() {\n    println!(\"{}\", longer(\"borrow\", \"rs\"));\n}",
-        "fn longer<'a>(left: &'a str, right: &'a str) -> &'a str {\n    // TODO: return the longer borrowed string\n    let _ = left;\n    right\n}\n\nfn main() {\n    println!(\"{}\", longer(\"borrow\", \"rs\"));\n}\n",
+        r#"fn longer<'a>(left: &'a str, right: &'a str) -> &'a str {
+    if left.len() >= right.len() { left } else { right }
+}
+
+fn main() {
+    println!("example:{}", longer("borrow", "rs"));
+}"#,
+        r#"fn longer<'a>(left: &'a str, right: &'a str) -> &'a str {
+    // TODO: return the longer borrowed string
+    let _ = left;
+    right
+}
+
+fn main() {
+    println!("{}", longer("borrow", "rs"));
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "borrow\n",
@@ -2494,8 +3390,48 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "Trait objects and dyn dispatch",
         "Trait objects such as &dyn Trait allow values of different concrete types to be used through shared behavior.",
-        "trait Draw {\n    fn draw(&self) -> &'static str;\n}\n\nstruct Button;\n\nimpl Draw for Button {\n    fn draw(&self) -> &'static str {\n        \"button\"\n    }\n}\n\nfn render(item: &dyn Draw) -> &'static str {\n    item.draw()\n}\n\nfn main() {\n    let button = Button;\n    println!(\"{}\", render(&button));\n}",
-        "trait Draw {\n    fn draw(&self) -> &'static str;\n}\n\nstruct Button;\n\nimpl Draw for Button {\n    fn draw(&self) -> &'static str {\n        // TODO: return the label used by render\n        \"TODO\"\n    }\n}\n\nfn render(item: &dyn Draw) -> &'static str {\n    item.draw()\n}\n\nfn main() {\n    let button = Button;\n    println!(\"{}\", render(&button));\n}\n",
+        r#"trait Draw {
+    fn draw(&self) -> &'static str;
+}
+
+struct Button;
+
+impl Draw for Button {
+    fn draw(&self) -> &'static str {
+        "button"
+    }
+}
+
+fn render(item: &dyn Draw) -> &'static str {
+    item.draw()
+}
+
+fn main() {
+    let button = Button;
+    println!("example:{}", render(&button));
+}"#,
+        r#"trait Draw {
+    fn draw(&self) -> &'static str;
+}
+
+struct Button;
+
+impl Draw for Button {
+    fn draw(&self) -> &'static str {
+        // TODO: return the label used by render
+        "TODO"
+    }
+}
+
+fn render(item: &dyn Draw) -> &'static str {
+    item.draw()
+}
+
+fn main() {
+    let button = Button;
+    println!("{}", render(&button));
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "button\n",
@@ -2508,8 +3444,42 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "intermediate",
         "Tests and assertions",
         "Rust test functions use #[test] and assertion macros; normal code still needs small pure functions that tests can call.",
-        "fn add_two(n: i32) -> i32 {\n    n + 2\n}\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n\n    #[test]\n    fn adds_two() {\n        assert_eq!(add_two(3), 5);\n    }\n}\n\nfn main() {\n    println!(\"{}\", add_two(3));\n}",
-        "fn add_two(n: i32) -> i32 {\n    // TODO: make the function satisfy the test expectation\n    n\n}\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n\n    #[test]\n    fn adds_two() {\n        assert_eq!(add_two(3), 5);\n    }\n}\n\nfn main() {\n    println!(\"{}\", add_two(3));\n}\n",
+        r#"fn add_two(n: i32) -> i32 {
+    n + 2
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn adds_two() {
+        assert_eq!(add_two(3), 5);
+    }
+}
+
+fn main() {
+    println!("example:{}", add_two(3));
+}"#,
+        r#"fn add_two(n: i32) -> i32 {
+    // TODO: make the function satisfy the test expectation
+    n
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn adds_two() {
+        assert_eq!(add_two(3), 5);
+    }
+}
+
+fn main() {
+    println!("{}", add_two(3));
+}
+"#,
         SUM_CASE,
         &["https://doc.rust-lang.org/book/ch11-00-testing.html"]
     ),
@@ -2519,8 +3489,16 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "Smart pointers",
         "Smart pointers such as Box<T> own data with pointer-like behavior and can place values on the heap.",
-        "fn main() {\n    let boxed = Box::new(String::from(\"heap\"));\n    println!(\"{}\", boxed.len());\n}",
-        "fn main() {\n    // TODO: put heap inside Box<String> and print its length\n    let boxed = Box::new(String::from(\"\"));\n    println!(\"{}\", boxed.len());\n}\n",
+        r#"fn main() {
+    let boxed = Box::new(String::from("heap"));
+    println!("example:{}", boxed.len());
+}"#,
+        r#"fn main() {
+    // TODO: put heap text inside Box<String> and read through it
+    let boxed = Box::new(String::from(""));
+    println!("{}", boxed.len());
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "4\n",
@@ -2533,8 +3511,21 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "Interior mutability",
         "RefCell<T> checks borrow rules at runtime, allowing mutation through an immutable owner when the design requires it.",
-        "use std::cell::RefCell;\n\nfn main() {\n    let log = RefCell::new(Vec::new());\n    log.borrow_mut().push(\"event\");\n    println!(\"{}\", log.borrow().len());\n}",
-        "use std::cell::RefCell;\n\nfn main() {\n    let log: RefCell<Vec<&str>> = RefCell::new(Vec::new());\n    // TODO: borrow mutably and push one event\n    println!(\"{}\", log.borrow().len());\n}\n",
+        r#"use std::cell::RefCell;
+
+fn main() {
+    let log = RefCell::new(Vec::new());
+    log.borrow_mut().push("event");
+    println!("example:{}", log.borrow().len());
+}"#,
+        r#"use std::cell::RefCell;
+
+fn main() {
+    let log: RefCell<Vec<&str>> = RefCell::new(Vec::new());
+    // TODO: borrow mutably and push one event
+    println!("{}", log.borrow().len());
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "1\n",
@@ -2547,8 +3538,21 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "Threads and join",
         "thread::spawn moves work to another OS thread, and join waits for that thread's result.",
-        "use std::thread;\n\nfn main() {\n    let handle = thread::spawn(|| \"worker\");\n    println!(\"{}\", handle.join().unwrap());\n}",
-        "use std::thread;\n\nfn main() {\n    let handle = thread::spawn(|| \"worker\");\n    // TODO: print the joined worker result\n    let _ = handle;\n    println!(\"main\");\n}\n",
+        r#"use std::thread;
+
+fn main() {
+    let handle = thread::spawn(|| "worker");
+    println!("example:{}", handle.join().unwrap());
+}"#,
+        r#"use std::thread;
+
+fn main() {
+    let handle = thread::spawn(|| "worker");
+    // TODO: use the joined worker result instead of a placeholder
+    let _ = handle;
+    println!("main");
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "worker\n",
@@ -2561,8 +3565,32 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "Shared state with Arc and Mutex",
         "Arc<T> shares ownership across threads, and Mutex<T> protects mutation so only one thread edits at a time.",
-        "use std::sync::{Arc, Mutex};\nuse std::thread;\n\nfn main() {\n    let count = Arc::new(Mutex::new(1));\n    let worker_count = Arc::clone(&count);\n    let handle = thread::spawn(move || {\n        *worker_count.lock().unwrap() += 1;\n    });\n    handle.join().unwrap();\n    println!(\"{}\", *count.lock().unwrap());\n}",
-        "use std::sync::{Arc, Mutex};\nuse std::thread;\n\nfn main() {\n    let count = Arc::new(Mutex::new(1));\n    let worker_count = Arc::clone(&count);\n    let handle = thread::spawn(move || {\n        // TODO: lock and increment the shared count\n        let _ = worker_count;\n    });\n    handle.join().unwrap();\n    println!(\"{}\", *count.lock().unwrap());\n}\n",
+        r#"use std::sync::{Arc, Mutex};
+use std::thread;
+
+fn main() {
+    let count = Arc::new(Mutex::new(1));
+    let worker_count = Arc::clone(&count);
+    let handle = thread::spawn(move || {
+        *worker_count.lock().unwrap() += 1;
+    });
+    handle.join().unwrap();
+    println!("example:{}", *count.lock().unwrap());
+}"#,
+        r#"use std::sync::{Arc, Mutex};
+use std::thread;
+
+fn main() {
+    let count = Arc::new(Mutex::new(1));
+    let worker_count = Arc::clone(&count);
+    let handle = thread::spawn(move || {
+        // TODO: lock and increment the shared count
+        let _ = worker_count;
+    });
+    handle.join().unwrap();
+    println!("{}", *count.lock().unwrap());
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "2\n",
@@ -2575,8 +3603,26 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "Async and await",
         "async creates a Future that can pause at await points; executing futures needs a runtime or executor.",
-        "async fn label() -> &'static str {\n    \"ready\"\n}\n\nfn main() {\n    let future = label();\n    drop(future);\n    println!(\"future-created\");\n}",
-        "async fn label() -> &'static str {\n    \"ready\"\n}\n\nfn main() {\n    let future = label();\n    drop(future);\n    // TODO: this single-file exercise creates a Future but does not run an async runtime\n    println!(\"pending\");\n}\n",
+        r#"async fn label() -> &'static str {
+    "ready"
+}
+
+fn main() {
+    let future = label();
+    drop(future);
+    println!("example:future-created");
+}"#,
+        r#"async fn label() -> &'static str {
+    "ready"
+}
+
+fn main() {
+    let future = label();
+    drop(future);
+    // TODO: this single-file exercise creates a Future but does not run an async runtime
+    println!("pending");
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "future-created\n",
@@ -2589,8 +3635,26 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "macro_rules!",
         "macro_rules! matches token patterns at compile time and expands them into Rust code before type checking.",
-        "macro_rules! greet {\n    ($name:expr) => {\n        format!(\"hi {}\", $name)\n    };\n}\n\nfn main() {\n    println!(\"{}\", greet!(\"Rust\"));\n}",
-        "macro_rules! greet {\n    ($name:expr) => {\n        // TODO: expand to hi <name>\n        format!(\"TODO {}\", $name)\n    };\n}\n\nfn main() {\n    println!(\"{}\", greet!(\"Rust\"));\n}\n",
+        r#"macro_rules! greet {
+    ($name:expr) => {
+        format!("hi {}", $name)
+    };
+}
+
+fn main() {
+    println!("example:{}", greet!("Rust"));
+}"#,
+        r#"macro_rules! greet {
+    ($name:expr) => {
+        // TODO: expand to hi <name>
+        format!("TODO {}", $name)
+    };
+}
+
+fn main() {
+    println!("{}", greet!("Rust"));
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "hi Rust\n",
@@ -2603,8 +3667,21 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "Unsafe Rust",
         "unsafe enables operations the compiler cannot fully verify, but the programmer must still uphold Rust's safety rules.",
-        "fn main() {\n    let value = 7;\n    let pointer = &value as *const i32;\n    let read = unsafe { *pointer };\n    println!(\"{read}\");\n}",
-        "fn main() {\n    let value = 7;\n    let pointer = &value as *const i32;\n    // TODO: read the raw pointer inside an unsafe block\n    let read = 0;\n    let _ = pointer;\n    println!(\"{read}\");\n}\n",
+        r#"fn main() {
+    let value = 7;
+    let pointer = &value as *const i32;
+    let read = unsafe { *pointer };
+    println!("example:{read}");
+}"#,
+        r#"fn main() {
+    let value = 7;
+    let pointer = &value as *const i32;
+    // TODO: read the raw pointer inside an unsafe block
+    let read = 0;
+    let _ = pointer;
+    println!("{read}");
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "7\n",
@@ -2617,8 +3694,18 @@ const RUST_LESSONS: &[SyntaxLesson] = &[
         "advanced",
         "Cargo packages and workspaces",
         "Cargo manages packages, dependencies, tests, and workspaces; workspace commands let related crates build together.",
-        "const CHECK_ALL: &str = \"cargo check --workspace\";\n\nfn main() {\n    println!(\"{CHECK_ALL}\");\n}",
-        "const CHECK_ALL: &str = \"cargo check\";\n\nfn main() {\n    // TODO: print the command that checks every workspace member\n    println!(\"{CHECK_ALL}\");\n}\n",
+        r#"const CHECK_ALL: &str = "cargo check --workspace";
+
+fn main() {
+    println!("example:{CHECK_ALL}");
+}"#,
+        r#"const CHECK_ALL: &str = "cargo check";
+
+fn main() {
+    // TODO: format the workspace-wide check command constant
+    println!("{CHECK_ALL}");
+}
+"#,
         &[SyntaxCase {
             input: "",
             output: "cargo check --workspace\n",
@@ -2802,8 +3889,9 @@ pub fn render_syntax_lesson(lesson: &SyntaxLesson, state: &AppState) -> String {
     } else {
         format!("\n\n{extra_sections}")
     };
+    let exercise_goal = syntax_exercise_goal(lesson, ui_language);
     format!(
-        "# {}: {}\n\n{}: {}\n{}: {}\n{}: {done}/{total} ({completed})\n\n## {}\n\n{}\n\n## {}\n\n{}\n{}\n\n## {}\n\n{}\n\n## {}\n\n{}",
+        "# {}: {}\n\n{}: {}\n{}: {}\n{}: {done}/{total} ({completed})\n\n## {}\n\n{}\n\n## {}\n\n{}\n\n## {}\n\n{}\n{}\n\n## {}\n\n{}",
         ui_text(ui_language, "syntax"),
         localized_syntax_title(lesson, ui_language),
         ui_text(ui_language, "syntax_language"),
@@ -2815,11 +3903,26 @@ pub fn render_syntax_lesson(lesson: &SyntaxLesson, state: &AppState) -> String {
         concept,
         ui_text(ui_language, "syntax_worked_example"),
         worked_example,
-        extra_sections,
         ui_text(ui_language, "syntax_exercise"),
-        localized_syntax_exercise_prompt(lesson, ui_language),
+        exercise_goal,
+        extra_sections,
         ui_text(ui_language, "syntax_references"),
         refs
+    )
+}
+
+fn syntax_exercise_goal(lesson: &SyntaxLesson, ui_language: &str) -> String {
+    let prompt = localized_syntax_exercise_prompt(lesson, ui_language);
+    let Some(case) = lesson.exercise.cases.first() else {
+        return prompt;
+    };
+    format!(
+        "{}\n\n{}\n\n{}\n\n{}\n\n{}",
+        prompt,
+        ui_text(ui_language, "input"),
+        fenced_text(case.input),
+        ui_text(ui_language, "output"),
+        fenced_text(case.output)
     )
 }
 

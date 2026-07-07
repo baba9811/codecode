@@ -6,466 +6,437 @@
     "rust-output": {
       "title": "Salida",
       "concept": "Salida se centra en esta habilidad de Rust: formatear valores con println! y producir stdout exacto para el juez. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: formatear valores con println! y producir stdout exacto para el juez. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Salida. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: formatear valores con println! y producir stdout exacto para el juez.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Salida."
+        "Cambiar solo la línea final de salida sin dejar la regla de Salida en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Salida.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Salida se centra en esta habilidad de Rust: formatear valores con println!"
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: formatear valores con println! y producir stdout exacto para el juez?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Salida antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Salida debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: formatear valores con println! y producir stdout exacto para el juez. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Salida a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-variables": {
       "title": "Vinculaciones y mutabilidad",
       "concept": "Vinculaciones y mutabilidad se centra en esta habilidad de Rust: preferir vinculaciones let inmutables y usar mut solo cuando el valor cambia de verdad. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: preferir vinculaciones let inmutables y usar mut solo cuando el valor cambia de verdad. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Vinculaciones y mutabilidad. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: preferir vinculaciones let inmutables y usar mut solo cuando el valor cambia de verdad.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Vinculaciones y mutabilidad."
+        "Cambiar solo la línea final de salida sin dejar la regla de Vinculaciones y mutabilidad en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Vinculaciones y mutabilidad.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Vinculaciones y mutabilidad se centra en esta habilidad de Rust: preferir vinculaciones let inmutables y usar mut solo cuando el valor cambia de verdad."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: preferir vinculaciones let inmutables y usar mut solo cuando el valor cambia de verdad?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Vinculaciones y mutabilidad antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Vinculaciones y mutabilidad debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: preferir vinculaciones let inmutables y usar mut solo cuando el valor cambia de verdad. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Vinculaciones y mutabilidad a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-numbers-tuples": {
       "title": "Números y tuplas",
       "concept": "Números y tuplas se centra en esta habilidad de Rust: combinar tipos numéricos explícitos con acceso a campos de tupla como pair.0 y pair.1. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: combinar tipos numéricos explícitos con acceso a campos de tupla como pair.0 y pair.1. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Números y tuplas. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: combinar tipos numéricos explícitos con acceso a campos de tupla como pair.0 y pair.1.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Números y tuplas."
+        "Cambiar solo la línea final de salida sin dejar la regla de Números y tuplas en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Números y tuplas.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Números y tuplas se centra en esta habilidad de Rust: combinar tipos numéricos explícitos con acceso a campos de tupla como pair.0 y pair.1."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: combinar tipos numéricos explícitos con acceso a campos de tupla como pair.0 y pair.1?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Números y tuplas antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Números y tuplas debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: combinar tipos numéricos explícitos con acceso a campos de tupla como pair.0 y pair.1. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Números y tuplas a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-strings": {
       "title": "Cadenas",
       "concept": "Cadenas se centra en esta habilidad de Rust: decidir cuándo hace falta un String con propiedad y cuándo basta un &str prestado. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: decidir cuándo hace falta un String con propiedad y cuándo basta un &str prestado. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Cadenas. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: decidir cuándo hace falta un String con propiedad y cuándo basta un &str prestado.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Cadenas."
+        "Cambiar solo la línea final de salida sin dejar la regla de Cadenas en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Cadenas.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Cadenas se centra en esta habilidad de Rust: decidir cuándo hace falta un String con propiedad y cuándo basta un &str prestado."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: decidir cuándo hace falta un String con propiedad y cuándo basta un &str prestado?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Cadenas antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Cadenas debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: decidir cuándo hace falta un String con propiedad y cuándo basta un &str prestado. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Cadenas a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-control-flow": {
       "title": "Flujo de control",
       "concept": "Flujo de control se centra en esta habilidad de Rust: usar if como expresión y rangos for para construir valores, no solo ramificar por costumbre. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: usar if como expresión y rangos for para construir valores, no solo ramificar por costumbre. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Flujo de control. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: usar if como expresión y rangos for para construir valores, no solo ramificar por costumbre.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Flujo de control."
+        "Cambiar solo la línea final de salida sin dejar la regla de Flujo de control en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Flujo de control.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Flujo de control se centra en esta habilidad de Rust: usar if como expresión y rangos for para construir valores, no solo ramificar por costumbre."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: usar if como expresión y rangos for para construir valores, no solo ramificar por costumbre?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Flujo de control antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Flujo de control debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: usar if como expresión y rangos for para construir valores, no solo ramificar por costumbre. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Flujo de control a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-functions": {
       "title": "Funciones",
       "concept": "Funciones se centra en esta habilidad de Rust: escribir firmas donde los tipos de parámetros y retorno documenten el límite del cálculo. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: escribir firmas donde los tipos de parámetros y retorno documenten el límite del cálculo. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Funciones. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: escribir firmas donde los tipos de parámetros y retorno documenten el límite del cálculo.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Funciones."
+        "Cambiar solo la línea final de salida sin dejar la regla de Funciones en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Funciones.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Funciones se centra en esta habilidad de Rust: escribir firmas donde los tipos de parámetros y retorno documenten el límite del cálculo."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: escribir firmas donde los tipos de parámetros y retorno documenten el límite del cálculo?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Funciones antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Funciones debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: escribir firmas donde los tipos de parámetros y retorno documenten el límite del cálculo. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Funciones a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-structs-impl": {
       "title": "Structs e impl",
       "concept": "Structs e impl se centra en esta habilidad de Rust: agrupar campos del dominio en un struct y poner en impl el comportamiento que usa esos campos. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: agrupar campos del dominio en un struct y poner en impl el comportamiento que usa esos campos. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Structs e impl. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: agrupar campos del dominio en un struct y poner en impl el comportamiento que usa esos campos.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Structs e impl."
+        "Cambiar solo la línea final de salida sin dejar la regla de Structs e impl en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Structs e impl.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Structs e impl se centra en esta habilidad de Rust: agrupar campos del dominio en un struct y poner en impl el comportamiento que usa esos campos."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: agrupar campos del dominio en un struct y poner en impl el comportamiento que usa esos campos?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Structs e impl antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Structs e impl debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: agrupar campos del dominio en un struct y poner en impl el comportamiento que usa esos campos. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Structs e impl a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-enum-match": {
       "title": "Enums y match",
       "concept": "Enums y match se centra en esta habilidad de Rust: modelar alternativas con variantes enum y cubrir cada variante de forma exhaustiva con match. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: modelar alternativas con variantes enum y cubrir cada variante de forma exhaustiva con match. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Enums y match. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: modelar alternativas con variantes enum y cubrir cada variante de forma exhaustiva con match.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Enums y match."
+        "Cambiar solo la línea final de salida sin dejar la regla de Enums y match en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Enums y match.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Enums y match se centra en esta habilidad de Rust: modelar alternativas con variantes enum y cubrir cada variante de forma exhaustiva con match."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: modelar alternativas con variantes enum y cubrir cada variante de forma exhaustiva con match?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Enums y match antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Enums y match debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: modelar alternativas con variantes enum y cubrir cada variante de forma exhaustiva con match. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Enums y match a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-option": {
       "title": "Option e if let",
       "concept": "Option e if let se centra en esta habilidad de Rust: hacer explícitos los valores ausentes con Option<T> y extraer Some de forma segura. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: hacer explícitos los valores ausentes con Option<T> y extraer Some de forma segura. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Option e if let. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: hacer explícitos los valores ausentes con Option<T> y extraer Some de forma segura.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Option e if let."
+        "Cambiar solo la línea final de salida sin dejar la regla de Option e if let en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Option e if let.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Option e if let se centra en esta habilidad de Rust: hacer explícitos los valores ausentes con Option<T> y extraer Some de forma segura."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: hacer explícitos los valores ausentes con Option<T> y extraer Some de forma segura?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Option e if let antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Option e if let debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: hacer explícitos los valores ausentes con Option<T> y extraer Some de forma segura. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Option e if let a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-modules-use": {
       "title": "Módulos y use",
       "concept": "Módulos y use se centra en esta habilidad de Rust: controlar espacio de nombres, privacidad y rutas locales con mod, pub y use. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: controlar espacio de nombres, privacidad y rutas locales con mod, pub y use. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Módulos y use. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: controlar espacio de nombres, privacidad y rutas locales con mod, pub y use.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Módulos y use."
+        "Cambiar solo la línea final de salida sin dejar la regla de Módulos y use en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Módulos y use.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Módulos y use se centra en esta habilidad de Rust: controlar espacio de nombres, privacidad y rutas locales con mod, pub y use."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: controlar espacio de nombres, privacidad y rutas locales con mod, pub y use?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Módulos y use antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Módulos y use debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: controlar espacio de nombres, privacidad y rutas locales con mod, pub y use. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Módulos y use a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-input": {
       "title": "Parseo de entrada",
       "concept": "Parseo de entrada se centra en esta habilidad de Rust: leer stdin una vez, dividir texto en tokens y convertirlos a valores tipados. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: leer stdin una vez, dividir texto en tokens y convertirlos a valores tipados. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Parseo de entrada. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: leer stdin una vez, dividir texto en tokens y convertirlos a valores tipados.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Parseo de entrada."
+        "Cambiar solo la línea final de salida sin dejar la regla de Parseo de entrada en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Parseo de entrada.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Parseo de entrada se centra en esta habilidad de Rust: leer stdin una vez, dividir texto en tokens y convertirlos a valores tipados."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: leer stdin una vez, dividir texto en tokens y convertirlos a valores tipados?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Parseo de entrada antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Parseo de entrada debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: leer stdin una vez, dividir texto en tokens y convertirlos a valores tipados. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Parseo de entrada a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-vec-hashmap": {
       "title": "Vec y HashMap",
       "concept": "Vec y HashMap se centra en esta habilidad de Rust: elegir Vec para datos ordenados y la API entry de HashMap para conteo y búsqueda por clave. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: elegir Vec para datos ordenados y la API entry de HashMap para conteo y búsqueda por clave. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Vec y HashMap. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: elegir Vec para datos ordenados y la API entry de HashMap para conteo y búsqueda por clave.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Vec y HashMap."
+        "Cambiar solo la línea final de salida sin dejar la regla de Vec y HashMap en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Vec y HashMap.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Vec y HashMap se centra en esta habilidad de Rust: elegir Vec para datos ordenados y la API entry de HashMap para conteo y búsqueda por clave."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: elegir Vec para datos ordenados y la API entry de HashMap para conteo y búsqueda por clave?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Vec y HashMap antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Vec y HashMap debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: elegir Vec para datos ordenados y la API entry de HashMap para conteo y búsqueda por clave. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Vec y HashMap a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-borrowing-slices": {
       "title": "Préstamos y slices",
       "concept": "Préstamos y slices se centra en esta habilidad de Rust: pasar slices prestados para que las funciones lean datos sin tomar propiedad. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: pasar slices prestados para que las funciones lean datos sin tomar propiedad. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Préstamos y slices. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: pasar slices prestados para que las funciones lean datos sin tomar propiedad.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Préstamos y slices."
+        "Cambiar solo la línea final de salida sin dejar la regla de Préstamos y slices en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Préstamos y slices.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Préstamos y slices se centra en esta habilidad de Rust: pasar slices prestados para que las funciones lean datos sin tomar propiedad."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: pasar slices prestados para que las funciones lean datos sin tomar propiedad?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Préstamos y slices antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Préstamos y slices debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: pasar slices prestados para que las funciones lean datos sin tomar propiedad. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Préstamos y slices a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-result": {
       "title": "Result y ?",
       "concept": "Result y ? se centra en esta habilidad de Rust: devolver errores recuperables con Result<T, E> y propagarlos con el operador ?. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: devolver errores recuperables con Result<T, E> y propagarlos con el operador ?. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Result y ?. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: devolver errores recuperables con Result<T, E> y propagarlos con el operador ?.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Result y ?."
+        "Cambiar solo la línea final de salida sin dejar la regla de Result y ? en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Result y ?.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Result y ?"
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: devolver errores recuperables con Result<T, E> y propagarlos con el operador ??",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Result y ? antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Result y ? debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: devolver errores recuperables con Result<T, E> y propagarlos con el operador ?. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Result y ? a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-ownership": {
       "title": "Propiedad y préstamos",
       "concept": "Propiedad y préstamos se centra en esta habilidad de Rust: seguir cuándo un String se mueve, cuándo vuelve y cuándo una referencia solo lo presta. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: seguir cuándo un String se mueve, cuándo vuelve y cuándo una referencia solo lo presta. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Propiedad y préstamos. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: seguir cuándo un String se mueve, cuándo vuelve y cuándo una referencia solo lo presta.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Propiedad y préstamos."
+        "Cambiar solo la línea final de salida sin dejar la regla de Propiedad y préstamos en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Propiedad y préstamos.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Propiedad y préstamos se centra en esta habilidad de Rust: seguir cuándo un String se mueve, cuándo vuelve y cuándo una referencia solo lo presta."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: seguir cuándo un String se mueve, cuándo vuelve y cuándo una referencia solo lo presta?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Propiedad y préstamos antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Propiedad y préstamos debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: seguir cuándo un String se mueve, cuándo vuelve y cuándo una referencia solo lo presta. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Propiedad y préstamos a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-iterators": {
       "title": "Iteradores y closures",
       "concept": "Iteradores y closures se centra en esta habilidad de Rust: componer adaptadores iteradores perezosos con closures y consumirlos con sum o collect. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: componer adaptadores iteradores perezosos con closures y consumirlos con sum o collect. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Iteradores y closures. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: componer adaptadores iteradores perezosos con closures y consumirlos con sum o collect.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Iteradores y closures."
+        "Cambiar solo la línea final de salida sin dejar la regla de Iteradores y closures en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Iteradores y closures.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Iteradores y closures se centra en esta habilidad de Rust: componer adaptadores iteradores perezosos con closures y consumirlos con sum o collect."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: componer adaptadores iteradores perezosos con closures y consumirlos con sum o collect?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Iteradores y closures antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Iteradores y closures debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: componer adaptadores iteradores perezosos con closures y consumirlos con sum o collect. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Iteradores y closures a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-generics": {
       "title": "Genéricos",
       "concept": "Genéricos se centra en esta habilidad de Rust: escribir una función sobre T manteniendo chequeo de tipos concretos en compilación. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: escribir una función sobre T manteniendo chequeo de tipos concretos en compilación. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Genéricos. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: escribir una función sobre T manteniendo chequeo de tipos concretos en compilación.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Genéricos."
+        "Cambiar solo la línea final de salida sin dejar la regla de Genéricos en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Genéricos.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Genéricos se centra en esta habilidad de Rust: escribir una función sobre T manteniendo chequeo de tipos concretos en compilación."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: escribir una función sobre T manteniendo chequeo de tipos concretos en compilación?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Genéricos antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Genéricos debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: escribir una función sobre T manteniendo chequeo de tipos concretos en compilación. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Genéricos a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-traits": {
       "title": "Traits y bounds",
       "concept": "Traits y bounds se centra en esta habilidad de Rust: describir comportamiento requerido con traits y usar bounds para invocarlo genéricamente. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: describir comportamiento requerido con traits y usar bounds para invocarlo genéricamente. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Traits y bounds. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: describir comportamiento requerido con traits y usar bounds para invocarlo genéricamente.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Traits y bounds."
+        "Cambiar solo la línea final de salida sin dejar la regla de Traits y bounds en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Traits y bounds.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Traits y bounds se centra en esta habilidad de Rust: describir comportamiento requerido con traits y usar bounds para invocarlo genéricamente."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: describir comportamiento requerido con traits y usar bounds para invocarlo genéricamente?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Traits y bounds antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Traits y bounds debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: describir comportamiento requerido con traits y usar bounds para invocarlo genéricamente. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Traits y bounds a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-lifetimes": {
       "title": "Lifetimes",
       "concept": "Lifetimes se centra en esta habilidad de Rust: anotar relaciones entre entradas y salidas prestadas sin alargar el almacenamiento. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: anotar relaciones entre entradas y salidas prestadas sin alargar el almacenamiento. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Lifetimes. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: anotar relaciones entre entradas y salidas prestadas sin alargar el almacenamiento.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Lifetimes."
+        "Cambiar solo la línea final de salida sin dejar la regla de Lifetimes en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Lifetimes.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Lifetimes se centra en esta habilidad de Rust: anotar relaciones entre entradas y salidas prestadas sin alargar el almacenamiento."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: anotar relaciones entre entradas y salidas prestadas sin alargar el almacenamiento?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Lifetimes antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Lifetimes debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: anotar relaciones entre entradas y salidas prestadas sin alargar el almacenamiento. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Lifetimes a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-traits-lifetimes": {
       "title": "Objetos trait y despacho dyn",
       "concept": "Objetos trait y despacho dyn se centra en esta habilidad de Rust: usar &dyn Trait cuando la flexibilidad del despacho en tiempo de ejecución compensa frente a un tipo genérico. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: usar &dyn Trait cuando la flexibilidad del despacho en tiempo de ejecución compensa frente a un tipo genérico. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Objetos trait y despacho dyn. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: usar &dyn Trait cuando la flexibilidad del despacho en tiempo de ejecución compensa frente a un tipo genérico.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Objetos trait y despacho dyn."
+        "Cambiar solo la línea final de salida sin dejar la regla de Objetos trait y despacho dyn en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Objetos trait y despacho dyn.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Objetos trait y despacho dyn se centra en esta habilidad de Rust: usar &dyn Trait cuando la flexibilidad del despacho en tiempo de ejecución compensa frente a un tipo genérico."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: usar &dyn Trait cuando la flexibilidad del despacho en tiempo de ejecución compensa frente a un tipo genérico?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Objetos trait y despacho dyn antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Objetos trait y despacho dyn debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: usar &dyn Trait cuando la flexibilidad del despacho en tiempo de ejecución compensa frente a un tipo genérico. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Objetos trait y despacho dyn a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-testing": {
       "title": "Pruebas y aserciones",
       "concept": "Pruebas y aserciones se centra en esta habilidad de Rust: separar lógica pura de main para que funciones #[test] y macros assert verifiquen comportamiento. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: separar lógica pura de main para que funciones #[test] y macros assert verifiquen comportamiento. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Pruebas y aserciones. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: separar lógica pura de main para que funciones #[test] y macros assert verifiquen comportamiento.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Pruebas y aserciones."
+        "Cambiar solo la línea final de salida sin dejar la regla de Pruebas y aserciones en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Pruebas y aserciones.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Pruebas y aserciones se centra en esta habilidad de Rust: separar lógica pura de main para que funciones #[test] y macros assert verifiquen comportamiento."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: separar lógica pura de main para que funciones #[test] y macros assert verifiquen comportamiento?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Pruebas y aserciones antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Pruebas y aserciones debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: separar lógica pura de main para que funciones #[test] y macros assert verifiquen comportamiento. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Pruebas y aserciones a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-smart-pointers": {
       "title": "Smart pointers",
       "concept": "Smart pointers se centra en esta habilidad de Rust: usar Box<T> para poseer datos en heap y trabajar con comportamiento tipo puntero mediante deref. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: usar Box<T> para poseer datos en heap y trabajar con comportamiento tipo puntero mediante deref. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Smart pointers. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: usar Box<T> para poseer datos en heap y trabajar con comportamiento tipo puntero mediante deref.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Smart pointers."
+        "Cambiar solo la línea final de salida sin dejar la regla de Smart pointers en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Smart pointers.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Smart pointers se centra en esta habilidad de Rust: usar Box<T> para poseer datos en heap y trabajar con comportamiento tipo puntero mediante deref."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: usar Box<T> para poseer datos en heap y trabajar con comportamiento tipo puntero mediante deref?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Smart pointers antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Smart pointers debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: usar Box<T> para poseer datos en heap y trabajar con comportamiento tipo puntero mediante deref. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Smart pointers a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-interior-mutability": {
       "title": "Mutabilidad interior",
       "concept": "Mutabilidad interior se centra en esta habilidad de Rust: usar RefCell<T> cuando el chequeo de préstamos en ejecución es el modelo correcto más simple. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: usar RefCell<T> cuando el chequeo de préstamos en ejecución es el modelo correcto más simple. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Mutabilidad interior. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: usar RefCell<T> cuando el chequeo de préstamos en ejecución es el modelo correcto más simple.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Mutabilidad interior."
+        "Cambiar solo la línea final de salida sin dejar la regla de Mutabilidad interior en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Mutabilidad interior.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Mutabilidad interior se centra en esta habilidad de Rust: usar RefCell<T> cuando el chequeo de préstamos en ejecución es el modelo correcto más simple."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: usar RefCell<T> cuando el chequeo de préstamos en ejecución es el modelo correcto más simple?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Mutabilidad interior antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Mutabilidad interior debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: usar RefCell<T> cuando el chequeo de préstamos en ejecución es el modelo correcto más simple. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Mutabilidad interior a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-concurrency": {
       "title": "Hilos y join",
       "concept": "Hilos y join se centra en esta habilidad de Rust: mover trabajo a thread::spawn y usar join para recuperar con seguridad el resultado del worker. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: mover trabajo a thread::spawn y usar join para recuperar con seguridad el resultado del worker. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Hilos y join. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: mover trabajo a thread::spawn y usar join para recuperar con seguridad el resultado del worker.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Hilos y join."
+        "Cambiar solo la línea final de salida sin dejar la regla de Hilos y join en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Hilos y join.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Hilos y join se centra en esta habilidad de Rust: mover trabajo a thread::spawn y usar join para recuperar con seguridad el resultado del worker."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: mover trabajo a thread::spawn y usar join para recuperar con seguridad el resultado del worker?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Hilos y join antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Hilos y join debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: mover trabajo a thread::spawn y usar join para recuperar con seguridad el resultado del worker. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Hilos y join a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-shared-state": {
       "title": "Estado compartido con Arc y Mutex",
       "concept": "Estado compartido con Arc y Mutex se centra en esta habilidad de Rust: combinar Arc<T> para propiedad compartida con Mutex<T> para mutación de a una vez. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: combinar Arc<T> para propiedad compartida con Mutex<T> para mutación de a una vez. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Estado compartido con Arc y Mutex. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: combinar Arc<T> para propiedad compartida con Mutex<T> para mutación de a una vez.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Estado compartido con Arc y Mutex."
+        "Cambiar solo la línea final de salida sin dejar la regla de Estado compartido con Arc y Mutex en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Estado compartido con Arc y Mutex.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Estado compartido con Arc y Mutex se centra en esta habilidad de Rust: combinar Arc<T> para propiedad compartida con Mutex<T> para mutación de a una vez."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: combinar Arc<T> para propiedad compartida con Mutex<T> para mutación de a una vez?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Estado compartido con Arc y Mutex antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Estado compartido con Arc y Mutex debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: combinar Arc<T> para propiedad compartida con Mutex<T> para mutación de a una vez. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Estado compartido con Arc y Mutex a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-async-await": {
       "title": "Async y await",
       "concept": "Async y await se centra en esta habilidad de Rust: reconocer que async crea un Future y que ejecutarlo requiere un executor o runtime. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: reconocer que async crea un Future y que ejecutarlo requiere un executor o runtime. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Async y await. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: reconocer que async crea un Future y que ejecutarlo requiere un executor o runtime.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Async y await."
+        "Cambiar solo la línea final de salida sin dejar la regla de Async y await en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Async y await.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Async y await se centra en esta habilidad de Rust: reconocer que async crea un Future y que ejecutarlo requiere un executor o runtime."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: reconocer que async crea un Future y que ejecutarlo requiere un executor o runtime?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Async y await antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Async y await debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: reconocer que async crea un Future y que ejecutarlo requiere un executor o runtime. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Async y await a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-macros": {
       "title": "macro_rules!",
       "concept": "macro_rules! se centra en esta habilidad de Rust: emparejar patrones de tokens con macro_rules! y expandir código Rust repetido en compilación. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: emparejar patrones de tokens con macro_rules! y expandir código Rust repetido en compilación. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de macro_rules!. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: emparejar patrones de tokens con macro_rules! y expandir código Rust repetido en compilación.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en macro_rules!."
+        "Cambiar solo la línea final de salida sin dejar la regla de macro_rules! en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de macro_rules!.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: macro_rules!"
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: emparejar patrones de tokens con macro_rules! y expandir código Rust repetido en compilación?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica macro_rules! antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de macro_rules! debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: emparejar patrones de tokens con macro_rules! y expandir código Rust repetido en compilación. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando macro_rules! a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-unsafe": {
       "title": "Rust unsafe",
       "concept": "Rust unsafe se centra en esta habilidad de Rust: poner operaciones no verificables en bloques unsafe manteniendo la API externa lo más segura posible. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: poner operaciones no verificables en bloques unsafe manteniendo la API externa lo más segura posible. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Rust unsafe. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: poner operaciones no verificables en bloques unsafe manteniendo la API externa lo más segura posible.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Rust unsafe."
+        "Cambiar solo la línea final de salida sin dejar la regla de Rust unsafe en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Rust unsafe.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Rust unsafe se centra en esta habilidad de Rust: poner operaciones no verificables en bloques unsafe manteniendo la API externa lo más segura posible."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: poner operaciones no verificables en bloques unsafe manteniendo la API externa lo más segura posible?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Rust unsafe antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Rust unsafe debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: poner operaciones no verificables en bloques unsafe manteniendo la API externa lo más segura posible. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Rust unsafe a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "rust-cargo-workspaces": {
       "title": "Paquetes Cargo y workspaces",
       "concept": "Paquetes Cargo y workspaces se centra en esta habilidad de Rust: entender cuándo la estructura de paquetes Cargo y cargo check --workspace importan más allá de un archivo. Apréndela siguiendo el valor tipado en el ejemplo, desde su creación hasta las decisiones de movimiento o préstamo y la expresión que llega a stdout.",
-      "worked_example": "El ejemplo convierte esa habilidad en un programa Rust completo que compila: entender cuándo la estructura de paquetes Cargo y cargo check --workspace importan más allá de un archivo. Lee primero la firma o la definición del item y sigue el valor hasta println! para unir sintaxis y comportamiento.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Paquetes Cargo y workspaces. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Escribir directamente la salida final en vez de ejercitar esta habilidad: entender cuándo la estructura de paquetes Cargo y cargo check --workspace importan más allá de un archivo.",
-        "Borrar la construcción de Rust que esta lección quiere practicar solo para callar un error del compilador.",
-        "Ignorar el límite de tipo, propiedad, lifetime, ruta o hilo que aparece en Paquetes Cargo y workspaces."
+        "Cambiar solo la línea final de salida sin dejar la regla de Paquetes Cargo y workspaces en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Paquetes Cargo y workspaces.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Paquetes Cargo y workspaces se centra en esta habilidad de Rust: entender cuándo la estructura de paquetes Cargo y cargo check --workspace importan más allá de un archivo."
       ],
       "self_check": [
-        "Qué expresión o item del ejemplo demuestra esta habilidad: entender cuándo la estructura de paquetes Cargo y cargo check --workspace importan más allá de un archivo?",
-        "Qué tipo, préstamo, lifetime, ruta de módulo o frontera de hilo debe ser válido antes de imprimir stdout?",
-        "Si cambia el valor de entrada, qué línea debería cambiar y cuál debería permanecer estable?"
+        "¿Qué expresión del ejemplo aplica Paquetes Cargo y workspaces antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Paquetes Cargo y workspaces debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa el ejercicio alrededor de esta habilidad: entender cuándo la estructura de paquetes Cargo y cargo check --workspace importan más allá de un archivo. Mantén la construcción Rust prevista; no esquives la lección imprimiendo directamente la salida esperada."
+      "exercise_prompt": "Completa el TODO aplicando Paquetes Cargo y workspaces a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     }
   }
 }

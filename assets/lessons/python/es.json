@@ -6,377 +6,377 @@
     "py-output": {
       "title": "print y stdout",
       "concept": "`print` es el punto donde un cálculo se convierte en salida visible para el juez. Convierte sus argumentos a texto, separa argumentos con espacios y añade salto de línea por defecto, así que stdout debe coincidir exactamente.",
-      "worked_example": "El f-string usa `name` y `score` para formar `Ada:7`; los nombres de variables y las comillas no aparecen en stdout.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de print y stdout. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Dejar un print de depuración en la salida final.",
-        "Imprimir la representación de una lista cuando se espera texto plano.",
-        "Usar `return` en el nivel superior en vez de imprimir la respuesta."
+        "Cambiar solo la línea final de salida sin dejar la regla de print y stdout en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de print y stdout.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: `print` es el punto donde un cálculo se convierte en salida visible para el juez."
       ],
       "self_check": [
-        "¿Qué añade `print` al final por defecto?",
-        "¿Qué compara el juez si hay una línea extra?"
+        "¿Qué expresión del ejemplo aplica print y stdout antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de print y stdout debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Usa `name` y `score` para imprimir solamente `Ada:7`."
+      "exercise_prompt": "Completa el TODO aplicando print y stdout a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-variables": {
       "title": "Variables",
       "concept": "Una variable es un nombre enlazado a un objeto. Asignar con `=` no compara igualdad; cambia qué objeto leerá ese nombre a partir de ese punto.",
-      "worked_example": "`count = count + 2` lee el valor anterior, crea un entero nuevo y vuelve a enlazar `count` antes de imprimir `3`.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Variables. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Leer `=` como comparación matemática.",
-        "Reutilizar el mismo nombre corto para significados distintos.",
-        "Esperar que un reenlace modifique automáticamente objetos anteriores."
+        "Cambiar solo la línea final de salida sin dejar la regla de Variables en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Variables.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Una variable es un nombre enlazado a un objeto."
       ],
       "self_check": [
-        "Después de `x = 1; x = x + 2`, ¿qué vale `x`?",
-        "¿Qué valor temporal merece un nombre claro?"
+        "¿Qué expresión del ejemplo aplica Variables antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Variables debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Reenlaza `word` con el texto esperado e imprime ese nombre."
+      "exercise_prompt": "Completa el TODO aplicando Variables a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-numbers": {
       "title": "Números",
       "concept": "Los enteros de Python no tienen límite práctico de tamaño, y los operadores numéricos expresan ideas distintas. `/` produce float, `//` produce cociente entero, `%` produce resto y `**` potencia.",
-      "worked_example": "`7 // 2` calcula el cociente `3`; `7 % 2` calcula el resto `1`, que juntos describen la división entera.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Números. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Usar `/` cuando la respuesta pide división entera.",
-        "Tratar `%` como porcentaje en vez de resto.",
-        "Mezclar una salida float en un formato esperado de enteros."
+        "Cambiar solo la línea final de salida sin dejar la regla de Números en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Números.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Los enteros de Python no tienen límite práctico de tamaño, y los operadores numéricos expresan ideas distintas."
       ],
       "self_check": [
-        "¿Qué producen `7 // 2` y `7 % 2`?",
-        "¿Por qué `round` no reemplaza a `//`?"
+        "¿Qué expresión del ejemplo aplica Números antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Números debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Cambia la aritmética para imprimir el cociente y el resto como `3:1`."
+      "exercise_prompt": "Completa el TODO aplicando Números a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-strings": {
       "title": "Cadenas",
       "concept": "Una cadena es una secuencia inmutable de caracteres Unicode. El índice lee un carácter y el slice lee un rango semiabierto sin cambiar la cadena original.",
-      "worked_example": "`text[1:4]` lee los índices 1, 2 y 3 de `python`; el índice final 4 marca el límite y no se incluye.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Cadenas. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Incluir mentalmente el índice final del slice.",
-        "Intentar asignar en `text[0]` aunque la cadena sea inmutable.",
-        "Contar posiciones desde 1 en vez de 0."
+        "Cambiar solo la línea final de salida sin dejar la regla de Cadenas en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Cadenas.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Una cadena es una secuencia inmutable de caracteres Unicode."
       ],
       "self_check": [
-        "¿Qué lee `'code'[1]`?",
-        "¿Por qué `'xokx'[1:3]` tiene dos caracteres?"
+        "¿Qué expresión del ejemplo aplica Cadenas antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Cadenas debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Usa un slice para imprimir solo `ok`, sin los marcadores alrededor."
+      "exercise_prompt": "Completa el TODO aplicando Cadenas a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-control-flow": {
       "title": "Flujo de control",
       "concept": "`if` elige un bloque, `for` consume un iterable y `while` repite mientras cambie una condición. La indentación es sintaxis, por lo que una línea movida cambia el flujo real.",
-      "worked_example": "El código visita 1, 2 y 3, suma solo los impares y emite el total después de terminar el bucle.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Flujo de control. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Indentar la acumulación fuera del bucle.",
-        "Esperar que `range(n)` incluya `n`.",
-        "Crear un `while` cuya condición nunca cambia."
+        "Cambiar solo la línea final de salida sin dejar la regla de Flujo de control en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Flujo de control.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: `if` elige un bloque, `for` consume un iterable y `while` repite mientras cambie una condición."
       ],
       "self_check": [
-        "¿Qué líneas se ejecutan una vez por iteración?",
-        "¿Qué valores genera `range(1, 4)`?"
+        "¿Qué expresión del ejemplo aplica Flujo de control antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Flujo de control debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Edita el cuerpo del bucle para sumar solo los impares."
+      "exercise_prompt": "Completa el TODO aplicando Flujo de control a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-functions": {
       "title": "Funciones",
       "concept": "`def` crea un objeto invocable. Los parámetros reciben argumentos y `return` entrega un valor al llamador; imprimir dentro de la función no es lo mismo que devolver el cálculo.",
-      "worked_example": "`area(3, 4)` pasa dos argumentos, la función los multiplica y el llamador imprime el `12` devuelto.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Funciones. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Definir una función y olvidar llamarla.",
-        "Imprimir cuando el llamador necesita un valor devuelto.",
-        "Retornar demasiado pronto dentro de un bucle."
+        "Cambiar solo la línea final de salida sin dejar la regla de Funciones en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Funciones.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: `def` crea un objeto invocable."
       ],
       "self_check": [
-        "¿Qué devuelve una función que llega al final sin `return`?",
-        "¿Dónde debería estar el print final?"
+        "¿Qué expresión del ejemplo aplica Funciones antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Funciones debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Haz que la función devuelva área, no perímetro."
+      "exercise_prompt": "Completa el TODO aplicando Funciones a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-input": {
       "title": "Lectura de entrada",
       "concept": "La entrada de concursos llega como texto en stdin. El patrón común es leer una vez, separar tokens, convertir tipos y resolver después con valores normales.",
-      "worked_example": "`sys.stdin.read().split()` produce tokens de texto; aplicar `int` a cada token permite sumar números reales, no cadenas.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Lectura de entrada. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Usar muchas llamadas `input()` cuando una lectura completa es más simple.",
-        "Olvidar que `split()` devuelve cadenas.",
-        "Mezclar parsing con el algoritmo hasta hacerlo difícil de probar."
+        "Cambiar solo la línea final de salida sin dejar la regla de Lectura de entrada en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Lectura de entrada.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: La entrada de concursos llega como texto en stdin."
       ],
       "self_check": [
-        "¿Qué tipo devuelve `sys.stdin.read()`?",
-        "¿Dónde manejarías una entrada vacía?"
+        "¿Qué expresión del ejemplo aplica Lectura de entrada antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Lectura de entrada debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Convierte todos los enteros de stdin y muestra su suma."
+      "exercise_prompt": "Completa el TODO aplicando Lectura de entrada a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-lists-dicts": {
       "title": "Listas y diccionarios",
       "concept": "Las listas guardan valores en orden y los diccionarios conectan claves con valores. En problemas reales, esa diferencia decide si conviene recorrer posiciones o buscar directamente por nombre, letra o identificador.",
-      "worked_example": "El acceso `scores['Ada']` obtiene solo la lista de Ada y `sum` calcula ese total sin revisar otros nombres.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Listas y diccionarios. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Usar un índice de lista cuando los datos tienen una clave clara.",
-        "Consultar una clave sin decidir qué pasa si falta.",
-        "Imprimir la longitud cuando el problema pide la suma."
+        "Cambiar solo la línea final de salida sin dejar la regla de Listas y diccionarios en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Listas y diccionarios.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Las listas guardan valores en orden y los diccionarios conectan claves con valores."
       ],
       "self_check": [
-        "¿Cuándo conviene una clave de diccionario en vez de una posición?",
-        "¿Qué valor devuelve `scores['Ada']`?"
+        "¿Qué expresión del ejemplo aplica Listas y diccionarios antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Listas y diccionarios debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Usa la lista guardada bajo `Ada` para imprimir la suma sin escribir `5` directamente."
+      "exercise_prompt": "Completa el TODO aplicando Listas y diccionarios a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-tuples-sets": {
       "title": "Tuplas y conjuntos",
       "concept": "Una tupla agrupa valores en posiciones fijas; un conjunto guarda miembros únicos y permite pruebas de pertenencia rápidas. No uses conjunto si el orden de salida importa.",
-      "worked_example": "La tupla `('o', 'k')` conserva el orden para `join`, mientras `set(pair)` confirma que hay dos letras distintas.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Tuplas y conjuntos. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Usar un conjunto cuando el orden de salida importa.",
-        "Intentar modificar una posición de una tupla.",
-        "Creer que insertar duplicados aumenta el tamaño del conjunto."
+        "Cambiar solo la línea final de salida sin dejar la regla de Tuplas y conjuntos en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Tuplas y conjuntos.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Una tupla agrupa valores en posiciones fijas; un conjunto guarda miembros únicos y permite pruebas de pertenencia rápidas."
       ],
       "self_check": [
-        "¿Qué parte necesita el orden de la tupla?",
-        "¿Qué vale `len(set(['a', 'a']))`?"
+        "¿Qué expresión del ejemplo aplica Tuplas y conjuntos antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Tuplas y conjuntos debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Construye el conjunto desde la tupla e imprime el texto unido y el conteo único."
+      "exercise_prompt": "Completa el TODO aplicando Tuplas y conjuntos a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-comprehensions": {
       "title": "Comprensiones",
       "concept": "Una comprensión combina expresión de salida, bucle y filtros opcionales para construir una colección. Sirve para mapas y filtros simples que se leen de izquierda a derecha.",
-      "worked_example": "`[n * n for n in nums if n % 2 == 0]` conserva pares, los eleva al cuadrado y deja una lista lista para sumar.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Comprensiones. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Meter demasiadas condiciones en una sola comprensión.",
-        "Olvidar que la expresión de salida va antes del `for`.",
-        "Usar comprensión solo por efectos secundarios como imprimir."
+        "Cambiar solo la línea final de salida sin dejar la regla de Comprensiones en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Comprensiones.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Una comprensión combina expresión de salida, bucle y filtros opcionales para construir una colección."
       ],
       "self_check": [
-        "¿Qué parte elige el valor producido?",
-        "¿Qué condición elimina la letra no deseada?"
+        "¿Qué expresión del ejemplo aplica Comprensiones antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Comprensiones debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Ajusta el filtro para conservar las letras que forman `ok`."
+      "exercise_prompt": "Completa el TODO aplicando Comprensiones a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-errors": {
       "title": "Excepciones",
       "concept": "Las excepciones separan el camino normal de un fallo recuperable. Mantén pequeño el `try`, captura una excepción concreta y asigna una recuperación que tenga sentido.",
-      "worked_example": "El código intenta convertir texto a entero y usa `except ValueError` solo para esa falla de conversión.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Excepciones. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Atrapar todo con `except:` y ocultar errores reales.",
-        "Poner código no relacionado dentro del `try`.",
-        "Usar excepciones para ramas normales que caben en un `if`."
+        "Cambiar solo la línea final de salida sin dejar la regla de Excepciones en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Excepciones.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Las excepciones separan el camino normal de un fallo recuperable."
       ],
       "self_check": [
-        "¿Por qué `except ValueError` es más claro que un catch amplio?",
-        "¿Qué valor debe usarse después del fallo?"
+        "¿Qué expresión del ejemplo aplica Excepciones antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Excepciones debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Recupérate del fallo de conversión con el valor que permite imprimir `12`."
+      "exercise_prompt": "Completa el TODO aplicando Excepciones a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-files-context": {
       "title": "Archivos y context managers",
       "concept": "`with` entra en un contexto administrado y ejecuta la limpieza al salir. Archivos y utilidades de contextlib usan este patrón para cerrar recursos aunque el bloque termine antes.",
-      "worked_example": "`StringIO` actúa como un archivo pequeño; leer dentro del bloque guarda `ok` antes de que el manejador se cierre.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Archivos y context managers. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Leer un manejador después de que el contexto lo cerró.",
-        "Abrir archivos sin `with` y olvidar cerrarlos.",
-        "Ocultar errores de limpieza con una captura demasiado amplia."
+        "Cambiar solo la línea final de salida sin dejar la regla de Archivos y context managers en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Archivos y context managers.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: `with` entra en un contexto administrado y ejecuta la limpieza al salir."
       ],
       "self_check": [
-        "¿Qué línea debe ejecutarse antes del cierre?",
-        "¿Qué limpieza aporta normalmente `with open(...)`?"
+        "¿Qué expresión del ejemplo aplica Archivos y context managers antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Archivos y context managers debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Lee dentro del bloque `with` y luego imprime el texto guardado."
+      "exercise_prompt": "Completa el TODO aplicando Archivos y context managers a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-modules-imports": {
       "title": "Módulos e import",
       "concept": "Un módulo agrupa código reutilizable bajo un espacio de nombres. `import math` hace visible la biblioteca estándar y PEP 8 recomienda ubicar imports arriba para mostrar dependencias temprano.",
-      "worked_example": "`math.ceil(2.1)` llama la función de redondeo hacia arriba del módulo importado y produce `3`.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Módulos e import. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Reescribir una utilidad que ya está en la biblioteca estándar.",
-        "Sobrescribir el nombre de un módulo importado con una variable.",
-        "Esconder imports dentro de código sin necesidad."
+        "Cambiar solo la línea final de salida sin dejar la regla de Módulos e import en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Módulos e import.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Un módulo agrupa código reutilizable bajo un espacio de nombres."
       ],
       "self_check": [
-        "¿Qué nombre queda disponible tras `import math`?",
-        "¿Por qué PEP 8 coloca imports cerca del inicio?"
+        "¿Qué expresión del ejemplo aplica Módulos e import antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Módulos e import debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Usa el módulo `math` importado para redondear hacia arriba."
+      "exercise_prompt": "Completa el TODO aplicando Módulos e import a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-dataclasses": {
       "title": "Dataclasses",
       "concept": "`@dataclass` genera métodos rutinarios para clases que principalmente contienen datos. Mantiene campos, type hints y construcción juntos sin escribir boilerplate manual.",
-      "worked_example": "`Point(2, 3)` usa el constructor generado y permite leer `x` e `y` como atributos normales.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Dataclasses. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Usar dataclass antes de diseñar comportamiento importante.",
-        "Olvidar el `@` del decorador.",
-        "Poner valores mutables por defecto sin factory adecuada."
+        "Cambiar solo la línea final de salida sin dejar la regla de Dataclasses en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Dataclasses.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: `@dataclass` genera métodos rutinarios para clases que principalmente contienen datos."
       ],
       "self_check": [
-        "¿Qué constructor se genera para `Point`?",
-        "¿Qué campos hay que leer para sumar coordenadas?"
+        "¿Qué expresión del ejemplo aplica Dataclasses antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Dataclasses debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Lee ambos campos para imprimir la suma del punto."
+      "exercise_prompt": "Completa el TODO aplicando Dataclasses a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-typing": {
       "title": "Type hints",
       "concept": "Los type hints describen formas esperadas para lectores, editores y verificadores. Python sigue ejecutando valores dinámicamente, así que el cuerpo debe cumplir el contrato anotado.",
-      "worked_example": "`Iterable[int]` comunica que la función acepta cualquier iterable de enteros y devuelve un `int` calculado con `sum`.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Type hints. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Creer que las anotaciones validan todo en runtime.",
-        "Escribir tipos complejos antes de estabilizar la forma de datos.",
-        "Devolver algo que contradice la anotación."
+        "Cambiar solo la línea final de salida sin dejar la regla de Type hints en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Type hints.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Los type hints describen formas esperadas para lectores, editores y verificadores."
       ],
       "self_check": [
-        "¿Qué promete `Iterable[int]` sobre el argumento?",
-        "¿Qué línea prueba que se devuelve un total entero?"
+        "¿Qué expresión del ejemplo aplica Type hints antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Type hints debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Haz que la función anotada devuelva la suma del iterable recibido."
+      "exercise_prompt": "Completa el TODO aplicando Type hints a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-generators": {
       "title": "Iteradores y generadores",
       "concept": "Un iterador produce valores uno a uno. Una función generadora usa `yield`, devuelve primero un objeto generador y ejecuta su cuerpo cuando el llamador pide el siguiente valor.",
-      "worked_example": "`next(countdown(3))` inicia el generador, llega al primer `yield` y recibe `3` sin construir una lista.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Iteradores y generadores. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Esperar que el cuerpo corra al llamar la función generadora.",
-        "Olvidar que `next` puede lanzar `StopIteration`.",
-        "Construir una lista grande cuando bastaba un flujo perezoso."
+        "Cambiar solo la línea final de salida sin dejar la regla de Iteradores y generadores en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Iteradores y generadores.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Un iterador produce valores uno a uno."
       ],
       "self_check": [
-        "¿Cuándo se ejecuta realmente `words()`?",
-        "¿Cuál debe ser el primer valor yielded?"
+        "¿Qué expresión del ejemplo aplica Iteradores y generadores antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Iteradores y generadores debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Haz que el primer `yield` produzca `ok`. No fijes la respuesta; conserva el patrón practicado."
+      "exercise_prompt": "Completa el TODO aplicando Iteradores y generadores a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-lambdas-closures": {
       "title": "Lambdas y closures",
       "concept": "`lambda` crea una función de una expresión. Si esa función usa un nombre de una función externa, forma un closure y recuerda ese valor después de que la llamada externa termina.",
-      "worked_example": "`make_adder(2)` devuelve una lambda que recuerda `delta = 2`; al llamarla con `3` imprime `5`.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Lambdas y closures. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Poner lógica de varios pasos dentro de lambda.",
-        "Esperar que un closure copie automáticamente un valor antiguo de una variable cambiante.",
-        "Olvidar devolver la función interna."
+        "Cambiar solo la línea final de salida sin dejar la regla de Lambdas y closures en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Lambdas y closures.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: `lambda` crea una función de una expresión."
       ],
       "self_check": [
-        "¿Qué valor recuerda la lambda de `make_suffix`?",
-        "¿Por qué `make_suffix('ok')` devuelve una función?"
+        "¿Qué expresión del ejemplo aplica Lambdas y closures antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Lambdas y closures debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Devuelve una lambda que añada el sufijo capturado."
+      "exercise_prompt": "Completa el TODO aplicando Lambdas y closures a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-decorators": {
       "title": "Decoradores",
       "concept": "Un decorador se ejecuta cuando se define la función. Recibe el objeto función original y devuelve el objeto que quedará enlazado al nombre de la función.",
-      "worked_example": "El decorador identidad devuelve `fn` sin cambios, por eso `word()` sigue llamando la función original y produce `ok`.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Decoradores. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Devolver `fn()` en vez del objeto función.",
-        "Creer que el decorador se ejecuta solo al llamar la función.",
-        "Añadir decorador cuando una llamada auxiliar sería más legible."
+        "Cambiar solo la línea final de salida sin dejar la regla de Decoradores en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Decoradores.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: Un decorador se ejecuta cuando se define la función."
       ],
       "self_check": [
-        "¿Qué argumento recibe `identity`?",
-        "¿Qué debe devolverse para que `word` siga siendo invocable?"
+        "¿Qué expresión del ejemplo aplica Decoradores antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Decoradores debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Devuelve la función original desde el decorador."
+      "exercise_prompt": "Completa el TODO aplicando Decoradores a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-sorting-keys": {
       "title": "Ordenación y funciones key",
       "concept": "`sorted` crea una lista ordenada nueva. Una función `key` extrae el valor que se comparará para cada elemento, por ejemplo una puntuación dentro de una tupla.",
-      "worked_example": "La ordenación usa `key=lambda item: item[1]` para comparar puntuaciones y `reverse=True` para poner primero la mayor.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Ordenación y funciones key. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Ordenar tuplas por el primer campo cuando se pide otro campo.",
-        "Usar `.sort()` aunque se necesite conservar el orden original.",
-        "Devolver texto desde key para una comparación numérica."
+        "Cambiar solo la línea final de salida sin dejar la regla de Ordenación y funciones key en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Ordenación y funciones key.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: `sorted` crea una lista ordenada nueva."
       ],
       "self_check": [
-        "¿Qué campo de la tupla es la puntuación?",
-        "¿Por qué hace falta `reverse=True`?"
+        "¿Qué expresión del ejemplo aplica Ordenación y funciones key antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Ordenación y funciones key debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Ordena por puntuación descendente para seleccionar `Lin:5`."
+      "exercise_prompt": "Completa el TODO aplicando Ordenación y funciones key a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-counter-defaultdict": {
       "title": "Counter y defaultdict",
       "concept": "`Counter` cuenta valores hashables y `defaultdict(list)` crea listas vacías para grupos nuevos. Juntos eliminan mucha inicialización manual en conteo y agrupación.",
-      "worked_example": "Counter cuenta colores y defaultdict agrupa palabras por inicial; después se imprimen el conteo de `red` y el tamaño del grupo `r`.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Counter y defaultdict. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Repetir inicialización manual en lugar de usar Counter.",
-        "Hacer append sobre una lista ausente en un dict normal.",
-        "Agrupar por la palabra completa cuando se pide la inicial."
+        "Cambiar solo la línea final de salida sin dejar la regla de Counter y defaultdict en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Counter y defaultdict.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: `Counter` cuenta valores hashables y `defaultdict(list)` crea listas vacías para grupos nuevos."
       ],
       "self_check": [
-        "¿Qué devuelve `Counter(words)['red']`?",
-        "¿Qué contiene `groups['r']` tras agrupar?"
+        "¿Qué expresión del ejemplo aplica Counter y defaultdict antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Counter y defaultdict debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Completa conteo y agrupación por inicial para imprimir `2 2`."
+      "exercise_prompt": "Completa el TODO aplicando Counter y defaultdict a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-deque": {
       "title": "deque",
       "concept": "`deque` es una cola de dos extremos con append y pop eficientes a ambos lados. Es la estructura habitual para BFS y ventanas donde se elimina por el frente.",
-      "worked_example": "El código agrega `start` a la izquierda y `end` a la derecha, luego quita un valor de cada extremo.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de deque. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Usar `list.pop(0)` repetidamente para una cola.",
-        "Confundir `append` con `appendleft`.",
-        "Sacar de un deque vacío sin comprobarlo."
+        "Cambiar solo la línea final de salida sin dejar la regla de deque en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de deque.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: `deque` es una cola de dos extremos con append y pop eficientes a ambos lados."
       ],
       "self_check": [
-        "¿Qué método agrega por la izquierda?",
-        "¿Qué deben devolver `popleft` y `pop` después de agregar ambos extremos?"
+        "¿Qué expresión del ejemplo aplica deque antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de deque debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Agrega los valores faltantes y muestra los dos extremos removidos."
+      "exercise_prompt": "Completa el TODO aplicando deque a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-itertools": {
       "title": "itertools",
       "concept": "`itertools` ofrece bloques perezosos como `chain`, `islice`, `product` y `pairwise`. Describen pipelines de iteración sin listas intermedias salvo que se consuman.",
-      "worked_example": "`chain.from_iterable(parts)` aplana las listas internas de letras y `join` consume ese iterador para formar `ok`.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de itertools. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Tratar resultados de itertools como listas reutilizables.",
-        "Recortar la entrada antes de que el iterador vea todos los valores.",
-        "Ocultar una intención simple detrás de bucles anidados."
+        "Cambiar solo la línea final de salida sin dejar la regla de itertools en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de itertools.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: `itertools` ofrece bloques perezosos como `chain`, `islice`, `product` y `pairwise`."
       ],
       "self_check": [
-        "¿Qué aplana `chain.from_iterable`?",
-        "¿Por qué el código inicial pierde la segunda letra?"
+        "¿Qué expresión del ejemplo aplica itertools antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de itertools debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Aplana ambas listas internas de forma perezosa para formar `ok`."
+      "exercise_prompt": "Completa el TODO aplicando itertools a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-pathlib": {
       "title": "pathlib",
       "concept": "`pathlib` representa rutas como objetos. Propiedades como `name`, `stem`, `suffix` y `parent` evitan cortar strings a mano y aclaran qué parte de la ruta se necesita.",
-      "worked_example": "`PurePosixPath('logs/app.txt')` obtiene `stem` y `suffix` sin abrir ningún archivo real.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de pathlib. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Dividir rutas siempre con `/` manualmente.",
-        "Confundir `name`, `stem` y `suffix`.",
-        "Tocar el sistema de archivos cuando solo se requiere parsear la ruta."
+        "Cambiar solo la línea final de salida sin dejar la regla de pathlib en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de pathlib.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: `pathlib` representa rutas como objetos."
       ],
       "self_check": [
-        "¿Cuál es el stem de `logs/app.txt`?",
-        "¿Por qué `PurePosixPath` evita acceso al sistema de archivos?"
+        "¿Qué expresión del ejemplo aplica pathlib antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de pathlib debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Usa propiedades de la ruta para imprimir `app:.txt`."
+      "exercise_prompt": "Completa el TODO aplicando pathlib a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-testing-assert": {
       "title": "Pruebas y assert",
       "concept": "`assert` comprueba una condición en ejemplos pequeños. Los frameworks de pruebas organizan esas comprobaciones para repetirlas, pero la idea central sigue siendo comparar comportamiento esperado y real.",
-      "worked_example": "El código verifica `add_two(3) == 5` antes de imprimir `ok`; una función rota falla antes de aparentar éxito.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Pruebas y assert. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Cambiar la aserción para que acepte código roto.",
-        "Depender de assert para validación de usuarios en producción.",
-        "Probar solo el print final y no la función pequeña."
+        "Cambiar solo la línea final de salida sin dejar la regla de Pruebas y assert en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Pruebas y assert.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: `assert` comprueba una condición en ejemplos pequeños."
       ],
       "self_check": [
-        "¿Qué debe garantizar `add_two`?",
-        "¿Qué línea fallaría si la función devuelve la entrada sin cambios?"
+        "¿Qué expresión del ejemplo aplica Pruebas y assert antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Pruebas y assert debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Arregla la función y la aserción para proteger el comportamiento `+2`."
+      "exercise_prompt": "Completa el TODO aplicando Pruebas y assert a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     },
     "py-async": {
       "title": "Conceptos async",
       "concept": "`async def` crea una función de corrutina. Llamarla produce un objeto corrutina; `await` obtiene su resultado dentro de otra corrutina y `asyncio.run` ejecuta la corrutina superior.",
-      "worked_example": "`main` espera `label()` con await, recibe `ok` y `asyncio.run` arranca la corrutina superior.",
+      "worked_example": "El ejemplo usa una salida de demostración con la etiqueta `example:` para mostrar el flujo de Conceptos async. Sigue qué línea cambia el valor antes de stdout; el ejercicio aplica la misma idea a sus propios datos.",
       "common_mistakes": [
-        "Imprimir el objeto corrutina sin hacer await.",
-        "Llamar `asyncio.run` dentro de un bucle de eventos ya activo.",
-        "Usar async para trabajo solo de CPU que no espera nada."
+        "Cambiar solo la línea final de salida sin dejar la regla de Conceptos async en la ruta del código.",
+        "Copiar la salida de demostración con `example:` en vez de resolver el TODO del ejercicio de Conceptos async.",
+        "Ajustar solo la salida del juez sin comprobar esta idea: `async def` crea una función de corrutina."
       ],
       "self_check": [
-        "¿Qué expresión espera a que termine `label()`?",
-        "¿Por qué `asyncio.run` está en el borde del archivo?"
+        "¿Qué expresión del ejemplo aplica Conceptos async antes de llegar a la salida `example:`?",
+        "¿Qué línea TODO del ejercicio de Conceptos async debe derivar el valor desde sus propios datos y no desde la demostración?"
       ],
-      "exercise_prompt": "Haz await dentro de `main` e imprime el resultado recibido."
+      "exercise_prompt": "Completa el TODO aplicando Conceptos async a los datos del ejercicio. Mantén stdout limpio para el juez; la etiqueta `example:` pertenece solo al ejemplo."
     }
   }
 }

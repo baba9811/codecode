@@ -1,7 +1,7 @@
 use practicode::core::{LANGUAGES, syntax_lessons_for};
 use practicode::i18n::{UI_LANGUAGES, normalize_ui_language, ui_text};
 use serde_json::Value;
-use std::{fs, path::Path};
+use std::{collections::HashMap, fs, path::Path};
 
 fn lesson_asset_dir(language: &str) -> &str {
     match language {
@@ -202,6 +202,41 @@ fn lesson_catalogs_have_complete_study_copy_for_every_language() {
                         assert_not_generic_lesson_copy(ui_language, lesson.id, text);
                     }
                 }
+            }
+
+            let mut repeated = HashMap::<String, usize>::new();
+            for copy in lessons.values() {
+                let copy = copy.as_object().expect("lesson copy object");
+                for value in copy.values() {
+                    match value {
+                        Value::String(text) => {
+                            let text = text.split_whitespace().collect::<Vec<_>>().join(" ");
+                            if text.chars().count() >= 45 {
+                                *repeated.entry(text).or_default() += 1;
+                            }
+                        }
+                        Value::Array(items) => {
+                            for item in items {
+                                let text = item
+                                    .as_str()
+                                    .expect("lesson list item string")
+                                    .split_whitespace()
+                                    .collect::<Vec<_>>()
+                                    .join(" ");
+                                if text.chars().count() >= 45 {
+                                    *repeated.entry(text).or_default() += 1;
+                                }
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+            }
+            for (text, count) in repeated {
+                assert!(
+                    count <= 3,
+                    "{path}: repeated lesson copy {count} times: {text}"
+                );
             }
         }
     }

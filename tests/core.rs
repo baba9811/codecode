@@ -882,6 +882,35 @@ fn render_syntax_lesson_uses_exercise_copy() {
 }
 
 #[test]
+fn render_syntax_lesson_shows_exercise_io_goal() {
+    let lesson = syntax_lessons_for("python")
+        .into_iter()
+        .find(|lesson| lesson.id == "py-output")
+        .unwrap();
+    let state = AppState {
+        current_problem: "001-hello-world".to_string(),
+        settings: Settings::default(),
+        solved: Vec::new(),
+        history: Vec::new(),
+        suggested_next_difficulty: "easy".to_string(),
+        syntax_progress: Default::default(),
+        current_syntax_lesson: Default::default(),
+    };
+
+    let rendered = render_syntax_lesson(lesson, &state);
+
+    assert!(rendered.contains("## Exercise"));
+    assert!(rendered.find("## Exercise") < rendered.find("## Common mistakes"));
+    assert!(rendered.contains("Input\n\n```text\n\n```"));
+    assert!(rendered.contains("Output\n\n```text\nAda:7\n```"));
+    let plain = render_markdown_plain(&rendered);
+    assert!(plain.contains("  name = 'Ada'"));
+    assert!(plain.contains("  score = 7"));
+    assert!(plain.contains("Output\n\n  Ada:7"));
+    assert!(plain.find("Output") < plain.find("Common mistakes"));
+}
+
+#[test]
 fn lessons_use_rich_split_copy_for_all_code_languages() {
     let state = AppState {
         current_problem: "001-hello-world".to_string(),
@@ -1013,6 +1042,48 @@ fn syntax_exercise_starters_require_user_edit_for_every_language() {
 }
 
 #[test]
+fn syntax_exercise_todos_do_not_spell_out_the_answer() {
+    let banned = [
+        "print exactly",
+        "so the output is",
+        "output is",
+        "expected text",
+        "expected value",
+        "expected fallback",
+        "expected output",
+        "produce Ada",
+        "produces Ada",
+        "choose the literal",
+        "key whose value",
+        "users route",
+        "score=",
+        "Ada:",
+        "app:.txt",
+        "cargo check --workspace",
+    ];
+
+    for &language in LANGUAGES {
+        for lesson in syntax_lessons_for(language) {
+            for line in lesson
+                .exercise
+                .starter
+                .lines()
+                .filter(|line| line.contains("TODO"))
+            {
+                let lower = line.to_lowercase();
+                for phrase in banned {
+                    assert!(
+                        !lower.contains(&phrase.to_lowercase()),
+                        "{} TODO gives away the answer with {phrase}: {line}",
+                        lesson.id
+                    );
+                }
+            }
+        }
+    }
+}
+
+#[test]
 fn python_syntax_starters_fail_by_output_not_runtime_error() {
     let root = tmp_root("python-syntax-starters-run-cleanly");
     for lesson in syntax_lessons_for("python") {
@@ -1131,6 +1202,31 @@ fn python_syntax_examples_run_cleanly() {
 }
 
 #[test]
+fn python_syntax_examples_are_not_answer_keys() {
+    if which("python3").or_else(|| which("python")).is_none() {
+        return;
+    }
+
+    let root = tmp_root("python-syntax-examples-not-answer-keys");
+    for lesson in syntax_lessons_for("python") {
+        let path = root.join(format!("{}.py", lesson.id));
+        fs::write(&path, lesson.example).unwrap();
+        let result = judge_path(
+            &root,
+            &format!("{}-example", lesson.id),
+            &path,
+            lesson.language,
+            &syntax_cases(lesson),
+        );
+        assert!(
+            !result.passed,
+            "{} worked example should teach the concept with different data, not pass the exercise case",
+            lesson.id
+        );
+    }
+}
+
+#[test]
 fn typescript_syntax_examples_run_under_node_strip_types() {
     let Some(node) = which("node") else {
         return;
@@ -1161,7 +1257,32 @@ fn typescript_syntax_examples_run_under_node_strip_types() {
 }
 
 #[test]
-fn java_syntax_examples_pass_lesson_cases() {
+fn typescript_syntax_examples_are_not_answer_keys() {
+    if which("node").is_none() {
+        return;
+    }
+
+    let root = tmp_root("typescript-syntax-examples-not-answer-keys");
+    for lesson in syntax_lessons_for("ts") {
+        let path = root.join(format!("{}.ts", lesson.id));
+        fs::write(&path, lesson.example).unwrap();
+        let result = judge_path(
+            &root,
+            &format!("{}-example", lesson.id),
+            &path,
+            lesson.language,
+            &syntax_cases(lesson),
+        );
+        assert!(
+            !result.passed,
+            "{} worked example should teach the concept with different data, not pass the exercise case",
+            lesson.id
+        );
+    }
+}
+
+#[test]
+fn java_syntax_examples_run_cleanly_without_being_answer_keys() {
     if which("javac").is_none() || which("java").is_none() {
         return;
     }
@@ -1178,15 +1299,21 @@ fn java_syntax_examples_pass_lesson_cases() {
             &syntax_cases(lesson),
         );
         assert!(
-            result.passed,
-            "{} example should pass its lesson cases:\n{}",
+            !result.output.contains("compile failed") && !result.output.contains("Stderr"),
+            "{} example should compile and run cleanly:\n{}",
+            lesson.id,
+            result.output
+        );
+        assert!(
+            !result.passed,
+            "{} worked example should teach the concept with different data, not pass the exercise case:\n{}",
             lesson.id, result.output
         );
     }
 }
 
 #[test]
-fn rust_syntax_examples_pass_lesson_cases() {
+fn rust_syntax_examples_run_cleanly_without_being_answer_keys() {
     if which("rustc").is_none() {
         return;
     }
@@ -1203,8 +1330,14 @@ fn rust_syntax_examples_pass_lesson_cases() {
             &syntax_cases(lesson),
         );
         assert!(
-            result.passed,
-            "{} example should pass its lesson cases:\n{}",
+            !result.output.contains("compile failed") && !result.output.contains("Stderr"),
+            "{} example should compile and run cleanly:\n{}",
+            lesson.id,
+            result.output
+        );
+        assert!(
+            !result.passed,
+            "{} worked example should teach the concept with different data, not pass the exercise case:\n{}",
             lesson.id, result.output
         );
     }

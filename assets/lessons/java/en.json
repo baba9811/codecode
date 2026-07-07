@@ -5,395 +5,423 @@
   "lessons": {
     "java-output": {
       "title": "Stdout",
-      "concept": "This Java topic is useful when a judge compares every newline and character. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on building score=7 from an int before println adds the newline. Watch the line that concatenates the label with score; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Stdout when a judge compares every newline and character. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Stdout to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Using print when the expected output needs the newline added by println.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Stdout rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Stdout exercise.",
+        "Matching the judge output without checking this lesson idea: Use Stdout when a judge compares every newline and character."
       ],
       "self_check": [
-        "Where is the integer converted into the text score=7?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Stdout before the `example:` output?",
+        "Which TODO line in the Stdout exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses System.out.println with a computed value. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Stdout to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-variables-types": {
       "title": "Variables and types",
-      "concept": "This Java topic is useful when primitive values and object references must be declared before use. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on combining a String, int, and boolean into one report line. Watch the line that sets score and passed consistently; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Variables and types when primitive values and object references must be declared before use. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Variables and types to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing only the boolean while leaving the numeric score at its old value.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Variables and types rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Variables and types exercise.",
+        "Matching the judge output without checking this lesson idea: Use Variables and types when primitive values and object references must be declared before use."
       ],
       "self_check": [
-        "Which variables decide the three fields in Ada:7:true?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Variables and types before the `example:` output?",
+        "Which TODO line in the Variables and types exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses typed local variables that agree with the report. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Variables and types to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-numbers-operators": {
       "title": "Numbers and operators",
-      "concept": "This Java topic is useful when division and remainder must stay integer-based in many stdin problems. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on deriving quotient and remainder from the same total and size. Watch the line that uses / and % with the same operands; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Numbers and operators when division and remainder must stay integer-based in many stdin problems. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Numbers and operators to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Using a different divisor for the quotient than for the remainder.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Numbers and operators rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Numbers and operators exercise.",
+        "Matching the judge output without checking this lesson idea: Use Numbers and operators when division and remainder must stay integer-based in many stdin problems."
       ],
       "self_check": [
-        "Why does 17 / 5 produce 3 instead of 3.4?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Numbers and operators before the `example:` output?",
+        "Which TODO line in the Numbers and operators exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses integer division and remainder. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Numbers and operators to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-strings": {
       "title": "Strings",
-      "concept": "This Java topic is useful when text cleanup and substring extraction happen before comparison or output. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on trimming spaces before taking the ok prefix. Watch the line that calls trim before substring; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Strings when text cleanup and substring extraction happen before comparison or output. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Strings to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Taking substring indexes before removing surrounding spaces.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Strings rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Strings exercise.",
+        "Matching the judge output without checking this lesson idea: Use Strings when text cleanup and substring extraction happen before comparison or output."
       ],
       "self_check": [
-        "What value does raw still hold after cleaned is computed?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Strings before the `example:` output?",
+        "Which TODO line in the Strings exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses String methods without mutating the original text. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Strings to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-control-flow": {
       "title": "Control flow",
-      "concept": "This Java topic is useful when branches and loops decide which values enter an accumulator. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on looping over 1..3 and adding only odd numbers. Watch the line that guards the addition with n % 2 == 1; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Control flow when branches and loops decide which values enter an accumulator. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Control flow to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Adding every loop value and hoping the final total still matches.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Control flow rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Control flow exercise.",
+        "Matching the judge output without checking this lesson idea: Use Control flow when branches and loops decide which values enter an accumulator."
       ],
       "self_check": [
-        "Which iterations enter the if body, and which are skipped?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Control flow before the `example:` output?",
+        "Which TODO line in the Control flow exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses if inside a for loop. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Control flow to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-methods": {
       "title": "Methods",
-      "concept": "This Java topic is useful when a reusable calculation needs a named boundary. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on passing width and height into area. Watch the line that returns multiplication instead of printing inside the method; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Methods when a reusable calculation needs a named boundary. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Methods to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Returning perimeter from a method whose callers expect area.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Methods rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Methods exercise.",
+        "Matching the judge output without checking this lesson idea: Use Methods when a reusable calculation needs a named boundary."
       ],
       "self_check": [
-        "Which line sends the computed value back to main?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Methods before the `example:` output?",
+        "Which TODO line in the Methods exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses method parameters and return value. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Methods to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-input": {
       "title": "Input parsing",
-      "concept": "This Java topic is useful when stdin arrives as bytes and must become typed tokens. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on reading System.in once and summing parsed integers. Watch the line that splits on whitespace before Integer.parseInt; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Input parsing when stdin arrives as bytes and must become typed tokens. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Input parsing to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Parsing only the first token when the judge can send many numbers.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Input parsing rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Input parsing exercise.",
+        "Matching the judge output without checking this lesson idea: Use Input parsing when stdin arrives as bytes and must become typed tokens."
       ],
       "self_check": [
-        "Where does text become an int rather than a String?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Input parsing before the `example:` output?",
+        "Which TODO line in the Input parsing exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses readAllBytes, split, and Integer.parseInt. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Input parsing to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-arrays-collections": {
       "title": "Arrays and collections",
-      "concept": "This Java topic is useful when fixed arrays, growable List, keyed Map, and unique Set solve different container jobs. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on copying array values into List, Map, and Set views. Watch the line that uses merge for the Map total and add for the Set; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Arrays and collections when fixed arrays, growable List, keyed Map, and unique Set solve different container jobs. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Arrays and collections to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Using nums.length when the problem asks for the numeric total.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Arrays and collections rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Arrays and collections exercise.",
+        "Matching the judge output without checking this lesson idea: Use Arrays and collections when fixed arrays, growable List, keyed Map, and unique Set solve different container jobs."
       ],
       "self_check": [
-        "Which collection stores order, which stores lookup, and which removes duplicates?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Arrays and collections before the `example:` output?",
+        "Which TODO line in the Arrays and collections exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses List, Map, and Set APIs with an array source. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Arrays and collections to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-classes-objects": {
       "title": "Classes and objects",
-      "concept": "This Java topic is useful when objects need instance state plus behavior. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on creating Counter and calling add. Watch the line that updates this.value before returning; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Classes and objects when objects need instance state plus behavior. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Classes and objects to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing new, fields, and instance methods.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Classes and objects rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Classes and objects exercise.",
+        "Matching the judge output without checking this lesson idea: Use Classes and objects when objects need instance state plus behavior."
       ],
       "self_check": [
-        "Which expression demonstrates new, fields, and instance methods?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Classes and objects before the `example:` output?",
+        "Which TODO line in the Classes and objects exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses new, fields, and instance methods. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Classes and objects to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-constructors": {
       "title": "Constructors",
-      "concept": "This Java topic is useful when new objects must start with valid field values. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on storing width and height before area runs. Watch the line that assigns constructor parameters into final fields; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Constructors when new objects must start with valid field values. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Constructors to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing constructor parameters and this.field assignment.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Constructors rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Constructors exercise.",
+        "Matching the judge output without checking this lesson idea: Use Constructors when new objects must start with valid field values."
       ],
       "self_check": [
-        "Which expression demonstrates constructor parameters and this.field assignment?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Constructors before the `example:` output?",
+        "Which TODO line in the Constructors exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses constructor parameters and this.field assignment. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Constructors to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-encapsulation": {
       "title": "Encapsulation",
-      "concept": "This Java topic is useful when callers should update state through methods instead of touching fields. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on adding points through Score.add. Watch the line that changes the private points field only after validation; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Encapsulation when callers should update state through methods instead of touching fields. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Encapsulation to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing private fields with public methods.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Encapsulation rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Encapsulation exercise.",
+        "Matching the judge output without checking this lesson idea: Use Encapsulation when callers should update state through methods instead of touching fields."
       ],
       "self_check": [
-        "Which expression demonstrates private fields with public methods?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Encapsulation before the `example:` output?",
+        "Which TODO line in the Encapsulation exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses private fields with public methods. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Encapsulation to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-static-members": {
       "title": "Static members",
-      "concept": "This Java topic is useful when a value belongs to the class rather than one instance. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on calling Scale.apply through the class. Watch the line that multiplies by the shared FACTOR; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Static members when a value belongs to the class rather than one instance. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Static members to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing static final constants and static methods.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Static members rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Static members exercise.",
+        "Matching the judge output without checking this lesson idea: Use Static members when a value belongs to the class rather than one instance."
       ],
       "self_check": [
-        "Which expression demonstrates static final constants and static methods?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Static members before the `example:` output?",
+        "Which TODO line in the Static members exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses static final constants and static methods. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Static members to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-enum-switch": {
       "title": "Enum and switch",
-      "concept": "This Java topic is useful when a fixed set of states must map to explicit results. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on switching Status.DONE to ok. Watch the line that handles the DONE branch directly; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Enum and switch when a fixed set of states must map to explicit results. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Enum and switch to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing enum constants and switch expression branches.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Enum and switch rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Enum and switch exercise.",
+        "Matching the judge output without checking this lesson idea: Use Enum and switch when a fixed set of states must map to explicit results."
       ],
       "self_check": [
-        "Which expression demonstrates enum constants and switch expression branches?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Enum and switch before the `example:` output?",
+        "Which TODO line in the Enum and switch exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses enum constants and switch expression branches. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Enum and switch to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-exceptions": {
       "title": "Exceptions",
-      "concept": "This Java topic is useful when bad input can be recovered without hiding unrelated failures. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on catching NumberFormatException and returning a fallback. Watch the line that catches the specific parse failure; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Exceptions when bad input can be recovered without hiding unrelated failures. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Exceptions to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing try/catch around Integer.parseInt.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Exceptions rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Exceptions exercise.",
+        "Matching the judge output without checking this lesson idea: Use Exceptions when bad input can be recovered without hiding unrelated failures."
       ],
       "self_check": [
-        "Which expression demonstrates try/catch around Integer.parseInt?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Exceptions before the `example:` output?",
+        "Which TODO line in the Exceptions exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses try/catch around Integer.parseInt. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Exceptions to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-generics": {
       "title": "Generics",
-      "concept": "This Java topic is useful when one method must keep the caller's element type. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on returning the last item from List<T>. Watch the line that uses T instead of Object; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Generics when one method must keep the caller's element type. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Generics to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing generic method <T> with List<T>.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Generics rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Generics exercise.",
+        "Matching the judge output without checking this lesson idea: Use Generics when one method must keep the caller's element type."
       ],
       "self_check": [
-        "Which expression demonstrates generic method <T> with List<T>?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Generics before the `example:` output?",
+        "Which TODO line in the Generics exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses generic method <T> with List<T>. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Generics to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-interfaces": {
       "title": "Interfaces",
-      "concept": "This Java topic is useful when callers should depend on behavior rather than a concrete class. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on passing User as Named. Watch the line that implements name with the public signature; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Interfaces when callers should depend on behavior rather than a concrete class. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Interfaces to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing implements and interface-typed parameters.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Interfaces rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Interfaces exercise.",
+        "Matching the judge output without checking this lesson idea: Use Interfaces when callers should depend on behavior rather than a concrete class."
       ],
       "self_check": [
-        "Which expression demonstrates implements and interface-typed parameters?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Interfaces before the `example:` output?",
+        "Which TODO line in the Interfaces exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses implements and interface-typed parameters. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Interfaces to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-inheritance-composition": {
       "title": "Inheritance and composition",
-      "concept": "This Java topic is useful when a subclass also needs a helper object to finish behavior. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on PremiumUser combining inherited baseScore with Bonus. Watch the line that calls bonus.apply(baseScore()); changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Inheritance and composition when a subclass also needs a helper object to finish behavior. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Inheritance and composition to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing extends plus a composed field.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Inheritance and composition rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Inheritance and composition exercise.",
+        "Matching the judge output without checking this lesson idea: Use Inheritance and composition when a subclass also needs a helper object to finish behavior."
       ],
       "self_check": [
-        "Which expression demonstrates extends plus a composed field?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Inheritance and composition before the `example:` output?",
+        "Which TODO line in the Inheritance and composition exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses extends plus a composed field. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Inheritance and composition to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-records": {
       "title": "Records",
-      "concept": "This Java topic is useful when immutable data carriers need less boilerplate. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on using generated accessors x() and y(). Watch the line that adds both record components; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Records when immutable data carriers need less boilerplate. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Records to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing record components and generated accessors.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Records rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Records exercise.",
+        "Matching the judge output without checking this lesson idea: Use Records when immutable data carriers need less boilerplate."
       ],
       "self_check": [
-        "Which expression demonstrates record components and generated accessors?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Records before the `example:` output?",
+        "Which TODO line in the Records exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses record components and generated accessors. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Records to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-optional": {
       "title": "Optional",
-      "concept": "This Java topic is useful when a missing value must be handled explicitly. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on filtering an Optional before orElse. Watch the line that keeps ok present instead of empty; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Optional when a missing value must be handled explicitly. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Optional to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing Optional.of, filter, and orElse.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Optional rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Optional exercise.",
+        "Matching the judge output without checking this lesson idea: Use Optional when a missing value must be handled explicitly."
       ],
       "self_check": [
-        "Which expression demonstrates Optional.of, filter, and orElse?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Optional before the `example:` output?",
+        "Which TODO line in the Optional exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses Optional.of, filter, and orElse. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Optional to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-streams-lambdas": {
       "title": "Streams and lambdas",
-      "concept": "This Java topic is useful when collection processing is clearer as a pipeline. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on filtering even numbers then squaring them. Watch the line that uses filter before mapToInt; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Streams and lambdas when collection processing is clearer as a pipeline. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Streams and lambdas to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing lambda predicates and terminal sum.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Streams and lambdas rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Streams and lambdas exercise.",
+        "Matching the judge output without checking this lesson idea: Use Streams and lambdas when collection processing is clearer as a pipeline."
       ],
       "self_check": [
-        "Which expression demonstrates lambda predicates and terminal sum?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Streams and lambdas before the `example:` output?",
+        "Which TODO line in the Streams and lambdas exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses lambda predicates and terminal sum. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Streams and lambdas to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-comparators-sorting": {
       "title": "Comparators and sorting",
-      "concept": "This Java topic is useful when objects need ordering separate from their data shape. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on sorting users by score descending. Watch the line that builds a Comparator from User::score; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Comparators and sorting when objects need ordering separate from their data shape. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Comparators and sorting to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing Comparator.comparingInt and reversed.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Comparators and sorting rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Comparators and sorting exercise.",
+        "Matching the judge output without checking this lesson idea: Use Comparators and sorting when objects need ordering separate from their data shape."
       ],
       "self_check": [
-        "Which expression demonstrates Comparator.comparingInt and reversed?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Comparators and sorting before the `example:` output?",
+        "Which TODO line in the Comparators and sorting exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses Comparator.comparingInt and reversed. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Comparators and sorting to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-try-with-resources": {
       "title": "Try-with-resources",
-      "concept": "This Java topic is useful when resources must close even when code exits early. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on reading bytes inside a managed block. Watch the line that declares the resource in the try header; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Try-with-resources when resources must close even when code exits early. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Try-with-resources to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing AutoCloseable in a try header.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Try-with-resources rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Try-with-resources exercise.",
+        "Matching the judge output without checking this lesson idea: Use Try-with-resources when resources must close even when code exits early."
       ],
       "self_check": [
-        "Which expression demonstrates AutoCloseable in a try header?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Try-with-resources before the `example:` output?",
+        "Which TODO line in the Try-with-resources exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses AutoCloseable in a try header. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Try-with-resources to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-packages-imports": {
       "title": "Packages and imports",
-      "concept": "This Java topic is useful when single-file exercises still need classes from JDK packages. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on importing List and ArrayList. Watch the line that uses imported names without package qualification; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Packages and imports when single-file exercises still need classes from JDK packages. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Packages and imports to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing import declarations in a package-free Solution.java.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Packages and imports rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Packages and imports exercise.",
+        "Matching the judge output without checking this lesson idea: Use Packages and imports when single-file exercises still need classes from JDK packages."
       ],
       "self_check": [
-        "Which expression demonstrates import declarations in a package-free Solution.java?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Packages and imports before the `example:` output?",
+        "Which TODO line in the Packages and imports exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses import declarations in a package-free Solution.java. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Packages and imports to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-annotations": {
       "title": "Annotations",
-      "concept": "This Java topic is useful when metadata belongs on declarations rather than in runtime logic. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on defining @Audit and annotating a method. Watch the line that keeps normal method return behavior; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Annotations when metadata belongs on declarations rather than in runtime logic. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Annotations to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing @interface and annotated method declarations.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Annotations rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Annotations exercise.",
+        "Matching the judge output without checking this lesson idea: Use Annotations when metadata belongs on declarations rather than in runtime logic."
       ],
       "self_check": [
-        "Which expression demonstrates @interface and annotated method declarations?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Annotations before the `example:` output?",
+        "Which TODO line in the Annotations exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses @interface and annotated method declarations. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Annotations to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-sealed-classes": {
       "title": "Sealed classes",
-      "concept": "This Java topic is useful when a domain hierarchy should list its permitted implementations. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on restricting Shape to Rect and Dot. Watch the line that computes measure in a permitted record; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Sealed classes when a domain hierarchy should list its permitted implementations. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Sealed classes to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing sealed interface, permits, and final records.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Sealed classes rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Sealed classes exercise.",
+        "Matching the judge output without checking this lesson idea: Use Sealed classes when a domain hierarchy should list its permitted implementations."
       ],
       "self_check": [
-        "Which expression demonstrates sealed interface, permits, and final records?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Sealed classes before the `example:` output?",
+        "Which TODO line in the Sealed classes exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses sealed interface, permits, and final records. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Sealed classes to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-testing-assert": {
       "title": "Testing and assert",
-      "concept": "This Java topic is useful when small checks should fail near the broken method. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on checking addTwo before printing. Watch the line that throws AssertionError when behavior disagrees; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Testing and assert when small checks should fail near the broken method. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Testing and assert to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing pure helper plus explicit assertion.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Testing and assert rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Testing and assert exercise.",
+        "Matching the judge output without checking this lesson idea: Use Testing and assert when small checks should fail near the broken method."
       ],
       "self_check": [
-        "Which expression demonstrates pure helper plus explicit assertion?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Testing and assert before the `example:` output?",
+        "Which TODO line in the Testing and assert exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses pure helper plus explicit assertion. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Testing and assert to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-equality-hashcode": {
       "title": "equals and hashCode",
-      "concept": "This Java topic is useful when HashSet must recognize equal value objects. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on adding two equal Point objects. Watch the line that compares fields and hashes the same fields; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use equals and hashCode when HashSet must recognize equal value objects. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying equals and hashCode to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing equals(Object) with matching hashCode.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the equals and hashCode rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the equals and hashCode exercise.",
+        "Matching the judge output without checking this lesson idea: Use equals and hashCode when HashSet must recognize equal value objects."
       ],
       "self_check": [
-        "Which expression demonstrates equals(Object) with matching hashCode?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies equals and hashCode before the `example:` output?",
+        "Which TODO line in the equals and hashCode exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses equals(Object) with matching hashCode. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying equals and hashCode to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     },
     "java-overloading-varargs": {
       "title": "Overloading and varargs",
-      "concept": "This Java topic is useful when method calls can choose among signatures and collect extra arguments. The lesson stays inside one Solution.java file, so the syntax is visible in the value setup, the Java API call, and the exact stdout line.",
-      "worked_example": "The example focuses on summing first plus the rest array. Watch the line that loops through every varargs value; changing that line changes the judged output for a concrete reason.",
+      "concept": "Use Overloading and varargs when method calls can choose among signatures and collect extra arguments. Keep the value path visible in one Solution.java file: setup, the Java construct, then stdout.",
+      "worked_example": "The worked code labels its demo output with `example:` while applying Overloading and varargs to separate data. Follow the value-changing line before stdout; the exercise uses the same idea without the label on its own case.",
       "common_mistakes": [
-        "Changing the printed literal instead of fixing int... rest and overloaded label.",
-        "Printing the final answer literally skips the Java construct this lesson is meant to practice."
+        "Changing only the final output line while leaving the Overloading and varargs rule out of the code path.",
+        "Copying the labeled demo output instead of solving the TODO in the Overloading and varargs exercise.",
+        "Matching the judge output without checking this lesson idea: Use Overloading and varargs when method calls can choose among signatures and collect extra arguments."
       ],
       "self_check": [
-        "Which expression demonstrates int... rest and overloaded label?",
-        "If the input value or object state changed, which expression would need to change before stdout is printed?"
+        "Which expression in the example applies Overloading and varargs before the `example:` output?",
+        "Which TODO line in the Overloading and varargs exercise must derive the value from its own data instead of copying the demo?"
       ],
-      "exercise_prompt": "Edit the Solution.java exercise so it uses int... rest and overloaded label. Keep the single-file judge shape and make the existing case pass through that syntax."
+      "exercise_prompt": "Complete the TODO by applying Overloading and varargs to the starter data. Keep stdout judge-clean; the `example:` label belongs only to the worked example."
     }
   }
 }

@@ -110,7 +110,7 @@ impl PracticodeApp {
                 frame.render_widget(right, body[1]);
             } else {
                 let left = if self.mode == AppMode::Learn {
-                    Text::from(render_markdown_plain(&self.output))
+                    markdown_text(&self.output, light)
                 } else {
                     problem_view::render(&self.problem, &self.state.settings.ui_language, light)
                 };
@@ -307,11 +307,10 @@ impl PracticodeApp {
             }
             return Text::from(lines);
         }
-        let output = if self.output_is_markdown {
-            render_markdown_plain(&self.output)
-        } else {
-            self.output.clone()
-        };
+        if self.output_is_markdown {
+            return markdown_text(&self.output, light);
+        }
+        let output = self.output.clone();
         let mut lines = Vec::new();
         for line in output.lines() {
             if line.is_empty() {
@@ -470,6 +469,98 @@ impl PracticodeApp {
     }
 }
 
+fn markdown_text(markdown: &str, light: bool) -> Text<'static> {
+    let title_style = if light {
+        Style::default()
+            .fg(Color::Blue)
+            .add_modifier(Modifier::BOLD)
+    } else {
+        Style::default()
+            .fg(Color::Yellow)
+            .add_modifier(Modifier::BOLD)
+    };
+    let section_style = if light {
+        Style::default()
+            .fg(Color::Magenta)
+            .add_modifier(Modifier::BOLD)
+    } else {
+        Style::default()
+            .fg(Color::Cyan)
+            .add_modifier(Modifier::BOLD)
+    };
+    let body_style = if light {
+        Style::default().fg(Color::Black)
+    } else {
+        Style::default().fg(Color::Rgb(229, 231, 235))
+    };
+    let code_style = if light {
+        Style::default()
+            .fg(Color::Black)
+            .bg(Color::Rgb(229, 231, 235))
+    } else {
+        Style::default()
+            .fg(Color::Rgb(243, 244, 246))
+            .bg(Color::Rgb(31, 41, 55))
+    };
+
+    let mut lines = Vec::new();
+    let mut in_fence = false;
+    let mut code_lines = Vec::new();
+    for line in markdown.lines() {
+        if line.trim_start().starts_with("```") {
+            if in_fence {
+                push_markdown_code_block(&mut lines, &code_lines, code_style);
+                code_lines.clear();
+            }
+            in_fence = !in_fence;
+            continue;
+        }
+        if in_fence {
+            code_lines.push(line.to_string());
+            continue;
+        }
+        let trimmed = line.trim_start();
+        if trimmed.starts_with('#') {
+            let heading = trimmed.trim_start_matches('#').trim_start().to_string();
+            let style = if trimmed.starts_with("# ") {
+                title_style
+            } else {
+                section_style
+            };
+            lines.push(Line::from(Span::styled(heading, style)));
+        } else if line.is_empty() {
+            lines.push(Line::default());
+        } else {
+            lines.push(Line::from(Span::styled(line.replace('`', ""), body_style)));
+        }
+    }
+    if in_fence {
+        push_markdown_code_block(&mut lines, &code_lines, code_style);
+    }
+    Text::from(lines)
+}
+
+fn push_markdown_code_block(
+    lines: &mut Vec<Line<'static>>,
+    code_lines: &[String],
+    code_style: Style,
+) {
+    if code_lines.iter().all(|line| line.is_empty()) {
+        lines.push(Line::from(vec![
+            Span::raw("  "),
+            Span::styled(" <empty> ".to_string(), code_style),
+        ]));
+        return;
+    }
+    for line in code_lines {
+        let body = if line.is_empty() { " " } else { line };
+        lines.push(Line::from(vec![
+            Span::raw("  "),
+            Span::styled(format!(" {body} "), code_style),
+        ]));
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -548,6 +639,25 @@ mod tests {
         terminal.draw(|frame| app.draw(frame)).unwrap();
 
         assert!(!buffer_text(&terminal).contains("Language: Python"));
+    }
+
+    #[test]
+    fn lesson_markdown_renders_code_without_ascii_boxes() {
+        let mut app = PracticodeApp::new(tmp_root("lesson-code-style")).unwrap();
+        app.handle_command("learn rust").unwrap();
+
+        let backend = TestBackend::new(100, 28);
+        let mut terminal = Terminal::new(backend).unwrap();
+        terminal.draw(|frame| app.draw(frame)).unwrap();
+        let text = buffer_text(&terminal);
+
+        assert!(text.contains("fn main()"));
+        assert!(!text.contains("+--"));
+        let border_x = app.left_area.right().saturating_sub(1);
+        let buffer = terminal.backend().buffer();
+        for y in app.left_area.y + 1..app.left_area.bottom().saturating_sub(1) {
+            assert_eq!(buffer[(border_x, y)].symbol(), "│");
+        }
     }
 
     #[test]
