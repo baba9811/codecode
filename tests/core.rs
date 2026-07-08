@@ -338,6 +338,30 @@ fn judge_shows_debug_stdout_on_failure() {
 }
 
 #[test]
+fn judge_hides_case_input_and_expected_on_failure() {
+    if which("python3").or_else(|| which("python")).is_none() {
+        return;
+    }
+    let root = tmp_root("judge-hide-cases");
+    let mut problem = load_bank(&root).unwrap().remove(0);
+    problem.cases = vec![practicode::core::IoCase {
+        input: "private input".to_string(),
+        output: "private expected".to_string(),
+    }];
+    let settings = Settings::default();
+    let path = ensure_submission(&root, &problem, &settings).unwrap();
+    fs::write(path, "print('wrong')\n").unwrap();
+
+    let result = judge(&root, &problem, &settings);
+
+    assert!(!result.passed);
+    assert!(result.output.contains("Input\n  <hidden>"));
+    assert!(result.output.contains("Expected\n  <hidden>"));
+    assert!(!result.output.contains("private input"));
+    assert!(!result.output.contains("private expected"));
+}
+
+#[test]
 fn judge_rejects_problem_without_cases() {
     let root = tmp_root("judge-empty-cases");
     let mut problem = load_bank(&root).unwrap().remove(0);

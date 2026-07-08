@@ -52,8 +52,8 @@ dependency graph.
 ## Release Notes
 
 The crates.io and npm packages distribute practicode source, not vendored
-third-party source or prebuilt third-party binaries. The npm installer builds
-the Rust binary locally with Cargo.
+third-party source or prebuilt third-party binaries. The npm launcher builds
+the Rust binary locally with Cargo on first use if needed.
 
 If practicode later ships prebuilt binaries, include full third-party notices
 and license texts with those binary artifacts.

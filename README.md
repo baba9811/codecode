@@ -39,7 +39,7 @@ npm install -g practicode
 practicode
 ```
 
-The npm package builds the Rust binary during install. Set `PRACTICODE_SKIP_BUILD=1` to skip that step; the launcher will try the same locked Cargo build on first run if the binary is missing.
+The npm package ships no install lifecycle script. The launcher runs the locked Cargo build on first use if the binary is missing.
 
 <details>
 <summary>Cargo</summary>
@@ -202,6 +202,7 @@ Those paths are ignored by git.
 ## Safety
 
 - `/run` executes your local submission as a normal process. It is not an OS sandbox.
+- `/run` scrubs inherited environment variables and hides case input/expected output in failure logs.
 - `/hint`, AI-backed `/next`, and `/generate` send the current problem/submission context to the selected provider CLI.
 - `settings.ai_next_command` can run a custom shell command. Save only commands you trust.
 - Do not commit tokens, private prompts, `.env`, `.npmrc`, `.practicode/`, `problems/`, or `submissions/`.

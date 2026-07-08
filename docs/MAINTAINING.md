@@ -53,7 +53,7 @@ Do not print or commit tokens. Local `.env` and `.npmrc` are ignored; GitHub Act
 
 For npm supply-chain posture, keep `publishConfig.provenance` enabled and keep the release job's `id-token: write` permission. When the npm package's Trusted Publisher setting is configured for this repository and `.github/workflows/release.yml`, remove the long-lived `NPM_TOKEN` dependency from the npm publish steps and disallow token publishing in the npm package settings.
 
-Socket.dev indexes the npm package page at <https://socket.dev/npm/package/practicode>. It may lag behind npm immediately after a release; verify npm first with `npm view practicode version`, then re-check Socket after indexing catches up. If Socket flags the npm `postinstall` script, confirm it still only runs the locked Cargo build documented in the README.
+Socket.dev indexes the npm package page at <https://socket.dev/npm/package/practicode>. It may lag behind npm immediately after a release; verify npm first with `npm view practicode version`, then re-check Socket after indexing catches up. The npm package should not include install lifecycle scripts; the Node launcher may build with Cargo on first use instead.
 
 ## Documentation Ownership
 

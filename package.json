@@ -17,7 +17,6 @@
   "scripts": {
     "start": "node bin/practicode.js",
     "build": "cargo build --release --locked",
-    "postinstall": "node scripts/npm-postinstall.js",
     "smoke": "node bin/practicode.js --smoke"
   },
   "files": [
@@ -25,7 +24,6 @@
     "bin/",
     "docs/",
     "!docs/superpowers/",
-    "scripts/",
     "src/",
     "Cargo.lock",
     "Cargo.toml",

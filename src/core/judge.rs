@@ -1,4 +1,5 @@
 use super::*;
+use std::env;
 
 pub fn ensure_submission(root: &Path, problem: &Problem, settings: &Settings) -> Result<PathBuf> {
     let language = normalize_language(&settings.language);
@@ -88,6 +89,7 @@ pub fn judge_path(
     for (index, case) in cases.iter().enumerate() {
         let mut process = Command::new(&command.program);
         process.args(&command.args).current_dir(&run_dir);
+        apply_judge_env(&mut process);
         let run = match run_capture(&mut process, &case.input, Duration::from_secs(5)) {
             Ok(run) => run,
             Err(error) => {
@@ -113,8 +115,8 @@ pub fn judge_path(
                 push_labeled_block(&mut lines, "Error", "timeout: 5s");
             }
             push_labeled_block(&mut lines, "Got", run.stdout.trim_end());
-            push_labeled_block(&mut lines, "Input", case.input.trim_end());
-            push_labeled_block(&mut lines, "Expected", expected);
+            push_labeled_block(&mut lines, "Input", "<hidden>");
+            push_labeled_block(&mut lines, "Expected", "<hidden>");
             if !run.stderr.trim().is_empty() {
                 push_labeled_block(&mut lines, "Stderr", run.stderr.trim_end());
             }
@@ -137,6 +139,37 @@ fn push_labeled_block(lines: &mut Vec<String>, label: &str, body: &str) {
         lines.push("  <empty>".to_string());
     } else {
         lines.extend(body.lines().map(|line| format!("  {line}")));
+    }
+}
+
+fn apply_judge_env(process: &mut Command) {
+    process.env_clear();
+    for key in [
+        "PATH",
+        "HOME",
+        "USER",
+        "USERNAME",
+        "LANG",
+        "LC_ALL",
+        "LC_CTYPE",
+        "TMPDIR",
+        "TEMP",
+        "TMP",
+        "PYENV_ROOT",
+        "ASDF_DIR",
+        "ASDF_DATA_DIR",
+        "NVM_DIR",
+        "VOLTA_HOME",
+    ] {
+        if let Some(value) = env::var_os(key) {
+            process.env(key, value);
+        }
+    }
+    #[cfg(windows)]
+    for key in ["COMSPEC", "PATHEXT", "SYSTEMROOT", "WINDIR"] {
+        if let Some(value) = env::var_os(key) {
+            process.env(key, value);
+        }
     }
 }
 
