@@ -1,8 +1,9 @@
 use anyhow::{Context, Result};
 use std::{
     env,
+    ffi::OsStr,
     io::{ErrorKind, Write},
-    path::PathBuf,
+    path::{Path, PathBuf},
     process::{Command, Stdio},
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
@@ -55,10 +56,31 @@ pub fn run_capture(command: &mut Command, input: &str, timeout: Duration) -> Res
 
 pub fn which(name: &str) -> Option<PathBuf> {
     let paths = env::var_os("PATH")?;
-    env::split_paths(&paths).find_map(|dir| {
-        let path = dir.join(name);
-        if path.is_file() { Some(path) } else { None }
-    })
+    let pathext = env::var_os("PATHEXT");
+    env::split_paths(&paths).find_map(|dir| find_in_dir(&dir, name, pathext.as_deref()))
+}
+
+fn find_in_dir(dir: &Path, name: &str, pathext: Option<&OsStr>) -> Option<PathBuf> {
+    let path = dir.join(name);
+    if path.is_file() {
+        return Some(path);
+    }
+    if Path::new(name).extension().is_some() {
+        return None;
+    }
+    pathext?
+        .to_string_lossy()
+        .split(';')
+        .filter(|ext| !ext.is_empty())
+        .map(|ext| {
+            let ext = if ext.starts_with('.') {
+                ext.to_string()
+            } else {
+                format!(".{ext}")
+            };
+            dir.join(format!("{name}{ext}"))
+        })
+        .find(|path| path.is_file())
 }
 
 pub fn shell_process(command: &str) -> Command {
@@ -101,5 +123,20 @@ mod tests {
 
         assert_eq!(output.code, Some(0));
         assert!(!output.timed_out);
+    }
+
+    #[test]
+    fn which_honors_pathext_suffixes() {
+        let root = unique_temp_path("practicode-which", "dir");
+        std::fs::create_dir_all(&root).unwrap();
+        let exe = root.join("tool.CMD");
+        std::fs::write(&exe, "").unwrap();
+
+        assert_eq!(
+            find_in_dir(&root, "tool", Some(OsStr::new(".EXE;.CMD"))),
+            Some(exe)
+        );
+
+        let _ = std::fs::remove_dir_all(root);
     }
 }

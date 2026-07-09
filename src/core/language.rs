@@ -67,7 +67,7 @@ pub fn normalize_ui_language_list(languages: &[String]) -> Vec<String> {
 }
 
 pub fn normalize_next_source(source: &str) -> String {
-    if source == "ai" {
+    if source.trim().eq_ignore_ascii_case("ai") {
         "ai".to_string()
     } else {
         "bank".to_string()
@@ -75,7 +75,7 @@ pub fn normalize_next_source(source: &str) -> String {
 }
 
 pub fn normalize_ai_provider(provider: &str) -> String {
-    if provider == "claude" {
+    if provider.trim().eq_ignore_ascii_case("claude") {
         "claude".to_string()
     } else {
         "codex".to_string()

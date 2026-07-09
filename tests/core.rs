@@ -95,6 +95,20 @@ fn load_bank_rejects_invalid_problem_shape() {
 }
 
 #[test]
+fn load_bank_rejects_duplicate_ids_and_slugs() {
+    let root = tmp_root("duplicate-bank");
+    let mut bank = two_problem_bank(&root);
+    bank[1].id = bank[0].id.clone();
+    let error = save_bank(&root, &bank).unwrap_err().to_string();
+    assert!(error.contains("duplicate problem id"));
+
+    bank[1].id = "002-other".to_string();
+    bank[1].slug = bank[0].slug.clone();
+    let error = save_bank(&root, &bank).unwrap_err().to_string();
+    assert!(error.contains("duplicate slug"));
+}
+
+#[test]
 fn load_bank_accepts_partial_answers_for_generation_profile() {
     let root = tmp_root("partial-answers");
     let mut problem = load_bank(&root).unwrap().remove(0);
@@ -144,8 +158,10 @@ fn load_state_normalizes_practice_profile() {
         root.join(".practicode/problem-state.json"),
         r##"{
   "current_problem": "001-hello-world",
+  "suggested_next_difficulty": "weird",
   "settings": {
     "difficulty": "weird",
+    "theme": " Light ",
     "topics": [" Arrays ", "#Strings", "arrays"],
     "avoid_topics": [" DP ", ""]
   }
@@ -154,8 +170,10 @@ fn load_state_normalizes_practice_profile() {
     .unwrap();
     let state = load_state(&root, &bank).unwrap();
     assert_eq!(state.settings.difficulty, "auto");
+    assert_eq!(state.settings.theme, "light");
     assert_eq!(state.settings.topics, vec!["arrays", "strings"]);
     assert_eq!(state.settings.avoid_topics, vec!["dp"]);
+    assert_eq!(state.suggested_next_difficulty, "easy");
 }
 
 #[test]
@@ -203,6 +221,29 @@ fn load_state_normalizes_ai_effort_by_provider() {
     .unwrap();
     let state = load_state(&root, &bank).unwrap();
     assert_eq!(state.settings.ai_effort, "xhigh");
+}
+
+#[test]
+fn load_state_normalizes_ai_provider_case_and_spaces() {
+    let root = tmp_root("state-ai-provider");
+    let bank = load_bank(&root).unwrap();
+    fs::create_dir_all(root.join(".practicode")).unwrap();
+    fs::write(
+        root.join(".practicode/problem-state.json"),
+        r#"{
+  "current_problem": "001-hello-world",
+  "settings": {
+    "next_source": " AI ",
+    "ai_provider": " Claude ",
+    "ai_effort": " max "
+  }
+}"#,
+    )
+    .unwrap();
+    let state = load_state(&root, &bank).unwrap();
+    assert_eq!(state.settings.next_source, "ai");
+    assert_eq!(state.settings.ai_provider, "claude");
+    assert_eq!(state.settings.ai_effort, "max");
 }
 
 #[test]

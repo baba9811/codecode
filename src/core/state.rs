@@ -27,6 +27,8 @@ pub fn load_state(root: &Path, bank: &[Problem]) -> Result<AppState> {
         state.current_problem = bank[0].id.clone();
     }
     normalize_settings(&mut state.settings);
+    state.suggested_next_difficulty =
+        normalize_suggested_difficulty(&state.suggested_next_difficulty);
     state.syntax_progress = normalize_syntax_progress(&state.syntax_progress);
     state.current_syntax_lesson = normalize_current_syntax_lessons(&state.current_syntax_lesson);
     if state.history.is_empty() {
@@ -74,6 +76,7 @@ pub fn save_state(root: &Path, state: &AppState) -> Result<()> {
 pub fn normalize_settings(settings: &mut Settings) {
     settings.language = normalize_language(&settings.language);
     settings.ui_language = normalize_ui_language(&settings.ui_language);
+    settings.theme = settings.theme.trim().to_lowercase();
     if !THEMES.contains(&settings.theme.as_str()) {
         settings.theme = "dark".to_string();
     }
@@ -96,5 +99,13 @@ pub fn normalize_start_mode(mode: &str) -> String {
     match mode.as_str() {
         "home" | "learn" | "problems" => mode,
         _ => "home".to_string(),
+    }
+}
+
+fn normalize_suggested_difficulty(difficulty: &str) -> String {
+    match normalize_difficulty(difficulty).as_str() {
+        "medium" => "medium".to_string(),
+        "hard" => "hard".to_string(),
+        _ => "easy".to_string(),
     }
 }

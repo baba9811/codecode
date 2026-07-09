@@ -101,6 +101,8 @@ fn validate_bank(bank: &[Problem], path: &Path) -> Result<()> {
     if bank.is_empty() {
         bail!("{} must contain at least one problem", path.display());
     }
+    let mut ids = Vec::new();
+    let mut slugs = Vec::new();
     for problem in bank {
         if !is_safe_name(&problem.id) {
             bail!("{} has invalid problem id {:?}", path.display(), problem.id);
@@ -113,6 +115,14 @@ fn validate_bank(bank: &[Problem], path: &Path) -> Result<()> {
                 problem.id
             );
         }
+        if ids.contains(&problem.id.as_str()) {
+            bail!("{} has duplicate problem id {}", path.display(), problem.id);
+        }
+        if slugs.contains(&problem.slug.as_str()) {
+            bail!("{} has duplicate slug {}", path.display(), problem.slug);
+        }
+        ids.push(problem.id.as_str());
+        slugs.push(problem.slug.as_str());
         if problem.cases.is_empty() {
             bail!(
                 "{} problem {} has no judge cases",
