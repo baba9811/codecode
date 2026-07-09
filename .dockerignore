@@ -1,0 +1,9 @@
+.git
+.practicode
+.pytest_cache
+.superpowers
+.venv
+node_modules
+problems
+submissions
+target

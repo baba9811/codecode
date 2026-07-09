@@ -27,6 +27,8 @@
     "src/",
     "Cargo.lock",
     "Cargo.toml",
+    "Dockerfile",
+    ".dockerignore",
     "LICENSE",
     "README.md",
     "SECURITY.md",

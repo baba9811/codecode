@@ -126,6 +126,37 @@ practicode --smoke
 practicode --help
 ```
 
+### Docker sandbox
+
+If you do not want submissions to run directly on your host, use the npm launcher sandbox:
+
+```bash
+practicode --docker
+```
+
+The launcher builds a local `practicode-sandbox:<version>` image, then runs the TUI in Docker with the current directory mounted at `/workspace`. The container runs without network access, with a read-only root filesystem, a writable `/tmp`, dropped Linux capabilities, `no-new-privileges`, and CPU/memory/process limits. Your current directory is still writable so `.practicode/`, `problems/`, and `submissions/` can be saved.
+
+Install Docker first if needed:
+
+```bash
+# macOS
+brew install --cask docker
+
+# Windows
+winget install -e --id Docker.DockerDesktop
+
+# Ubuntu / Debian
+# Use Docker's official apt repository:
+# Ubuntu: https://docs.docker.com/engine/install/ubuntu/
+# Debian: https://docs.docker.com/engine/install/debian/
+```
+
+After starting Docker, check the sandbox:
+
+```bash
+practicode --docker --smoke
+```
+
 ## Update
 
 npm is the primary install path:
@@ -202,6 +233,7 @@ Those paths are ignored by git.
 ## Safety
 
 - `/run` executes your local submission as a normal process. It is not an OS sandbox.
+- `practicode --docker` runs the TUI and judge in a restricted Docker container, but Docker is still a shared-kernel container runtime, not a guarantee against every escape.
 - `/run` scrubs inherited environment variables and hides case input/expected output in failure logs.
 - `/hint`, AI-backed `/next`, and `/generate` send the current problem/submission context to the selected provider CLI.
 - `settings.ai_next_command` can run a custom shell command. Save only commands you trust.
