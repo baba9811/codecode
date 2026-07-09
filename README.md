@@ -1,13 +1,13 @@
 # practicode
 
-![Rust](https://img.shields.io/badge/Rust-terminal%20app-000000?logo=rust&logoColor=white)
-![Ratatui](https://img.shields.io/badge/Ratatui-TUI-00B4D8)
-![Local first](https://img.shields.io/badge/local--first-practice-14B8A6)
-![AI ready](https://img.shields.io/badge/AI-Codex%20%2B%20Claude-111827)
-![crates.io](https://img.shields.io/crates/v/practicode?logo=rust)
-![npm](https://img.shields.io/npm/v/practicode?logo=npm)
-![CI](https://github.com/baba9811/practicode/actions/workflows/ci.yml/badge.svg)
-[Socket.dev package health](https://socket.dev/npm/package/practicode)
+[![Rust](https://img.shields.io/badge/Rust-terminal%20app-000000?logo=rust&logoColor=white)](https://www.rust-lang.org/)
+[![Ratatui](https://img.shields.io/badge/Ratatui-TUI-00B4D8)](https://ratatui.rs/)
+[![Local first](https://img.shields.io/badge/local--first-practice-14B8A6)](#local-data)
+[![AI ready](https://img.shields.io/badge/AI-Codex%20%2B%20Claude-111827)](#commands)
+[![crates.io](https://img.shields.io/crates/v/practicode?logo=rust)](https://crates.io/crates/practicode)
+[![npm](https://img.shields.io/npm/v/practicode?logo=npm)](https://www.npmjs.com/package/practicode)
+[![CI](https://github.com/baba9811/practicode/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/baba9811/practicode/actions/workflows/ci.yml)
+[![Socket.dev package health](https://img.shields.io/badge/Socket.dev-package%20health-5E69EE)](https://socket.dev/npm/package/practicode)
 
 Personal coding practice, right in your terminal.
 
