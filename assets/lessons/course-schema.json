@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://practicode.local/schemas/course.schema.json",
+  "title": "Practicode Executable Course",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "runtime", "lessons"],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "runtime": {
+      "enum": ["python", "ts", "java", "rust"]
+    },
+    "lessons": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/lesson"
+      }
+    }
+  },
+  "$defs": {
+    "lesson": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "aliases",
+        "track",
+        "kind",
+        "level",
+        "title",
+        "body",
+        "example",
+        "starter",
+        "cases",
+        "refs"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "track": {
+          "enum": ["core", "lab"]
+        },
+        "kind": {
+          "enum": ["lesson", "checkpoint", "capstone"]
+        },
+        "level": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "body": {
+          "type": "string",
+          "minLength": 1
+        },
+        "example": {
+          "type": "string",
+          "minLength": 1
+        },
+        "starter": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/case"
+          }
+        },
+        "refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://"
+          }
+        }
+      }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input", "output"],
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "output": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

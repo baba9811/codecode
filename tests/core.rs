@@ -3,16 +3,16 @@ mod common;
 use common::{tmp_root, two_problem_bank};
 use practicode::{
     core::{
-        AppState, HistoryItem, LANGUAGES, Settings, ensure_submission, ensure_syntax_submission,
-        judge, judge_path, load_bank, load_state, localized, next_problem, parse_language_list,
-        parse_ui_language_list, problem_by_id, record_pass, render_problem, render_problem_tui,
-        render_syntax_lesson, save_bank, save_state, syntax_cases, syntax_lessons_for,
-        syntax_progress_count,
+        AppState, HistoryItem, LANGUAGES, Settings, SyntaxKind, SyntaxTrack, ensure_submission,
+        ensure_syntax_submission, judge, judge_path, load_bank, load_state, localized,
+        next_problem, parse_language_list, parse_ui_language_list, problem_by_id, record_pass,
+        render_problem, render_problem_tui, render_syntax_lesson, save_bank, save_state,
+        syntax_cases, syntax_lessons_for, syntax_progress_count,
     },
     process::which,
     text::render_markdown_plain,
 };
-use std::{fs, process::Command};
+use std::{collections::HashSet, fs, process::Command};
 
 #[test]
 fn load_state_uses_first_problem_when_state_file_is_missing() {
@@ -524,6 +524,77 @@ fn syntax_curriculum_covers_basic_to_advanced_for_every_supported_language() {
                 .count(),
             0
         );
+    }
+}
+
+#[test]
+fn embedded_courses_preserve_every_existing_lesson() {
+    assert_eq!(syntax_lessons_for("python").len(), 25);
+    assert_eq!(syntax_lessons_for("ts").len(), 28);
+    assert_eq!(syntax_lessons_for("java").len(), 28);
+    assert_eq!(syntax_lessons_for("rust").len(), 29);
+
+    let mut all_ids = HashSet::new();
+    for language in LANGUAGES {
+        let lessons = syntax_lessons_for(language);
+        assert!(lessons.iter().all(|lesson| lesson.language == *language));
+        assert!(lessons.iter().all(|lesson| !lesson.id.is_empty()));
+        assert_eq!(
+            lessons
+                .iter()
+                .map(|lesson| lesson.id)
+                .collect::<HashSet<_>>()
+                .len(),
+            lessons.len()
+        );
+        for lesson in lessons {
+            assert!(
+                all_ids.insert(lesson.id),
+                "duplicate lesson ID: {}",
+                lesson.id
+            );
+            assert!(matches!(lesson.track, SyntaxTrack::Core | SyntaxTrack::Lab));
+            assert!(matches!(
+                lesson.kind,
+                SyntaxKind::Lesson | SyntaxKind::Checkpoint | SyntaxKind::Capstone
+            ));
+            assert!(!lesson.example.trim().is_empty(), "{} example", lesson.id);
+            assert!(
+                !lesson.exercise.starter.trim().is_empty(),
+                "{} starter",
+                lesson.id
+            );
+            assert!(!lesson.refs.is_empty(), "{} refs", lesson.id);
+            assert!(
+                lesson.refs.iter().all(|url| url.starts_with("https://")),
+                "{} refs",
+                lesson.id
+            );
+        }
+    }
+    assert_eq!(all_ids.len(), 110);
+}
+
+#[test]
+fn embedded_course_assets_use_the_versioned_contract() {
+    for (runtime, path) in [
+        ("python", "assets/lessons/python/course.json"),
+        ("ts", "assets/lessons/typescript/course.json"),
+        ("java", "assets/lessons/java/course.json"),
+        ("rust", "assets/lessons/rust/course.json"),
+    ] {
+        let catalog: serde_json::Value =
+            serde_json::from_str(&fs::read_to_string(path).unwrap()).unwrap();
+        assert_eq!(catalog["schema_version"], 1);
+        assert_eq!(catalog["runtime"], runtime);
+        for lesson in catalog["lessons"].as_array().unwrap() {
+            assert!(lesson["aliases"].is_array());
+            assert!(matches!(lesson["track"].as_str(), Some("core" | "lab")));
+            assert!(matches!(
+                lesson["kind"].as_str(),
+                Some("lesson" | "checkpoint" | "capstone")
+            ));
+        }
     }
 }
 
