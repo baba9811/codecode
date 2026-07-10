@@ -52,6 +52,8 @@ If the new application root has no state or problem bank, copy legacy data non-d
 
 Never overwrite a destination file and never delete legacy data. If the destination already has state or a bank, skip migration entirely to avoid merging two histories. Migration failure stops startup with source and destination context rather than silently starting with empty data.
 
+If the legacy metadata directory already is the resolved global root, keep its metadata in place and do not infer that sibling `problems/` or `submissions/` directories belong to practicode. Users migrating that uncommon home-directory layout can opt into copying by selecting a separate empty `PRACTICODE_HOME`.
+
 ## AI Commands
 
 All Codex command paths use the resolved application root as `--cd` and process working directory. Add `--skip-git-repo-check` because an application data directory is intentionally not a Git repository. Preserve the existing `workspace-write` sandbox for generation and `read-only` sandbox for coaching prompts.

@@ -32,13 +32,6 @@ Inside the TUI:
 }
 
 pub fn run_cli() -> Result<()> {
-    let launch_dir = env::current_dir().context("read current directory")?;
-    let root = resolve_data_root(
-        env::var_os("PRACTICODE_HOME"),
-        env::var_os("HOME"),
-        env::var_os("USERPROFILE"),
-    )?;
-    migrate_legacy_data(&launch_dir, &root)?;
     let args = env::args().skip(1).collect::<Vec<_>>();
     if args
         .iter()
@@ -54,6 +47,17 @@ pub fn run_cli() -> Result<()> {
         println!("practicode {}", update::CURRENT_VERSION);
         return Ok(());
     }
+
+    let launch_dir = env::current_dir().context("read current directory")?;
+    let root = absolute_data_root(
+        &launch_dir,
+        resolve_data_root(
+            env::var_os("PRACTICODE_HOME"),
+            env::var_os("HOME"),
+            env::var_os("USERPROFILE"),
+        )?,
+    );
+    migrate_legacy_data(&launch_dir, &root)?;
     if args.iter().any(|arg| arg == "--smoke") {
         let bank = core::load_bank(&root)?;
         let state = core::load_state(&root, &bank)?;
@@ -99,6 +103,14 @@ fn resolve_data_root(
     bail!("cannot find a user home directory; set PRACTICODE_HOME")
 }
 
+fn absolute_data_root(launch_dir: &Path, root: PathBuf) -> PathBuf {
+    if root.is_absolute() {
+        root
+    } else {
+        launch_dir.join(root)
+    }
+}
+
 fn migrate_legacy_data(launch_dir: &Path, root: &Path) -> Result<()> {
     let legacy_metadata = launch_dir.join(".practicode");
     if !legacy_metadata.join(core::STATE_PATH).exists()
@@ -108,17 +120,16 @@ fn migrate_legacy_data(launch_dir: &Path, root: &Path) -> Result<()> {
     }
 
     let same_metadata = same_existing_path(&legacy_metadata, root);
-    if !same_metadata
-        && (root.join(core::STATE_PATH).exists() || root.join(core::BANK_PATH).exists())
-    {
+    if same_metadata {
+        return Ok(());
+    }
+    if root.join(core::STATE_PATH).exists() || root.join(core::BANK_PATH).exists() {
         return Ok(());
     }
 
     fs::create_dir_all(root).with_context(|| format!("create data root {}", root.display()))?;
-    if !same_metadata {
-        for name in [core::STATE_PATH, core::BANK_PATH, core::PROBLEM_NOTES_PATH] {
-            copy_file_if_missing(&legacy_metadata.join(name), &root.join(name))?;
-        }
+    for name in [core::STATE_PATH, core::BANK_PATH, core::PROBLEM_NOTES_PATH] {
+        copy_file_if_missing(&legacy_metadata.join(name), &root.join(name))?;
     }
     for name in ["problems", "submissions"] {
         copy_tree_missing(&launch_dir.join(name), &root.join(name))?;
@@ -255,6 +266,14 @@ mod tests {
     }
 
     #[test]
+    fn relative_data_root_is_resolved_from_the_launch_directory() {
+        assert_eq!(
+            absolute_data_root(Path::new("/launch"), PathBuf::from("data")),
+            PathBuf::from("/launch/data")
+        );
+    }
+
+    #[test]
     fn legacy_migration_copies_user_data_without_cache_or_overwrite() {
         let launch = temp_root("legacy-copy-launch");
         let root = temp_root("legacy-copy-root");
@@ -326,7 +345,7 @@ mod tests {
     }
 
     #[test]
-    fn legacy_migration_handles_metadata_already_at_the_destination() {
+    fn legacy_migration_does_not_copy_siblings_when_metadata_is_already_global() {
         let launch = temp_root("legacy-same-root");
         let root = launch.join(".practicode");
         fs::create_dir_all(&root).unwrap();
@@ -342,14 +361,8 @@ mod tests {
 
         migrate_legacy_data(&launch, &root).unwrap();
 
-        assert_eq!(
-            fs::read_to_string(root.join("problems/INDEX.md")).unwrap(),
-            "index"
-        );
-        assert_eq!(
-            fs::read_to_string(root.join("submissions/002-echo/solution.py")).unwrap(),
-            "print('echo')"
-        );
+        assert!(!root.join("problems").exists());
+        assert!(!root.join("submissions").exists());
 
         fs::remove_dir_all(launch).unwrap();
     }

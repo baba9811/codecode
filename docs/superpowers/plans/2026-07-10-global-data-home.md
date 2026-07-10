@@ -121,7 +121,7 @@ assert_eq!(
 assert!(resolve_data_root(None, None, None).unwrap_err().to_string().contains("PRACTICODE_HOME"));
 ```
 
-Use unique temporary roots to verify migration copies state, bank, notes, `problems/`, and `submissions/`; excludes `.practicode/build/`; keeps an existing destination note unchanged; skips a distinct destination that already contains state; and handles the case where the legacy metadata directory already equals the new root. Remove fixtures at each test's end.
+Use unique temporary roots to verify migration copies state, bank, notes, `problems/`, and `submissions/`; excludes `.practicode/build/`; keeps an existing destination note unchanged; skips a distinct destination that already contains state; and does not copy ambiguous sibling folders when the legacy metadata directory already equals the new root. Remove fixtures at each test's end.
 
 - [ ] **Step 2: Run unit tests to verify RED**
 
