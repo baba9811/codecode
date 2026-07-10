@@ -339,6 +339,30 @@ pub fn syntax_progress_count(state: &AppState, language: &str) -> (usize, usize)
     (completed, lessons.len())
 }
 
+pub(crate) fn syntax_core_progress_count(state: &AppState, language: &str) -> (usize, usize) {
+    let language = normalize_language(language);
+    let lessons = syntax_lessons_for(&language);
+    syntax_core_progress_count_for_lessons(state, &language, &lessons)
+}
+
+fn syntax_core_progress_count_for_lessons(
+    state: &AppState,
+    language: &str,
+    lessons: &[&SyntaxLesson],
+) -> (usize, usize) {
+    let total = lessons
+        .iter()
+        .filter(|lesson| lesson.track == SyntaxTrack::Core)
+        .count();
+    let completed = lessons
+        .iter()
+        .filter(|lesson| {
+            lesson.track == SyntaxTrack::Core && syntax_lesson_completed(state, language, lesson.id)
+        })
+        .count();
+    (completed, total)
+}
+
 pub fn syntax_lesson_completed(state: &AppState, language: &str, lesson_id: &str) -> bool {
     let language = normalize_language(language);
     if state
@@ -576,32 +600,35 @@ fn localized_syntax_level(level: &'static str, ui_language: &str) -> &'static st
     }
 }
 
-pub fn localized_syntax_exercise_prompt(lesson: &SyntaxLesson, ui_language: &str) -> String {
+pub(crate) fn localized_syntax_exercise_prompt(lesson: &SyntaxLesson, ui_language: &str) -> String {
     required_lesson_copy_for(lesson, ui_language)
         .exercise_prompt
         .clone()
 }
 
-pub fn localized_syntax_title(lesson: &SyntaxLesson, ui_language: &str) -> String {
+pub(crate) fn localized_syntax_title(lesson: &SyntaxLesson, ui_language: &str) -> String {
     required_lesson_copy_for(lesson, ui_language).title.clone()
 }
 
-pub fn localized_syntax_objective(lesson: &SyntaxLesson, ui_language: &str) -> String {
+pub(crate) fn localized_syntax_objective(lesson: &SyntaxLesson, ui_language: &str) -> String {
     let copy = required_lesson_copy_for(lesson, ui_language);
     lesson_copy_or(&copy.objective, &copy.concept)
 }
 
-pub fn localized_syntax_language_delta(lesson: &SyntaxLesson, ui_language: &str) -> String {
+pub(crate) fn localized_syntax_language_delta(lesson: &SyntaxLesson, ui_language: &str) -> String {
     let copy = required_lesson_copy_for(lesson, ui_language);
     lesson_copy_or(&copy.language_delta, &copy.concept)
 }
 
-pub fn localized_syntax_prediction_prompt(lesson: &SyntaxLesson, ui_language: &str) -> String {
+pub(crate) fn localized_syntax_prediction_prompt(
+    lesson: &SyntaxLesson,
+    ui_language: &str,
+) -> String {
     let copy = required_lesson_copy_for(lesson, ui_language);
     lesson_copy_or(&copy.prediction_prompt, &copy.exercise_prompt)
 }
 
-pub fn localized_syntax_transfer_trap(lesson: &SyntaxLesson, ui_language: &str) -> String {
+pub(crate) fn localized_syntax_transfer_trap(lesson: &SyntaxLesson, ui_language: &str) -> String {
     let copy = required_lesson_copy_for(lesson, ui_language);
     if !copy.transfer_trap.trim().is_empty() {
         copy.transfer_trap.clone()
@@ -739,6 +766,26 @@ fn normalize_syntax_ids_for(language: &str, ids: &[String]) -> Vec<String> {
 mod tests {
     use super::*;
 
+    fn lesson(id: &'static str, track: SyntaxTrack) -> SyntaxLesson {
+        SyntaxLesson {
+            id,
+            aliases: &[],
+            language: "rust",
+            track,
+            kind: SyntaxKind::Lesson,
+            level: "basic",
+            title: id,
+            body: id,
+            example: "fn main() {}",
+            exercise: SyntaxExercise {
+                prompt: id,
+                starter: id,
+                cases: &[],
+            },
+            refs: &[],
+        }
+    }
+
     fn valid_course() -> serde_json::Value {
         serde_json::json!({
             "schema_version": 1,
@@ -856,6 +903,51 @@ mod tests {
         assert_eq!(
             normalized_current_syntax_lesson_id(&lessons, "old-lesson-1"),
             Some("lesson-1".to_string())
+        );
+    }
+
+    #[test]
+    fn core_progress_count_excludes_labs_from_done_and_total() {
+        let core_done = lesson("core-done", SyntaxTrack::Core);
+        let core_new = lesson("core-new", SyntaxTrack::Core);
+        let lab_done = lesson("lab-done", SyntaxTrack::Lab);
+        let lessons = [&core_done, &core_new, &lab_done];
+        let mut state = AppState {
+            current_problem: "001-hello-world".to_string(),
+            settings: Settings::default(),
+            solved: Vec::new(),
+            history: Vec::new(),
+            suggested_next_difficulty: "easy".to_string(),
+            syntax_progress: HashMap::new(),
+            current_syntax_lesson: HashMap::new(),
+            syntax_mastery: HashMap::new(),
+            completed_syntax_courses: Vec::new(),
+        };
+        state.syntax_mastery.insert(
+            "rust".to_string(),
+            HashMap::from([
+                (
+                    "core-done".to_string(),
+                    LessonMastery {
+                        stage: MasteryStage::Practiced,
+                        review_due_at: 1,
+                        attempts: 1,
+                    },
+                ),
+                (
+                    "lab-done".to_string(),
+                    LessonMastery {
+                        stage: MasteryStage::Mastered,
+                        review_due_at: 1,
+                        attempts: 3,
+                    },
+                ),
+            ]),
+        );
+
+        assert_eq!(
+            syntax_core_progress_count_for_lessons(&state, "rust", &lessons),
+            (1, 2)
         );
     }
 }

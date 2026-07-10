@@ -8,7 +8,7 @@ use practicode::{
         load_state, save_state, syntax_lessons_for,
     },
     process::which,
-    tui::{LearningStep, LearningView, PracticodeApp, TextEditor},
+    tui::{LearningStep, PracticodeApp, TextEditor},
 };
 use ratatui::{layout::Rect, style::Color};
 
@@ -478,6 +478,8 @@ fn run_in_learn_keeps_lesson_pane_visible() {
     let root = tmp_root("learn-run-keeps-lesson");
     let mut app = PracticodeApp::new(root).unwrap();
     app.handle_command_for_test("learn python").unwrap();
+    app.handle_command_for_test("next").unwrap();
+    app.handle_command_for_test("next").unwrap();
     app.handle_command_for_test("run").unwrap();
     assert!(app.output_for_test().contains("Exercise"));
     assert!(app.output_for_test().contains("print and stdout"));
@@ -903,10 +905,6 @@ fn guided_session_queues_two_due_reviews_before_the_next_new_core_lesson() {
     let mut app = PracticodeApp::new(root).unwrap();
     app.handle_command_for_test("learn python").unwrap();
 
-    assert_eq!(
-        app.learning_queue_for_test(),
-        ["py-variables", "py-numbers", "py-strings"]
-    );
     assert_eq!(app.learning_step_for_test(), LearningStep::Review);
     assert!(app.output_for_test().contains("Review"));
     assert!(app.status_text_for_test().contains("py-variables"));
@@ -927,6 +925,98 @@ fn guided_session_next_cannot_bypass_an_unpassed_exercise() {
     assert_eq!(app.learning_step_for_test(), LearningStep::Exercise);
 }
 
+fn assert_guided_run_waits_for_exercise(name: &str, use_f5: bool) {
+    if which("python3").or_else(|| which("python")).is_none() {
+        return;
+    }
+    let root = tmp_root(name);
+    let mut app = PracticodeApp::new(root.clone()).unwrap();
+    app.handle_command_for_test("learn python").unwrap();
+    let lesson = syntax_lessons_for("python")[0];
+    let path = ensure_syntax_submission(&root, lesson).unwrap();
+    std::fs::write(&path, "print('Ada:7')\n").unwrap();
+    app.handle_command_for_test("code").unwrap();
+
+    let run = |app: &mut PracticodeApp| {
+        if use_f5 {
+            app.handle_key_for_test(KeyEvent::new(KeyCode::F(5), KeyModifiers::NONE))
+        } else {
+            app.handle_command_for_test("run")
+        }
+    };
+
+    run(&mut app).unwrap();
+    assert_eq!(app.learning_step_for_test(), LearningStep::Delta);
+    assert!(
+        app.learn_result_for_test()
+            .contains("Next: use /next until Exercise, then /run or F5.")
+    );
+    let bank = load_bank(&root).unwrap();
+    assert!(
+        load_state(&root, &bank)
+            .unwrap()
+            .syntax_mastery
+            .get("python")
+            .is_none_or(|mastery| !mastery.contains_key("py-output"))
+    );
+    assert_eq!(std::fs::read_to_string(&path).unwrap(), "print('Ada:7')\n");
+
+    app.handle_command_for_test("next").unwrap();
+    run(&mut app).unwrap();
+    assert_eq!(app.learning_step_for_test(), LearningStep::Predict);
+    assert!(
+        load_state(&root, &bank)
+            .unwrap()
+            .syntax_mastery
+            .get("python")
+            .is_none_or(|mastery| !mastery.contains_key("py-output"))
+    );
+    assert_eq!(std::fs::read_to_string(&path).unwrap(), "print('Ada:7')\n");
+
+    app.handle_command_for_test("next").unwrap();
+    assert_eq!(app.learning_step_for_test(), LearningStep::Exercise);
+    run(&mut app).unwrap();
+    assert_eq!(app.learning_step_for_test(), LearningStep::Reflect);
+    assert_eq!(
+        load_state(&root, &bank).unwrap().syntax_mastery["python"]["py-output"].stage,
+        MasteryStage::Practiced
+    );
+}
+
+#[test]
+fn guided_run_waits_for_exercise_even_when_code_already_passes() {
+    assert_guided_run_waits_for_exercise("guided-run-gate", false);
+}
+
+#[test]
+fn guided_f5_waits_for_exercise_even_when_code_already_passes() {
+    assert_guided_run_waits_for_exercise("guided-f5-gate", true);
+}
+
+#[test]
+fn manually_browsed_lessons_remain_runnable() {
+    if which("python3").or_else(|| which("python")).is_none() {
+        return;
+    }
+    let root = tmp_root("manual-lesson-run");
+    let mut app = PracticodeApp::new(root.clone()).unwrap();
+    app.handle_command_for_test("learn python").unwrap();
+    app.handle_command_for_test("back").unwrap();
+    let lesson = syntax_lessons_for("python")[0];
+    let path = ensure_syntax_submission(&root, lesson).unwrap();
+    std::fs::write(path, "print('Ada:7')\n").unwrap();
+    app.handle_command_for_test("code").unwrap();
+
+    app.handle_command_for_test("run").unwrap();
+
+    assert!(app.learn_result_for_test().contains("PASS 1/1"));
+    let bank = load_bank(&root).unwrap();
+    assert_eq!(
+        load_state(&root, &bank).unwrap().syntax_mastery["python"]["py-output"].stage,
+        MasteryStage::Practiced
+    );
+}
+
 #[test]
 fn guided_session_records_each_judge_and_only_a_pass_reaches_reflect() {
     if which("python3").or_else(|| which("python")).is_none() {
@@ -935,6 +1025,8 @@ fn guided_session_records_each_judge_and_only_a_pass_reaches_reflect() {
     let root = tmp_root("guided-session-judge-flow");
     let mut app = PracticodeApp::new(root.clone()).unwrap();
     app.handle_command_for_test("learn python").unwrap();
+    app.handle_command_for_test("next").unwrap();
+    app.handle_command_for_test("next").unwrap();
 
     app.handle_command_for_test("run").unwrap();
     assert_eq!(app.learning_step_for_test(), LearningStep::Exercise);
@@ -991,16 +1083,19 @@ fn learning_function_keys_work_while_the_editor_has_focus() {
     let mut app = PracticodeApp::new(root).unwrap();
     app.handle_command_for_test("learn python").unwrap();
 
-    assert_eq!(app.learning_view_for_test(), LearningView::Code);
+    let code_status = app.status_text_for_test();
     app.handle_key_for_test(KeyEvent::new(KeyCode::F(6), KeyModifiers::NONE))
         .unwrap();
-    assert_eq!(app.learning_view_for_test(), LearningView::Result);
+    assert_ne!(app.status_text_for_test(), code_status);
     app.handle_key_for_test(KeyEvent::new(KeyCode::F(1), KeyModifiers::NONE))
         .unwrap();
     assert!(app.output_for_test().contains("Help"));
 
     app.handle_command_for_test("code").unwrap();
-    assert_eq!(app.learning_view_for_test(), LearningView::Code);
+    assert_eq!(app.status_text_for_test(), code_status);
+    app.handle_command_for_test("next").unwrap();
+    app.handle_command_for_test("next").unwrap();
+    assert_eq!(app.learning_step_for_test(), LearningStep::Exercise);
     app.handle_key_for_test(KeyEvent::new(KeyCode::F(5), KeyModifiers::NONE))
         .unwrap();
     assert!(app.learn_result_for_test().contains("FAIL"));

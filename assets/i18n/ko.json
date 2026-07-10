@@ -120,6 +120,7 @@
   "learning_step_reflect": "회고",
   "learning_step_complete": "세션 완료",
   "learning_complete_body": "오늘의 안내 세션을 마쳤습니다. /next로 레슨을 둘러보거나 /home에서 다른 모드를 선택하세요.",
+  "learning_run_gate": "다음: 실습 단계까지 /next로 이동한 뒤 /run 또는 F5를 사용하세요.",
   "progress_title": "학습 진도",
   "progress_language": "언어",
   "progress_core": "핵심",

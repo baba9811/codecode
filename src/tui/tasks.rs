@@ -9,6 +9,13 @@ impl PracticodeApp {
             return Ok(());
         }
         self.save_code()?;
+        if self.mode == AppMode::Learn {
+            self.learning_session.mark_assisted();
+        }
+        #[cfg(test)]
+        if self.ai_spawn_disabled {
+            return Ok(());
+        }
         let label = normalize_ai_provider(&self.state.settings.ai_provider);
         self.start_busy("ai", &format!("{label} is thinking"));
         let root = self.root.clone();
@@ -324,6 +331,15 @@ impl PracticodeApp {
 mod tests {
     use super::*;
 
+    fn learning_app(name: &str) -> PracticodeApp {
+        let root = crate::process::unique_temp_path(name, "dir");
+        std::fs::create_dir_all(&root).unwrap();
+        let mut app = PracticodeApp::new(root).unwrap();
+        app.ai_spawn_disabled = true;
+        app.handle_command("learn python").unwrap();
+        app
+    }
+
     #[test]
     fn update_check_refreshes_visible_checking_notice() {
         let root = crate::process::unique_temp_path("practicode-update-test", "dir");
@@ -337,5 +353,70 @@ mod tests {
         app.check_update();
 
         assert_eq!(app.output, ui_text("en", "update_check_disabled"));
+    }
+
+    #[test]
+    fn every_lesson_ai_command_marks_the_live_attempt_at_start() {
+        for (index, command) in ["hint", "hint one clue", "ask", "ask why", "ai explain this"]
+            .into_iter()
+            .enumerate()
+        {
+            let mut app = learning_app(&format!("practicode-ai-command-{index}"));
+
+            app.handle_command(command).unwrap();
+
+            assert!(app.learning_session.assisted(), "{command}");
+            assert!(app.task_rx.is_none(), "{command}");
+        }
+    }
+
+    #[test]
+    fn lesson_ai_at_reflect_cannot_leak_into_the_next_item() {
+        let root = crate::process::unique_temp_path("practicode-ai-boundary", "dir");
+        std::fs::create_dir_all(&root).unwrap();
+        let bank = load_bank(&root).unwrap();
+        let mut state = load_state(&root, &bank).unwrap();
+        state.syntax_mastery.insert(
+            "python".to_string(),
+            HashMap::from([(
+                "py-output".to_string(),
+                crate::core::LessonMastery {
+                    stage: crate::core::MasteryStage::Practiced,
+                    review_due_at: 1,
+                    attempts: 1,
+                },
+            )]),
+        );
+        save_state(&root, &state).unwrap();
+        let mut app = PracticodeApp::new(root).unwrap();
+        app.ai_spawn_disabled = true;
+        app.handle_command("learn python").unwrap();
+        app.handle_command("next").unwrap();
+        app.handle_command("next").unwrap();
+        app.handle_command("ai explain this").unwrap();
+        assert!(app.learning_session.assisted());
+        app.learning_session.finish_judge(true);
+        assert!(!app.learning_session.assisted());
+
+        app.handle_command("hint reflect").unwrap();
+        assert!(!app.learning_session.assisted());
+        app.handle_command("next").unwrap();
+
+        assert_eq!(
+            app.learning_session.current_lesson_id(),
+            Some("py-variables")
+        );
+        assert!(!app.learning_session.assisted());
+    }
+
+    #[test]
+    fn problem_ai_does_not_mark_a_suspended_lesson_attempt() {
+        let mut app = learning_app("practicode-ai-suspended-lesson");
+        app.handle_command("home").unwrap();
+
+        app.handle_command("ai explain this problem").unwrap();
+
+        assert!(!app.learning_session.assisted());
+        assert!(app.task_rx.is_none());
     }
 }

@@ -17,7 +17,7 @@ pub enum LearningStep {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum LearningView {
+pub(super) enum LearningView {
     Lesson,
     Code,
     Result,
@@ -125,7 +125,8 @@ impl LearningSession {
         self.queue.get(self.index).map(|item| item.lesson_id)
     }
 
-    pub(super) fn queue_ids(&self) -> Vec<&'static str> {
+    #[cfg(test)]
+    fn queue_ids(&self) -> Vec<&'static str> {
         self.queue.iter().map(|item| item.lesson_id).collect()
     }
 
@@ -133,8 +134,23 @@ impl LearningSession {
         self.assisted
     }
 
+    pub(super) fn can_judge(&self) -> bool {
+        !self.guided || self.step == LearningStep::Exercise
+    }
+
     pub(super) fn mark_assisted(&mut self) {
-        self.assisted = true;
+        if self.guided
+            && self.queue.get(self.index).is_some()
+            && matches!(
+                self.step,
+                LearningStep::Review
+                    | LearningStep::Delta
+                    | LearningStep::Predict
+                    | LearningStep::Exercise
+            )
+        {
+            self.assisted = true;
+        }
     }
 
     pub(super) fn finish_judge(&mut self, passed: bool) {
@@ -164,6 +180,7 @@ impl LearningSession {
             }
             LearningStep::Exercise => LearningAdvance::Blocked,
             LearningStep::Reflect if self.index + 1 < self.queue.len() => {
+                self.assisted = false;
                 self.index += 1;
                 let item = self.queue[self.index];
                 self.step = if item.review {
@@ -175,11 +192,15 @@ impl LearningSession {
                 LearningAdvance::Item(item.lesson_id)
             }
             LearningStep::Reflect => {
+                self.assisted = false;
                 self.step = LearningStep::Complete;
                 self.view = LearningView::Lesson;
                 LearningAdvance::Complete
             }
-            LearningStep::Complete => LearningAdvance::Manual,
+            LearningStep::Complete => {
+                self.assisted = false;
+                LearningAdvance::Manual
+            }
         }
     }
 
@@ -284,10 +305,7 @@ pub(super) fn progress_text(state: &AppState, now: u64) -> String {
             })
             .count()
     };
-    let core = lessons
-        .iter()
-        .filter(|lesson| lesson.track == SyntaxTrack::Core)
-        .count();
+    let (_, core) = crate::core::syntax_core_progress_count(state, &language);
     let due = due_syntax_lesson_count(state, &language, now);
     let ui_language = &state.settings.ui_language;
     format!(
@@ -399,5 +417,154 @@ mod tests {
             state.syntax_mastery["rust"]["capstone"].stage,
             MasteryStage::Practiced
         );
+    }
+
+    #[test]
+    fn assistance_lives_only_until_the_current_item_judge_or_boundary() {
+        let queue = vec![
+            LearningItem {
+                lesson_id: "first",
+                review: false,
+            },
+            LearningItem {
+                lesson_id: "second",
+                review: false,
+            },
+        ];
+        let mut session = LearningSession {
+            guided: true,
+            queue,
+            index: 0,
+            step: LearningStep::Delta,
+            view: LearningView::Code,
+            assisted: false,
+        };
+
+        for step in [
+            LearningStep::Review,
+            LearningStep::Delta,
+            LearningStep::Predict,
+            LearningStep::Exercise,
+        ] {
+            session.step = step;
+            session.assisted = false;
+            session.mark_assisted();
+            assert!(session.assisted(), "{step:?}");
+        }
+        session.step = LearningStep::Delta;
+        session.assisted = false;
+        session.mark_assisted();
+        assert!(session.assisted());
+        assert!(matches!(session.advance(), LearningAdvance::Step));
+        assert_eq!(session.step(), LearningStep::Predict);
+        assert!(session.assisted());
+        assert!(matches!(session.advance(), LearningAdvance::Step));
+        assert_eq!(session.step(), LearningStep::Exercise);
+        assert!(session.assisted());
+
+        session.finish_judge(true);
+        assert_eq!(session.step(), LearningStep::Reflect);
+        assert!(!session.assisted());
+        session.mark_assisted();
+        assert!(!session.assisted());
+
+        session.assisted = true;
+        assert!(matches!(session.advance(), LearningAdvance::Item("second")));
+        assert!(!session.assisted());
+        session.step = LearningStep::Reflect;
+        session.assisted = true;
+        assert!(matches!(session.advance(), LearningAdvance::Complete));
+        assert!(!session.assisted());
+        session.assisted = true;
+        assert!(matches!(session.advance(), LearningAdvance::Manual));
+        assert!(!session.assisted());
+
+        let mut inactive = LearningSession::inactive();
+        inactive.mark_assisted();
+        assert!(!inactive.assisted());
+    }
+
+    #[test]
+    fn guided_judge_gate_allows_only_exercise_while_inactive_browsing_can_run() {
+        let mut session = LearningSession {
+            guided: true,
+            queue: vec![LearningItem {
+                lesson_id: "lesson",
+                review: false,
+            }],
+            index: 0,
+            step: LearningStep::Review,
+            view: LearningView::Code,
+            assisted: false,
+        };
+
+        for step in [
+            LearningStep::Review,
+            LearningStep::Delta,
+            LearningStep::Predict,
+            LearningStep::Reflect,
+            LearningStep::Complete,
+        ] {
+            session.step = step;
+            assert!(!session.can_judge(), "{step:?}");
+        }
+        session.step = LearningStep::Exercise;
+        assert!(session.can_judge());
+        assert!(LearningSession::inactive().can_judge());
+    }
+
+    #[test]
+    fn session_queue_orders_two_due_reviews_then_one_new_core_item() {
+        let mut state = state();
+        state.syntax_mastery.insert(
+            "python".to_string(),
+            [
+                ("py-output", 300),
+                ("py-variables", 100),
+                ("py-numbers", 200),
+            ]
+            .into_iter()
+            .map(|(id, review_due_at)| {
+                (
+                    id.to_string(),
+                    crate::core::LessonMastery {
+                        stage: MasteryStage::Practiced,
+                        review_due_at,
+                        attempts: 1,
+                    },
+                )
+            })
+            .collect(),
+        );
+
+        let session = LearningSession::start(&state, "python", 100_000);
+
+        assert_eq!(
+            session.queue_ids(),
+            ["py-variables", "py-numbers", "py-strings"]
+        );
+        assert_eq!(session.step(), LearningStep::Review);
+    }
+
+    #[test]
+    fn learning_view_cycles_code_result_lesson() {
+        let mut session = LearningSession {
+            guided: true,
+            queue: vec![LearningItem {
+                lesson_id: "lesson",
+                review: false,
+            }],
+            index: 0,
+            step: LearningStep::Delta,
+            view: LearningView::Code,
+            assisted: false,
+        };
+
+        session.cycle_view();
+        assert_eq!(session.view(), LearningView::Result);
+        session.cycle_view();
+        assert_eq!(session.view(), LearningView::Lesson);
+        session.cycle_view();
+        assert_eq!(session.view(), LearningView::Code);
     }
 }

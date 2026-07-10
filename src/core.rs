@@ -37,3 +37,8 @@ pub use progress::*;
 pub use render::*;
 pub use state::*;
 pub use syntax::*;
+pub(crate) use syntax::{
+    localized_syntax_exercise_prompt, localized_syntax_language_delta, localized_syntax_objective,
+    localized_syntax_prediction_prompt, localized_syntax_title, localized_syntax_transfer_trap,
+    syntax_core_progress_count,
+};

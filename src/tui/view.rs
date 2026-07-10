@@ -5,7 +5,7 @@ impl PracticodeApp {
         match self.home_choice {
             HomeChoice::Learn => {
                 let (done, total) =
-                    syntax_progress_count(&self.state, &self.state.settings.language);
+                    syntax_core_progress_count(&self.state, &self.state.settings.language);
                 let now = unix_time_now();
                 let due = crate::core::due_syntax_lesson_count(
                     &self.state,
@@ -616,6 +616,8 @@ mod tests {
     fn learn_result_keeps_lesson_and_splits_right_pane() {
         let mut app = PracticodeApp::new(tmp_root("learn-result-split")).unwrap();
         app.handle_command("learn python").unwrap();
+        app.handle_command("next").unwrap();
+        app.handle_command("next").unwrap();
         app.handle_command("run").unwrap();
 
         let backend = TestBackend::new(80, 24);

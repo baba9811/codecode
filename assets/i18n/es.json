@@ -120,6 +120,7 @@
   "learning_step_reflect": "Reflexión",
   "learning_step_complete": "Sesión completada",
   "learning_complete_body": "La sesión guiada de hoy está completa. Usa /next para explorar lecciones o /home para elegir otro modo.",
+  "learning_run_gate": "Siguiente: usa /next hasta Ejercicio y luego /run o F5.",
   "progress_title": "Progreso de aprendizaje",
   "progress_language": "Lenguaje",
   "progress_core": "Central",

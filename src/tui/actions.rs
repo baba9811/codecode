@@ -314,6 +314,12 @@ impl PracticodeApp {
         if self.mode != AppMode::Learn {
             self.action_learn("")?;
         }
+        if !self.learning_session.can_judge() {
+            self.learn_result =
+                ui_text(&self.state.settings.ui_language, "learning_run_gate").to_string();
+            self.show_current_syntax_lesson();
+            return Ok(());
+        }
         self.save_syntax_code()?;
         let lesson = current_syntax_lesson(&self.state, &self.state.settings.language);
         let path = ensure_syntax_submission(&self.root, lesson)?;
@@ -432,12 +438,6 @@ impl PracticodeApp {
     pub(super) fn action_progress(&mut self) {
         let output = progress_text(&self.state, unix_time_now());
         self.write_text_output(&output);
-    }
-
-    pub(super) fn mark_learning_assisted(&mut self) {
-        if self.mode == AppMode::Learn {
-            self.learning_session.mark_assisted();
-        }
     }
 
     pub(super) fn cycle_learning_view(&mut self) {
