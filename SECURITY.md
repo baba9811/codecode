@@ -4,7 +4,7 @@
 
 Report vulnerabilities through GitHub Security Advisories for this repository when available. If that is not available, open a minimal public issue asking for a private security contact and avoid posting exploit details.
 
-Do not include tokens, private prompts, `.env`, `.npmrc`, `.practicode/`, `problems/`, or `submissions/` contents in public reports.
+Do not include tokens, private prompts, `.env`, `.npmrc`, or `~/.practicode` contents in public reports.
 
 ## Scope
 

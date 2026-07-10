@@ -41,6 +41,8 @@ practicode
 
 The npm package ships no install lifecycle script. The launcher runs the locked Cargo build on first use if the binary is missing.
 
+User data is stored under `~/.practicode` by default, regardless of the directory where you run the command.
+
 <details>
 <summary>Cargo</summary>
 
@@ -134,7 +136,7 @@ If you do not want submissions to run directly on your host, use the npm launche
 practicode --docker
 ```
 
-The launcher builds a local `practicode-sandbox:<version>` image, then runs the TUI in Docker with the current directory mounted at `/workspace`. The container runs without network access, with a read-only root filesystem, a writable `/tmp`, dropped Linux capabilities, `no-new-privileges`, and CPU/memory/process limits. Your current directory is still writable so `.practicode/`, `problems/`, and `submissions/` can be saved.
+The launcher builds a local `practicode-sandbox:<version>` image, then runs the TUI in Docker. The current directory is mounted at `/workspace` for legacy-data migration, while the host data directory is mounted at `/data` so progress survives container removal. The container runs without network access, with a read-only root filesystem, a writable `/tmp`, dropped Linux capabilities, `no-new-privileges`, and CPU/memory/process limits.
 
 Install Docker first if needed:
 
@@ -218,17 +220,23 @@ See [docs/COMMANDS.md](docs/COMMANDS.md) for the full command list, aliases, AI 
 
 ## Local Data
 
-Generated problems and submissions stay local:
+Generated problems, settings, and submissions live in one user-data directory:
 
 | Path | Purpose |
 | --- | --- |
-| `.practicode/problem_bank.json` | Local/custom/generated problems |
-| `.practicode/problem_notes.md` | Optional personal problem-generation notes |
-| `.practicode/problem-state.json` | Current problem, history, and settings |
-| `problems/` | Generated problem markdown/index files |
-| `submissions/` | Your answer files |
+| `~/.practicode/problem_bank.json` | Local/custom/generated problems |
+| `~/.practicode/problem_notes.md` | Optional personal problem-generation notes |
+| `~/.practicode/problem-state.json` | Current problem, history, and settings |
+| `~/.practicode/problems/` | Generated problem markdown/index files |
+| `~/.practicode/submissions/` | Your answer files |
 
-Those paths are ignored by git.
+On Windows, `~` means `%USERPROFILE%`. Set `PRACTICODE_HOME` to use another directory:
+
+```bash
+PRACTICODE_HOME=/path/to/practicode-data practicode
+```
+
+When upgrading from `0.1.19` or earlier, launch `practicode` once from the old practice directory while the new data directory is empty. State, problems, and submissions are copied into the new location; the originals are not changed, and disposable build output is not copied.
 
 ## Safety
 
@@ -237,7 +245,7 @@ Those paths are ignored by git.
 - `/run` scrubs inherited environment variables and hides case input/expected output in failure logs.
 - `/hint`, AI-backed `/next`, and `/generate` send the current problem/submission context to the selected provider CLI.
 - `settings.ai_next_command` can run a custom shell command. Save only commands you trust.
-- Do not commit tokens, private prompts, `.env`, `.npmrc`, `.practicode/`, `problems/`, or `submissions/`.
+- Do not publish tokens, private prompts, `.env`, `.npmrc`, or the contents of your practicode data directory.
 
 Security reporting details live in [SECURITY.md](SECURITY.md).
 

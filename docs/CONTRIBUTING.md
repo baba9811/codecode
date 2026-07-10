@@ -10,7 +10,7 @@ Maintainer-only review and release steps live in [MAINTAINING.md](MAINTAINING.md
 - Small bug fixes, docs fixes, tests, and localization updates can go straight to a pull request.
 - For larger UI, AI-generation, storage, or packaging changes, open an issue first so the scope is clear.
 - Check [ARCHITECTURE.md](ARCHITECTURE.md) before adding commands, settings, provider behavior, or persisted state.
-- Do not commit local practice data from `.practicode/`, `problems/`, or `submissions/`.
+- Do not commit legacy practice data from `.practicode/`, `problems/`, or `submissions/`, or copy global `~/.practicode` data into the repository.
 - Do not include secrets, tokens, private prompts, or generated answer keys in docs or examples.
 
 ## Fork And Pull Request Flow
@@ -91,15 +91,15 @@ make test
 
 ## Problem Authoring
 
-AI generation reads [problem-authoring-notes.md](problem-authoring-notes.md) every time it creates a problem.
+Use [problem-authoring-notes.md](problem-authoring-notes.md) when changing problem-generation behavior.
 
-Local generated data stays ignored by git:
+Runtime paths are relative to `PRACTICODE_HOME` or `~/.practicode`:
 
 | Path | Purpose |
 | --- | --- |
-| `.practicode/problem_bank.json` | Local/custom/generated problems |
-| `.practicode/problem_notes.md` | Personal problem-generation notes |
-| `.practicode/problem-state.json` | Current problem, history, settings |
+| `problem_bank.json` | Local/custom/generated problems |
+| `problem_notes.md` | Personal problem-generation notes |
+| `problem-state.json` | Current problem, history, settings |
 | `problems/` | Generated problem markdown/index files |
 | `submissions/` | Local answer files |
 

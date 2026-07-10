@@ -10,7 +10,7 @@ Use this when AI creates a new `/next` problem.
 - Make examples small enough to verify by hand.
 - Public examples should illustrate the format and one or two edge cases, not exhaust the solution.
 - Include enough hidden cases to catch empty/min/max, duplicates, ties, ordering, and whitespace mistakes.
-- Keep answers for `python`, `ts`, `java`, and `rust` in `.practicode/problem_bank.json`; never put answers in `README.md`.
+- Keep answers for `python`, `ts`, `java`, and `rust` in `problem_bank.json` at the application data root; never put answers in `README.md`.
 - Do not create `solution.*`, `test_solution.*`, or answer-revealing files inside `problems/NNN-slug/`.
   The learner's editable code belongs under `submissions/`, and answer keys belong only in the local bank or built-in data.
 
@@ -22,7 +22,7 @@ Use this when AI creates a new `/next` problem.
 
 ## Local Preferences
 
-If `.practicode/problem_notes.md` exists, read it too. That file is for personal themes like:
+If `problem_notes.md` exists at the application data root, read it too. That file is for personal themes like:
 
 ```text
 Prefer Korean statements.

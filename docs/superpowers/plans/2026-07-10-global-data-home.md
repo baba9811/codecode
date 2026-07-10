@@ -317,7 +317,6 @@ git commit -m "fix: persist Docker practice data globally"
 
 **Files:**
 - Modify: `README.md`
-- Modify: `AGENTS.md`
 - Modify: `SECURITY.md`
 - Modify: `docs/ARCHITECTURE.md`
 - Modify: `docs/CONTRIBUTING.md`
@@ -338,14 +337,14 @@ Document this table in the README:
 ~/.practicode/submissions/       learner code
 ```
 
-Explain that `PRACTICODE_HOME` overrides the directory, legacy data is copied only when the global destination is empty, and originals remain. Update Docker copy to describe the `/data` mount. Change authoring instructions to direct metadata filenames because AI runs with the application root as its working directory. Keep `.gitignore` legacy entries so old workspaces remain protected.
+Explain that `PRACTICODE_HOME` overrides the directory, legacy data is copied only when the global destination is empty, and originals remain. Update Docker copy to describe the `/data` mount. Change packaged authoring documentation to direct metadata filenames because AI runs with the application root as its working directory. Keep repository-only `AGENTS.md` rules and `.gitignore` legacy entries unchanged so old source-checkout workflows remain protected.
 
 - [ ] **Step 2: Check for stale tracked documentation**
 
 Run:
 
 ```bash
-rg -n "current directory.*saved|\.practicode/problem_(bank|notes)|\.practicode/problem-state|root.join\(\"\.practicode/build\"" README.md AGENTS.md SECURITY.md docs src --glob '!docs/superpowers/**'
+rg -n "current directory.*saved|\.practicode/problem_(bank|notes)|\.practicode/problem-state|root.join\(\"\.practicode/build\"" README.md SECURITY.md docs src --glob '!docs/superpowers/**'
 ```
 
 Expected: no stale runtime-layout references; legacy migration text may still name old paths explicitly.
@@ -353,7 +352,7 @@ Expected: no stale runtime-layout references; legacy migration text may still na
 - [ ] **Step 3: Commit**
 
 ```bash
-git add README.md AGENTS.md SECURITY.md docs/ARCHITECTURE.md docs/CONTRIBUTING.md docs/problem-authoring-notes.md
+git add README.md SECURITY.md docs/ARCHITECTURE.md docs/CONTRIBUTING.md docs/problem-authoring-notes.md
 git commit -m "docs: explain global practicode storage"
 ```
 

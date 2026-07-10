@@ -1,6 +1,6 @@
 # Architecture
 
-Practicode is local-first: user data stays under `.practicode/`, `problems/`, and `submissions/`.
+Practicode is local-first: user data stays under `PRACTICODE_HOME` or `~/.practicode` by default.
 
 ## Source Layout
 
@@ -15,6 +15,7 @@ Practicode is local-first: user data stays under `.practicode/`, `problems/`, an
 - `src/core/progress.rs` owns give-up/next/previous/pass history transitions.
 - `src/core/problem_files.rs` owns generated problem README/index file writes.
 - `src/core/profile.rs` owns user-profile defaults and normalization helpers.
+- `src/lib.rs` resolves the application data root and migrates legacy current-directory data before loading the TUI.
 - `src/tui.rs` owns the `PracticodeApp` state shell, construction, run loop, and test accessors. Keep new TUI behavior in nested `src/tui/` modules.
 - `src/tui/actions.rs` owns user actions such as run, next, generate, language/theme/profile changes.
 - `src/tui/command_handlers.rs` owns slash-command routing.
