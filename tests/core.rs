@@ -343,6 +343,7 @@ fn judge_runs_python_solution_against_cases() {
 #[test]
 fn judge_preserves_meaningful_whitespace() {
     assert_eq!(normalize_judge_output("ok\r\n"), "ok\n");
+    assert_eq!(normalize_judge_output("ok\r"), "ok\r");
     assert_ne!(normalize_judge_output(" ok\n"), "ok\n");
     assert_ne!(normalize_judge_output("ok\n\n"), "ok\n");
 }
@@ -528,6 +529,39 @@ fn typescript_type_errors_fail_before_matching_stdout_runs() {
             .exists()
     );
     assert!(!dir.join("solution.js").exists());
+}
+
+#[test]
+fn typescript_typecheck_ignores_ambient_node_types() {
+    if which("node").is_none() || which("tsc").is_none() {
+        return;
+    }
+    let root = tmp_root("judge-typescript-isolated-types");
+    let ambient = root.join("node_modules/@types/ambient");
+    fs::create_dir_all(&ambient).unwrap();
+    fs::write(
+        ambient.join("index.d.ts"),
+        "declare const Buffer: { from(value: string): { toString(): string } };\n",
+    )
+    .unwrap();
+    let dir = root.join("submissions/isolated-types");
+    fs::create_dir_all(&dir).unwrap();
+    let path = dir.join("solution.ts");
+    fs::write(&path, "console.log(Buffer.from('ok').toString());\n").unwrap();
+
+    let result = judge_path(
+        &root,
+        "typescript-isolated-types",
+        &path,
+        "ts",
+        &[practicode::core::IoCase {
+            input: String::new(),
+            output: "ok\n".to_string(),
+        }],
+    );
+
+    assert_eq!(result.failure_kind, Some(JudgeFailureKind::TypeCheck));
+    assert!(result.output.contains("Buffer"), "{}", result.output);
 }
 
 #[test]
@@ -1327,16 +1361,12 @@ fn rust_syntax_starters_compile_to_useful_failures() {
             lesson.language,
             &syntax_cases(lesson),
         );
-        assert!(
-            !result.output.contains("compile failed"),
-            "{} starter should compile:\n{}",
+        assert_eq!(
+            result.failure_kind,
+            Some(JudgeFailureKind::Output),
+            "{} starter should compile, run, and fail only by output:\n{}",
             lesson.id,
             result.output
-        );
-        assert!(
-            !result.passed,
-            "{} starter should still require the learner edit",
-            lesson.id
         );
     }
 }
@@ -1580,16 +1610,12 @@ fn python_syntax_starters_fail_by_output_not_runtime_error() {
             lesson.language,
             &syntax_cases(lesson),
         );
-        assert!(
-            !result.output.contains("Stderr"),
-            "{} starter should run without a runtime traceback:\n{}",
+        assert_eq!(
+            result.failure_kind,
+            Some(JudgeFailureKind::Output),
+            "{} starter should run and fail only by output:\n{}",
             lesson.id,
             result.output
-        );
-        assert!(
-            !result.passed,
-            "{} starter should still require the learner edit",
-            lesson.id
         );
     }
 }
@@ -1610,16 +1636,12 @@ fn typescript_syntax_starters_run_under_node_strip_types() {
             lesson.language,
             &syntax_cases(lesson),
         );
-        assert!(
-            !result.output.contains("Stderr"),
-            "{} starter should run without a Node/TypeScript runtime error:\n{}",
+        assert_eq!(
+            result.failure_kind,
+            Some(JudgeFailureKind::Output),
+            "{} starter should typecheck, run, and fail only by output:\n{}",
             lesson.id,
             result.output
-        );
-        assert!(
-            !result.passed,
-            "{} starter should still require the learner edit",
-            lesson.id
         );
     }
 }
@@ -1640,22 +1662,12 @@ fn java_syntax_starters_compile_to_useful_failures() {
             lesson.language,
             &syntax_cases(lesson),
         );
-        assert!(
-            !result.output.contains("compile failed"),
-            "{} starter should compile:\n{}",
+        assert_eq!(
+            result.failure_kind,
+            Some(JudgeFailureKind::Output),
+            "{} starter should compile, run, and fail only by output:\n{}",
             lesson.id,
             result.output
-        );
-        assert!(
-            !result.output.contains("Stderr"),
-            "{} starter should fail by expected output, not runtime stderr:\n{}",
-            lesson.id,
-            result.output
-        );
-        assert!(
-            !result.passed,
-            "{} starter should still require the learner edit",
-            lesson.id
         );
     }
 }
@@ -1703,10 +1715,12 @@ fn python_syntax_examples_are_not_answer_keys() {
             lesson.language,
             &syntax_cases(lesson),
         );
-        assert!(
-            !result.passed,
-            "{} worked example should teach the concept with different data, not pass the exercise case",
-            lesson.id
+        assert_eq!(
+            result.failure_kind,
+            Some(JudgeFailureKind::Output),
+            "{} worked example should run and differ only by output:\n{}",
+            lesson.id,
+            result.output
         );
     }
 }
@@ -1758,10 +1772,12 @@ fn typescript_syntax_examples_are_not_answer_keys() {
             lesson.language,
             &syntax_cases(lesson),
         );
-        assert!(
-            !result.passed,
-            "{} worked example should teach the concept with different data, not pass the exercise case",
-            lesson.id
+        assert_eq!(
+            result.failure_kind,
+            Some(JudgeFailureKind::Output),
+            "{} worked example should typecheck, run, and differ only by output:\n{}",
+            lesson.id,
+            result.output
         );
     }
 }
@@ -1783,16 +1799,12 @@ fn java_syntax_examples_run_cleanly_without_being_answer_keys() {
             lesson.language,
             &syntax_cases(lesson),
         );
-        assert!(
-            !result.output.contains("compile failed") && !result.output.contains("Stderr"),
-            "{} example should compile and run cleanly:\n{}",
+        assert_eq!(
+            result.failure_kind,
+            Some(JudgeFailureKind::Output),
+            "{} worked example should compile, run, and differ only by output:\n{}",
             lesson.id,
             result.output
-        );
-        assert!(
-            !result.passed,
-            "{} worked example should teach the concept with different data, not pass the exercise case:\n{}",
-            lesson.id, result.output
         );
     }
 }
@@ -1814,16 +1826,12 @@ fn rust_syntax_examples_run_cleanly_without_being_answer_keys() {
             lesson.language,
             &syntax_cases(lesson),
         );
-        assert!(
-            !result.output.contains("compile failed") && !result.output.contains("Stderr"),
-            "{} example should compile and run cleanly:\n{}",
+        assert_eq!(
+            result.failure_kind,
+            Some(JudgeFailureKind::Output),
+            "{} worked example should compile, run, and differ only by output:\n{}",
             lesson.id,
             result.output
-        );
-        assert!(
-            !result.passed,
-            "{} worked example should teach the concept with different data, not pass the exercise case:\n{}",
-            lesson.id, result.output
         );
     }
 }

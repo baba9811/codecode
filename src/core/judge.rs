@@ -13,6 +13,9 @@ const TYPESCRIPT_TYPECHECK_FLAGS: [&str; 8] = [
 ];
 const JAVA_RELEASE_FLAGS: [&str; 2] = ["--release", "21"];
 const RUST_EDITION_FLAG: &str = "--edition=2024";
+const MAX_COMPILER_DIAGNOSTIC_LINES: usize = 12;
+const MAX_COMPILER_DIAGNOSTIC_BYTES: usize = 4_096;
+const DIAGNOSTIC_TRUNCATED_MARKER: &str = "[diagnostic truncated]";
 
 #[derive(Debug)]
 struct CommandFailure {
@@ -79,6 +82,20 @@ pub fn judge_path(
     language: &str,
     cases: &[IoCase],
 ) -> JudgeResult {
+    judge_path_with(root, id, path, language, cases, command_for)
+}
+
+fn judge_path_with<F>(
+    root: &Path,
+    id: &str,
+    path: &Path,
+    language: &str,
+    cases: &[IoCase],
+    mut prepare: F,
+) -> JudgeResult
+where
+    F: FnMut(&Path, &Path, &str) -> Result<Option<CommandSpec>>,
+{
     if cases.is_empty() {
         return JudgeResult {
             passed: false,
@@ -89,7 +106,7 @@ pub fn judge_path(
         };
     }
     let language = normalize_language(language);
-    let command = match command_for(root, path, &language) {
+    let command = match prepare(root, path, &language) {
         Ok(Some(command)) => command,
         Ok(None) => {
             return JudgeResult {
@@ -255,31 +272,58 @@ pub fn command_for(root: &Path, path: &Path, language: &str) -> Result<Option<Co
 }
 
 fn compile_typescript(root: &Path, path: &Path) -> Result<Option<CommandSpec>> {
-    let Some(tsc) = which("tsc") else {
+    compile_typescript_with(root, path, which, |program, args| {
+        let mut command = Command::new(program);
+        command.args(args).current_dir(root);
+        run_capture(&mut command, "", Duration::from_secs(30))
+    })
+}
+
+fn compile_typescript_with<F, R>(
+    root: &Path,
+    path: &Path,
+    mut find: F,
+    mut run: R,
+) -> Result<Option<CommandSpec>>
+where
+    F: FnMut(&str) -> Option<PathBuf>,
+    R: FnMut(&Path, &[String]) -> Result<crate::process::RunOutput>,
+{
+    let Some(tsc) = find("tsc") else {
         return Err(missing_typescript_tool_failure("tsc").into());
     };
-    let Some(node) = which("node") else {
-        return Err(missing_typescript_tool_failure("node").into());
-    };
+    let version = run(&tsc, &["--version".to_string()])?;
+    validate_typescript_version(&version)?;
+
     let build = root
         .join("build")
         .join(path.parent().and_then(Path::file_name).unwrap_or_default())
         .join("typescript");
     fs::create_dir_all(&build)?;
     let shim = build.join("node-shim.d.ts");
+    let type_root = build.join("type-roots");
+    if type_root.exists() {
+        fs::remove_dir_all(&type_root)?;
+    }
+    fs::create_dir_all(&type_root)?;
     fs::write(
         &shim,
         include_str!("../../assets/typescript/node-shim.d.ts"),
     )?;
-    let mut compile = Command::new(tsc);
-    compile
-        .args(TYPESCRIPT_TYPECHECK_FLAGS)
-        .args([&shim.display().to_string(), &path.display().to_string()])
-        .current_dir(root);
-    let output = run_capture(&mut compile, "", Duration::from_secs(30))?;
-    if output.code != Some(0) {
+    let mut args = TYPESCRIPT_TYPECHECK_FLAGS.map(str::to_string).to_vec();
+    args.extend([
+        "--typeRoots".to_string(),
+        type_root.display().to_string(),
+        shim.display().to_string(),
+        path.display().to_string(),
+    ]);
+    let output = run(&tsc, &args)?;
+    if compiler_gate_failed(&output) {
         return Err(compiler_failure(JudgeFailureKind::TypeCheck, &output).into());
     }
+    let Some(node) = find("node") else {
+        return Err(missing_typescript_tool_failure("node").into());
+    };
     Ok(Some(CommandSpec {
         program: node,
         args: vec![
@@ -298,7 +342,7 @@ fn compiler_detail(output: &crate::process::RunOutput) -> String {
         (stdout, "") => stdout.to_string(),
         (stdout, stderr) => format!("{stdout}\n{stderr}"),
     };
-    if output.timed_out {
+    let detail = if output.timed_out {
         if detail.is_empty() {
             "timeout: 30s".to_string()
         } else {
@@ -308,6 +352,31 @@ fn compiler_detail(output: &crate::process::RunOutput) -> String {
         "compiler exited without a diagnostic".to_string()
     } else {
         detail
+    };
+    bound_compiler_detail(&detail)
+}
+
+fn bound_compiler_detail(detail: &str) -> String {
+    let mut lines = 1;
+    let mut end = detail.len();
+    for (index, char) in detail.char_indices() {
+        if index + char.len_utf8() > MAX_COMPILER_DIAGNOSTIC_BYTES
+            || (char == '\n' && lines == MAX_COMPILER_DIAGNOSTIC_LINES)
+        {
+            end = index;
+            break;
+        }
+        if char == '\n' {
+            lines += 1;
+        }
+    }
+    if end == detail.len() {
+        detail.to_string()
+    } else {
+        format!(
+            "{}\n{DIAGNOSTIC_TRUNCATED_MARKER}",
+            detail[..end].trim_end()
+        )
     }
 }
 
@@ -320,6 +389,50 @@ fn compiler_failure(kind: JudgeFailureKind, output: &crate::process::RunOutput) 
         },
         detail: compiler_detail(output),
     }
+}
+
+fn compiler_gate_failed(output: &crate::process::RunOutput) -> bool {
+    output.timed_out || output.code != Some(0)
+}
+
+pub(crate) fn typescript_version_is_supported(output: &str) -> bool {
+    let Some(version) = output.trim().strip_prefix("Version ") else {
+        return false;
+    };
+    let mut parts = version.split('.');
+    matches!(
+        (
+            parts.next().and_then(|part| part.parse::<u64>().ok()),
+            parts.next().and_then(|part| part.parse::<u64>().ok()),
+            parts.next().and_then(|part| part.parse::<u64>().ok()),
+            parts.next(),
+        ),
+        (Some(5), Some(9), Some(_), None)
+    )
+}
+
+fn validate_typescript_version(
+    output: &crate::process::RunOutput,
+) -> std::result::Result<(), CommandFailure> {
+    if compiler_gate_failed(output) {
+        return Err(compiler_failure(JudgeFailureKind::TypeCheck, output));
+    }
+    if typescript_version_is_supported(&output.stdout) {
+        return Ok(());
+    }
+    let reported = output.stdout.trim();
+    let detail = format!(
+        "TypeScript 5.9.x required; found {}",
+        if reported.is_empty() {
+            "unreadable version output"
+        } else {
+            reported
+        }
+    );
+    Err(CommandFailure {
+        kind: JudgeFailureKind::TypeCheck,
+        detail: bound_compiler_detail(&detail),
+    })
 }
 
 fn missing_typescript_tool_failure(tool: &str) -> CommandFailure {
@@ -355,7 +468,7 @@ fn compile_java(root: &Path, path: &Path) -> Result<Option<CommandSpec>> {
         ])
         .current_dir(root);
     let output = run_capture(&mut compile, "", Duration::from_secs(30))?;
-    if output.code != Some(0) {
+    if compiler_gate_failed(&output) {
         return Err(compiler_failure(JudgeFailureKind::Compile, &output).into());
     }
     Ok(Some(CommandSpec {
@@ -391,7 +504,7 @@ fn compile_rust(root: &Path, path: &Path) -> Result<Option<CommandSpec>> {
         ])
         .current_dir(root);
     let output = run_capture(&mut compile, "", Duration::from_secs(30))?;
-    if output.code != Some(0) {
+    if compiler_gate_failed(&output) {
         return Err(compiler_failure(JudgeFailureKind::Compile, &output).into());
     }
     Ok(Some(CommandSpec {
@@ -424,15 +537,16 @@ mod tests {
     }
 
     #[test]
-    fn compiler_timeout_takes_precedence_over_compile_kind() {
+    fn compiler_gate_rejects_timeout_even_with_zero_exit_code() {
         let output = crate::process::RunOutput {
-            code: None,
+            code: Some(0),
             stdout: String::new(),
             stderr: "partial diagnostic\n".to_string(),
             timed_out: true,
         };
         let failure = compiler_failure(JudgeFailureKind::Compile, &output);
 
+        assert!(compiler_gate_failed(&output));
         assert_eq!(failure.kind, JudgeFailureKind::Timeout);
         assert!(failure.detail.starts_with("timeout: 30s\n"));
         assert!(failure.detail.contains("partial diagnostic"));
@@ -448,5 +562,143 @@ mod tests {
             missing_typescript_tool_failure("node").kind,
             JudgeFailureKind::Runtime
         );
+    }
+
+    #[test]
+    fn compiler_diagnostics_are_bounded_without_splitting_utf8() {
+        let mut stderr = "solution.ts(1,1): error TS9999: first useful message".to_string();
+        for line in 0..40 {
+            stderr.push_str(&format!("\n{line}: {}", "한".repeat(300)));
+        }
+        let output = crate::process::RunOutput {
+            code: Some(1),
+            stdout: String::new(),
+            stderr,
+            timed_out: false,
+        };
+
+        let detail = compiler_detail(&output);
+
+        assert!(detail.starts_with("solution.ts(1,1): error TS9999: first useful message"));
+        assert!(detail.contains("[diagnostic truncated]"));
+        assert!(detail.lines().count() <= 13);
+        assert!(detail.len() <= 4_128);
+        assert!(!detail.contains('\u{fffd}'));
+    }
+
+    #[test]
+    fn typescript_version_contract_accepts_only_5_9() {
+        assert!(typescript_version_is_supported("Version 5.9.0"));
+        assert!(typescript_version_is_supported("Version 5.9.99\n"));
+        assert!(!typescript_version_is_supported("Version 5.8.4"));
+        assert!(!typescript_version_is_supported("Version 6.0.0"));
+        assert!(!typescript_version_is_supported("Version 5.9"));
+        assert!(!typescript_version_is_supported("garbled"));
+    }
+
+    #[test]
+    fn typescript_version_probe_rejects_bad_exit_output_and_timeout() {
+        let output = |code, stdout: &str, stderr: &str, timed_out| crate::process::RunOutput {
+            code,
+            stdout: stdout.to_string(),
+            stderr: stderr.to_string(),
+            timed_out,
+        };
+
+        assert!(
+            validate_typescript_version(&output(Some(0), "Version 5.9.3\n", "", false)).is_ok()
+        );
+        for reported in ["Version 5.8.4\n", "Version 6.0.0\n", "garbled\n"] {
+            let failure =
+                validate_typescript_version(&output(Some(0), reported, "", false)).unwrap_err();
+            assert_eq!(failure.kind, JudgeFailureKind::TypeCheck);
+            assert!(failure.detail.contains("TypeScript 5.9.x"));
+        }
+        let failure =
+            validate_typescript_version(&output(Some(1), "", "version probe failed\n", false))
+                .unwrap_err();
+        assert_eq!(failure.kind, JudgeFailureKind::TypeCheck);
+        assert!(failure.detail.contains("version probe failed"));
+
+        let failure =
+            validate_typescript_version(&output(Some(0), "Version 5.9.3\n", "", true)).unwrap_err();
+        assert_eq!(failure.kind, JudgeFailureKind::Timeout);
+        assert!(failure.detail.contains("timeout: 30s"));
+    }
+
+    #[test]
+    fn typescript_typecheck_runs_before_resolving_node_with_isolated_types() {
+        use std::{cell::RefCell, rc::Rc};
+
+        let root = crate::process::unique_temp_path("practicode-ts-staging", "dir");
+        fs::create_dir_all(&root).unwrap();
+        let path = root.join("solution.ts");
+        fs::write(&path, "const value: number = 'bad';\nconsole.log(value);\n").unwrap();
+        let stale_type_root = root
+            .join("build")
+            .join(root.file_name().unwrap())
+            .join("typescript/type-roots");
+        fs::create_dir_all(&stale_type_root).unwrap();
+        fs::write(
+            stale_type_root.join("stale.d.ts"),
+            "declare const stale: true;\n",
+        )
+        .unwrap();
+        let events = Rc::new(RefCell::new(Vec::new()));
+        let prepare_events = Rc::clone(&events);
+
+        let result = judge_path_with(
+            &root,
+            "injected-typescript-staging",
+            &path,
+            "ts",
+            &[IoCase {
+                input: String::new(),
+                output: "bad\n".to_string(),
+            }],
+            move |root, path, _| {
+                let find_events = Rc::clone(&prepare_events);
+                let run_events = Rc::clone(&prepare_events);
+                compile_typescript_with(
+                    root,
+                    path,
+                    move |name| {
+                        find_events.borrow_mut().push(format!("find:{name}"));
+                        (name == "tsc").then(|| PathBuf::from("fake-tsc"))
+                    },
+                    move |_, args| {
+                        if args == ["--version"] {
+                            run_events.borrow_mut().push("run:version".to_string());
+                            return Ok(crate::process::RunOutput {
+                                code: Some(0),
+                                stdout: "Version 5.9.3\n".to_string(),
+                                stderr: String::new(),
+                                timed_out: false,
+                            });
+                        }
+                        run_events.borrow_mut().push("run:typecheck".to_string());
+                        let type_root = Path::new(
+                            &args[args.iter().position(|arg| arg == "--typeRoots").unwrap() + 1],
+                        );
+                        assert!(type_root.is_dir());
+                        assert_eq!(fs::read_dir(type_root).unwrap().count(), 0);
+                        Ok(crate::process::RunOutput {
+                            code: Some(1),
+                            stdout: "solution.ts(1,7): error TS2322: bad type\n".to_string(),
+                            stderr: String::new(),
+                            timed_out: false,
+                        })
+                    },
+                )
+            },
+        );
+
+        assert_eq!(result.failure_kind, Some(JudgeFailureKind::TypeCheck));
+        assert!(result.output.contains("TS2322"));
+        assert_eq!(
+            events.borrow().as_slice(),
+            ["find:tsc", "run:version", "run:typecheck"]
+        );
+        let _ = fs::remove_dir_all(root);
     }
 }

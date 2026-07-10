@@ -1,5 +1,8 @@
 use super::*;
-use crate::process::which;
+use crate::{
+    core::typescript_version_is_supported,
+    process::{run_capture, which},
+};
 use std::process::Command;
 
 #[derive(Clone, Copy, Eq, PartialEq)]
@@ -114,32 +117,58 @@ where
 {
     let has_node = has_command("node");
     let has_tsc = has_command("tsc");
+    if !has_tsc {
+        return DoctorCheck {
+            status: DoctorStatus::Missing,
+            name: "TypeScript",
+            detail: if has_node {
+                "missing tsc".to_string()
+            } else {
+                "missing tsc and node >= 22.6.0".to_string()
+            },
+            install: (!has_node).then_some(NODE_INSTALL),
+        };
+    }
+    let Some(tsc_version) = command_version("tsc", &["--version"]) else {
+        return DoctorCheck {
+            status: DoctorStatus::Update,
+            name: "TypeScript",
+            detail: format!(
+                "unreadable tsc version; TypeScript 5.9.x required{}",
+                if has_node {
+                    ""
+                } else {
+                    "; missing node >= 22.6.0"
+                }
+            ),
+            install: (!has_node).then_some(NODE_INSTALL),
+        };
+    };
+    if !typescript_version_is_supported(&tsc_version) {
+        return DoctorCheck {
+            status: DoctorStatus::Update,
+            name: "TypeScript",
+            detail: format!(
+                "TypeScript 5.9.x required ({tsc_version}){}",
+                if has_node {
+                    ""
+                } else {
+                    "; missing node >= 22.6.0"
+                }
+            ),
+            install: (!has_node).then_some(NODE_INSTALL),
+        };
+    }
     if !has_node {
         return DoctorCheck {
             status: DoctorStatus::Missing,
             name: "TypeScript",
-            detail: if has_tsc {
-                "missing node >= 22.6.0".to_string()
-            } else {
-                "missing node >= 22.6.0 and tsc".to_string()
-            },
+            detail: format!("missing node >= 22.6.0; tsc {tsc_version}"),
             install: Some(NODE_INSTALL),
         };
     }
     let version = command_version("node", &["--version"]).unwrap_or_else(|| "unknown".to_string());
     let ok = node_supports_strip_types(&version);
-    if !has_tsc {
-        return DoctorCheck {
-            status: DoctorStatus::Missing,
-            name: "TypeScript",
-            detail: if ok {
-                format!("missing tsc (node {version})")
-            } else {
-                format!("missing tsc; Node.js >= 22.6.0 ({version})")
-            },
-            install: None,
-        };
-    }
     DoctorCheck {
         status: if ok {
             DoctorStatus::Ok
@@ -148,9 +177,9 @@ where
         },
         name: "TypeScript",
         detail: if ok {
-            format!("node {version} + tsc")
+            format!("node {version} + tsc {tsc_version}")
         } else {
-            format!("Node.js >= 22.6.0 ({version}) + tsc")
+            format!("Node.js >= 22.6.0 ({version}) + tsc {tsc_version}")
         },
         install: (!ok).then_some(NODE_INSTALL),
     }
@@ -254,13 +283,14 @@ fn status_label(lang: &str, status: DoctorStatus) -> &'static str {
 }
 
 fn command_version(program: &str, args: &[&str]) -> Option<String> {
-    Command::new(program)
-        .args(args)
-        .output()
-        .ok()
-        .filter(|output| output.status.success())
-        .map(|output| String::from_utf8_lossy(&output.stdout).trim().to_string())
-        .filter(|output| !output.is_empty())
+    let mut command = Command::new(program);
+    command.args(args);
+    let output = run_capture(&mut command, "", Duration::from_secs(5)).ok()?;
+    if output.timed_out || output.code != Some(0) {
+        return None;
+    }
+    let output = output.stdout.trim().to_string();
+    (!output.is_empty()).then_some(output)
 }
 
 fn node_supports_strip_types(version: &str) -> bool {
@@ -311,7 +341,11 @@ mod tests {
             "ts",
             "codex",
             |name| matches!(name, "node" | "tsc" | "codex"),
-            |name, _| (name == "node").then(|| "v22.5.0".to_string()),
+            |name, _| match name {
+                "node" => Some("v22.5.0".to_string()),
+                "tsc" => Some("Version 5.9.3".to_string()),
+                _ => None,
+            },
         );
 
         assert!(output.contains("UPDATE TypeScript"));
@@ -339,11 +373,81 @@ mod tests {
             "ts",
             "codex",
             |name| matches!(name, "tsc" | "codex"),
-            |_, _| None,
+            |name, _| (name == "tsc").then(|| "Version 5.9.3".to_string()),
         );
 
         assert!(output.contains("MISSING TypeScript"));
         assert!(output.contains("missing node >= 22.6.0"));
         assert!(!output.contains("missing tsc"));
+    }
+
+    #[test]
+    fn doctor_accepts_typescript_5_9_when_node_is_ready() {
+        let output = doctor_text_with(
+            "en",
+            "ts",
+            "codex",
+            |name| matches!(name, "node" | "tsc" | "codex"),
+            |name, _| match name {
+                "node" => Some("v22.6.0".to_string()),
+                "tsc" => Some("Version 5.9.3".to_string()),
+                _ => None,
+            },
+        );
+
+        assert!(output.contains("OK TypeScript"));
+        assert!(output.contains("tsc Version 5.9.3"));
+    }
+
+    #[test]
+    fn doctor_rejects_old_typescript() {
+        let output = doctor_text_with(
+            "en",
+            "ts",
+            "codex",
+            |name| matches!(name, "node" | "tsc" | "codex"),
+            |name, _| match name {
+                "node" => Some("v22.6.0".to_string()),
+                "tsc" => Some("Version 5.8.4".to_string()),
+                _ => None,
+            },
+        );
+
+        assert!(output.contains("UPDATE TypeScript"));
+        assert!(output.contains("TypeScript 5.9.x required"));
+        assert!(output.contains("Version 5.8.4"));
+    }
+
+    #[test]
+    fn doctor_rejects_future_typescript_major() {
+        let output = doctor_text_with(
+            "en",
+            "ts",
+            "codex",
+            |name| matches!(name, "node" | "tsc" | "codex"),
+            |name, _| match name {
+                "node" => Some("v22.6.0".to_string()),
+                "tsc" => Some("Version 6.0.0".to_string()),
+                _ => None,
+            },
+        );
+
+        assert!(output.contains("UPDATE TypeScript"));
+        assert!(output.contains("TypeScript 5.9.x required"));
+        assert!(output.contains("Version 6.0.0"));
+    }
+
+    #[test]
+    fn doctor_rejects_unreadable_typescript_version() {
+        let output = doctor_text_with(
+            "en",
+            "ts",
+            "codex",
+            |name| matches!(name, "node" | "tsc" | "codex"),
+            |name, _| (name == "node").then(|| "v22.6.0".to_string()),
+        );
+
+        assert!(output.contains("UPDATE TypeScript"));
+        assert!(output.contains("unreadable tsc version"));
     }
 }
