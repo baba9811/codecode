@@ -1,5 +1,5 @@
 use super::*;
-use std::sync::OnceLock;
+use std::{collections::HashSet, sync::OnceLock};
 
 #[derive(Debug, Deserialize)]
 struct SyntaxLessonCopy {
@@ -130,11 +130,87 @@ fn load_course(path: &str, text: &str, runtime: &'static str) -> Vec<SyntaxLesso
         .unwrap_or_else(|error| panic!("invalid embedded syntax course {path}: {error}"));
     assert_eq!(catalog.schema_version, 1, "unsupported schema in {path}");
     assert_eq!(catalog.runtime, runtime, "unexpected runtime in {path}");
+    validate_course(path, &catalog);
     catalog
         .lessons
         .into_iter()
         .map(|lesson| lesson.into_lesson(runtime))
         .collect()
+}
+
+fn validate_course(path: &str, catalog: &SyntaxCourseAsset) {
+    assert!(!catalog.lessons.is_empty(), "{path}: course has no lessons");
+
+    let mut ids = HashSet::new();
+    for (index, lesson) in catalog.lessons.iter().enumerate() {
+        assert!(
+            !lesson.id.trim().is_empty(),
+            "{path}: lesson #{} has an empty id",
+            index + 1
+        );
+        assert!(
+            ids.insert(lesson.id.as_str()),
+            "{path}: duplicate lesson id `{}`",
+            lesson.id
+        );
+    }
+
+    let mut aliases = HashSet::new();
+    for lesson in &catalog.lessons {
+        for alias in &lesson.aliases {
+            assert!(
+                !alias.trim().is_empty(),
+                "{path}: lesson `{}` has an empty alias",
+                lesson.id
+            );
+            assert!(
+                aliases.insert(alias.as_str()),
+                "{path}: lesson `{}` uses duplicate alias `{alias}`",
+                lesson.id
+            );
+        }
+        for (field, value) in [
+            ("level", lesson.level.as_str()),
+            ("title", lesson.title.as_str()),
+            ("body", lesson.body.as_str()),
+            ("example", lesson.example.as_str()),
+            ("starter", lesson.starter.as_str()),
+        ] {
+            assert!(
+                !value.trim().is_empty(),
+                "{path}: lesson `{}` has empty `{field}`",
+                lesson.id
+            );
+        }
+        assert!(
+            !lesson.cases.is_empty(),
+            "{path}: lesson `{}` has no cases",
+            lesson.id
+        );
+        for (index, case) in lesson.cases.iter().enumerate() {
+            assert!(
+                !case.output.is_empty(),
+                "{path}: lesson `{}` case #{} has an empty output",
+                lesson.id,
+                index + 1
+            );
+        }
+        assert!(
+            !lesson.refs.is_empty(),
+            "{path}: lesson `{}` has no refs",
+            lesson.id
+        );
+        for (index, reference) in lesson.refs.iter().enumerate() {
+            assert!(
+                reference
+                    .strip_prefix("https://")
+                    .is_some_and(|rest| !rest.trim().is_empty()),
+                "{path}: lesson `{}` ref #{} must use https://",
+                lesson.id,
+                index + 1
+            );
+        }
+    }
 }
 
 impl SyntaxLessonAsset {
@@ -584,4 +660,107 @@ fn normalize_syntax_ids_for(language: &str, ids: &[String]) -> Vec<String> {
         }
     }
     normalized
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn valid_course() -> serde_json::Value {
+        serde_json::json!({
+            "schema_version": 1,
+            "runtime": "python",
+            "lessons": [{
+                "id": "lesson-1",
+                "aliases": ["old-lesson-1"],
+                "track": "core",
+                "kind": "lesson",
+                "level": "basic",
+                "title": "Title",
+                "body": "Body",
+                "example": "print('example')",
+                "starter": "print('starter')",
+                "cases": [{"input": "", "output": "ok\n"}],
+                "refs": ["https://example.com/reference"]
+            }]
+        })
+    }
+
+    fn assert_course_rejected(course: serde_json::Value, expected: &str) {
+        let text = serde_json::to_string(&course).unwrap();
+        let panic = std::panic::catch_unwind(|| load_course("test-course.json", &text, "python"))
+            .expect_err("malformed course should be rejected");
+        let message = panic
+            .downcast_ref::<String>()
+            .map(String::as_str)
+            .or_else(|| panic.downcast_ref::<&str>().copied())
+            .unwrap_or("non-string panic");
+        assert!(
+            message.contains(expected),
+            "expected {expected:?} in {message:?}"
+        );
+    }
+
+    #[test]
+    fn course_loader_rejects_invalid_semantics_before_leaking() {
+        let mut course = valid_course();
+        course["lessons"] = serde_json::json!([]);
+        assert_course_rejected(course, "test-course.json: course has no lessons");
+
+        let mut course = valid_course();
+        course["lessons"][0]["id"] = " ".into();
+        assert_course_rejected(course, "test-course.json: lesson #1 has an empty id");
+
+        let mut course = valid_course();
+        let duplicate = course["lessons"][0].clone();
+        course["lessons"].as_array_mut().unwrap().push(duplicate);
+        assert_course_rejected(course, "test-course.json: duplicate lesson id `lesson-1`");
+
+        let mut course = valid_course();
+        course["lessons"][0]["aliases"][0] = " ".into();
+        assert_course_rejected(
+            course,
+            "test-course.json: lesson `lesson-1` has an empty alias",
+        );
+
+        let mut course = valid_course();
+        let mut duplicate = course["lessons"][0].clone();
+        duplicate["id"] = "lesson-2".into();
+        course["lessons"].as_array_mut().unwrap().push(duplicate);
+        assert_course_rejected(
+            course,
+            "test-course.json: lesson `lesson-2` uses duplicate alias `old-lesson-1`",
+        );
+
+        for field in ["level", "title", "body", "example", "starter"] {
+            let mut course = valid_course();
+            course["lessons"][0][field] = " ".into();
+            assert_course_rejected(
+                course,
+                &format!("test-course.json: lesson `lesson-1` has empty `{field}`"),
+            );
+        }
+
+        let mut course = valid_course();
+        course["lessons"][0]["cases"] = serde_json::json!([]);
+        assert_course_rejected(course, "test-course.json: lesson `lesson-1` has no cases");
+
+        let mut course = valid_course();
+        course["lessons"][0]["cases"][0]["output"] = "".into();
+        assert_course_rejected(
+            course,
+            "test-course.json: lesson `lesson-1` case #1 has an empty output",
+        );
+
+        let mut course = valid_course();
+        course["lessons"][0]["refs"] = serde_json::json!([]);
+        assert_course_rejected(course, "test-course.json: lesson `lesson-1` has no refs");
+
+        let mut course = valid_course();
+        course["lessons"][0]["refs"][0] = "http://example.com/reference".into();
+        assert_course_rejected(
+            course,
+            "test-course.json: lesson `lesson-1` ref #1 must use https://",
+        );
+    }
 }
