@@ -12,6 +12,7 @@ use std::{
 mod bank;
 mod judge;
 mod language;
+mod learning;
 mod model;
 mod problem_files;
 mod profile;
@@ -24,6 +25,7 @@ pub use crate::i18n::{UI_LANGUAGES, normalize_ui_language, ui_text};
 pub use bank::*;
 pub use judge::*;
 pub use language::*;
+pub use learning::*;
 pub use model::*;
 pub use problem_files::*;
 pub use profile::{

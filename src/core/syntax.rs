@@ -168,6 +168,11 @@ fn validate_course(path: &str, catalog: &SyntaxCourseAsset) {
                 "{path}: lesson `{}` uses duplicate alias `{alias}`",
                 lesson.id
             );
+            assert!(
+                !ids.contains(alias.as_str()),
+                "{path}: lesson `{}` alias `{alias}` collides with a lesson id",
+                lesson.id
+            );
         }
         for (field, value) in [
             ("level", lesson.level.as_str()),
@@ -285,6 +290,22 @@ pub fn syntax_lessons_for(language: &str) -> Vec<&'static SyntaxLesson> {
     lessons.iter().collect()
 }
 
+pub(super) fn resolve_syntax_lesson<'a>(
+    lessons: &[&'a SyntaxLesson],
+    id: &str,
+) -> Option<&'a SyntaxLesson> {
+    lessons
+        .iter()
+        .copied()
+        .find(|lesson| lesson.id == id)
+        .or_else(|| {
+            lessons
+                .iter()
+                .copied()
+                .find(|lesson| lesson.aliases.contains(&id))
+        })
+}
+
 pub fn current_syntax_lesson(state: &AppState, language: &str) -> &'static SyntaxLesson {
     let language = normalize_language(language);
     let lessons = syntax_lessons_for(&language);
@@ -302,38 +323,44 @@ pub fn current_syntax_lesson(state: &AppState, language: &str) -> &'static Synta
 
 pub fn syntax_progress_count(state: &AppState, language: &str) -> (usize, usize) {
     let language = normalize_language(language);
-    (
-        state
-            .syntax_progress
-            .get(&language)
-            .map_or(0, |ids| ids.len()),
-        syntax_lessons_for(&language).len(),
-    )
+    let lessons = syntax_lessons_for(&language);
+    let completed = lessons
+        .iter()
+        .filter(|lesson| syntax_lesson_completed(state, &language, lesson.id))
+        .count();
+    (completed, lessons.len())
 }
 
 pub fn syntax_lesson_completed(state: &AppState, language: &str, lesson_id: &str) -> bool {
     let language = normalize_language(language);
-    state
-        .syntax_progress
+    if state
+        .syntax_mastery
         .get(&language)
-        .is_some_and(|ids| ids.iter().any(|id| id == lesson_id))
+        .and_then(|mastery| mastery.get(lesson_id))
+        .is_some_and(|mastery| mastery.stage != MasteryStage::New)
+    {
+        return true;
+    }
+    let aliases = syntax_lessons_for(&language)
+        .into_iter()
+        .find(|lesson| lesson.id == lesson_id)
+        .map(|lesson| lesson.aliases)
+        .unwrap_or_default();
+    state.syntax_progress.get(&language).is_some_and(|ids| {
+        ids.iter()
+            .any(|id| id == lesson_id || aliases.contains(&id.as_str()))
+    })
 }
 
 pub fn record_syntax_pass(state: &mut AppState, language: &str, lesson_id: &str) {
-    let language = normalize_language(language);
-    if !syntax_lessons_for(&language)
-        .iter()
-        .any(|lesson| lesson.id == lesson_id)
-    {
-        return;
-    }
-    let mut ids = state.syntax_progress.remove(&language).unwrap_or_default();
-    if !ids.iter().any(|id| id == lesson_id) {
-        ids.push(lesson_id.to_string());
-    }
-    state
-        .syntax_progress
-        .insert(language.clone(), normalize_syntax_ids_for(&language, &ids));
+    record_syntax_result(
+        state,
+        language,
+        lesson_id,
+        true,
+        super::learning::unix_timestamp_now(),
+        false,
+    );
 }
 
 pub fn set_current_syntax_lesson(state: &mut AppState, language: &str, lesson_id: &str) {
@@ -383,14 +410,16 @@ pub fn normalize_current_syntax_lessons(
     let mut normalized = HashMap::new();
     for language in LANGUAGES {
         if let Some(id) = current.get(*language)
-            && syntax_lessons_for(language)
-                .iter()
-                .any(|lesson| lesson.id == id)
+            && let Some(id) = normalized_current_syntax_lesson_id(&syntax_lessons_for(language), id)
         {
-            normalized.insert((*language).to_string(), id.clone());
+            normalized.insert((*language).to_string(), id);
         }
     }
     normalized
+}
+
+fn normalized_current_syntax_lesson_id(lessons: &[&SyntaxLesson], id: &str) -> Option<String> {
+    resolve_syntax_lesson(lessons, id).map(|lesson| lesson.id.to_string())
 }
 
 pub fn ensure_syntax_submission(root: &Path, lesson: &SyntaxLesson) -> Result<PathBuf> {
@@ -732,6 +761,16 @@ mod tests {
             "test-course.json: lesson `lesson-2` uses duplicate alias `old-lesson-1`",
         );
 
+        let mut course = valid_course();
+        let mut collision = course["lessons"][0].clone();
+        collision["id"] = "old-lesson-1".into();
+        collision["aliases"] = serde_json::json!(["old-lesson-2"]);
+        course["lessons"].as_array_mut().unwrap().push(collision);
+        assert_course_rejected(
+            course,
+            "test-course.json: lesson `lesson-1` alias `old-lesson-1` collides with a lesson id",
+        );
+
         for field in ["level", "title", "body", "example", "starter"] {
             let mut course = valid_course();
             course["lessons"][0][field] = " ".into();
@@ -761,6 +800,18 @@ mod tests {
         assert_course_rejected(
             course,
             "test-course.json: lesson `lesson-1` ref #1 must use https://",
+        );
+    }
+
+    #[test]
+    fn current_syntax_lesson_alias_normalizes_to_the_current_id() {
+        let text = serde_json::to_string(&valid_course()).unwrap();
+        let course = load_course("test-course.json", &text, "python");
+        let lessons = course.iter().collect::<Vec<_>>();
+
+        assert_eq!(
+            normalized_current_syntax_lesson_id(&lessons, "old-lesson-1"),
+            Some("lesson-1".to_string())
         );
     }
 }

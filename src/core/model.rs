@@ -95,6 +95,26 @@ pub struct HistoryItem {
     pub status: String,
 }
 
+#[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum MasteryStage {
+    #[default]
+    New,
+    Practiced,
+    Retained,
+    Mastered,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Eq, PartialEq, Serialize)]
+pub struct LessonMastery {
+    #[serde(default)]
+    pub stage: MasteryStage,
+    #[serde(default)]
+    pub review_due_at: u64,
+    #[serde(default)]
+    pub attempts: u64,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct AppState {
     pub current_problem: String,
@@ -110,6 +130,10 @@ pub struct AppState {
     pub syntax_progress: HashMap<String, Vec<String>>,
     #[serde(default, skip_serializing_if = "HashMap::is_empty")]
     pub current_syntax_lesson: HashMap<String, String>,
+    #[serde(default, skip_serializing_if = "HashMap::is_empty")]
+    pub syntax_mastery: HashMap<String, HashMap<String, LessonMastery>>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub completed_syntax_courses: Vec<String>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

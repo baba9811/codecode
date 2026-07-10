@@ -3,17 +3,317 @@ mod common;
 use common::{tmp_root, two_problem_bank};
 use practicode::{
     core::{
-        AppState, HistoryItem, JudgeFailureKind, LANGUAGES, Settings, SyntaxKind, SyntaxTrack,
-        ensure_submission, ensure_syntax_submission, judge, judge_path, load_bank, load_state,
-        localized, next_problem, normalize_judge_output, parse_language_list,
-        parse_ui_language_list, problem_by_id, record_pass, render_problem, render_problem_tui,
-        render_syntax_lesson, save_bank, save_state, syntax_cases, syntax_lessons_for,
-        syntax_progress_count,
+        AppState, HistoryItem, JudgeFailureKind, LANGUAGES, LessonMastery, MasteryStage, Settings,
+        SyntaxKind, SyntaxTrack, due_syntax_lessons, ensure_submission, ensure_syntax_submission,
+        judge, judge_path, load_bank, load_state, localized, migrate_syntax_mastery, next_problem,
+        normalize_judge_output, parse_language_list, parse_ui_language_list, problem_by_id,
+        record_pass, record_syntax_pass, record_syntax_result, record_syntax_test_out,
+        render_problem, render_problem_tui, render_syntax_lesson, save_bank, save_state,
+        syntax_cases, syntax_lesson_completed, syntax_lessons_for, syntax_progress_count,
     },
     process::which,
     text::render_markdown_plain,
 };
 use std::{collections::HashSet, fs, process::Command};
+
+fn test_state() -> AppState {
+    AppState {
+        current_problem: "001-hello-world".to_string(),
+        settings: Settings::default(),
+        solved: Vec::new(),
+        history: Vec::new(),
+        suggested_next_difficulty: "easy".to_string(),
+        syntax_progress: Default::default(),
+        current_syntax_lesson: Default::default(),
+        syntax_mastery: Default::default(),
+        completed_syntax_courses: Default::default(),
+    }
+}
+
+#[test]
+fn syntax_mastery_uses_one_day_initial_schedule() {
+    let mut state = test_state();
+
+    record_syntax_result(&mut state, "rust", "rust-ownership", true, 1_000, false);
+
+    let mastery = &state.syntax_mastery["rust"]["rust-ownership"];
+    assert_eq!(mastery.stage, MasteryStage::Practiced);
+    assert_eq!(mastery.review_due_at, 1_000 + 86_400);
+    assert_eq!(mastery.attempts, 1);
+    assert_eq!(
+        serde_json::to_string(&MasteryStage::Practiced).unwrap(),
+        "\"practiced\""
+    );
+    assert_eq!(
+        serde_json::from_str::<LessonMastery>("{}").unwrap(),
+        LessonMastery::default()
+    );
+}
+
+#[test]
+fn syntax_mastery_uses_three_and_seven_day_follow_up_schedule() {
+    let mut state = test_state();
+    let lesson_id = "rust-ownership";
+
+    record_syntax_result(&mut state, "rust", lesson_id, true, 1_000, false);
+    record_syntax_result(&mut state, "rust", lesson_id, true, 1_000 + 86_400, false);
+    let retained = &state.syntax_mastery["rust"][lesson_id];
+    assert_eq!(retained.stage, MasteryStage::Retained);
+    assert_eq!(retained.review_due_at, 1_000 + 86_400 + 259_200);
+    let retained_due_at = retained.review_due_at;
+
+    record_syntax_result(&mut state, "rust", lesson_id, true, retained_due_at, false);
+    let mastered = &state.syntax_mastery["rust"][lesson_id];
+    assert_eq!(mastered.stage, MasteryStage::Mastered);
+    assert_eq!(mastered.review_due_at, 1_000 + 86_400 + 259_200 + 604_800);
+
+    let maintenance_at = mastered.review_due_at;
+    record_syntax_result(&mut state, "rust", lesson_id, true, maintenance_at, false);
+    let maintained = &state.syntax_mastery["rust"][lesson_id];
+    assert_eq!(maintained.stage, MasteryStage::Mastered);
+    assert_eq!(maintained.review_due_at, maintenance_at + 604_800);
+    assert_eq!(maintained.attempts, 4);
+}
+
+#[test]
+fn syntax_mastery_failure_demotes_one_stage_without_revoking_completion() {
+    let mut state = test_state();
+    let lesson_id = "rust-ownership";
+    for now in [1_000, 87_400, 346_600] {
+        record_syntax_result(&mut state, "rust", lesson_id, true, now, false);
+    }
+    state.completed_syntax_courses.push("rust".to_string());
+
+    record_syntax_result(&mut state, "rust", lesson_id, false, 2_000_000, false);
+    let retained = &state.syntax_mastery["rust"][lesson_id];
+    assert_eq!(retained.stage, MasteryStage::Retained);
+    assert_eq!(retained.review_due_at, 2_000_000);
+    assert_eq!(retained.attempts, 4);
+    assert_eq!(state.completed_syntax_courses, ["rust"]);
+
+    record_syntax_result(&mut state, "rust", lesson_id, false, 2_000_001, false);
+    assert_eq!(
+        state.syntax_mastery["rust"][lesson_id].stage,
+        MasteryStage::Practiced
+    );
+    record_syntax_result(&mut state, "rust", lesson_id, false, 2_000_002, false);
+    assert_eq!(
+        state.syntax_mastery["rust"][lesson_id].stage,
+        MasteryStage::New
+    );
+    record_syntax_result(&mut state, "rust", lesson_id, false, 2_000_003, false);
+    assert_eq!(
+        state.syntax_mastery["rust"][lesson_id].stage,
+        MasteryStage::New
+    );
+    assert_eq!(
+        state.syntax_mastery["rust"][lesson_id].review_due_at,
+        2_000_003
+    );
+    assert!(due_syntax_lessons(&state, "rust", 2_000_003, 2).is_empty());
+}
+
+#[test]
+fn syntax_mastery_due_reviews_are_ordered_and_capped_at_two() {
+    let mut state = test_state();
+    record_syntax_result(&mut state, "rust", "rust-output", true, 100, false);
+    record_syntax_result(&mut state, "rust", "rust-variables", true, 50, false);
+    record_syntax_result(&mut state, "rust", "rust-numbers-tuples", true, 50, false);
+
+    let due = due_syntax_lessons(&state, "rust", 100_000, 10)
+        .into_iter()
+        .map(|lesson| lesson.id)
+        .collect::<Vec<_>>();
+    assert_eq!(due, ["rust-variables", "rust-numbers-tuples"]);
+
+    let limited = due_syntax_lessons(&state, "rust", 100_000, 1)
+        .into_iter()
+        .map(|lesson| lesson.id)
+        .collect::<Vec<_>>();
+    assert_eq!(limited, ["rust-variables"]);
+    assert!(due_syntax_lessons(&state, "rust", 100_000, 0).is_empty());
+}
+
+#[test]
+fn syntax_mastery_clock_regression_clamps_review_into_current_session() {
+    let mut state = test_state();
+    record_syntax_result(&mut state, "rust", "rust-ownership", true, 1_000_000, false);
+
+    let due = due_syntax_lessons(&state, "rust", 100, 2)
+        .into_iter()
+        .map(|lesson| lesson.id)
+        .collect::<Vec<_>>();
+
+    assert_eq!(due, ["rust-ownership"]);
+}
+
+#[test]
+fn syntax_mastery_early_retry_waits_but_clock_regression_is_due() {
+    let mut state = test_state();
+    record_syntax_result(&mut state, "rust", "rust-ownership", true, 1_000, false);
+    let scheduled = state.syntax_mastery["rust"]["rust-ownership"].clone();
+
+    record_syntax_result(&mut state, "rust", "rust-ownership", true, 2_000, false);
+    record_syntax_result(&mut state, "rust", "rust-ownership", false, 3_000, false);
+    let early = &state.syntax_mastery["rust"]["rust-ownership"];
+    assert_eq!(early.stage, MasteryStage::Practiced);
+    assert_eq!(early.review_due_at, scheduled.review_due_at);
+    assert_eq!(early.attempts, 3);
+
+    let mut regressed = test_state();
+    record_syntax_result(
+        &mut regressed,
+        "rust",
+        "rust-ownership",
+        true,
+        1_000_000,
+        false,
+    );
+    record_syntax_result(&mut regressed, "rust", "rust-ownership", true, 100, false);
+    let reviewed = &regressed.syntax_mastery["rust"]["rust-ownership"];
+    assert_eq!(reviewed.stage, MasteryStage::Retained);
+    assert_eq!(reviewed.review_due_at, 100 + 259_200);
+    assert_eq!(reviewed.attempts, 2);
+}
+
+#[test]
+fn syntax_mastery_test_out_only_schedules_new_coverage() {
+    let mut state = test_state();
+    for now in [10, 86_410, 345_610] {
+        record_syntax_result(&mut state, "rust", "rust-output", true, now, false);
+    }
+    for now in [10, 86_410] {
+        record_syntax_result(&mut state, "rust", "rust-variables", true, now, false);
+    }
+    record_syntax_result(&mut state, "rust", "rust-numbers-tuples", true, 10, false);
+    let before = state.syntax_mastery["rust"].clone();
+
+    record_syntax_test_out(
+        &mut state,
+        "rust",
+        &[
+            "rust-output",
+            "rust-variables",
+            "rust-numbers-tuples",
+            "rust-strings",
+        ],
+        1_000,
+    );
+
+    for id in ["rust-output", "rust-variables", "rust-numbers-tuples"] {
+        assert_eq!(state.syntax_mastery["rust"][id].stage, before[id].stage);
+        assert_eq!(
+            state.syntax_mastery["rust"][id].review_due_at,
+            before[id].review_due_at
+        );
+        assert_eq!(
+            state.syntax_mastery["rust"][id].attempts,
+            before[id].attempts + 1
+        );
+    }
+    let new_coverage = &state.syntax_mastery["rust"]["rust-strings"];
+    assert_eq!(new_coverage.stage, MasteryStage::Practiced);
+    assert_eq!(new_coverage.review_due_at, 1_000 + 86_400);
+    assert_eq!(new_coverage.attempts, 1);
+}
+
+#[test]
+fn syntax_mastery_legacy_migration_is_fixed_time_and_idempotent() {
+    let mut state = test_state();
+    state.syntax_progress.insert(
+        "rust".to_string(),
+        vec![
+            "rust-ownership".to_string(),
+            "unknown-a".to_string(),
+            "unknown-b".to_string(),
+            "rust-ownership".to_string(),
+        ],
+    );
+    state
+        .syntax_progress
+        .insert("ruby".to_string(), vec!["legacy-ruby".to_string()]);
+
+    migrate_syntax_mastery(&mut state, 1_000);
+
+    let migrated = &state.syntax_mastery["rust"]["rust-ownership"];
+    assert_eq!(migrated.stage, MasteryStage::Practiced);
+    assert_eq!(migrated.review_due_at, 1_000);
+    assert_eq!(migrated.attempts, 1);
+    assert_eq!(state.syntax_progress["rust"], ["unknown-a", "unknown-b"]);
+    assert_eq!(state.syntax_progress["ruby"], ["legacy-ruby"]);
+    assert_eq!(syntax_progress_count(&state, "rust"), (1, 29));
+    assert!(syntax_lesson_completed(&state, "rust", "rust-ownership"));
+
+    migrate_syntax_mastery(&mut state, 2_000);
+
+    let repeated = &state.syntax_mastery["rust"]["rust-ownership"];
+    assert_eq!(repeated.review_due_at, 1_000);
+    assert_eq!(repeated.attempts, 1);
+}
+
+#[test]
+fn syntax_mastery_legacy_pass_repairs_mixed_new_state_once() {
+    let mut state = test_state();
+    state.syntax_mastery.insert(
+        "rust".to_string(),
+        std::collections::HashMap::from([(
+            "rust-ownership".to_string(),
+            LessonMastery {
+                stage: MasteryStage::New,
+                review_due_at: 500,
+                attempts: 1,
+            },
+        )]),
+    );
+    state.syntax_progress.insert(
+        "rust".to_string(),
+        vec!["rust-ownership".to_string(), "rust-ownership".to_string()],
+    );
+
+    migrate_syntax_mastery(&mut state, 1_000);
+    migrate_syntax_mastery(&mut state, 2_000);
+
+    assert_eq!(
+        state.syntax_mastery["rust"]["rust-ownership"],
+        LessonMastery {
+            stage: MasteryStage::Practiced,
+            review_due_at: 1_000,
+            attempts: 2,
+        }
+    );
+}
+
+#[test]
+fn syntax_mastery_migrates_every_known_legacy_id() {
+    let mut state = test_state();
+    for language in LANGUAGES {
+        state.syntax_progress.insert(
+            (*language).to_string(),
+            syntax_lessons_for(language)
+                .into_iter()
+                .map(|lesson| lesson.id.to_string())
+                .collect(),
+        );
+    }
+
+    migrate_syntax_mastery(&mut state, 1_000);
+
+    assert!(state.syntax_progress.is_empty());
+    for language in LANGUAGES {
+        for lesson in syntax_lessons_for(language) {
+            assert_eq!(
+                state.syntax_mastery[*language][lesson.id],
+                LessonMastery {
+                    stage: MasteryStage::Practiced,
+                    review_due_at: 1_000,
+                    attempts: 1,
+                },
+                "{language}:{}",
+                lesson.id
+            );
+        }
+    }
+}
 
 #[test]
 fn load_state_uses_first_problem_when_state_file_is_missing() {
@@ -190,6 +490,8 @@ fn save_state_writes_ai_settings_without_deprecated_empty_field() {
         suggested_next_difficulty: "easy".to_string(),
         syntax_progress: Default::default(),
         current_syntax_lesson: Default::default(),
+        syntax_mastery: Default::default(),
+        completed_syntax_courses: Default::default(),
     };
     save_state(&root, &state).unwrap();
     let saved = fs::read_to_string(root.join("problem-state.json")).unwrap();
@@ -197,6 +499,110 @@ fn save_state_writes_ai_settings_without_deprecated_empty_field() {
     assert!(saved.contains("\"ai_model\": \"sonnet\""));
     assert!(saved.contains("\"ai_effort\": \"max\""));
     assert_eq!(load_state(&root, &bank).unwrap().settings.next_source, "ai");
+}
+
+#[test]
+fn state_save_preserves_previous_backup_and_cleans_temporary_file() {
+    let root = tmp_root("state-safe-save");
+    let submission = root.join("submissions/.syntax/rust/rust-output/exercise.rs");
+    fs::create_dir_all(submission.parent().unwrap()).unwrap();
+    fs::write(&submission, "fn main() { /* learner edit */ }\n").unwrap();
+    let mut state = test_state();
+
+    save_state(&root, &state).unwrap();
+    let first = fs::read_to_string(root.join("problem-state.json")).unwrap();
+    fs::write(root.join("problem-state.json.tmp"), "stale").unwrap();
+    state.settings.theme = "light".to_string();
+    save_state(&root, &state).unwrap();
+
+    let second = fs::read_to_string(root.join("problem-state.json")).unwrap();
+    assert_ne!(second, first);
+    assert_eq!(
+        fs::read_to_string(root.join("problem-state.json.bak")).unwrap(),
+        first
+    );
+    assert!(!root.join("problem-state.json.tmp").exists());
+    assert_eq!(
+        fs::read_to_string(submission).unwrap(),
+        "fn main() { /* learner edit */ }\n"
+    );
+}
+
+#[test]
+fn state_save_failure_preserves_primary_submission_and_removes_temporary() {
+    let root = tmp_root("state-safe-save-failure");
+    let submission = root.join("submissions/.syntax/rust/rust-output/exercise.rs");
+    fs::create_dir_all(submission.parent().unwrap()).unwrap();
+    fs::write(&submission, "fn main() { /* learner edit */ }\n").unwrap();
+    let mut state = test_state();
+    save_state(&root, &state).unwrap();
+    let primary = root.join("problem-state.json");
+    let original = fs::read(&primary).unwrap();
+    fs::create_dir(root.join("problem-state.json.bak")).unwrap();
+
+    state.settings.theme = "light".to_string();
+    let error = save_state(&root, &state).unwrap_err().to_string();
+
+    assert!(error.contains("problem-state.json"));
+    assert!(error.contains("problem-state.json.bak"));
+    assert_eq!(fs::read(primary).unwrap(), original);
+    assert!(!root.join("problem-state.json.tmp").exists());
+    assert_eq!(
+        fs::read_to_string(submission).unwrap(),
+        "fn main() { /* learner edit */ }\n"
+    );
+}
+
+#[test]
+fn state_load_restores_backup_when_primary_is_missing() {
+    let root = tmp_root("state-backup-recovery");
+    let bank = load_bank(&root).unwrap();
+    let mut state = test_state();
+    state.settings.theme = "light".to_string();
+    save_state(&root, &state).unwrap();
+    let primary = root.join("problem-state.json");
+    let backup = root.join("problem-state.json.bak");
+    let expected = fs::read(&primary).unwrap();
+    fs::rename(&primary, &backup).unwrap();
+    fs::write(root.join("problem-state.json.tmp"), "partial").unwrap();
+
+    let recovered = load_state(&root, &bank).unwrap();
+
+    assert_eq!(recovered.settings.theme, "light");
+    assert_eq!(fs::read(&primary).unwrap(), expected);
+    assert_eq!(fs::read(&backup).unwrap(), expected);
+    assert!(!root.join("problem-state.json.tmp").exists());
+}
+
+#[test]
+#[cfg(unix)]
+fn state_save_does_not_follow_a_backup_symlink_into_submissions() {
+    use std::os::unix::fs::symlink;
+
+    let root = tmp_root("state-backup-symlink");
+    let submission = root.join("submissions/.syntax/rust/rust-output/exercise.rs");
+    fs::create_dir_all(submission.parent().unwrap()).unwrap();
+    fs::write(&submission, "fn main() { /* learner edit */ }\n").unwrap();
+    let mut state = test_state();
+    save_state(&root, &state).unwrap();
+    let previous = fs::read(root.join("problem-state.json")).unwrap();
+    let backup = root.join("problem-state.json.bak");
+    symlink(&submission, &backup).unwrap();
+
+    state.settings.theme = "light".to_string();
+    save_state(&root, &state).unwrap();
+
+    assert_eq!(
+        fs::read_to_string(submission).unwrap(),
+        "fn main() { /* learner edit */ }\n"
+    );
+    assert!(
+        !fs::symlink_metadata(&backup)
+            .unwrap()
+            .file_type()
+            .is_symlink()
+    );
+    assert_eq!(fs::read(backup).unwrap(), previous);
 }
 
 #[test]
@@ -241,9 +647,12 @@ fn load_state_normalizes_ai_provider_case_and_spaces() {
 }
 
 #[test]
-fn load_state_normalizes_syntax_progress_for_learn_mode() {
+fn syntax_mastery_load_migrates_progress_idempotently_without_touching_submissions() {
     let root = tmp_root("state-syntax-progress");
     let bank = load_bank(&root).unwrap();
+    let submission = root.join("submissions/.syntax/python/py-variables/exercise.py");
+    fs::create_dir_all(submission.parent().unwrap()).unwrap();
+    fs::write(&submission, "print('learner edit')\n").unwrap();
     fs::write(
         root.join("problem-state.json"),
         r#"{
@@ -260,10 +669,39 @@ fn load_state_normalizes_syntax_progress_for_learn_mode() {
     )
     .unwrap();
     let state = load_state(&root, &bank).unwrap();
-    assert_eq!(state.syntax_progress["python"], vec!["py-variables"]);
+    let migrated = &state.syntax_mastery["python"]["py-variables"];
+    assert_eq!(migrated.stage, MasteryStage::Practiced);
+    assert_eq!(migrated.attempts, 1);
+    assert_eq!(state.syntax_progress["python"], ["unknown"]);
+    assert_eq!(state.syntax_progress["ruby"], ["variables"]);
     assert_eq!(state.current_syntax_lesson["python"], "py-functions");
-    assert!(!state.syntax_progress.contains_key("ruby"));
     assert!(!state.current_syntax_lesson.contains_key("ruby"));
+    let due_at = migrated.review_due_at;
+
+    save_state(&root, &state).unwrap();
+    let reloaded = load_state(&root, &bank).unwrap();
+    let repeated = &reloaded.syntax_mastery["python"]["py-variables"];
+    assert_eq!(repeated.review_due_at, due_at);
+    assert_eq!(repeated.attempts, 1);
+    assert_eq!(
+        fs::read_to_string(submission).unwrap(),
+        "print('learner edit')\n"
+    );
+}
+
+#[test]
+fn syntax_mastery_legacy_record_pass_updates_current_ui_without_legacy_data() {
+    let mut state = test_state();
+
+    record_syntax_pass(&mut state, "rust", "rust-ownership");
+
+    assert_eq!(
+        state.syntax_mastery["rust"]["rust-ownership"].stage,
+        MasteryStage::Practiced
+    );
+    assert_eq!(state.syntax_mastery["rust"]["rust-ownership"].attempts, 1);
+    assert!(state.syntax_progress.is_empty());
+    assert_eq!(syntax_progress_count(&state, "rust"), (1, 29));
 }
 
 #[test]
@@ -690,6 +1128,8 @@ fn next_problem_skips_history_and_saves_new_current() {
         suggested_next_difficulty: "easy".to_string(),
         syntax_progress: Default::default(),
         current_syntax_lesson: Default::default(),
+        syntax_mastery: Default::default(),
+        completed_syntax_courses: Default::default(),
     };
     save_state(&root, &state).unwrap();
     let problem = next_problem(&root, &bank, &mut state).unwrap().unwrap();
@@ -723,6 +1163,8 @@ fn next_problem_prefers_profile_difficulty_when_fixed() {
         suggested_next_difficulty: "easy".to_string(),
         syntax_progress: Default::default(),
         current_syntax_lesson: Default::default(),
+        syntax_mastery: Default::default(),
+        completed_syntax_courses: Default::default(),
     };
     let next = next_problem(&root, &bank, &mut state).unwrap().unwrap();
     assert_eq!(next.difficulty, "medium");
@@ -740,6 +1182,8 @@ fn record_pass_marks_solved_and_raises_suggested_difficulty_after_two_solves() {
         suggested_next_difficulty: "easy".to_string(),
         syntax_progress: Default::default(),
         current_syntax_lesson: Default::default(),
+        syntax_mastery: Default::default(),
+        completed_syntax_courses: Default::default(),
     };
     record_pass(&root, &bank[0], &mut state).unwrap();
     let saved = load_state(&root, &bank).unwrap();
@@ -1382,6 +1826,8 @@ fn render_syntax_lesson_uses_exercise_copy() {
         suggested_next_difficulty: "easy".to_string(),
         syntax_progress: Default::default(),
         current_syntax_lesson: Default::default(),
+        syntax_mastery: Default::default(),
+        completed_syntax_courses: Default::default(),
     };
     let english = render_syntax_lesson(lesson, &state);
     assert!(english.contains("Worked example"));
@@ -1410,6 +1856,8 @@ fn render_syntax_lesson_shows_exercise_io_goal() {
         suggested_next_difficulty: "easy".to_string(),
         syntax_progress: Default::default(),
         current_syntax_lesson: Default::default(),
+        syntax_mastery: Default::default(),
+        completed_syntax_courses: Default::default(),
     };
 
     let rendered = render_syntax_lesson(lesson, &state);
@@ -1438,6 +1886,8 @@ fn lessons_use_rich_split_copy_for_all_code_languages() {
         suggested_next_difficulty: "easy".to_string(),
         syntax_progress: Default::default(),
         current_syntax_lesson: Default::default(),
+        syntax_mastery: Default::default(),
+        completed_syntax_courses: Default::default(),
     };
 
     for (ui_language, language, id, title, concept, mistakes, check) in [
@@ -1525,6 +1975,8 @@ fn split_lesson_copy_covers_every_lesson_in_every_ui_language() {
             suggested_next_difficulty: "easy".to_string(),
             syntax_progress: Default::default(),
             current_syntax_lesson: Default::default(),
+            syntax_mastery: Default::default(),
+            completed_syntax_courses: Default::default(),
         };
 
         for language in ["python", "ts", "java", "rust"] {
@@ -1870,6 +2322,8 @@ fn syntax_lessons_include_learning_scaffolding() {
         suggested_next_difficulty: "easy".to_string(),
         syntax_progress: Default::default(),
         current_syntax_lesson: Default::default(),
+        syntax_mastery: Default::default(),
+        completed_syntax_courses: Default::default(),
     };
     for language in ["python", "ts", "java", "rust"] {
         for lesson in syntax_lessons_for(language) {
@@ -1915,6 +2369,8 @@ fn syntax_progress_count_is_separate_from_problem_progress() {
         suggested_next_difficulty: "easy".to_string(),
         syntax_progress: Default::default(),
         current_syntax_lesson: Default::default(),
+        syntax_mastery: Default::default(),
+        completed_syntax_courses: Default::default(),
     };
     record_pass(&root, &bank[0], &mut state).unwrap();
     assert_eq!(syntax_progress_count(&state, "python").0, 0);
