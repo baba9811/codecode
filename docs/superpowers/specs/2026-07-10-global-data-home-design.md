@@ -60,6 +60,8 @@ Claude behavior remains unchanged apart from receiving the new application root.
 
 Update generated-problem prompts to reference `problem-state.json`, `problem_bank.json`, and `problem_notes.md` at the application root. Generated problem files remain under `problems/` and submissions under `submissions/`.
 
+Docker mode resolves the same host data directory, creates it when needed, bind-mounts it at `/data`, and passes `PRACTICODE_HOME=/data` into the container. The existing `/workspace` mount remains available as the launch directory so legacy data there can be migrated, but new data must survive container removal in the host data directory.
+
 ## Documentation and Compatibility
 
 Document `~/.practicode` as the default location and `PRACTICODE_HOME` as the override. Remove claims that data is saved in the current directory or ignored by the current Git repository. Contributor fixtures may continue passing temporary roots directly.
@@ -75,6 +77,7 @@ Add focused tests for:
 - non-destructive legacy migration, including build-cache exclusion;
 - migration being skipped when the destination already contains data;
 - the generated Codex command containing `--skip-git-repo-check` and the resolved root;
+- Docker launcher syntax and a packed-launcher smoke run using an isolated data directory;
 - all existing state, problem, submission, syntax, judge, TUI, smoke, npm packaging, formatting, and Clippy checks.
 
 Release verification must run `make test`, `cargo run -- --smoke` with an isolated `PRACTICODE_HOME`, and an npm-packed launcher smoke check with an isolated `PRACTICODE_HOME` before tagging the next patch release.
