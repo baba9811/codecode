@@ -4,11 +4,11 @@ use common::{tmp_root, two_problem_bank};
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers, MouseButton, MouseEvent, MouseEventKind};
 use practicode::{
     core::{
-        ensure_submission, ensure_syntax_submission, load_bank, load_state, save_state,
-        syntax_lessons_for,
+        LessonMastery, MasteryStage, ensure_submission, ensure_syntax_submission, load_bank,
+        load_state, save_state, syntax_lessons_for,
     },
     process::which,
-    tui::{PracticodeApp, TextEditor},
+    tui::{LearningStep, LearningView, PracticodeApp, TextEditor},
 };
 use ratatui::{layout::Rect, style::Color};
 
@@ -41,7 +41,7 @@ fn first_run_shows_home_once() {
     let root = tmp_root("first-run-home");
     let app = PracticodeApp::new(root.clone()).unwrap();
     assert!(app.status_text_for_test().contains("home"));
-    assert!(app.output_for_test().contains("Learn syntax"));
+    assert!(app.output_for_test().contains("Continue today's session"));
     assert!(app.output_for_test().contains("Practice coding tests"));
     assert!(root.join("problem-state.json").exists());
 
@@ -57,7 +57,7 @@ fn home_command_opens_home_and_persists_it() {
     app.handle_command_for_test("home").unwrap();
 
     assert!(app.status_text_for_test().contains("home"));
-    assert!(app.output_for_test().contains("Learn syntax"));
+    assert!(app.output_for_test().contains("Continue today's session"));
     let saved = std::fs::read_to_string(root.join("problem-state.json")).unwrap();
     assert!(saved.contains("\"start_mode\": \"home\""));
 }
@@ -215,7 +215,7 @@ fn app_start_resumes_learn_mode() {
 
     let app = PracticodeApp::new(root).unwrap();
     assert!(app.status_text_for_test().contains("learn"));
-    assert!(app.output_for_test().contains("Syntax"));
+    assert!(app.output_for_test().contains("Language delta"));
 }
 
 #[test]
@@ -439,7 +439,9 @@ fn next_and_back_are_mode_aware() {
     assert_ne!(first, second);
 
     app.handle_command_for_test("back").unwrap();
-    assert_eq!(app.output_for_test(), first);
+    assert!(app.output_for_test().contains("# Syntax:"));
+    app.handle_command_for_test("next").unwrap();
+    assert!(app.status_text_for_test().contains("py-variables"));
 }
 
 #[test]
@@ -447,8 +449,8 @@ fn learn_command_opens_syntax_course_separate_from_problem_mode() {
     let root = tmp_root("learn-command");
     let mut app = PracticodeApp::new(root).unwrap();
     app.handle_command_for_test("learn").unwrap();
-    assert!(app.output_for_test().contains("Syntax"));
-    assert!(app.output_for_test().contains("Python"));
+    assert!(app.output_for_test().contains("Language delta"));
+    assert!(app.output_for_test().contains("judge-visible output"));
     assert!(app.status_text_for_test().contains("learn"));
 
     app.handle_command_for_test("problems").unwrap();
@@ -477,7 +479,8 @@ fn run_in_learn_keeps_lesson_pane_visible() {
     let mut app = PracticodeApp::new(root).unwrap();
     app.handle_command_for_test("learn python").unwrap();
     app.handle_command_for_test("run").unwrap();
-    assert!(app.output_for_test().contains("Syntax"));
+    assert!(app.output_for_test().contains("Exercise"));
+    assert!(app.output_for_test().contains("print and stdout"));
     assert!(app.learn_result_for_test().contains("FAIL 0/1 [Output]"));
     assert!(app.learn_result_for_test().contains("Got\n  TODO"));
     assert!(
@@ -550,6 +553,7 @@ fn learn_command_uses_korean_syntax_copy() {
     let mut app = PracticodeApp::new(root).unwrap();
     app.handle_command_for_test("ui ko").unwrap();
     app.handle_command_for_test("learn python").unwrap();
+    app.handle_command_for_test("lesson").unwrap();
 
     let output = app.output_for_test();
     assert!(output.contains("문법"));
@@ -573,6 +577,7 @@ fn learn_command_uses_supported_ui_language_syntax_copy() {
         let mut app = PracticodeApp::new(root).unwrap();
         app.handle_command_for_test(&format!("ui {lang}")).unwrap();
         app.handle_command_for_test("learn python").unwrap();
+        app.handle_command_for_test("lesson").unwrap();
 
         let output = app.output_for_test();
         assert!(output.contains(title), "{lang}: {output}");
@@ -866,4 +871,222 @@ fn ctrl_c_quits_from_editor() {
     app.handle_key_for_test(KeyEvent::new(KeyCode::Char('c'), KeyModifiers::CONTROL))
         .unwrap();
     assert!(app.should_quit_for_test());
+}
+
+#[test]
+fn guided_session_queues_two_due_reviews_before_the_next_new_core_lesson() {
+    let root = tmp_root("guided-session-queue");
+    let bank = load_bank(&root).unwrap();
+    let mut state = load_state(&root, &bank).unwrap();
+    state.syntax_mastery.insert(
+        "python".to_string(),
+        [
+            ("py-output", 300),
+            ("py-variables", 100),
+            ("py-numbers", 200),
+        ]
+        .into_iter()
+        .map(|(id, review_due_at)| {
+            (
+                id.to_string(),
+                LessonMastery {
+                    stage: MasteryStage::Practiced,
+                    review_due_at,
+                    attempts: 1,
+                },
+            )
+        })
+        .collect(),
+    );
+    save_state(&root, &state).unwrap();
+
+    let mut app = PracticodeApp::new(root).unwrap();
+    app.handle_command_for_test("learn python").unwrap();
+
+    assert_eq!(
+        app.learning_queue_for_test(),
+        ["py-variables", "py-numbers", "py-strings"]
+    );
+    assert_eq!(app.learning_step_for_test(), LearningStep::Review);
+    assert!(app.output_for_test().contains("Review"));
+    assert!(app.status_text_for_test().contains("py-variables"));
+}
+
+#[test]
+fn guided_session_next_cannot_bypass_an_unpassed_exercise() {
+    let root = tmp_root("guided-session-gate");
+    let mut app = PracticodeApp::new(root).unwrap();
+    app.handle_command_for_test("learn python").unwrap();
+
+    assert_eq!(app.learning_step_for_test(), LearningStep::Delta);
+    app.handle_command_for_test("next").unwrap();
+    assert_eq!(app.learning_step_for_test(), LearningStep::Predict);
+    app.handle_command_for_test("next").unwrap();
+    assert_eq!(app.learning_step_for_test(), LearningStep::Exercise);
+    app.handle_command_for_test("next").unwrap();
+    assert_eq!(app.learning_step_for_test(), LearningStep::Exercise);
+}
+
+#[test]
+fn guided_session_records_each_judge_and_only_a_pass_reaches_reflect() {
+    if which("python3").or_else(|| which("python")).is_none() {
+        return;
+    }
+    let root = tmp_root("guided-session-judge-flow");
+    let mut app = PracticodeApp::new(root.clone()).unwrap();
+    app.handle_command_for_test("learn python").unwrap();
+
+    app.handle_command_for_test("run").unwrap();
+    assert_eq!(app.learning_step_for_test(), LearningStep::Exercise);
+    let bank = load_bank(&root).unwrap();
+    let failed = load_state(&root, &bank).unwrap();
+    assert_eq!(failed.syntax_mastery["python"]["py-output"].attempts, 1);
+    assert_eq!(
+        failed.syntax_mastery["python"]["py-output"].stage,
+        MasteryStage::New
+    );
+
+    let lesson = syntax_lessons_for("python")[0];
+    let path = ensure_syntax_submission(&root, lesson).unwrap();
+    std::fs::write(path, "print('Ada:7')\n").unwrap();
+    app.handle_command_for_test("code").unwrap();
+    app.handle_command_for_test("run").unwrap();
+
+    assert_eq!(app.learning_step_for_test(), LearningStep::Reflect);
+    let passed = load_state(&root, &bank).unwrap();
+    assert_eq!(passed.syntax_mastery["python"]["py-output"].attempts, 2);
+    assert_eq!(
+        passed.syntax_mastery["python"]["py-output"].stage,
+        MasteryStage::Practiced
+    );
+    app.handle_command_for_test("next").unwrap();
+    assert_eq!(app.learning_step_for_test(), LearningStep::Complete);
+}
+
+#[test]
+fn guided_session_uses_lesson_copy_fallbacks_and_lesson_opens_the_full_reference() {
+    let root = tmp_root("guided-session-copy-fallback");
+    let mut app = PracticodeApp::new(root).unwrap();
+    app.handle_command_for_test("learn python").unwrap();
+
+    let step = app.output_for_test();
+    assert!(step.contains("judge-visible output"), "{step}");
+    assert!(!step.contains("Worked example"), "{step}");
+    assert!(!step.contains("References"), "{step}");
+
+    app.handle_command_for_test("lesson").unwrap();
+    let reference = app.output_for_test();
+    assert!(reference.contains("Worked example"), "{reference}");
+    assert!(reference.contains("References"), "{reference}");
+
+    app.handle_command_for_test("code").unwrap();
+    let step = app.output_for_test();
+    assert!(step.contains("Language delta"), "{step}");
+    assert!(!step.contains("Worked example"), "{step}");
+}
+
+#[test]
+fn learning_function_keys_work_while_the_editor_has_focus() {
+    let root = tmp_root("learning-function-keys");
+    let mut app = PracticodeApp::new(root).unwrap();
+    app.handle_command_for_test("learn python").unwrap();
+
+    assert_eq!(app.learning_view_for_test(), LearningView::Code);
+    app.handle_key_for_test(KeyEvent::new(KeyCode::F(6), KeyModifiers::NONE))
+        .unwrap();
+    assert_eq!(app.learning_view_for_test(), LearningView::Result);
+    app.handle_key_for_test(KeyEvent::new(KeyCode::F(1), KeyModifiers::NONE))
+        .unwrap();
+    assert!(app.output_for_test().contains("Help"));
+
+    app.handle_command_for_test("code").unwrap();
+    assert_eq!(app.learning_view_for_test(), LearningView::Code);
+    app.handle_key_for_test(KeyEvent::new(KeyCode::F(5), KeyModifiers::NONE))
+        .unwrap();
+    assert!(app.learn_result_for_test().contains("FAIL"));
+}
+
+#[test]
+fn lesson_and_progress_are_discoverable_in_learning_mode() {
+    let root = tmp_root("learning-command-discovery");
+    let mut app = PracticodeApp::new(root).unwrap();
+    app.handle_command_for_test("learn python").unwrap();
+    app.focus_command_for_test();
+
+    let suggestions = app.command_suggestions_for_test();
+    assert!(suggestions.contains(&"/lesson".to_string()));
+    assert!(suggestions.contains(&"/progress".to_string()));
+}
+
+#[test]
+fn progress_summary_is_shareable_and_contains_no_private_context() {
+    let root = tmp_root("private-progress");
+    let mut app = PracticodeApp::new(root.clone()).unwrap();
+    app.handle_command_for_test("provider claude").unwrap();
+    app.handle_command_for_test("model secret-model-name")
+        .unwrap();
+    app.handle_command_for_test("progress").unwrap();
+
+    let output = app.output_for_test();
+    for expected in ["Python", "Core", "Practiced", "Retained", "Mastered", "Due"] {
+        assert!(output.contains(expected), "missing {expected}: {output}");
+    }
+    for private in [
+        root.to_string_lossy().as_ref(),
+        "submissions/",
+        "print('TODO')",
+        "claude",
+        "secret-model-name",
+        "review_due_at",
+    ] {
+        assert!(!output.contains(private), "leaked {private}: {output}");
+    }
+}
+
+#[test]
+fn progress_summary_counts_all_due_core_lessons_beyond_the_session_cap() {
+    let root = tmp_root("progress-all-due");
+    let bank = load_bank(&root).unwrap();
+    let mut state = load_state(&root, &bank).unwrap();
+    state.syntax_mastery.insert(
+        "python".to_string(),
+        ["py-output", "py-variables", "py-numbers"]
+            .into_iter()
+            .map(|id| {
+                (
+                    id.to_string(),
+                    LessonMastery {
+                        stage: MasteryStage::Practiced,
+                        review_due_at: 1,
+                        attempts: 1,
+                    },
+                )
+            })
+            .collect(),
+    );
+    save_state(&root, &state).unwrap();
+
+    let mut app = PracticodeApp::new(root).unwrap();
+    app.handle_command_for_test("progress").unwrap();
+
+    assert!(app.output_for_test().contains("Due: 3"));
+}
+
+#[test]
+fn home_exposes_a_localized_continue_session_action() {
+    let cases = [
+        ("en", "Continue today's session"),
+        ("ko", "오늘의 세션 계속하기"),
+        ("ja", "今日のセッションを続ける"),
+        ("zh", "继续今天的学习"),
+        ("es", "Continuar la sesión de hoy"),
+    ];
+
+    for (lang, expected) in cases {
+        let root = tmp_root(&format!("home-continue-{lang}"));
+        let mut app = PracticodeApp::new(root).unwrap();
+        app.handle_command_for_test(&format!("ui {lang}")).unwrap();
+        app.handle_command_for_test("home").unwrap();
+        assert!(app.output_for_test().contains(expected), "{lang}");
+    }
 }

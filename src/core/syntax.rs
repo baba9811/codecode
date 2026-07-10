@@ -9,6 +9,14 @@ struct SyntaxLessonCopy {
     common_mistakes: Vec<String>,
     self_check: Vec<String>,
     exercise_prompt: String,
+    #[serde(default)]
+    objective: String,
+    #[serde(default)]
+    language_delta: String,
+    #[serde(default)]
+    prediction_prompt: String,
+    #[serde(default)]
+    transfer_trap: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -568,14 +576,50 @@ fn localized_syntax_level(level: &'static str, ui_language: &str) -> &'static st
     }
 }
 
-fn localized_syntax_exercise_prompt(lesson: &SyntaxLesson, ui_language: &str) -> String {
+pub fn localized_syntax_exercise_prompt(lesson: &SyntaxLesson, ui_language: &str) -> String {
     required_lesson_copy_for(lesson, ui_language)
         .exercise_prompt
         .clone()
 }
 
-fn localized_syntax_title(lesson: &SyntaxLesson, ui_language: &str) -> String {
+pub fn localized_syntax_title(lesson: &SyntaxLesson, ui_language: &str) -> String {
     required_lesson_copy_for(lesson, ui_language).title.clone()
+}
+
+pub fn localized_syntax_objective(lesson: &SyntaxLesson, ui_language: &str) -> String {
+    let copy = required_lesson_copy_for(lesson, ui_language);
+    lesson_copy_or(&copy.objective, &copy.concept)
+}
+
+pub fn localized_syntax_language_delta(lesson: &SyntaxLesson, ui_language: &str) -> String {
+    let copy = required_lesson_copy_for(lesson, ui_language);
+    lesson_copy_or(&copy.language_delta, &copy.concept)
+}
+
+pub fn localized_syntax_prediction_prompt(lesson: &SyntaxLesson, ui_language: &str) -> String {
+    let copy = required_lesson_copy_for(lesson, ui_language);
+    lesson_copy_or(&copy.prediction_prompt, &copy.exercise_prompt)
+}
+
+pub fn localized_syntax_transfer_trap(lesson: &SyntaxLesson, ui_language: &str) -> String {
+    let copy = required_lesson_copy_for(lesson, ui_language);
+    if !copy.transfer_trap.trim().is_empty() {
+        copy.transfer_trap.clone()
+    } else {
+        copy.common_mistakes
+            .first()
+            .or_else(|| copy.self_check.first())
+            .cloned()
+            .unwrap_or_else(|| copy.concept.clone())
+    }
+}
+
+fn lesson_copy_or(value: &str, fallback: &str) -> String {
+    if value.trim().is_empty() {
+        fallback.to_string()
+    } else {
+        value.to_string()
+    }
 }
 
 fn localized_syntax_body(lesson: &SyntaxLesson, ui_language: &str) -> String {

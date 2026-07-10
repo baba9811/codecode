@@ -31,7 +31,9 @@ impl PracticodeApp {
             format!("  {practice_label}")
         };
         format!(
-            "Practicode\n\n{learn}\n  Read a short syntax lesson and validate the exercise.\n\n{problems}\n  Solve stdin/stdout coding-test problems.\n\n{help}"
+            "Practicode\n\n{learn}\n  {}\n\n{problems}\n  {}\n\n{help}",
+            ui_text(lang, "home_learn_description"),
+            ui_text(lang, "home_practice_description")
         )
     }
 
@@ -84,6 +86,11 @@ impl PracticodeApp {
         }
         self.editing_notes = false;
         self.load_code_editor()?;
+        if self.mode == AppMode::Learn {
+            self.learning_session.set_view(LearningView::Code);
+            self.show_current_syntax_lesson();
+            return Ok(());
+        }
         self.settings_cursor = None;
         self.left_scroll = 0;
         self.output_scroll = 0;
@@ -118,7 +125,7 @@ impl PracticodeApp {
 
     pub(super) fn action_next(&mut self, request: &str) -> Result<()> {
         if self.mode == AppMode::Learn {
-            return self.action_next_lesson();
+            return self.action_next_learning();
         }
         self.mode = AppMode::Problems;
         self.state.settings.start_mode = "problems".to_string();
@@ -242,6 +249,7 @@ impl PracticodeApp {
 
     pub(super) fn action_previous(&mut self) -> Result<()> {
         if self.mode == AppMode::Learn {
+            self.learning_session = LearningSession::inactive();
             return self.action_prev_lesson();
         }
         if self.mode == AppMode::Home {
@@ -292,8 +300,10 @@ impl PracticodeApp {
         self.left_scroll = 0;
         self.output_scroll = 0;
         let language = self.state.settings.language.clone();
-        let lesson = current_syntax_lesson(&self.state, &language);
-        set_current_syntax_lesson(&mut self.state, &language, lesson.id);
+        self.learning_session = LearningSession::start(&self.state, &language, unix_time_now());
+        if let Some(lesson_id) = self.learning_session.current_lesson_id() {
+            set_current_syntax_lesson(&mut self.state, &language, lesson_id);
+        }
         save_state(&self.root, &self.state)?;
         self.load_syntax_editor()?;
         self.show_current_syntax_lesson();
@@ -315,10 +325,17 @@ impl PracticodeApp {
             lesson.language,
             &cases,
         );
-        if result.passed {
-            record_syntax_pass(&mut self.state, lesson.language, lesson.id);
-            save_state(&self.root, &self.state)?;
-        }
+        let assisted = self.learning_session.assisted();
+        record_syntax_result(
+            &mut self.state,
+            lesson.language,
+            lesson.id,
+            result.passed,
+            unix_time_now(),
+            assisted,
+        );
+        self.learning_session.finish_judge(result.passed);
+        save_state(&self.root, &self.state)?;
         self.output_scroll = 0;
         let headline = judge_headline(&result);
         let next_step = ui_text(
@@ -334,8 +351,30 @@ impl PracticodeApp {
         Ok(())
     }
 
+    pub(super) fn action_next_learning(&mut self) -> Result<()> {
+        match self.learning_session.advance() {
+            LearningAdvance::Step | LearningAdvance::Blocked | LearningAdvance::Complete => {
+                self.show_current_syntax_lesson();
+            }
+            LearningAdvance::Item(lesson_id) => {
+                let language = self.state.settings.language.clone();
+                set_current_syntax_lesson(&mut self.state, &language, lesson_id);
+                save_state(&self.root, &self.state)?;
+                self.load_syntax_editor()?;
+                self.learn_result.clear();
+                self.show_current_syntax_lesson();
+            }
+            LearningAdvance::Manual => {
+                self.learning_session = LearningSession::inactive();
+                self.action_next_lesson()?;
+            }
+        }
+        Ok(())
+    }
+
     pub(super) fn action_next_lesson(&mut self) -> Result<()> {
         self.mode = AppMode::Learn;
+        self.learning_session = LearningSession::inactive();
         let language = self.state.settings.language.clone();
         next_syntax_lesson(&mut self.state, &language, 1);
         save_state(&self.root, &self.state)?;
@@ -349,6 +388,7 @@ impl PracticodeApp {
 
     pub(super) fn action_prev_lesson(&mut self) -> Result<()> {
         self.mode = AppMode::Learn;
+        self.learning_session = LearningSession::inactive();
         let language = self.state.settings.language.clone();
         next_syntax_lesson(&mut self.state, &language, -1);
         save_state(&self.root, &self.state)?;
@@ -362,13 +402,50 @@ impl PracticodeApp {
 
     pub(super) fn show_current_syntax_lesson(&mut self) {
         let lesson = current_syntax_lesson(&self.state, &self.state.settings.language);
-        self.output = render_syntax_lesson(lesson, &self.state);
+        self.output = if self.learning_session.is_guided() {
+            render_learning_step(Some(lesson), &self.state, self.learning_session.step())
+        } else {
+            render_syntax_lesson(lesson, &self.state)
+        };
         self.left_scroll = 0;
         self.output_is_markdown = true;
         self.show_output = false;
         self.settings_cursor = None;
         self.list_cursor = None;
-        self.focus = Focus::Code;
+        self.focus = if self.learning_session.is_guided() {
+            match self.learning_session.view() {
+                LearningView::Lesson => Focus::Left,
+                LearningView::Code => Focus::Code,
+                LearningView::Result => Focus::Output,
+            }
+        } else {
+            Focus::Code
+        };
+    }
+
+    pub(super) fn action_lesson(&mut self) {
+        let lesson = current_syntax_lesson(&self.state, &self.state.settings.language);
+        let output = render_syntax_lesson(lesson, &self.state);
+        self.write_output(&output);
+    }
+
+    pub(super) fn action_progress(&mut self) {
+        let output = progress_text(&self.state, unix_time_now());
+        self.write_text_output(&output);
+    }
+
+    pub(super) fn mark_learning_assisted(&mut self) {
+        if self.mode == AppMode::Learn {
+            self.learning_session.mark_assisted();
+        }
+    }
+
+    pub(super) fn cycle_learning_view(&mut self) {
+        if self.mode != AppMode::Learn {
+            return;
+        }
+        self.learning_session.cycle_view();
+        self.show_current_syntax_lesson();
     }
 
     pub(super) fn action_cycle_language(&mut self) -> Result<()> {
@@ -397,17 +474,13 @@ impl PracticodeApp {
 
     pub(super) fn set_language(&mut self, language: &str) -> Result<()> {
         self.state.settings.language = language.to_string();
+        if self.mode == AppMode::Learn {
+            return self.action_learn(language);
+        }
         save_state(&self.root, &self.state)?;
         self.load_code_editor()?;
         self.settings_cursor = None;
-        if self.mode == AppMode::Learn {
-            self.learn_result.clear();
-            self.left_scroll = 0;
-            self.output_scroll = 0;
-            self.show_current_syntax_lesson();
-        } else {
-            self.show_output = false;
-        }
+        self.show_output = false;
         self.focus = Focus::Code;
         Ok(())
     }

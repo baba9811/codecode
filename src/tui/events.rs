@@ -9,6 +9,21 @@ impl PracticodeApp {
         if self.handle_busy_key(key) {
             return Ok(());
         }
+        match key.code {
+            KeyCode::F(1) => {
+                self.handle_command("help")?;
+                return Ok(());
+            }
+            KeyCode::F(5) => {
+                self.action_run()?;
+                return Ok(());
+            }
+            KeyCode::F(6) => {
+                self.cycle_learning_view();
+                return Ok(());
+            }
+            _ => {}
+        }
         if self.editing_notes {
             return self.handle_note_key(key);
         }

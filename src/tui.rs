@@ -10,7 +10,7 @@ use crate::{
         judge_path, load_bank, load_state, localized, next_problem, next_syntax_lesson,
         normalize_ai_effort, normalize_ai_provider, normalize_difficulty, normalize_language,
         normalize_next_source, normalize_ui_language, parse_language_list, parse_topic_list,
-        parse_ui_language_list, previous_problem, problem_by_id, record_pass, record_syntax_pass,
+        parse_ui_language_list, previous_problem, problem_by_id, record_pass, record_syntax_result,
         render_problem_tui, render_syntax_lesson, save_state, set_current_syntax_lesson,
         syntax_cases, syntax_language_name, syntax_progress_count, template_for, ui_text,
     },
@@ -49,6 +49,7 @@ mod commands;
 mod doctor;
 mod editor;
 mod events;
+mod learning;
 mod problem_list;
 mod problem_view;
 mod settings_panel;
@@ -57,6 +58,11 @@ mod tasks;
 mod view;
 use self::commands::COMMAND_HINTS;
 pub use self::editor::TextEditor;
+use self::learning::{
+    LearningAdvance, LearningSession, learning_step_label, progress_text, render_learning_step,
+    unix_time_now,
+};
+pub use self::learning::{LearningStep, LearningView};
 
 const UPDATE_CHECK_INTERVAL: Duration = Duration::from_secs(30 * 60);
 
@@ -103,6 +109,7 @@ pub struct PracticodeApp {
     command_palette_cursor: usize,
     output: String,
     learn_result: String,
+    learning_session: LearningSession,
     left_scroll: u16,
     output_scroll: u16,
     output_is_markdown: bool,
@@ -172,6 +179,7 @@ impl PracticodeApp {
             command_palette_cursor: 0,
             output: String::new(),
             learn_result: String::new(),
+            learning_session: LearningSession::inactive(),
             left_scroll: 0,
             output_scroll: 0,
             output_is_markdown: false,
@@ -331,6 +339,18 @@ impl PracticodeApp {
 
     pub fn learn_result_for_test(&self) -> &str {
         &self.learn_result
+    }
+
+    pub fn learning_queue_for_test(&self) -> Vec<&'static str> {
+        self.learning_session.queue_ids()
+    }
+
+    pub fn learning_step_for_test(&self) -> LearningStep {
+        self.learning_session.step()
+    }
+
+    pub fn learning_view_for_test(&self) -> LearningView {
+        self.learning_session.view()
     }
 
     pub fn command_suggestions_for_test(&self) -> Vec<String> {

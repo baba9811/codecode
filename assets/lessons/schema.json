@@ -79,6 +79,22 @@
         "exercise_prompt": {
           "type": "string",
           "minLength": 45
+        },
+        "objective": {
+          "type": "string",
+          "minLength": 1
+        },
+        "language_delta": {
+          "type": "string",
+          "minLength": 1
+        },
+        "prediction_prompt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "transfer_trap": {
+          "type": "string",
+          "minLength": 1
         }
       }
     }

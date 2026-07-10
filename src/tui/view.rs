@@ -6,9 +6,23 @@ impl PracticodeApp {
             HomeChoice::Learn => {
                 let (done, total) =
                     syntax_progress_count(&self.state, &self.state.settings.language);
+                let now = unix_time_now();
+                let due = crate::core::due_syntax_lesson_count(
+                    &self.state,
+                    &self.state.settings.language,
+                    now,
+                );
+                let next = LearningSession::start(&self.state, &self.state.settings.language, now);
+                let lang = &self.state.settings.ui_language;
                 format!(
-                    "Learning\n\nLanguage: {}\nProgress: {done}/{total}\n\n/run validates exercises\n/next moves to the next lesson",
-                    syntax_language_name(&self.state.settings.language)
+                    "{}\n\n{}: {}\n{}: {done}/{total}\n{}: {due}\n{}: {}",
+                    ui_text(lang, "home_learn_choice"),
+                    ui_text(lang, "progress_language"),
+                    syntax_language_name(&self.state.settings.language),
+                    ui_text(lang, "syntax_progress"),
+                    ui_text(lang, "progress_due"),
+                    ui_text(lang, "home_next_step"),
+                    learning_step_label(lang, next.step()),
                 )
             }
             HomeChoice::Problems => {
@@ -564,9 +578,7 @@ fn push_markdown_code_block(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crossterm::event::{
-        KeyCode, KeyEvent, KeyModifiers, MouseButton, MouseEvent, MouseEventKind,
-    };
+    use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
     use ratatui::{Terminal, backend::TestBackend};
 
     fn tmp_root(name: &str) -> PathBuf {
@@ -610,7 +622,7 @@ mod tests {
         let mut terminal = Terminal::new(backend).unwrap();
         terminal.draw(|frame| app.draw(frame)).unwrap();
 
-        assert!(app.output.contains("Syntax"));
+        assert!(app.output.contains("Exercise"));
         assert!(app.learn_result.contains("FAIL"));
         assert_ne!(app.output_area, Rect::new(0, 0, 80, 20));
         assert!(app.output_area.y > app.code_area.y);
@@ -618,22 +630,16 @@ mod tests {
     }
 
     #[test]
-    fn lesson_pane_scrolls_vertically() {
+    fn reference_lesson_scrolls_vertically() {
         let mut app = PracticodeApp::new(tmp_root("lesson-scroll")).unwrap();
         app.handle_command("learn python").unwrap();
+        app.handle_command("lesson").unwrap();
 
         let backend = TestBackend::new(80, 24);
         let mut terminal = Terminal::new(backend).unwrap();
         terminal.draw(|frame| app.draw(frame)).unwrap();
         assert!(buffer_text(&terminal).contains("Language: Python"));
 
-        app.handle_mouse(MouseEvent {
-            kind: MouseEventKind::Down(MouseButton::Left),
-            column: 2,
-            row: 2,
-            modifiers: KeyModifiers::NONE,
-        })
-        .unwrap();
         app.handle_key(KeyEvent::new(KeyCode::PageDown, KeyModifiers::NONE))
             .unwrap();
         terminal.draw(|frame| app.draw(frame)).unwrap();
@@ -693,5 +699,16 @@ mod tests {
             .map(|cell| cell.symbol())
             .collect::<String>();
         assert!(text.contains("> Home"));
+    }
+
+    #[test]
+    fn home_learning_preview_describes_the_guided_session() {
+        let app = PracticodeApp::new(tmp_root("home-learning-preview")).unwrap();
+        let preview = app.home_preview_text();
+
+        assert!(preview.contains("Continue today's session"));
+        assert!(preview.contains("Due: 0"));
+        assert!(preview.contains("Next step: Language delta"));
+        assert!(!preview.contains("moves to the next lesson"));
     }
 }

@@ -130,13 +130,14 @@ impl PracticodeApp {
             }
         };
         format!(
-            "# {}\n\n## {}\n\n{}\n\n## {}\n\n{}\n\n## {}\n\n- `/` opens the command palette outside the editor.\n- `↑/↓` selects a command and `Enter` accepts it.\n- `Esc` cancels the command palette or leaves output.\n\n## {}\n\n- stdout is shown when a case fails.\n- stderr is shown without affecting the expected stdout.",
+            "# {}\n\n## {}\n\n{}\n\n## {}\n\n{}\n\n## {}\n\n- {}\n- `/` opens the command palette outside the editor.\n- `↑/↓` selects a command and `Enter` accepts it.\n- `Esc` cancels the command palette or leaves output.\n\n## {}\n\n- stdout is shown when a case fails.\n- stderr is shown without affecting the expected stdout.",
             ui_text(lang, "help_title"),
             ui_text(lang, "daily_loop"),
             daily_loop,
             ui_text(lang, "commands"),
             commands,
             ui_text(lang, "keys"),
+            ui_text(lang, "learning_shortcuts"),
             ui_text(lang, "debug_prints"),
         )
     }

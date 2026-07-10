@@ -74,6 +74,18 @@ pub(super) const COMMAND_HINTS: &[CommandHint] = &[
         keep_open: false,
     },
     CommandHint {
+        insert: "lesson",
+        display: "/lesson",
+        desc_key: "cmd_lesson",
+        keep_open: false,
+    },
+    CommandHint {
+        insert: "progress",
+        display: "/progress",
+        desc_key: "cmd_progress",
+        keep_open: false,
+    },
+    CommandHint {
         insert: "hint ",
         display: "/hint <request>",
         desc_key: "cmd_hint",

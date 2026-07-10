@@ -24,7 +24,7 @@ pub fn record_syntax_result(
     record_syntax_result_for_lessons(state, &language, lesson_id, passed, now, assisted, &lessons);
 }
 
-fn record_syntax_result_for_lessons(
+pub(crate) fn record_syntax_result_for_lessons(
     state: &mut AppState,
     language: &str,
     lesson_id: &str,
@@ -137,10 +137,30 @@ fn due_syntax_lessons_for<'a>(
     limit: usize,
     lessons: &[&'a SyntaxLesson],
 ) -> Vec<&'a SyntaxLesson> {
+    let mut due = due_syntax_lesson_candidates(state, language, now, lessons);
+    due.sort_by_key(|&(review_due_at, index, _)| (review_due_at, index));
+    due.into_iter()
+        .take(limit.min(2))
+        .map(|(_, _, lesson)| lesson)
+        .collect()
+}
+
+pub fn due_syntax_lesson_count(state: &AppState, language: &str, now: u64) -> usize {
+    let language = normalize_language(language);
+    let lessons = syntax_lessons_for(&language);
+    due_syntax_lesson_candidates(state, &language, now, &lessons).len()
+}
+
+fn due_syntax_lesson_candidates<'a>(
+    state: &AppState,
+    language: &str,
+    now: u64,
+    lessons: &[&'a SyntaxLesson],
+) -> Vec<(u64, usize, &'a SyntaxLesson)> {
     let Some(mastery) = state.syntax_mastery.get(language) else {
         return Vec::new();
     };
-    let mut due = lessons
+    lessons
         .iter()
         .copied()
         .enumerate()
@@ -153,11 +173,6 @@ fn due_syntax_lessons_for<'a>(
                 lesson,
             ))
         })
-        .collect::<Vec<_>>();
-    due.sort_by_key(|&(review_due_at, index, _)| (review_due_at, index));
-    due.into_iter()
-        .take(limit.min(2))
-        .map(|(_, _, lesson)| lesson)
         .collect()
 }
 
