@@ -14,8 +14,10 @@ use std::fs;
 #[test]
 fn default_ai_next_prompt_reads_notes_and_includes_request() {
     let prompt = default_ai_next_prompt("그래프 쉬운 문제");
-    assert!(prompt.contains("docs/problem-authoring-notes.md"));
-    assert!(prompt.contains(".practicode/problem_notes.md"));
+    assert!(prompt.contains("problem_notes.md"));
+    assert!(prompt.contains("problem_bank.json"));
+    assert!(prompt.contains("problem-state.json"));
+    assert!(!prompt.contains(".practicode/problem"));
     assert!(prompt.contains("그래프 쉬운 문제"));
 }
 
@@ -53,7 +55,7 @@ fn default_ai_prompts_include_generation_language_scope() {
 
     let background = default_ai_generate_prompt_with_settings(&settings, "strings");
     assert!(background.contains("for later use"));
-    assert!(background.contains("Preserve .practicode/problem-state.json current_problem"));
+    assert!(background.contains("Preserve problem-state.json current_problem"));
 }
 
 #[test]
@@ -82,6 +84,7 @@ fn default_codex_command_uses_model_when_set() {
     );
     assert!(command.contains("codex app-server daemon start"));
     assert!(command.contains("--ephemeral"));
+    assert!(command.contains("--skip-git-repo-check"));
     assert!(command.contains("--model 'gpt-5-codex'"));
     assert!(command.contains("-c 'model_reasoning_effort=\"high\"'"));
     assert!(command.contains("strings"));

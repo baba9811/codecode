@@ -224,7 +224,7 @@ pub fn default_ai_next_prompt(request: &str) -> String {
 
 pub fn default_ai_next_prompt_with_settings(settings: &Settings, request: &str) -> String {
     format!(
-        "Read AGENTS.md, docs/problem-authoring-notes.md if present, .practicode/problem_notes.md if present, problems/INDEX.md if present, .practicode/problem_bank.json if present, and .practicode/problem-state.json. Create exactly one new non-duplicate coding practice problem. The built-in 001-hello-world already exists, so do not duplicate it. User request: {}. User profile: difficulty preference: {}; preferred topics: {}; avoid topics: {}; code language: {}; UI language: {}; generated answer languages: {}; generated UI languages: {}. Treat difficulty auto as gradual progression from state; otherwise prefer the requested difficulty unless the direct user request conflicts. Make the smallest valid edits: update .practicode/problem_bank.json, one problem directory, problems/INDEX.md, and .practicode/problem-state.json. Do not include the answer in the problem statement. Do not create solution.*, test_solution.*, or any answer-revealing file inside the problem directory.",
+        "Read problem_notes.md if present, problems/INDEX.md if present, problem_bank.json if present, and problem-state.json. Create exactly one new non-duplicate coding practice problem. The built-in 001-hello-world already exists, so do not duplicate it. User request: {}. User profile: difficulty preference: {}; preferred topics: {}; avoid topics: {}; code language: {}; UI language: {}; generated answer languages: {}; generated UI languages: {}. Treat difficulty auto as gradual progression from state; otherwise prefer the requested difficulty unless the direct user request conflicts. Make the smallest valid edits: update problem_bank.json, one problem directory, problems/INDEX.md, and problem-state.json. Do not include the answer in the problem statement. Do not create solution.*, test_solution.*, or any answer-revealing file inside the problem directory.",
         if request.is_empty() {
             "(none)"
         } else {
@@ -242,7 +242,7 @@ pub fn default_ai_next_prompt_with_settings(settings: &Settings, request: &str) 
 
 pub fn default_ai_generate_prompt_with_settings(settings: &Settings, request: &str) -> String {
     format!(
-        "Read AGENTS.md, docs/problem-authoring-notes.md if present, .practicode/problem_notes.md if present, problems/INDEX.md if present, .practicode/problem_bank.json if present, and .practicode/problem-state.json. Create exactly one new non-duplicate coding practice problem for later use. The built-in 001-hello-world already exists, so do not duplicate it. User request: {}. User profile: difficulty preference: {}; preferred topics: {}; avoid topics: {}; current code language: {}; current UI language: {}; generated answer languages: {}; generated UI languages: {}. Treat difficulty auto as gradual progression from state; otherwise prefer the requested difficulty unless the direct user request conflicts. Make the smallest valid edits: update .practicode/problem_bank.json, one problem directory, and problems/INDEX.md. Preserve .practicode/problem-state.json current_problem, history, solved, and settings; do not switch the current problem. Do not include the answer in the problem statement. Do not create solution.*, test_solution.*, or any answer-revealing file inside the problem directory.",
+        "Read problem_notes.md if present, problems/INDEX.md if present, problem_bank.json if present, and problem-state.json. Create exactly one new non-duplicate coding practice problem for later use. The built-in 001-hello-world already exists, so do not duplicate it. User request: {}. User profile: difficulty preference: {}; preferred topics: {}; avoid topics: {}; current code language: {}; current UI language: {}; generated answer languages: {}; generated UI languages: {}. Treat difficulty auto as gradual progression from state; otherwise prefer the requested difficulty unless the direct user request conflicts. Make the smallest valid edits: update problem_bank.json, one problem directory, and problems/INDEX.md. Preserve problem-state.json current_problem, history, solved, and settings; do not switch the current problem. Do not include the answer in the problem statement. Do not create solution.*, test_solution.*, or any answer-revealing file inside the problem directory.",
         if request.is_empty() {
             "(none)"
         } else {
@@ -406,6 +406,7 @@ fn run_codex_prompt(root: &Path, settings: &Settings, prompt: &str) -> String {
     command
         .args([
             "exec",
+            "--skip-git-repo-check",
             "--cd",
             &root.display().to_string(),
             "--sandbox",
@@ -475,7 +476,7 @@ fn run_claude_prompt(root: &Path, settings: &Settings, prompt: &str) -> String {
 fn default_codex_next_command(root: &Path, settings: &Settings, request: &str) -> String {
     let start = "if [ -x \"$HOME/.codex/packages/standalone/current/codex\" ]; then codex app-server daemon start >/dev/null 2>&1 || true; fi";
     let mut exec = format!(
-        "codex exec --ephemeral --cd {} --sandbox workspace-write",
+        "codex exec --ephemeral --skip-git-repo-check --cd {} --sandbox workspace-write",
         sh_quote(&root.display().to_string())
     );
     if let Some(model) = settings.model_arg() {
@@ -492,7 +493,7 @@ fn default_codex_next_command(root: &Path, settings: &Settings, request: &str) -
 fn default_codex_generate_command(root: &Path, settings: &Settings, request: &str) -> String {
     let start = "if [ -x \"$HOME/.codex/packages/standalone/current/codex\" ]; then codex app-server daemon start >/dev/null 2>&1 || true; fi";
     let mut exec = format!(
-        "codex exec --ephemeral --cd {} --sandbox workspace-write",
+        "codex exec --ephemeral --skip-git-repo-check --cd {} --sandbox workspace-write",
         sh_quote(&root.display().to_string())
     );
     if let Some(model) = settings.model_arg() {
