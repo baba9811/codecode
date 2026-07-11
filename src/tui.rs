@@ -1,7 +1,8 @@
 use crate::{
     ai::{
         AiGenerationResult, ModelCatalog, append_problem_note, available_models, provider_status,
-        read_problem_notes, run_ai_generate, run_ai_lesson_prompt, run_ai_next, run_ai_prompt,
+        read_problem_notes, run_ai_generate_result, run_ai_lesson_prompt, run_ai_next,
+        run_ai_prompt,
     },
     core::{
         AI_PROVIDERS, AppState, CLAUDE_AI_EFFORTS, CODEX_AI_EFFORTS, DIFFICULTIES, HistoryItem,

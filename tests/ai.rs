@@ -5,11 +5,25 @@ use practicode::{
     ai::{
         append_problem_note, build_lesson_ai_prompt, default_ai_generate_prompt_with_settings,
         default_ai_next_command, default_ai_next_prompt, default_ai_next_prompt_with_settings,
-        provider_status, read_problem_notes, run_ai_next,
+        provider_status, read_problem_notes, run_ai_generate, run_ai_next,
     },
     core::{AppState, Settings, syntax_lessons_for},
 };
 use std::fs;
+
+fn app_state(settings: Settings) -> AppState {
+    AppState {
+        current_problem: "001-hello-world".to_string(),
+        settings,
+        solved: Vec::new(),
+        history: Vec::new(),
+        suggested_next_difficulty: "easy".to_string(),
+        syntax_progress: Default::default(),
+        current_syntax_lesson: Default::default(),
+        syntax_mastery: Default::default(),
+        completed_syntax_courses: Default::default(),
+    }
+}
 
 #[test]
 fn default_ai_next_prompt_reads_notes_and_includes_request() {
@@ -181,6 +195,46 @@ fn run_ai_next_exposes_request_provider_and_model_to_custom_command() {
     assert_eq!(
         fs::read_to_string(root.join("request.txt")).unwrap(),
         "문자열 쉬운 문제|claude|sonnet|high"
+    );
+}
+
+#[test]
+#[cfg(unix)]
+fn run_ai_generate_preserves_public_success_output_and_runs_once() {
+    let root = tmp_root("ai-generate-success-api");
+    let state = app_state(Settings {
+        ai_provider: "claude".to_string(),
+        ai_next_command: "printf x >> generate-count.txt; printf 'generated detail'".to_string(),
+        ..Settings::default()
+    });
+
+    let output: String = run_ai_generate(&root, &state, "arrays");
+
+    assert_eq!(
+        output,
+        "claude background generation finished\ngenerated detail"
+    );
+    assert_eq!(
+        fs::read_to_string(root.join("generate-count.txt")).unwrap(),
+        "x"
+    );
+}
+
+#[test]
+#[cfg(unix)]
+fn run_ai_generate_preserves_public_failure_output() {
+    let root = tmp_root("ai-generate-failure-api");
+    let state = app_state(Settings {
+        ai_provider: "codex".to_string(),
+        ai_next_command: "printf 'failure detail' >&2; exit 7".to_string(),
+        ..Settings::default()
+    });
+
+    let output: String = run_ai_generate(&root, &state, "arrays");
+
+    assert_eq!(
+        output,
+        "codex background generation failed (7)\nfailure detail"
     );
 }
 

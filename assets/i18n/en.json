@@ -208,5 +208,6 @@
   "generation_reload_failed": "Background generation finished, but the problem bank could not be reloaded.",
   "generation_exit_status": "Exit status: {status}",
   "generation_partial_count": "New problems added to the bank despite the failure: {count}.",
-  "judge_unknown_status": "unknown"
+  "judge_unknown_status": "unknown",
+  "judge_missing_typescript_tool": "Missing TypeScript runtime: {tool}"
 }

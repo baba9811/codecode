@@ -208,5 +208,6 @@
   "generation_reload_failed": "バックグラウンド生成は完了しましたが、問題バンクを再読み込みできませんでした。",
   "generation_exit_status": "終了ステータス: {status}",
   "generation_partial_count": "失敗しましたが、問題バンクには新しい問題が{count}件反映されました。",
-  "judge_unknown_status": "不明"
+  "judge_unknown_status": "不明",
+  "judge_missing_typescript_tool": "TypeScriptランタイムがありません: {tool}"
 }

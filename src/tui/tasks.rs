@@ -84,7 +84,13 @@ impl PracticodeApp {
                 added,
                 reload_error,
             },
-            AiGenerationResult::Succeeded => {
+            AiGenerationResult::FailedToRun(detail) => GenerationNotice::Failed {
+                status: None,
+                detail,
+                added,
+                reload_error,
+            },
+            AiGenerationResult::Succeeded(_) => {
                 if let Some(error) = reload_error {
                     GenerationNotice::ReloadFailed(error)
                 } else if added > 0 {
@@ -434,7 +440,7 @@ mod tests {
         let mut app = PracticodeApp::new(root.clone()).unwrap();
         app.state.settings.ui_language = "ko".to_string();
 
-        finish_generation(&mut app, AiGenerationResult::Succeeded, 0);
+        finish_generation(&mut app, AiGenerationResult::Succeeded(String::new()), 0);
         let generated = app.background_generation_status().unwrap();
         assert!(generated.contains("문제 1개"), "{generated}");
         assert!(!generated.contains("Generated"), "{generated}");
@@ -474,7 +480,11 @@ mod tests {
         app.generate_rx = None;
 
         let bank_len = app.bank.len();
-        finish_generation(&mut app, AiGenerationResult::Succeeded, bank_len);
+        finish_generation(
+            &mut app,
+            AiGenerationResult::Succeeded(String::new()),
+            bank_len,
+        );
         let finished = app.background_generation_status().unwrap();
         assert!(
             finished.contains("バックグラウンド生成が完了"),
@@ -487,7 +497,11 @@ mod tests {
 
         std::fs::write(root.join("problem_bank.json"), "not json").unwrap();
         let bank_len = app.bank.len();
-        finish_generation(&mut app, AiGenerationResult::Succeeded, bank_len);
+        finish_generation(
+            &mut app,
+            AiGenerationResult::Succeeded(String::new()),
+            bank_len,
+        );
         let reload_failed = app.background_generation_status().unwrap();
         assert!(
             reload_failed.contains("問題バンクを再読み込みできませんでした"),

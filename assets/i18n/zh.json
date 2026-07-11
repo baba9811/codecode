@@ -208,5 +208,6 @@
   "generation_reload_failed": "后台生成已完成，但无法重新加载题库。",
   "generation_exit_status": "退出状态：{status}",
   "generation_partial_count": "尽管生成失败，题库中仍新增了{count}道题。",
-  "judge_unknown_status": "未知"
+  "judge_unknown_status": "未知",
+  "judge_missing_typescript_tool": "缺少TypeScript运行时：{tool}"
 }

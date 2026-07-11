@@ -208,5 +208,6 @@
   "generation_reload_failed": "La generación terminó, pero no se pudo recargar el banco de problemas.",
   "generation_exit_status": "Estado de salida: {status}",
   "generation_partial_count": "Problemas nuevos añadidos al banco a pesar del fallo: {count}.",
-  "judge_unknown_status": "desconocido"
+  "judge_unknown_status": "desconocido",
+  "judge_missing_typescript_tool": "Falta el entorno de ejecución de TypeScript: {tool}"
 }

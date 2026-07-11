@@ -30,10 +30,28 @@ fn judge_headline(result: &JudgeResult, language: &str) -> String {
     )
 }
 
+fn judge_label_key(label: &str) -> Option<&'static str> {
+    match label {
+        "Input" => Some("judge_input"),
+        "Expected" => Some("judge_expected"),
+        "Got" => Some("judge_got"),
+        "Stdout" => Some("judge_stdout"),
+        "Stderr" => Some("judge_stderr"),
+        "Error" => Some("judge_error"),
+        "Compile" => Some("judge_compile"),
+        _ => None,
+    }
+}
+
 fn localized_judge_result_output(result: &JudgeResult, language: &str) -> String {
     let output = &result.output;
     if output == "problem has no judge cases" {
         return ui_text(language, "judge_no_cases").to_string();
+    }
+    if let Some(tool) = output.strip_prefix("Missing runtime for TypeScript: ")
+        && matches!(tool, "tsc" | "node")
+    {
+        return ui_text(language, "judge_missing_typescript_tool").replace("{tool}", tool);
     }
     if let Some(runtime) = output.strip_prefix("Missing runtime for ")
         && LANGUAGES.contains(&runtime)
@@ -56,7 +74,7 @@ fn localized_judge_result_output(result: &JudgeResult, language: &str) -> String
     if !structured {
         return output.to_string();
     }
-    let mut under_error = false;
+    let mut body_label = "";
     output
         .lines()
         .map(|line| {
@@ -66,7 +84,7 @@ fn localized_judge_result_output(result: &JudgeResult, language: &str) -> String
                 && case.parse::<usize>().is_ok()
                 && matches!(outcome, "PASS" | "FAIL")
             {
-                under_error = false;
+                body_label = "";
                 let outcome = ui_text(
                     language,
                     if outcome == "PASS" {
@@ -77,24 +95,27 @@ fn localized_judge_result_output(result: &JudgeResult, language: &str) -> String
                 );
                 return format!("{} {case}: {outcome}", ui_text(language, "judge_case"));
             }
-            let label = match line {
-                "Input" => Some("judge_input"),
-                "Expected" => Some("judge_expected"),
-                "Got" => Some("judge_got"),
-                "Stdout" => Some("judge_stdout"),
-                "Stderr" => Some("judge_stderr"),
-                "Error" => Some("judge_error"),
-                "Compile" => Some("judge_compile"),
-                _ => None,
-            };
-            if let Some(label) = label {
-                under_error = line == "Error";
-                return ui_text(language, label).to_string();
+            if let Some(label) = line.strip_suffix(": <empty>")
+                && let Some(key) = judge_label_key(label)
+            {
+                body_label = "";
+                return format!(
+                    "{}: {}",
+                    ui_text(language, key),
+                    ui_text(language, "empty_value")
+                );
             }
-            if under_error && line == "  timeout: 5s" {
+            if let Some(key) = judge_label_key(line) {
+                body_label = line;
+                return ui_text(language, key).to_string();
+            }
+            if matches!(body_label, "Input" | "Expected") && line == "  <hidden>" {
+                return format!("  <{}>", ui_text(language, "judge_hidden"));
+            }
+            if body_label == "Error" && line == "  timeout: 5s" {
                 return format!("  {}", ui_text(language, "judge_timeout_detail"));
             }
-            if under_error
+            if body_label == "Error"
                 && let Some(status) = line.strip_prefix("  process exited with status ")
                 && (status == "unknown" || status.parse::<i32>().is_ok())
             {
@@ -109,7 +130,7 @@ fn localized_judge_result_output(result: &JudgeResult, language: &str) -> String
                 );
             }
             if !line.is_empty() && !line.starts_with("  ") {
-                under_error = false;
+                body_label = "";
             }
             line.to_string()
         })
@@ -117,7 +138,12 @@ fn localized_judge_result_output(result: &JudgeResult, language: &str) -> String
         .join("\n")
 }
 
-fn learning_state_text(mastery: &crate::core::LessonMastery, now: u64, language: &str) -> String {
+fn learning_state_text(
+    lesson: &crate::core::SyntaxLesson,
+    mastery: &crate::core::LessonMastery,
+    now: u64,
+    language: &str,
+) -> String {
     let stage = ui_text(
         language,
         match mastery.stage {
@@ -127,7 +153,12 @@ fn learning_state_text(mastery: &crate::core::LessonMastery, now: u64, language:
             crate::core::MasteryStage::Mastered => "mastery_mastered",
         },
     );
-    let review = if let Some(due_at) = syntax_review_due_at(mastery, now) {
+    let review_due_at = if lesson.track == crate::core::SyntaxTrack::Core {
+        syntax_review_due_at(mastery, now)
+    } else {
+        None
+    };
+    let review = if let Some(due_at) = review_due_at {
         let days = due_at.saturating_sub(now).saturating_add(86_399) / 86_400;
         format!("{}: {days}", ui_text(language, "result_review_days"))
     } else {
@@ -309,7 +340,7 @@ impl PracticodeApp {
         let state = self.state.clone();
         let (tx, rx) = mpsc::channel();
         thread::spawn(move || {
-            let _ = tx.send(run_ai_generate(&root, &state, &request));
+            let _ = tx.send(run_ai_generate_result(&root, &state, &request));
         });
         self.generate_bank_len = self.bank.len();
         self.generate_started = Some(Instant::now());
@@ -475,6 +506,7 @@ impl PracticodeApp {
             assisted,
         );
         let learning_state = learning_state_text(
+            lesson,
             &self.state.syntax_mastery[lesson.language][lesson.id],
             now,
             &self.state.settings.ui_language,
@@ -811,6 +843,26 @@ impl PracticodeApp {
 mod tests {
     use super::*;
 
+    fn synthetic_lesson(track: crate::core::SyntaxTrack) -> crate::core::SyntaxLesson {
+        crate::core::SyntaxLesson {
+            id: "synthetic",
+            aliases: &[],
+            language: "rust",
+            track,
+            kind: crate::core::SyntaxKind::Lesson,
+            level: "basic",
+            title: "synthetic",
+            body: "synthetic",
+            example: "fn main() {}",
+            exercise: crate::core::SyntaxExercise {
+                prompt: "synthetic",
+                starter: "fn main() {}",
+                cases: &[],
+            },
+            refs: &[],
+        }
+    }
+
     fn localize(output: &str, kind: Option<JudgeFailureKind>) -> String {
         localized_judge_result_output(
             &JudgeResult {
@@ -854,19 +906,40 @@ mod tests {
             localize(missing_tool, Some(JudgeFailureKind::TypeCheck)),
             missing_tool
         );
+
+        for (tool, kind) in [
+            ("tsc", JudgeFailureKind::TypeCheck),
+            ("node", JudgeFailureKind::Runtime),
+        ] {
+            let raw = format!("Missing runtime for TypeScript: {tool}");
+            assert_eq!(
+                localize(&raw, Some(kind)),
+                format!("TypeScript 런타임이 없습니다: {tool}")
+            );
+        }
     }
 
     #[test]
     fn judge_localization_preserves_indented_program_output_byte_for_byte() {
-        let output = "Case 1: PASS\n\nStdout\n  <empty>";
+        let output = "Case 1: PASS\n\nGot\n  <empty>\n\nStdout\n  <hidden>";
 
         assert_eq!(
             localize(output, None),
-            "케이스 1: 통과\n\n표준 출력\n  <empty>"
+            "케이스 1: 통과\n\n실제 출력\n  <empty>\n\n표준 출력\n  <hidden>"
         );
 
         let non_numeric_case = "Case literal: PASS\n\nGot\n  value";
         assert_eq!(localize(non_numeric_case, None), non_numeric_case);
+    }
+
+    #[test]
+    fn judge_localization_uses_provenance_for_empty_and_hidden_markers() {
+        let output = "Case 1: FAIL\n\nGot: <empty>\n\nInput\n  <hidden>\n\nExpected\n  <hidden>";
+
+        assert_eq!(
+            localize(output, Some(JudgeFailureKind::Output)),
+            "케이스 1: 실패\n\n실제 출력: <비어 있음>\n\n입력\n  <숨김>\n\n기대 출력\n  <숨김>"
+        );
     }
 
     #[test]
@@ -922,7 +995,8 @@ mod tests {
             attempts: 1,
         };
 
-        let text = learning_state_text(&mastery, 1_000, "en");
+        let lesson = synthetic_lesson(crate::core::SyntaxTrack::Core);
+        let text = learning_state_text(&lesson, &mastery, 1_000, "en");
 
         assert!(text.contains("Mastery: New"), "{text}");
         assert!(
@@ -930,5 +1004,27 @@ mod tests {
             "{text}"
         );
         assert!(!text.contains("Next review (days)"), "{text}");
+    }
+
+    #[test]
+    fn learning_state_schedules_core_pass_but_not_lab_pass() {
+        let now = 1_000;
+        let passed = crate::core::LessonMastery {
+            stage: crate::core::MasteryStage::Practiced,
+            review_due_at: now + 86_400,
+            attempts: 1,
+        };
+        let lab = synthetic_lesson(crate::core::SyntaxTrack::Lab);
+        let core = synthetic_lesson(crate::core::SyntaxTrack::Core);
+
+        let lab_text = learning_state_text(&lab, &passed, now, "en");
+        let core_text = learning_state_text(&core, &passed, now, "en");
+
+        assert!(
+            lab_text.contains("Retry this exercise; no review is scheduled."),
+            "{lab_text}"
+        );
+        assert!(!lab_text.contains("Next review (days)"), "{lab_text}");
+        assert!(core_text.contains("Next review (days): 1"), "{core_text}");
     }
 }

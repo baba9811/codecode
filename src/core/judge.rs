@@ -217,10 +217,10 @@ where
 
 fn push_labeled_block(lines: &mut Vec<String>, label: &str, body: &str) {
     lines.push(String::new());
-    lines.push(label.to_string());
     if body.is_empty() {
-        lines.push("  <empty>".to_string());
+        lines.push(format!("{label}: <empty>"));
     } else {
+        lines.push(label.to_string());
         lines.extend(body.lines().map(|line| format!("  {line}")));
     }
 }
@@ -516,6 +516,17 @@ fn compile_rust(root: &Path, path: &Path) -> Result<Option<CommandSpec>> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn labeled_blocks_distinguish_semantic_empty_from_literal_empty_output() {
+        let mut semantic_empty = Vec::new();
+        push_labeled_block(&mut semantic_empty, "Got", "");
+        assert_eq!(semantic_empty, ["", "Got: <empty>"]);
+
+        let mut literal_empty = Vec::new();
+        push_labeled_block(&mut literal_empty, "Got", "<empty>");
+        assert_eq!(literal_empty, ["", "Got", "  <empty>"]);
+    }
 
     #[test]
     fn compiler_contract_flags_are_explicit() {

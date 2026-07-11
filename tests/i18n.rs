@@ -121,6 +121,7 @@ fn ui_catalogs_have_complete_localized_learning_ui_copy() {
         "generation_reload_failed",
         "generation_partial_count",
         "judge_unknown_status",
+        "judge_missing_typescript_tool",
     ];
     let catalogs = UI_LANGUAGES
         .iter()
