@@ -26,14 +26,6 @@ impl PracticodeApp {
     }
 
     pub(super) fn status_text(&self) -> String {
-        if self.task_rx.is_some()
-            || self.editing_notes
-            || self.focus == Focus::Command
-            || self.list_cursor.is_some()
-            || (self.show_output && self.busy_label.is_empty())
-        {
-            return format!(" {} ", self.mode_hint());
-        }
         let lang = &self.state.settings.ui_language;
         if self.mode == AppMode::Home && !self.show_output {
             return format!(
@@ -43,6 +35,16 @@ impl PracticodeApp {
             );
         }
         if self.mode == AppMode::Learn {
+            let primary = if self.task_rx.is_some()
+                || self.editing_notes
+                || self.focus == Focus::Command
+                || self.list_cursor.is_some()
+                || self.show_output
+            {
+                self.mode_hint()
+            } else {
+                self.learning_primary_hint()
+            };
             let lesson = current_syntax_lesson(&self.state, &self.state.settings.language);
             let (done, total) =
                 syntax_core_progress_count(&self.state, &self.state.settings.language);
@@ -62,7 +64,7 @@ impl PracticodeApp {
             };
             return format!(
                 " {} | PRACTICODE | {} | {} | {} | {done}/{total}{focus} | {}:{} ",
-                self.learning_primary_hint(),
+                primary,
                 ui_text(lang, "mode_learn"),
                 syntax_language_name(&self.state.settings.language),
                 lesson.id,

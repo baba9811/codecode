@@ -270,7 +270,11 @@ fn next_fallback_generation_blocks_commands_but_keeps_warmup_active() {
     app.handle_command_for_test("next").unwrap();
 
     app.handle_command_for_test("language rust").unwrap();
-    assert!(app.status_text_for_test().contains("python"));
+    assert!(
+        app.status_text_for_test().contains("python"),
+        "{}",
+        app.status_text_for_test()
+    );
     assert!(app.status_text_for_test().contains("Space warmup"));
 
     app.handle_key_for_test(KeyEvent::new(KeyCode::Char(' '), KeyModifiers::NONE))
@@ -457,7 +461,11 @@ fn learn_command_opens_syntax_course_separate_from_problem_mode() {
     assert!(app.status_text_for_test().contains("learn"));
 
     app.handle_command_for_test("problems").unwrap();
-    assert!(app.status_text_for_test().contains("001-hello-world"));
+    assert!(
+        app.status_text_for_test().contains("001-hello-world"),
+        "{}",
+        app.status_text_for_test()
+    );
     assert!(!app.status_text_for_test().contains("learn"));
 }
 
