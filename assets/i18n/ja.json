@@ -33,6 +33,7 @@
   "learning_primary_run": "F5: 実行",
   "learning_primary_edit": "Enter: コードへ",
   "learning_primary_home": "Enter: ホームへ",
+  "learning_primary_leave_code": "Esc: 編集を終了",
   "hint_idle": "/ コマンド | ? ヘルプ",
   "hint_busy": "処理中 | q 終了",
   "hint_busy_next": "Space ウォームアップ | q 終了",

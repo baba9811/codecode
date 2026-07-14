@@ -33,6 +33,7 @@
   "learning_primary_run": "F5: Ejecutar",
   "learning_primary_edit": "Enter: Volver al código",
   "learning_primary_home": "Enter: Inicio",
+  "learning_primary_leave_code": "Esc: Salir del editor",
   "hint_idle": "/ comando | ? ayuda",
   "hint_busy": "Trabajando | q salir",
   "hint_busy_next": "Space calentamiento | q salir",

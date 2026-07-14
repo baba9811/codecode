@@ -1077,6 +1077,35 @@ fn guided_enter_in_editor_inserts_newline_without_advancing() {
 }
 
 #[test]
+fn guided_enter_does_not_advance_behind_an_output_overlay() {
+    let root = tmp_root("guided-enter-overlay");
+    let mut app = PracticodeApp::new(root).unwrap();
+    app.handle_command_for_test("learn python").unwrap();
+    app.handle_command_for_test("help").unwrap();
+    let output = app.output_for_test().to_string();
+
+    app.handle_key_for_test(KeyEvent::new(KeyCode::Enter, KeyModifiers::NONE))
+        .unwrap();
+
+    assert_eq!(app.learning_step_for_test(), LearningStep::Delta);
+    assert_eq!(app.output_for_test(), output);
+}
+
+#[test]
+fn guided_code_focus_describes_the_key_that_actually_works() {
+    let root = tmp_root("guided-code-hint");
+    let mut app = PracticodeApp::new(root).unwrap();
+    app.handle_command_for_test("learn python").unwrap();
+    app.handle_command_for_test("code").unwrap();
+
+    assert!(
+        app.status_text_for_test().contains("Esc: Leave editor"),
+        "{}",
+        app.status_text_for_test()
+    );
+}
+
+#[test]
 fn guided_status_shows_current_primary_action() {
     if which("python3").or_else(|| which("python")).is_none() {
         return;

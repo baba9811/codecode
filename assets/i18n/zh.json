@@ -33,6 +33,7 @@
   "learning_primary_run": "F5：运行",
   "learning_primary_edit": "Enter：返回代码",
   "learning_primary_home": "Enter：返回首页",
+  "learning_primary_leave_code": "Esc：结束编辑",
   "hint_idle": "/ 命令 | ? 帮助",
   "hint_busy": "处理中 | q 退出",
   "hint_busy_next": "Space 热身 | q 退出",

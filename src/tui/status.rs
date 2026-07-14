@@ -43,18 +43,18 @@ impl PracticodeApp {
                 LearningView::Code => Focus::Code,
                 LearningView::Result => Focus::Output,
             };
-            let context = if !self.show_output && self.focus == selected_focus {
+            let focus = if !self.show_output && self.focus == selected_focus {
                 format!(
-                    "{}: {} | {}",
+                    " | {}: {}",
                     ui_text(lang, "focus_active"),
                     learning_view_label(lang, self.learning_session.view()),
-                    self.mode_hint()
                 )
             } else {
-                self.mode_hint().to_string()
+                String::new()
             };
             return format!(
-                " PRACTICODE | {} | {} | {} | {done}/{total} | {context} | {}:{} ",
+                " {} | PRACTICODE | {} | {} | {} | {done}/{total}{focus} | {}:{} ",
+                self.learning_primary_hint(),
                 ui_text(lang, "mode_learn"),
                 syntax_language_name(&self.state.settings.language),
                 lesson.id,
@@ -241,13 +241,19 @@ impl PracticodeApp {
     }
 
     fn learning_primary_hint(&self) -> &'static str {
-        let key = match self.learning_session.step() {
-            LearningStep::Exercise if self.learning_session.view() == LearningView::Result => {
-                "learning_primary_edit"
+        let key = if self.focus == Focus::Code
+            && self.learning_session.step() != LearningStep::Exercise
+        {
+            "learning_primary_leave_code"
+        } else {
+            match self.learning_session.step() {
+                LearningStep::Exercise if self.learning_session.view() == LearningView::Result => {
+                    "learning_primary_edit"
+                }
+                LearningStep::Exercise => "learning_primary_run",
+                LearningStep::Complete => "learning_primary_home",
+                _ => "learning_primary_next",
             }
-            LearningStep::Exercise => "learning_primary_run",
-            LearningStep::Complete => "learning_primary_home",
-            _ => "learning_primary_next",
         };
         ui_text(&self.state.settings.ui_language, key)
     }

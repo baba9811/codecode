@@ -1051,7 +1051,7 @@ mod tests {
     #[test]
     fn compact_learning_status_leads_with_the_current_primary_action() {
         for language in UI_LANGUAGES {
-            for width in [60, 80, 99, 100] {
+            for width in [60, 80, 99, 100, 121, 140] {
                 let mut app =
                     PracticodeApp::new(tmp_root(&format!("compact-status-{language}-{width}")))
                         .unwrap();
@@ -1062,8 +1062,8 @@ mod tests {
 
                 let action = ui_text(language, "learning_primary_next");
                 assert!(
-                    rendered.contains(action),
-                    "{language} {width}: missing {action} in {rendered:?}"
+                    rendered.trim_start().starts_with(action),
+                    "{language} {width}: {action} does not lead {rendered:?}"
                 );
             }
         }
