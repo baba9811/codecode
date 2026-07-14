@@ -26,6 +26,14 @@ impl PracticodeApp {
     }
 
     pub(super) fn status_text(&self) -> String {
+        if self.task_rx.is_some()
+            || self.editing_notes
+            || self.focus == Focus::Command
+            || self.list_cursor.is_some()
+            || self.show_output
+        {
+            return format!(" {} ", self.mode_hint());
+        }
         let lang = &self.state.settings.ui_language;
         if self.mode == AppMode::Home && !self.show_output {
             return format!(
