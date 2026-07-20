@@ -618,6 +618,40 @@ mod tests {
     }
 
     #[test]
+    fn automatic_update_prompt_opens_in_home_and_learn() {
+        for (name, mode) in [("home", AppMode::Home), ("learn", AppMode::Learn)] {
+            let mut app = localized_app(&format!("practicode-update-{name}"), "en");
+            app.mode = mode;
+
+            deliver_update(&mut app, UpdateCheck::Available("9.9.9".to_string()));
+
+            assert!(app.update_prompt.is_some(), "{mode:?}");
+            assert!(app.show_output, "{mode:?}");
+            assert!(
+                app.output.contains("Update now"),
+                "{mode:?}: {}",
+                app.output
+            );
+        }
+    }
+
+    #[test]
+    fn automatic_update_failure_or_opt_out_does_not_open_an_overlay() {
+        for (name, result) in [
+            ("failed", UpdateCheck::Failed),
+            ("disabled", UpdateCheck::Disabled),
+        ] {
+            let mut app = localized_app(&format!("practicode-update-{name}"), "en");
+            app.mode = AppMode::Learn;
+
+            deliver_update(&mut app, result);
+
+            assert!(app.update_prompt.is_none(), "{name}");
+            assert!(!app.show_output, "{name}");
+        }
+    }
+
+    #[test]
     fn available_update_prompts_and_later_reminds_in_every_mode() {
         let mut app = localized_app("practicode-update-prompt", "ko");
 
