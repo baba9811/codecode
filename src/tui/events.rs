@@ -6,6 +6,9 @@ impl PracticodeApp {
             self.should_quit = true;
             return Ok(());
         }
+        if self.update_prompt.is_some() {
+            return self.handle_update_prompt_key(key);
+        }
         if self.handle_busy_key(key) {
             return Ok(());
         }

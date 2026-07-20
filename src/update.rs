@@ -2,6 +2,7 @@ use crate::process::{run_capture, which};
 use std::{env, process::Command, time::Duration};
 
 pub const CURRENT_VERSION: &str = env!("CARGO_PKG_VERSION");
+pub const NPM_UPDATE_EXIT_CODE: i32 = 42;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum UpdateCheck {
@@ -38,6 +39,10 @@ pub fn is_newer(latest: &str, current: &str) -> bool {
         (version_parts(latest), version_parts(current)),
         (Some(latest), Some(current)) if latest > current
     )
+}
+
+pub fn update_is_eligible(latest: &str, current: &str, skipped: &str) -> bool {
+    latest != skipped && is_newer(latest, current)
 }
 
 fn version_parts(version: &str) -> Option<[u64; 3]> {

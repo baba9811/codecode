@@ -229,6 +229,8 @@ impl PracticodeApp {
                 .block(Self::block(
                     if self.editing_notes {
                         PROBLEM_NOTES_PATH
+                    } else if self.update_prompt.is_some() {
+                        ui_text(&self.state.settings.ui_language, "update")
                     } else {
                         ui_text(&self.state.settings.ui_language, "output")
                     },
@@ -1138,6 +1140,34 @@ mod tests {
 
         assert_eq!(app.output_area, Rect::new(0, 0, 80, 22));
         assert_eq!(app.code_area, Rect::default());
+    }
+
+    #[test]
+    fn update_prompt_uses_a_localized_full_body() {
+        for (width, height) in [(80, 24), (140, 40)] {
+            let mut app = PracticodeApp::new(tmp_root(&format!("update-prompt-{width}"))).unwrap();
+            app.state.settings.ui_language = "ko".to_string();
+            let (tx, rx) = std::sync::mpsc::channel();
+            tx.send(UpdateCheck::Available("9.9.9".to_string()))
+                .unwrap();
+            app.update_rx = Some(rx);
+            app.check_update();
+
+            let terminal = draw_at(&mut app, width, height);
+            let top = (0..width)
+                .map(|x| terminal.backend().buffer()[(x, 0)].symbol())
+                .collect::<String>();
+            let compact_top = top.replace(' ', "");
+            let text = buffer_text(&terminal);
+            let compact_text = text.replace(' ', "");
+
+            assert!(compact_top.contains("업데이트"), "{width}: {top}");
+            assert!(!compact_top.contains("결과"), "{width}: {top}");
+            assert!(compact_text.contains("지금업데이트"), "{width}: {text}");
+            assert_eq!(app.output_area, Rect::new(0, 0, width, height - 2));
+            assert_eq!(app.left_area, Rect::default());
+            assert_eq!(app.code_area, Rect::default());
+        }
     }
 
     #[test]

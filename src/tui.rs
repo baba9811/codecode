@@ -19,7 +19,7 @@ use crate::{
     text::{
         byte_index, char_len, compose_hangul_jamo, display_width, prefix, render_markdown_plain,
     },
-    update::{CURRENT_VERSION, UpdateCheck, check_latest_version},
+    update::{CURRENT_VERSION, UpdateCheck, check_latest_version, update_is_eligible},
 };
 use anyhow::{Context, Result};
 use crossterm::event::{
@@ -36,7 +36,7 @@ use ratatui::{
 };
 use std::{
     collections::HashMap,
-    fs,
+    env, fs,
     io::stdout,
     path::PathBuf,
     sync::mpsc::{self, Receiver, TryRecvError},
@@ -105,6 +105,11 @@ enum PracticeView {
     Code,
 }
 
+struct UpdatePrompt {
+    version: String,
+    cursor: usize,
+}
+
 fn localized_status(language: &str, status: &str) -> String {
     let key = format!("status_{status}");
     let localized = ui_text(language, &key);
@@ -161,6 +166,10 @@ pub struct PracticodeApp {
     model_message: Option<String>,
     update_check: Option<UpdateCheck>,
     update_notice: Option<String>,
+    update_prompt: Option<UpdatePrompt>,
+    update_prompted_version: Option<String>,
+    npm_install: bool,
+    npm_update_requested: bool,
     last_update_check: Option<Instant>,
     left_area: Rect,
     code_area: Rect,
@@ -249,6 +258,10 @@ impl PracticodeApp {
             model_message: None,
             update_check: None,
             update_notice: None,
+            update_prompt: None,
+            update_prompted_version: None,
+            npm_install: env::var("PRACTICODE_INSTALL_METHOD").ok().as_deref() == Some("npm"),
+            npm_update_requested: false,
             last_update_check: None,
             left_area: Rect::default(),
             code_area: Rect::default(),
@@ -294,6 +307,10 @@ impl PracticodeApp {
         let save_result = self.save_code();
         self.disable_mouse_capture();
         save_result
+    }
+
+    pub fn npm_update_requested(&self) -> bool {
+        self.npm_update_requested
     }
 
     pub fn handle_command_for_test(&mut self, value: &str) -> Result<()> {

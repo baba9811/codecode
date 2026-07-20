@@ -150,7 +150,20 @@ impl PracticodeApp {
             self.update_rx = None;
             self.update_check = Some(result.clone());
             match &result {
-                UpdateCheck::Available(version) => self.update_notice = Some(version.clone()),
+                UpdateCheck::Available(version) => {
+                    let skipped = self.state.settings.skipped_update_version == *version;
+                    self.update_notice =
+                        (!skipped || showing_update_check).then(|| version.clone());
+                    let automatic = update_is_eligible(
+                        version,
+                        CURRENT_VERSION,
+                        &self.state.settings.skipped_update_version,
+                    ) && self.update_prompted_version.as_deref() != Some(version);
+                    if showing_update_check || automatic {
+                        self.open_update_prompt(version.clone());
+                        return;
+                    }
+                }
                 UpdateCheck::Current | UpdateCheck::Disabled => self.update_notice = None,
                 UpdateCheck::Failed => {}
             }
@@ -370,11 +383,8 @@ impl PracticodeApp {
 
     pub(super) fn show_update_notice(&mut self) {
         let lang = self.state.settings.ui_language.clone();
-        if let Some(version) = &self.update_notice {
-            self.write_text_output(&format!(
-                "{}: practicode {version} (current {CURRENT_VERSION})\n\nnpm update -g practicode\ncargo install --force practicode",
-                ui_text(&lang, "update_available")
-            ));
+        if let Some(version) = self.update_notice.clone() {
+            self.open_update_prompt(version);
         } else if self.update_rx.is_some() {
             self.write_text_output(ui_text(&lang, "update_checking"));
         } else if matches!(self.update_check, Some(UpdateCheck::Disabled)) {
@@ -383,6 +393,105 @@ impl PracticodeApp {
             self.write_text_output(ui_text(&lang, "update_check_failed"));
         } else {
             self.write_text_output(ui_text(&lang, "update_none"));
+        }
+    }
+
+    fn open_update_prompt(&mut self, version: String) {
+        self.update_prompted_version = Some(version.clone());
+        self.update_prompt = Some(UpdatePrompt { version, cursor: 0 });
+        self.refresh_update_prompt();
+    }
+
+    fn refresh_update_prompt(&mut self) {
+        let Some(prompt) = &self.update_prompt else {
+            return;
+        };
+        let lang = &self.state.settings.ui_language;
+        let option = |index, key| {
+            format!(
+                "{} {}",
+                if prompt.cursor == index { ">" } else { " " },
+                ui_text(lang, key)
+            )
+        };
+        let output = format!(
+            "{}: practicode {} ({} {CURRENT_VERSION})\n\n{}\n{}\n{}\n\n{}",
+            ui_text(lang, "update_available"),
+            prompt.version,
+            ui_text(lang, "update_current_version"),
+            option(0, "update_now"),
+            option(1, "update_later"),
+            option(2, "update_skip_version"),
+            ui_text(lang, "update_prompt_help"),
+        );
+        self.write_text_output(&output);
+    }
+
+    pub(super) fn handle_update_prompt_key(&mut self, key: KeyEvent) -> Result<()> {
+        let Some(prompt) = self.update_prompt.as_mut() else {
+            return Ok(());
+        };
+        match key.code {
+            KeyCode::Up | KeyCode::Char('k') => {
+                prompt.cursor = (prompt.cursor + 2) % 3;
+                self.refresh_update_prompt();
+            }
+            KeyCode::Down | KeyCode::Char('j') => {
+                prompt.cursor = (prompt.cursor + 1) % 3;
+                self.refresh_update_prompt();
+            }
+            KeyCode::Esc => self.dismiss_update_prompt(),
+            KeyCode::Enter => match prompt.cursor {
+                0 if self.npm_install => {
+                    self.npm_update_requested = true;
+                    self.should_quit = true;
+                    self.update_prompt = None;
+                }
+                0 => {
+                    let version = prompt.version.clone();
+                    self.update_prompt = None;
+                    self.show_update_commands(&version);
+                }
+                1 => self.dismiss_update_prompt(),
+                2 => {
+                    let version = prompt.version.clone();
+                    self.state.settings.skipped_update_version = version;
+                    self.update_notice = None;
+                    save_state(&self.root, &self.state)?;
+                    self.dismiss_update_prompt();
+                }
+                _ => {}
+            },
+            _ => {}
+        }
+        Ok(())
+    }
+
+    fn show_update_commands(&mut self, version: &str) {
+        let lang = &self.state.settings.ui_language;
+        self.write_text_output(&format!(
+            "{}: practicode {version} ({} {CURRENT_VERSION})\n\nnpm update -g practicode\ncargo install --force practicode",
+            ui_text(lang, "update_available"),
+            ui_text(lang, "update_current_version")
+        ));
+    }
+
+    fn dismiss_update_prompt(&mut self) {
+        self.update_prompt = None;
+        match self.mode {
+            AppMode::Home => {
+                self.output = self.home_text();
+                self.show_output = false;
+                self.focus = Focus::Home;
+            }
+            AppMode::Learn => self.show_current_syntax_lesson(),
+            AppMode::Problems => {
+                self.show_output = false;
+                self.focus = match self.practice_view {
+                    PracticeView::Problem => Focus::Left,
+                    PracticeView::Code => Focus::Code,
+                };
+            }
         }
     }
 
@@ -499,6 +608,160 @@ mod tests {
         assert!(!app.learning_session.assisted());
         app.handle_command("learn python").unwrap();
         assert!(!app.learning_session.assisted());
+    }
+
+    fn deliver_update(app: &mut PracticodeApp, result: UpdateCheck) {
+        let (tx, rx) = std::sync::mpsc::channel();
+        tx.send(result).unwrap();
+        app.update_rx = Some(rx);
+        app.check_update();
+    }
+
+    #[test]
+    fn automatic_update_prompt_opens_in_home_and_learn() {
+        for (name, mode) in [("home", AppMode::Home), ("learn", AppMode::Learn)] {
+            let mut app = localized_app(&format!("practicode-update-{name}"), "en");
+            app.mode = mode;
+
+            deliver_update(&mut app, UpdateCheck::Available("9.9.9".to_string()));
+
+            assert!(app.update_prompt.is_some(), "{mode:?}");
+            assert!(app.show_output, "{mode:?}");
+            assert!(
+                app.output.contains("Update now"),
+                "{mode:?}: {}",
+                app.output
+            );
+        }
+    }
+
+    #[test]
+    fn automatic_update_failure_or_opt_out_does_not_open_an_overlay() {
+        for (name, result) in [
+            ("failed", UpdateCheck::Failed),
+            ("disabled", UpdateCheck::Disabled),
+        ] {
+            let mut app = localized_app(&format!("practicode-update-{name}"), "en");
+            app.mode = AppMode::Learn;
+
+            deliver_update(&mut app, result);
+
+            assert!(app.update_prompt.is_none(), "{name}");
+            assert!(!app.show_output, "{name}");
+        }
+    }
+
+    #[test]
+    fn available_update_prompts_and_later_reminds_in_every_mode() {
+        let mut app = localized_app("practicode-update-prompt", "ko");
+
+        deliver_update(&mut app, UpdateCheck::Available("9.9.9".to_string()));
+
+        assert!(app.output.contains("지금 업데이트"), "{}", app.output);
+        assert!(app.output.contains("나중에"), "{}", app.output);
+        assert!(app.output.contains("이 버전 건너뛰기"), "{}", app.output);
+
+        app.handle_key(KeyEvent::new(KeyCode::Down, KeyModifiers::NONE))
+            .unwrap();
+        app.handle_key(KeyEvent::new(KeyCode::Enter, KeyModifiers::NONE))
+            .unwrap();
+
+        assert!(!app.show_output);
+        for mode in [AppMode::Home, AppMode::Learn, AppMode::Problems] {
+            app.mode = mode;
+            for width in [80, 140] {
+                assert!(
+                    app.status_text_for_width(width).contains("/update"),
+                    "{mode:?} {width}: {}",
+                    app.status_text_for_width(width)
+                );
+            }
+        }
+
+        app.mode = AppMode::Home;
+        deliver_update(&mut app, UpdateCheck::Available("9.9.9".to_string()));
+        assert!(!app.show_output, "same version prompted twice");
+    }
+
+    #[test]
+    fn skipped_update_stays_hidden_until_a_newer_version() {
+        let mut app = localized_app("practicode-update-skip", "en");
+
+        deliver_update(&mut app, UpdateCheck::Available("9.9.8".to_string()));
+        app.handle_key(KeyEvent::new(KeyCode::Down, KeyModifiers::NONE))
+            .unwrap();
+        app.handle_key(KeyEvent::new(KeyCode::Down, KeyModifiers::NONE))
+            .unwrap();
+        app.handle_key(KeyEvent::new(KeyCode::Enter, KeyModifiers::NONE))
+            .unwrap();
+
+        assert_eq!(app.state.settings.skipped_update_version, "9.9.8");
+        assert!(app.update_notice.is_none());
+        assert!(!app.show_output);
+        let bank = load_bank(&app.root).unwrap();
+        assert_eq!(
+            load_state(&app.root, &bank)
+                .unwrap()
+                .settings
+                .skipped_update_version,
+            "9.9.8"
+        );
+
+        deliver_update(&mut app, UpdateCheck::Available("9.9.8".to_string()));
+        assert!(!app.show_output, "skipped version prompted again");
+
+        deliver_update(&mut app, UpdateCheck::Available("9.9.9".to_string()));
+        assert!(app.output.contains("practicode 9.9.9"), "{}", app.output);
+        assert!(app.show_output);
+    }
+
+    #[test]
+    fn explicit_update_check_reopens_a_skipped_version() {
+        let mut app = localized_app("practicode-update-skipped-explicit", "en");
+        app.state.settings.skipped_update_version = "9.9.9".to_string();
+        app.write_text_output(ui_text("en", "update_checking"));
+
+        deliver_update(&mut app, UpdateCheck::Available("9.9.9".to_string()));
+
+        assert!(app.output.contains("practicode 9.9.9"), "{}", app.output);
+        assert!(app.output.contains("Update now"), "{}", app.output);
+        assert!(app.show_output);
+    }
+
+    #[test]
+    fn update_now_hands_an_npm_install_back_to_the_launcher() {
+        let mut app = localized_app("practicode-update-now-npm", "en");
+        app.npm_install = true;
+        deliver_update(&mut app, UpdateCheck::Available("9.9.9".to_string()));
+
+        app.handle_key(KeyEvent::new(KeyCode::Enter, KeyModifiers::NONE))
+            .unwrap();
+
+        assert!(app.should_quit);
+        assert!(app.npm_update_requested());
+    }
+
+    #[test]
+    fn update_now_only_shows_commands_for_an_unmarked_install() {
+        let mut app = localized_app("practicode-update-now-manual", "en");
+        app.npm_install = false;
+        deliver_update(&mut app, UpdateCheck::Available("9.9.9".to_string()));
+
+        app.handle_key(KeyEvent::new(KeyCode::Enter, KeyModifiers::NONE))
+            .unwrap();
+
+        assert!(!app.should_quit);
+        assert!(!app.npm_update_requested);
+        assert!(
+            app.output.contains("npm update -g practicode"),
+            "{}",
+            app.output
+        );
+        assert!(
+            app.output.contains("cargo install --force practicode"),
+            "{}",
+            app.output
+        );
     }
 
     #[test]
