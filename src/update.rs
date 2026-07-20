@@ -2,6 +2,7 @@ use crate::process::{run_capture, which};
 use std::{env, process::Command, time::Duration};
 
 pub const CURRENT_VERSION: &str = env!("CARGO_PKG_VERSION");
+pub const NPM_UPDATE_EXIT_CODE: i32 = 42;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum UpdateCheck {

@@ -75,6 +75,7 @@ pub fn run_cli() -> Result<()> {
     let mut terminal = ratatui::init();
     let _ = execute!(stdout(), SetCursorStyle::SteadyBar);
     let result = app.run(&mut terminal);
+    let npm_update_requested = app.npm_update_requested();
     process::terminate_active_commands();
     ratatui::restore();
     let _ = execute!(
@@ -82,6 +83,9 @@ pub fn run_cli() -> Result<()> {
         SetCursorStyle::DefaultUserShape,
         DisableMouseCapture
     );
+    if result.is_ok() && npm_update_requested {
+        std::process::exit(update::NPM_UPDATE_EXIT_CODE);
+    }
     result
 }
 

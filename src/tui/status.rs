@@ -13,6 +13,21 @@ impl PracticodeApp {
         if width > 120 {
             return self.status_text();
         }
+        if let Some(update) = self.update_status() {
+            let hint = if self.mode == AppMode::Learn {
+                self.learning_primary_hint()
+            } else {
+                ui_text(
+                    &self.state.settings.ui_language,
+                    match self.mode {
+                        AppMode::Home => "hint_home_compact",
+                        AppMode::Learn => "hint_learn_compact",
+                        AppMode::Problems => "hint_problem_compact",
+                    },
+                )
+            };
+            return format!(" {update} | {hint} ");
+        }
         if self.mode == AppMode::Learn {
             return format!(" {} ", self.learning_primary_hint());
         }
@@ -28,11 +43,10 @@ impl PracticodeApp {
     pub(super) fn status_text(&self) -> String {
         let lang = &self.state.settings.ui_language;
         if self.mode == AppMode::Home && !self.show_output {
-            return format!(
-                " PRACTICODE | {} | {} ",
-                ui_text(lang, "mode_home"),
-                self.mode_hint()
-            );
+            let tail = self
+                .update_status()
+                .unwrap_or_else(|| self.mode_hint().to_string());
+            return format!(" PRACTICODE | {} | {} ", ui_text(lang, "mode_home"), tail);
         }
         if self.mode == AppMode::Learn {
             let primary = if self.task_rx.is_some()
@@ -62,8 +76,12 @@ impl PracticodeApp {
             } else {
                 String::new()
             };
+            let update = self
+                .update_status()
+                .map(|status| format!(" | {status}"))
+                .unwrap_or_default();
             return format!(
-                " {} | PRACTICODE | {} | {} | {} | {done}/{total}{focus} | {}:{} ",
+                " {} | PRACTICODE | {} | {} | {} | {done}/{total}{focus} | {}:{}{update} ",
                 primary,
                 ui_text(lang, "mode_learn"),
                 syntax_language_name(&self.state.settings.language),
@@ -87,11 +105,8 @@ impl PracticodeApp {
                 self.elapsed_text(elapsed)
             )
         };
-        let tail = if let Some(version) = self.update_notice.as_ref() {
-            format!(
-                "{}:{version} /update",
-                ui_text(&self.state.settings.ui_language, "update")
-            )
+        let tail = if let Some(status) = self.update_status() {
+            status
         } else if self.task_rx.is_some() {
             self.mode_hint().to_string()
         } else if let Some(status) = self.background_generation_status() {
@@ -110,6 +125,15 @@ impl PracticodeApp {
             self.state.settings.language,
             tail,
         )
+    }
+
+    fn update_status(&self) -> Option<String> {
+        self.update_notice.as_ref().map(|version| {
+            format!(
+                "{}:{version} /update",
+                ui_text(&self.state.settings.ui_language, "update")
+            )
+        })
     }
 
     pub(super) fn next_source_help(&self) -> String {
