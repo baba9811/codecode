@@ -41,6 +41,8 @@ pub struct Settings {
     pub ai_effort: String,
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub ai_next_command: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub skipped_update_version: String,
 }
 
 impl Default for Settings {
@@ -61,6 +63,7 @@ impl Default for Settings {
             ai_model: default_ai_model(),
             ai_effort: default_ai_effort(),
             ai_next_command: String::new(),
+            skipped_update_version: String::new(),
         }
     }
 }

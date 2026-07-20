@@ -40,6 +40,10 @@ pub fn is_newer(latest: &str, current: &str) -> bool {
     )
 }
 
+pub fn update_is_eligible(latest: &str, current: &str, skipped: &str) -> bool {
+    latest != skipped && is_newer(latest, current)
+}
+
 fn version_parts(version: &str) -> Option<[u64; 3]> {
     let mut parts = version.split('.');
     let version = [

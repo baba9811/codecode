@@ -612,6 +612,26 @@ fn save_state_writes_ai_settings_without_deprecated_empty_field() {
 }
 
 #[test]
+fn skipped_update_version_round_trips_through_state() {
+    let root = tmp_root("state-skipped-update");
+    let bank = load_bank(&root).unwrap();
+    let mut state = test_state();
+    state.settings.skipped_update_version = "0.2.4".to_string();
+
+    save_state(&root, &state).unwrap();
+
+    let saved = fs::read_to_string(root.join("problem-state.json")).unwrap();
+    assert!(saved.contains("\"skipped_update_version\": \"0.2.4\""));
+    assert_eq!(
+        load_state(&root, &bank)
+            .unwrap()
+            .settings
+            .skipped_update_version,
+        "0.2.4"
+    );
+}
+
+#[test]
 fn state_save_preserves_previous_backup_and_cleans_temporary_file() {
     let root = tmp_root("state-safe-save");
     let submission = root.join("submissions/.syntax/rust/rust-output/exercise.rs");
