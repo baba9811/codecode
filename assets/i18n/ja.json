@@ -131,7 +131,6 @@
   "learning_step_reflect": "振り返り",
   "learning_step_complete": "セッション完了",
   "learning_complete_body": "今日のガイド付きセッションは完了です。/next でレッスンを閲覧するか、/home で別のモードを選んでください。",
-  "learning_run_gate": "次: 演習まで /next で進み、その後 /run または F5 を使ってください。",
   "progress_title": "学習進捗",
   "progress_language": "言語",
   "progress_core": "コア",

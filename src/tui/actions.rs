@@ -485,13 +485,6 @@ impl PracticodeApp {
         if self.mode != AppMode::Learn {
             self.action_learn("")?;
         }
-        if !self.learning_session.can_judge() {
-            self.learn_result =
-                ui_text(&self.state.settings.ui_language, "learning_run_gate").to_string();
-            self.learning_session.set_view(LearningView::Result);
-            self.show_current_syntax_lesson();
-            return Ok(());
-        }
         self.save_syntax_code()?;
         let lesson = current_syntax_lesson(&self.state, &self.state.settings.language);
         let path = ensure_syntax_submission(&self.root, lesson)?;

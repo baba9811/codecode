@@ -145,10 +145,6 @@ impl LearningSession {
         self.assisted
     }
 
-    pub(super) fn can_judge(&self) -> bool {
-        !self.guided || self.step == LearningStep::Exercise
-    }
-
     pub(super) fn mark_assisted(&mut self) {
         if !self.guided
             || (self.queue.get(self.index).is_some()
@@ -544,35 +540,6 @@ mod tests {
             MasteryStage::New
         );
         assert!(!session.assisted());
-    }
-
-    #[test]
-    fn guided_judge_gate_allows_only_exercise_while_inactive_browsing_can_run() {
-        let mut session = LearningSession {
-            guided: true,
-            queue: vec![LearningItem {
-                lesson_id: "lesson",
-                review: false,
-            }],
-            index: 0,
-            step: LearningStep::Review,
-            view: LearningView::Code,
-            assisted: false,
-        };
-
-        for step in [
-            LearningStep::Review,
-            LearningStep::Delta,
-            LearningStep::Predict,
-            LearningStep::Reflect,
-            LearningStep::Complete,
-        ] {
-            session.step = step;
-            assert!(!session.can_judge(), "{step:?}");
-        }
-        session.step = LearningStep::Exercise;
-        assert!(session.can_judge());
-        assert!(LearningSession::inactive().can_judge());
     }
 
     #[test]

@@ -1190,26 +1190,6 @@ mod tests {
     }
 
     #[test]
-    fn learning_gate_selects_visible_result_at_narrow_and_wide_widths() {
-        for (width, height) in [(80, 24), (100, 30)] {
-            let mut app = PracticodeApp::new(tmp_root(&format!("gate-visible-{width}"))).unwrap();
-            app.handle_command("learn python").unwrap();
-
-            app.handle_command("run").unwrap();
-            let terminal = draw_at(&mut app, width, height);
-            let text = buffer_text(&terminal);
-
-            assert_eq!(app.learning_session.view(), LearningView::Result);
-            assert!(
-                text.contains("Next: use /next until Exercise"),
-                "{width}: {text}"
-            );
-            assert!(app.output_area.width > 0, "{width}");
-            assert_eq!(app.code_area, Rect::default(), "{width}");
-        }
-    }
-
-    #[test]
     fn manual_judge_selects_visible_result_at_narrow_and_wide_widths() {
         if which("python3").or_else(|| which("python")).is_none() {
             return;

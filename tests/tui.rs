@@ -1160,13 +1160,15 @@ fn guided_session_next_cannot_bypass_an_unpassed_exercise() {
     assert_eq!(app.learning_step_for_test(), LearningStep::Exercise);
 }
 
-fn assert_guided_run_waits_for_exercise(name: &str, use_f5: bool) {
+fn assert_guided_run_judges_from_predict(name: &str, use_f5: bool) {
     if which("python3").or_else(|| which("python")).is_none() {
         return;
     }
     let root = tmp_root(name);
     let mut app = PracticodeApp::new(root.clone()).unwrap();
     app.handle_command_for_test("learn python").unwrap();
+    app.handle_command_for_test("next").unwrap();
+    assert_eq!(app.learning_step_for_test(), LearningStep::Predict);
     let lesson = syntax_lessons_for("python")[0];
     let path = ensure_syntax_submission(&root, lesson).unwrap();
     std::fs::write(&path, PY_OUTPUT_SOLUTION).unwrap();
@@ -1181,37 +1183,9 @@ fn assert_guided_run_waits_for_exercise(name: &str, use_f5: bool) {
     };
 
     run(&mut app).unwrap();
-    assert_eq!(app.learning_step_for_test(), LearningStep::Delta);
-    assert!(
-        app.learn_result_for_test()
-            .contains("Next: use /next until Exercise, then /run or F5.")
-    );
-    let bank = load_bank(&root).unwrap();
-    assert!(
-        load_state(&root, &bank)
-            .unwrap()
-            .syntax_mastery
-            .get("python")
-            .is_none_or(|mastery| !mastery.contains_key("py-output"))
-    );
-    assert_eq!(std::fs::read_to_string(&path).unwrap(), PY_OUTPUT_SOLUTION);
-
-    app.handle_command_for_test("next").unwrap();
-    run(&mut app).unwrap();
-    assert_eq!(app.learning_step_for_test(), LearningStep::Predict);
-    assert!(
-        load_state(&root, &bank)
-            .unwrap()
-            .syntax_mastery
-            .get("python")
-            .is_none_or(|mastery| !mastery.contains_key("py-output"))
-    );
-    assert_eq!(std::fs::read_to_string(&path).unwrap(), PY_OUTPUT_SOLUTION);
-
-    app.handle_command_for_test("next").unwrap();
-    assert_eq!(app.learning_step_for_test(), LearningStep::Exercise);
-    run(&mut app).unwrap();
     assert_eq!(app.learning_step_for_test(), LearningStep::Reflect);
+    assert!(app.learn_result_for_test().contains("PASS 3/3"));
+    let bank = load_bank(&root).unwrap();
     assert_eq!(
         load_state(&root, &bank).unwrap().syntax_mastery["python"]["py-output"].stage,
         MasteryStage::Practiced
@@ -1219,13 +1193,13 @@ fn assert_guided_run_waits_for_exercise(name: &str, use_f5: bool) {
 }
 
 #[test]
-fn guided_run_waits_for_exercise_even_when_code_already_passes() {
-    assert_guided_run_waits_for_exercise("guided-run-gate", false);
+fn guided_run_judges_from_predict() {
+    assert_guided_run_judges_from_predict("guided-run-predict", false);
 }
 
 #[test]
-fn guided_f5_waits_for_exercise_even_when_code_already_passes() {
-    assert_guided_run_waits_for_exercise("guided-f5-gate", true);
+fn guided_f5_judges_from_predict() {
+    assert_guided_run_judges_from_predict("guided-f5-predict", true);
 }
 
 #[test]
