@@ -1510,6 +1510,22 @@ fn embedded_course_assets_use_the_versioned_contract() {
 }
 
 #[test]
+fn readme_svgs_use_geometry_for_terminal_borders() {
+    for svg in [
+        include_str!("../assets/practicode-home.svg"),
+        include_str!("../assets/practicode-terminal.svg"),
+    ] {
+        assert!(svg.contains("class=\"panel "));
+        assert!(
+            !svg.chars()
+                .any(|character| ('\u{2500}'..='\u{257f}').contains(&character))
+        );
+        assert!(!svg.contains("foreignObject"));
+        assert!(svg.contains("role=\"img\""));
+    }
+}
+
+#[test]
 fn rust_syntax_curriculum_covers_core_book_topics() {
     let lesson_ids: Vec<_> = syntax_lessons_for("rust")
         .into_iter()

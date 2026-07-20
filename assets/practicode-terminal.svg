@@ -1,40 +1,62 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1112" height="630" viewBox="0 0 1112 630" role="img" aria-label="Practicode · Learn">
-<rect width="1112" height="630" rx="14" fill="#0f172a"/>
-<rect x="1" y="1" width="1110" height="628" rx="13" fill="none" stroke="#334155"/>
-<circle cx="18" cy="18" r="5" fill="#fb7185"/><circle cx="34" cy="18" r="5" fill="#fbbf24"/><circle cx="50" cy="18" r="5" fill="#4ade80"/>
-<text x="70" y="23" fill="#94a3b8" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, Liberation Mono, monospace">Practicode · Learn</text>
-<g fill="#e5e7eb" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, Liberation Mono, monospace" xml:space="preserve">
-<text x="16" y="48">┌&gt; Lesson────────────────────────────────────────┐┌Code · Exercise.rs──────────────────────────────────────────────────┐</text>
-<text x="16" y="66">│Language delta: Make stdout byte-exact          ││&gt;  1 use std::io::{self, Read};                                     │</text>
-<text x="16" y="84">│                                                ││   2                                                                │</text>
-<text x="16" y="102">│Unlike string concatenation in many languages,  ││   3 fn render(name: &amp;str, score: &amp;str) -&gt; String {                 │</text>
-<text x="16" y="120">│Rust formatting keeps the template and typed    ││   4     // TODO: use the exact field separator required by stdout. │</text>
-<text x="16" y="138">│arguments separate and validates their          ││   5     format!(&quot;{name} {score}&quot;)                                  │</text>
-<text x="16" y="156">│relationship.                                   ││   6 }                                                              │</text>
-<text x="16" y="174">│                                                ││   7                                                                │</text>
-<text x="16" y="192">│                                                ││   8 fn main() {                                                    │</text>
-<text x="16" y="210">│                                                ││   9     let mut input = String::new();                             │</text>
-<text x="16" y="228">│                                                ││  10     io::stdin().read_to_string(&amp;mut input).unwrap();           │</text>
-<text x="16" y="246">│                                                ││  11     let mut fields = input.split_whitespace();                 │</text>
-<text x="16" y="264">│                                                ││  12     let name = fields.next().unwrap();                         │</text>
-<text x="16" y="282">│                                                ││  13     let score = fields.next().unwrap();                        │</text>
-<text x="16" y="300">│                                                ││  14     println!(&quot;{}&quot;, render(name, score));                       │</text>
-<text x="16" y="318">│                                                ││  15 }                                                              │</text>
-<text x="16" y="336">│                                                ││  16                                                                │</text>
-<text x="16" y="354">│                                                ││                                                                    │</text>
-<text x="16" y="372">│                                                ││                                                                    │</text>
-<text x="16" y="390">│                                                ││                                                                    │</text>
-<text x="16" y="408">│                                                ││                                                                    │</text>
-<text x="16" y="426">│                                                ││                                                                    │</text>
-<text x="16" y="444">│                                                ││                                                                    │</text>
-<text x="16" y="462">│                                                ││                                                                    │</text>
-<text x="16" y="480">│                                                ││                                                                    │</text>
-<text x="16" y="498">│                                                ││                                                                    │</text>
-<text x="16" y="516">│                                                ││                                                                    │</text>
-<text x="16" y="534">│                                                ││                                                                    │</text>
-<text x="16" y="552">│                                                ││                                                                    │</text>
-<text x="16" y="570">└────────────────────────────────────────────────┘└────────────────────────────────────────────────────────────────────┘</text>
-<text x="16" y="588"> F1 help | F5 run | F6 view | /next step                                                                                </text>
-<text x="16" y="606">Command: Type /, move with up/down, Enter runs                                                                          </text>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" width="1112" height="630" viewBox="0 0 1112 630" role="img" aria-label="Actual Practicode guided Learn TUI render">
+  <title>Practicode · Learn</title>
+  <style>
+    .panel { fill: none; stroke-width: 1.5; }
+    .active-border { stroke: #facc15; }
+    .border { stroke: #22d3ee; }
+    .text { fill: #e5e7eb; font: 14px ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
+    .chrome { fill: #94a3b8; font: 13px ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
+    .active-title { fill: #facc15; font: 700 14px ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
+    .title { fill: #22d3ee; font: 700 14px ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
+    .lesson-title { fill: #facc15; font: 700 14px ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
+    .section { fill: #22d3ee; font: 700 14px ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
+    .code { fill: #f3f4f6; font: 14px ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
+    .status { fill: #c8d3f5; font: 700 13px ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
+  </style>
+
+  <rect width="1112" height="630" rx="14" fill="#0f172a"/>
+  <rect y="34" width="1112" height="596" fill="#111827"/>
+  <rect x="1" y="1" width="1110" height="628" rx="13" fill="none" stroke="#334155"/>
+  <circle cx="18" cy="18" r="5" fill="#fb7185"/>
+  <circle cx="34" cy="18" r="5" fill="#fbbf24"/>
+  <circle cx="50" cy="18" r="5" fill="#4ade80"/>
+  <text class="chrome" x="70" y="23">Practicode · Learn</text>
+
+  <rect class="panel active-border" x="20.5" y="43" width="441" height="522"/>
+  <rect x="24" y="35" width="80" height="17" fill="#111827"/>
+  <text class="active-title" x="25" y="48">&gt; Lesson</text>
+
+  <rect class="panel border" x="470.5" y="43" width="621" height="522"/>
+  <rect x="474" y="35" width="158" height="17" fill="#111827"/>
+  <text class="title" x="475" y="48">Code · Exercise.py</text>
+
+  <text class="lesson-title" x="25" y="66">1/4 · Language delta: Exact output with print</text>
+  <text class="text" x="25" y="102">Unlike a raw stream write, print supplies both a</text>
+  <text class="text" x="25" y="120">separator and a line ending. Establishing this</text>
+  <text class="text" x="25" y="138">boundary early makes every later Python</text>
+  <text class="text" x="25" y="156">exercise's output contract explicit.</text>
+
+  <text class="section" x="25" y="192">Exercise</text>
+  <text class="text" x="25" y="228">Read the name and score, then configure print so</text>
+  <text class="text" x="25" y="246">they form one colon-delimited record terminated</text>
+  <text class="text" x="25" y="264">by exactly one newline.</text>
+
+  <text class="section" x="25" y="300">Input</text>
+  <rect x="43" y="322" width="60" height="18" fill="#1f2937"/>
+  <text class="code" x="43" y="336"> Ada 7 </text>
+
+  <text class="section" x="25" y="372">Output</text>
+  <rect x="43" y="394" width="60" height="18" fill="#1f2937"/>
+  <text class="code" x="43" y="408"> Ada:7 </text>
+
+  <text class="text" x="475" y="66">&gt;  1 import sys</text>
+  <text class="text" x="475" y="84">   2</text>
+  <text class="text" x="475" y="102">   3 name, score = sys.stdin.read().split()</text>
+  <text class="text" x="475" y="120">   4 # TODO: choose print separators and a line ending for the requi</text>
+  <text class="text" x="475" y="138">   5 print(name, score)</text>
+  <text class="text" x="475" y="156">   6</text>
+
+  <rect y="574" width="1112" height="18" fill="#152033"/>
+  <text class="status" x="25" y="588">Enter: Next</text>
+  <text class="text" x="16" y="606">Command: Type /, move with up/down, Enter runs</text>
 </svg>

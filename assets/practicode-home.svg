@@ -1,40 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1112" height="630" viewBox="0 0 1112 630" role="img" aria-label="Practicode · Home">
-<rect width="1112" height="630" rx="14" fill="#0f172a"/>
-<rect x="1" y="1" width="1110" height="628" rx="13" fill="none" stroke="#334155"/>
-<circle cx="18" cy="18" r="5" fill="#fb7185"/><circle cx="34" cy="18" r="5" fill="#fbbf24"/><circle cx="50" cy="18" r="5" fill="#4ade80"/>
-<text x="70" y="23" fill="#94a3b8" font-size="13" font-family="ui-monospace, SFMono-Regular, Consolas, Liberation Mono, monospace">Practicode · Home</text>
-<g fill="#e5e7eb" font-size="14" font-family="ui-monospace, SFMono-Regular, Consolas, Liberation Mono, monospace" xml:space="preserve">
-<text x="16" y="48">┌&gt; Continue today's session──────────────────────┐┌Preview─────────────────────────────────────────────────────────────┐</text>
-<text x="16" y="66">│Review what's due, learn one core item, and     ││Continue today's session                                            │</text>
-<text x="16" y="84">│validate the exercise.                          ││                                                                    │</text>
-<text x="16" y="102">│                                                ││Language: Python                                                    │</text>
-<text x="16" y="120">│                                                ││Progress: 0/12                                                      │</text>
-<text x="16" y="138">│                                                ││Due: 0                                                              │</text>
-<text x="16" y="156">└────────────────────────────────────────────────┘│Next step: Language delta                                           │</text>
-<text x="16" y="174">┌Practice coding tests───────────────────────────┐│                                                                    │</text>
-<text x="16" y="192">│Solve stdin/stdout coding-test problems.        ││                                                                    │</text>
-<text x="16" y="210">│                                                ││                                                                    │</text>
-<text x="16" y="228">│                                                ││                                                                    │</text>
-<text x="16" y="246">│                                                ││                                                                    │</text>
-<text x="16" y="264">│                                                ││                                                                    │</text>
-<text x="16" y="282">└────────────────────────────────────────────────┘│                                                                    │</text>
-<text x="16" y="300">Arrows choose | Enter/Space open | / commands     │                                                                    │</text>
-<text x="16" y="318">                                                  │                                                                    │</text>
-<text x="16" y="336">                                                  │                                                                    │</text>
-<text x="16" y="354">                                                  │                                                                    │</text>
-<text x="16" y="372">                                                  │                                                                    │</text>
-<text x="16" y="390">                                                  │                                                                    │</text>
-<text x="16" y="408">                                                  │                                                                    │</text>
-<text x="16" y="426">                                                  │                                                                    │</text>
-<text x="16" y="444">                                                  │                                                                    │</text>
-<text x="16" y="462">                                                  │                                                                    │</text>
-<text x="16" y="480">                                                  │                                                                    │</text>
-<text x="16" y="498">                                                  │                                                                    │</text>
-<text x="16" y="516">                                                  │                                                                    │</text>
-<text x="16" y="534">                                                  │                                                                    │</text>
-<text x="16" y="552">                                                  │                                                                    │</text>
-<text x="16" y="570">                                                  └────────────────────────────────────────────────────────────────────┘</text>
-<text x="16" y="588"> F1 help | arrows choose | Enter open                                                                                   </text>
-<text x="16" y="606">Command: Type /, move with up/down, Enter runs                                                                          </text>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" width="1112" height="630" viewBox="0 0 1112 630" role="img" aria-label="Actual Practicode Home TUI render">
+  <title>Practicode · Home</title>
+  <style>
+    .panel { fill: none; stroke-width: 1.5; }
+    .active-border { stroke: #facc15; }
+    .border { stroke: #22d3ee; }
+    .text { fill: #e5e7eb; font: 14px ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
+    .chrome { fill: #94a3b8; font: 13px ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
+    .active-title { fill: #facc15; font: 700 14px ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
+    .title { fill: #22d3ee; font: 700 14px ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
+    .status { fill: #c8d3f5; font: 700 13px ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
+  </style>
+
+  <rect width="1112" height="630" rx="14" fill="#0f172a"/>
+  <rect y="34" width="1112" height="596" fill="#111827"/>
+  <rect x="1" y="1" width="1110" height="628" rx="13" fill="none" stroke="#334155"/>
+  <circle cx="18" cy="18" r="5" fill="#fb7185"/>
+  <circle cx="34" cy="18" r="5" fill="#fbbf24"/>
+  <circle cx="50" cy="18" r="5" fill="#4ade80"/>
+  <text class="chrome" x="70" y="23">Practicode · Home</text>
+
+  <rect class="panel active-border" x="20.5" y="43" width="441" height="108"/>
+  <rect x="24" y="35" width="230" height="17" fill="#111827"/>
+  <text class="active-title" x="25" y="48">&gt; Continue today's session</text>
+  <text class="text" x="25" y="66">Review what's due, learn one core item, and</text>
+  <text class="text" x="25" y="84">validate the exercise.</text>
+
+  <rect class="panel border" x="20.5" y="169" width="441" height="108"/>
+  <rect x="24" y="161" width="190" height="17" fill="#111827"/>
+  <text class="title" x="25" y="174">Practice coding tests</text>
+  <text class="text" x="25" y="192">Solve stdin/stdout coding-test problems.</text>
+
+  <rect class="panel border" x="470.5" y="43" width="621" height="522"/>
+  <rect x="474" y="35" width="75" height="17" fill="#111827"/>
+  <text class="title" x="475" y="48">Preview</text>
+  <text class="text" x="475" y="66">Continue today's session</text>
+  <text class="text" x="475" y="102">Language: Python</text>
+  <text class="text" x="475" y="120">Progress: 0/12</text>
+  <text class="text" x="475" y="138">Due: 0</text>
+  <text class="text" x="475" y="156">Next step: Language delta</text>
+
+  <text class="text" x="16" y="300">Arrows choose | Enter/Space open | / commands</text>
+
+  <rect y="574" width="1112" height="18" fill="#152033"/>
+  <text class="status" x="25" y="588">F1 help | arrows choose | Enter open</text>
+  <text class="text" x="16" y="606">Command: Type /, move with up/down, Enter runs</text>
 </svg>
